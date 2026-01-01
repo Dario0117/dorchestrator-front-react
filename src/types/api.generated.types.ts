@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+    "/api/v1/{organizationId}/agent/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdAgentRegister"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/{organizationId}/organization": {
         parameters: {
             query?: never;
@@ -30,6 +46,22 @@ export interface paths {
         get: operations["getApiV1ByOrganizationIdOrganizationStats"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdDevices"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5028,6 +5060,61 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    postApiV1ByOrganizationIdAgentRegister: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    token: string;
+                    deviceName: string;
+                    /** @enum {string} */
+                    platform: "linux" | "macos" | "windows";
+                };
+                "application/x-www-form-urlencoded": {
+                    token: string;
+                    deviceName: string;
+                    /** @enum {string} */
+                    platform: "linux" | "macos" | "windows";
+                };
+                "multipart/form-data": {
+                    token: string;
+                    deviceName: string;
+                    /** @enum {string} */
+                    platform: "linux" | "macos" | "windows";
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                deviceId: string;
+                                apiKey: string;
+                            };
+                        } | null;
+                        responseErrors: ({
+                            nonFieldErrors?: string[];
+                        } & {
+                            [key: string]: string[];
+                        }) | null;
+                    };
+                };
+            };
+        };
+    };
     getApiV1ByOrganizationIdOrganization: {
         parameters: {
             query?: never;
@@ -5091,6 +5178,40 @@ export interface operations {
                                 deviceCount: number;
                                 recentCommandCount: number;
                                 recentCommands: unknown[];
+                            };
+                        } | null;
+                        responseErrors: ({
+                            nonFieldErrors?: string[];
+                        } & {
+                            [key: string]: string[];
+                        }) | null;
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdDevices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                token: string;
+                                expiresAt: string;
                             };
                         } | null;
                         responseErrors: ({

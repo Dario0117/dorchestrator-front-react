@@ -340,3 +340,4 @@ This is a React frontend template using modern tooling and patterns:
 - Never create wrappers on tests, use the ones already exist in `test-wrappers.utils`, update them if needed
 - Never commit changes
 - Never add docstring to the code, unless you are asked to do so
+- Never write tests while implementing a feature, write them afterwards, do it on the review step

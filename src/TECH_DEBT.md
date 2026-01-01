@@ -14,3 +14,4 @@
 - [ ] Add "reveal password" option to password inputs
 - [ ] Show org and teams in sidebar
 - [ ] Add an option to create an org and a team in the sidebar
+- [ ] Regenerate the claude.md file
