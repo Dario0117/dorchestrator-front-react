@@ -15,3 +15,5 @@
 - [ ] Show org and teams in sidebar
 - [ ] Add an option to create an org and a team in the sidebar
 - [ ] Regenerate the claude.md file
+- [ ] Move reading from env vars to an util file, that way we can mock it in tests and have it centralized
+- [ ] Remove the requirement for tests during development, combine this with a command/subagent to create tests to speed up development and only write tests when the code is reviewed and manually tested
