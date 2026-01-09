@@ -1,8 +1,8 @@
+import { Header } from '@components/layout/header';
+import { Button } from '@components/ui/button';
+import { SidebarProvider } from '@components/ui/sidebar';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Bell, Search, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { Header } from './header';
 
 // Mock component with sidebar context and sample content
 function MockHeader({

@@ -1,7 +1,6 @@
+import { Button } from '@components/ui/button';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CheckIcon, LoaderIcon, PlusIcon } from 'lucide-react';
-
-import { Button } from './button';
 
 const meta = {
   title: 'UI/Button',

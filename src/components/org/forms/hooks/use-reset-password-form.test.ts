@@ -1,10 +1,10 @@
+import { useResetPasswordForm } from '@components/org/forms/hooks/use-reset-password-form';
+import { buildBackendUrl } from '@lib/test.utils';
+import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
+import { useResetPasswordMutation } from '@services/users/reset-password.http-service';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
-import { buildBackendUrl } from '@/lib/test.utils';
-import { createQueryThemeWrapper } from '@/lib/test-wrappers.utils';
-import { useResetPasswordMutation } from '@/services/users/reset-password.http-service';
-import { useResetPasswordForm } from './use-reset-password-form';
 
 describe('useResetPasswordForm', () => {
   it('should initialize with empty default values', () => {

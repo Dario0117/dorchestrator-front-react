@@ -1,11 +1,11 @@
+import { LoginForm } from '@components/org/forms/login.form';
+import { buildBackendUrl } from '@lib/test.utils';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useLoginMutation } from '@services/users/login.http-service';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
-import { buildBackendUrl } from '@/lib/test.utils';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useLoginMutation } from '@/services/users/login.http-service';
-import { LoginForm } from './login.form';
 
 interface LinkProps {
   children: React.ReactNode;

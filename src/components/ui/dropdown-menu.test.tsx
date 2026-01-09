@@ -1,5 +1,3 @@
-import { render, screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -16,7 +14,9 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from './dropdown-menu';
+} from '@components/ui/dropdown-menu';
+import { render, screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 describe('DropdownMenu', () => {
   it('should render trigger and content', async () => {

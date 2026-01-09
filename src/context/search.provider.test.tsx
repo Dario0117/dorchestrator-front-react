@@ -1,5 +1,5 @@
+import { SearchProvider, useSearch } from '@context/search.provider';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { SearchProvider, useSearch } from './search.provider';
 
 // Mock the CommandMenu component
 vi.mock('@/components/command-menu', () => ({

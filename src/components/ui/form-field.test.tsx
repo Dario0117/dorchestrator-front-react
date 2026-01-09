@@ -1,7 +1,7 @@
+import { FormField } from '@components/ui/form-field';
 import { useForm } from '@tanstack/react-form';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { FormField } from './form-field';
 
 // Test wrapper component to provide form context
 function TestFormField({

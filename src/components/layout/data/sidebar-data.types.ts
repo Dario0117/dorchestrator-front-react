@@ -1,5 +1,5 @@
-import type { NavGroup } from '../nav-group.types';
-import type { Team } from '../team-switcher.types';
+import type { NavGroup } from '@components/layout/nav-group.types';
+import type { Team } from '@components/layout/team-switcher.types';
 
 export type SidebarData = {
   teams: Team[];

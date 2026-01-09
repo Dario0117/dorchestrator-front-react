@@ -1,6 +1,6 @@
+import { AuthenticatedLayout } from '@components/layout/authenticated-layout';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { AuthenticatedLayout } from './authenticated-layout';
 
 vi.mock('@/lib/cookies', () => ({
   getCookie: vi.fn(() => 'true'),

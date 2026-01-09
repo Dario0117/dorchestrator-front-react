@@ -1,11 +1,11 @@
+import { UpdatePasswordForm } from '@components/org/forms/update-password.form';
+import { buildBackendUrl } from '@lib/test.utils';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useUpdatePasswordMutation } from '@services/users/update-password.http-service';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
-import { buildBackendUrl } from '@/lib/test.utils';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useUpdatePasswordMutation } from '@/services/users/update-password.http-service';
-import { UpdatePasswordForm } from './update-password.form';
 
 // Mock the router hooks
 vi.mock('@tanstack/react-router', () => ({

@@ -1,10 +1,13 @@
+import {
+  SlugStatus,
+  useSlugValidation,
+} from '@components/org/forms/hooks/use-slug-validation';
+import { buildBackendUrl } from '@lib/test.utils';
+import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { server } from '@/../testsSetup';
-import { buildBackendUrl } from '@/lib/test.utils';
-import { createQueryThemeWrapper } from '@/lib/test-wrappers.utils';
-import { SlugStatus, useSlugValidation } from './use-slug-validation';
 
 describe('useSlugValidation', () => {
   it('should initialize with unchecked status', () => {

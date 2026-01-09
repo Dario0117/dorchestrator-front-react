@@ -1,5 +1,5 @@
+import { Skeleton } from '@components/ui/skeleton';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Skeleton } from './skeleton';
 
 const meta = {
   title: 'UI/Skeleton',

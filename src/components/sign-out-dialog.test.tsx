@@ -1,8 +1,8 @@
+import { SignOutDialog } from '@components/sign-out-dialog';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useAuthenticationStore } from '@stores/authentication.store';
 import { act, renderHook, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useAuthenticationStore } from '@/stores/authentication.store';
-import { SignOutDialog } from './sign-out-dialog';
 
 describe('SignOutDialog', () => {
   const mockOnOpenChange = vi.fn();

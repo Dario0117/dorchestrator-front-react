@@ -1,5 +1,5 @@
+import { Badge } from '@components/ui/badge';
 import { render, screen } from '@testing-library/react';
-import { Badge } from './badge';
 
 describe('Badge', () => {
   it('renders badge with default variant', () => {

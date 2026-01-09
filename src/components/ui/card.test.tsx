@@ -1,4 +1,3 @@
-import { render, screen } from '@testing-library/react';
 import {
   Card,
   CardAction,
@@ -7,7 +6,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from './card';
+} from '@components/ui/card';
+import { render, screen } from '@testing-library/react';
 
 describe('Card Components', () => {
   describe('Card', () => {

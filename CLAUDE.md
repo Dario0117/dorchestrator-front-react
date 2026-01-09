@@ -121,7 +121,42 @@ This is a React frontend template using modern tooling and patterns:
 
 ### Alias Configuration
 
-- `@/` maps to `/src/` directory for clean imports
+**IMPORTANT: Relative imports are STRICTLY FORBIDDEN. All imports must use path aliases.**
+
+The project uses contextual path aliases for better code organization and shorter import paths:
+
+- `@components/*` → `/src/components/*` - All UI components, layouts, forms, pages
+- `@services/*` → `/src/services/*` - HTTP service layers and API handlers
+- `@hooks/*` → `/src/hooks/*` - Custom React hooks
+- `@lib/*` → `/src/lib/*` - Utility functions and helpers
+- `@context/*` → `/src/context/*` - React context providers
+- `@stores/*` → `/src/stores/*` - Zustand stores for global state
+- `@types/*` → `/src/types/*` - TypeScript type definitions (use `@/types/` to avoid conflicts)
+- `@routes/*` → `/src/routes/*` - Route components and configuration
+- `@assets/*` → `/src/assets/*` - Static assets (images, icons, etc.)
+- `@/*` → `/src/*` - Fallback for root-level files (app.tsx, main.tsx, etc.)
+
+**Import Examples:**
+```typescript
+// ✅ CORRECT - Using contextual aliases
+import { Button } from '@components/ui/button';
+import { useLogin } from '@services/users/login.http-service';
+import { useMobile } from '@hooks/use-mobile';
+import { cn } from '@lib/utils';
+import { ThemeProvider } from '@context/theme.provider';
+import { useAuthStore } from '@stores/authentication.store';
+import App from '@/app';
+
+// ❌ WRONG - Relative imports are not allowed
+import { Button } from './ui/button';
+import { Button } from '../ui/button';
+import { Button } from '../../components/ui/button';
+```
+
+**Biome Configuration:**
+- Biome is configured to enforce alias-only imports
+- Any relative import (`./` or `../`) will cause a linting error
+- This ensures consistent import patterns across the codebase
 
 ### Development Notes
 
@@ -241,7 +276,7 @@ This is a React frontend template using modern tooling and patterns:
 - Functions: `setMobileViewport()`, `setTabletViewport()`, `setDesktopViewport()`
 - Usage in tests:
   ```tsx
-  import { setMobileViewport } from '@/lib/viewport-test-utils';
+  import { setMobileViewport } from '@lib/viewport-test-utils';
 
   describe('Component - Mobile', () => {
     beforeEach(() => setMobileViewport());

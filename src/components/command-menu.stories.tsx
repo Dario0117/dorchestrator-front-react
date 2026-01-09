@@ -1,3 +1,14 @@
+import { Button } from '@components/ui/button';
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from '@components/ui/command';
+import { ScrollArea } from '@components/ui/scroll-area';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   ArrowRight,
@@ -8,17 +19,6 @@ import {
   Sun,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from '@/components/ui/command';
-import { ScrollArea } from './ui/scroll-area';
 
 // Mock data similar to sidebar data
 const mockNavGroups = [

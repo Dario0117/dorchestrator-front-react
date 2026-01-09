@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from './collapsible';
+} from '@components/ui/collapsible';
+import { render, screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 describe('Collapsible', () => {
   it('should render collapsible component', () => {

@@ -1,5 +1,5 @@
+import { buildBackendUrl } from '@lib/test.utils';
 import { HttpResponse, http } from 'msw';
-import { buildBackendUrl } from '@/lib/test.utils';
 
 export const getOrganizationDetailsHandler = http.get(
   buildBackendUrl('/api/v1/:organizationId/organization'),

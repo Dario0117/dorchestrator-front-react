@@ -1,4 +1,4 @@
-import type { useProfileQueryReturnType } from '@/services/users/get-profile.http-service';
+import type { useProfileQueryReturnType } from '@services/users/get-profile.http-service';
 
 export type Profile = NonNullable<useProfileQueryReturnType['data']>;
 

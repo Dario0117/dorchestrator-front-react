@@ -1,9 +1,9 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { CommandMenu } from '@/components/command-menu';
+import { CommandMenu } from '@components/command-menu';
 import type {
   SearchContextType,
   SearchProviderProps,
-} from './search.provider.types';
+} from '@context/search.provider.types';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const SearchContext = createContext<SearchContextType | null>(null);
 

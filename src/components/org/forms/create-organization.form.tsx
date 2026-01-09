@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useCreateOrganizationForm } from '@components/org/forms/hooks/use-create-organization-form';
+import {
+  SlugStatus,
+  useSlugValidation,
+} from '@components/org/forms/hooks/use-slug-validation';
+import { Button } from '@components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import {
   generateInitials,
   generateSlugSuggestion,
-} from '@/lib/organization-logo.utils';
-import type { useCreateOrganizationMutationType } from '@/services/organizations/create-organization.http-service';
-import { useCreateOrganizationForm } from './hooks/use-create-organization-form';
-import { SlugStatus, useSlugValidation } from './hooks/use-slug-validation';
+} from '@lib/organization-logo.utils';
+import type { useCreateOrganizationMutationType } from '@services/organizations/create-organization.http-service';
+import { useEffect, useState } from 'react';
 
 interface CreateOrganizationFormProps {
   createOrganizationMutation: useCreateOrganizationMutationType;

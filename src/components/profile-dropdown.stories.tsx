@@ -1,7 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@components/confirm-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
+import { Button } from '@components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,8 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { ConfirmDialog } from './confirm-dialog';
+} from '@components/ui/dropdown-menu';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useState } from 'react';
 
 // Mock version to avoid hook dependencies
 function MockProfileDropdown({

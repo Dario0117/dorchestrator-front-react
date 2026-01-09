@@ -1,5 +1,5 @@
-import { FormErrorDisplay } from '@/components/ui/form-error-display';
-import { useFormContext } from '../hooks/app-form';
+import { useFormContext } from '@components/org/forms/hooks/app-form';
+import { FormErrorDisplay } from '@components/ui/form-error-display';
 
 export function AppSubscribeErrorButton() {
   const form = useFormContext();

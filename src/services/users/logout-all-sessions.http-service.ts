@@ -1,6 +1,6 @@
+import { queryClient } from '@context/query.provider';
 import { useMutation } from '@tanstack/react-query';
-import { queryClient } from '@/context/query.provider';
-import { authClient } from '../../better-auth.client';
+import { authClient } from '@/better-auth.client';
 
 export function useLogoutAllMutation({
   handleSuccess,

@@ -1,5 +1,5 @@
+import { APIPage } from '@components/org/pages/api.page';
 import { render, screen } from '@testing-library/react';
-import { APIPage } from './api.page';
 
 describe('APIPage', () => {
   it('should render the page content', () => {

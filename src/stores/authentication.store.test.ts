@@ -1,6 +1,6 @@
+import { useAuthenticationStore } from '@stores/authentication.store';
+import type { Profile } from '@stores/authentication.store.types';
 import { act, renderHook } from '@testing-library/react';
-import { useAuthenticationStore } from './authentication.store';
-import type { Profile } from './authentication.store.types';
 
 describe('authentication.store', () => {
   beforeEach(() => {

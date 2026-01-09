@@ -1,7 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { MoreHorizontalIcon } from 'lucide-react';
-
-import { Button } from './button';
+import { Button } from '@components/ui/button';
 import {
   Card,
   CardAction,
@@ -10,7 +7,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from './card';
+} from '@components/ui/card';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { MoreHorizontalIcon } from 'lucide-react';
 
 const meta = {
   title: 'UI/Card',

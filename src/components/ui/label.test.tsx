@@ -1,5 +1,5 @@
+import { Label } from '@components/ui/label';
 import { render, screen } from '@testing-library/react';
-import { Label } from './label';
 
 describe('Label', () => {
   it('should render successfully', () => {

@@ -1,7 +1,7 @@
+import { SearchProvider } from '@context/search.provider';
+import { renderWithProviders as renderWithBaseProviders } from '@lib/test-wrappers.utils';
 import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { SearchProvider } from '@/context/search.provider';
-import { renderWithProviders as renderWithBaseProviders } from '@/lib/test-wrappers.utils';
 
 const renderWithProviders = () => {
   return renderWithBaseProviders(

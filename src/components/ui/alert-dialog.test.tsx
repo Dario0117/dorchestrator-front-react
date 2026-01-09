@@ -1,4 +1,3 @@
-import { fireEvent, render, screen } from '@testing-library/react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,7 +8,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from './alert-dialog';
+} from '@components/ui/alert-dialog';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 describe('AlertDialog', () => {
   it('renders trigger and opens dialog when clicked', () => {

@@ -1,5 +1,5 @@
+import { useIsMobile } from '@hooks/use-mobile';
 import { act, renderHook } from '@testing-library/react';
-import { useIsMobile } from './use-mobile';
 
 describe('useIsMobile', () => {
   let mockMatchMedia: ReturnType<typeof vi.fn>;

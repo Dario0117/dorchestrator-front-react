@@ -1,12 +1,12 @@
+import { CreateOrganizationForm } from '@components/org/forms/create-organization.form';
+import { buildBackendUrl } from '@lib/test.utils';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useCreateOrganizationMutation } from '@services/organizations/create-organization.http-service';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it, vi } from 'vitest';
 import { server } from '@/../testsSetup';
-import { buildBackendUrl } from '@/lib/test.utils';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useCreateOrganizationMutation } from '@/services/organizations/create-organization.http-service';
-import { CreateOrganizationForm } from './create-organization.form';
 
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {
   const createOrganizationMutation = useCreateOrganizationMutation();

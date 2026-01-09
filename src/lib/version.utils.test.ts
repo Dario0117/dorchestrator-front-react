@@ -1,4 +1,4 @@
-import { getAppVersion } from './version.utils';
+import { getAppVersion } from '@lib/version.utils';
 
 describe('getAppVersion', () => {
   const originalDEV = import.meta.env.DEV;

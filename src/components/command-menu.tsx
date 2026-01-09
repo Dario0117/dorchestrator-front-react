@@ -1,6 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
-import { ArrowRight, ChevronRight, Laptop, Moon, Sun } from 'lucide-react';
-import React from 'react';
+import { getSidebarData } from '@components/layout/data/sidebar-data';
 import {
   CommandDialog,
   CommandEmpty,
@@ -9,12 +7,14 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@/components/ui/command';
-import { useSearch } from '@/context/search.provider';
-import { useTheme } from '@/context/theme.provider';
-import { useOrganizationStore } from '@/stores/organization.store';
-import { getSidebarData } from './layout/data/sidebar-data';
-import { ScrollArea } from './ui/scroll-area';
+} from '@components/ui/command';
+import { ScrollArea } from '@components/ui/scroll-area';
+import { useSearch } from '@context/search.provider';
+import { useTheme } from '@context/theme.provider';
+import { useOrganizationStore } from '@stores/organization.store';
+import { useNavigate } from '@tanstack/react-router';
+import { ArrowRight, ChevronRight, Laptop, Moon, Sun } from 'lucide-react';
+import React from 'react';
 
 export function CommandMenu() {
   const navigate = useNavigate();

@@ -1,3 +1,22 @@
+import type { NavUserProps } from '@components/layout/nav-user.types';
+import { SignOutDialog } from '@components/sign-out-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@components/ui/dropdown-menu';
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from '@components/ui/sidebar';
+import useDialogState from '@hooks/use-dialog-state';
 import { Link } from '@tanstack/react-router';
 import {
   BadgeCheck,
@@ -7,25 +26,6 @@ import {
   LogOut,
   Sparkles,
 } from 'lucide-react';
-import { SignOutDialog } from '@/components/sign-out-dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar';
-import useDialogState from '@/hooks/use-dialog-state';
-import type { NavUserProps } from './nav-user.types';
 
 export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();

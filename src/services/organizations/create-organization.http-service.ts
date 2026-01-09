@@ -1,7 +1,7 @@
+import type { CreateOrganizationFormData } from '@components/org/forms/validation/create-organization-form.schema';
+import { logError } from '@lib/logger.utils';
 import { useMutation } from '@tanstack/react-query';
-import type { CreateOrganizationFormData } from '@/components/org/forms/validation/create-organization-form.schema';
-import { logError } from '@/lib/logger.utils';
-import { authClient } from '../../better-auth.client';
+import { authClient } from '@/better-auth.client';
 
 export function useCreateOrganizationMutation() {
   return useMutation({

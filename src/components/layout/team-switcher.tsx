@@ -1,5 +1,4 @@
-import { ChevronsUpDown, Plus } from 'lucide-react';
-import * as React from 'react';
+import type { TeamSwitcherProps } from '@components/layout/team-switcher.types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,14 +7,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar';
-import type { TeamSwitcherProps } from './team-switcher.types';
+} from '@components/ui/sidebar';
+import { ChevronsUpDown, Plus } from 'lucide-react';
+import * as React from 'react';
 
 export function TeamSwitcher({ teams }: TeamSwitcherProps) {
   const { isMobile } = useSidebar();

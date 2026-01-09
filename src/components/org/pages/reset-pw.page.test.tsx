@@ -1,7 +1,7 @@
+import { ResetPasswordPage } from '@components/org/pages/reset-pw.page';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { ResetPasswordPage } from './reset-pw.page';
 
 // Mock the navigation hook
 vi.mock('@tanstack/react-router', () => ({

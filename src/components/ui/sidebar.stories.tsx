@@ -1,5 +1,3 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { HomeIcon, InboxIcon, SettingsIcon } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +10,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-} from './sidebar';
+} from '@components/ui/sidebar';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { HomeIcon, InboxIcon, SettingsIcon } from 'lucide-react';
 
 const meta = {
   title: 'UI/Sidebar',

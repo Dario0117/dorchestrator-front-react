@@ -1,5 +1,5 @@
+import { SkipToMain } from '@components/skip-to-main';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { SkipToMain } from './skip-to-main';
 
 const meta = {
   title: 'Components/SkipToMain',

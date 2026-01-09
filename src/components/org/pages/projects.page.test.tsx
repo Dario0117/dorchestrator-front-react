@@ -1,5 +1,5 @@
+import { ProjectsPage } from '@components/org/pages/projects.page';
 import { render, screen } from '@testing-library/react';
-import { ProjectsPage } from './projects.page';
 
 describe('ProjectsPage', () => {
   it('should render the page content', () => {

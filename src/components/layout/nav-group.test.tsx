@@ -1,10 +1,10 @@
+import { NavGroup } from '@components/layout/nav-group';
+import type { NavItem } from '@components/layout/nav-group.types';
+import { SidebarProvider } from '@components/ui/sidebar';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FilePenLine, FolderKanban, Layers } from 'lucide-react';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { NavGroup } from './nav-group';
-import type { NavItem } from './nav-group.types';
 
 // Create a mock function that we can control
 const mockUseLocation = vi.fn(

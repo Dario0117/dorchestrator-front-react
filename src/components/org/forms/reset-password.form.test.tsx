@@ -1,11 +1,11 @@
+import { ResetPasswordForm } from '@components/org/forms/reset-password.form';
+import { buildBackendUrl } from '@lib/test.utils';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useResetPasswordMutation } from '@services/users/reset-password.http-service';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
-import { buildBackendUrl } from '@/lib/test.utils';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useResetPasswordMutation } from '@/services/users/reset-password.http-service';
-import { ResetPasswordForm } from './reset-password.form';
 
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {
   const resetPasswordMutation = useResetPasswordMutation();

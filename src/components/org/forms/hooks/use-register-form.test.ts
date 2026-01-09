@@ -1,12 +1,12 @@
+import { useRegisterForm } from '@components/org/forms/hooks/use-register-form';
+import { logError } from '@lib/logger.utils';
+import { buildBackendUrl } from '@lib/test.utils';
+import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
+import { useRegisterMutation } from '@services/users/register.http-service';
 import { renderHook, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { act } from 'react';
 import { server } from '@/../testsSetup';
-import { logError } from '@/lib/logger.utils';
-import { buildBackendUrl } from '@/lib/test.utils';
-import { createQueryThemeWrapper } from '@/lib/test-wrappers.utils';
-import { useRegisterMutation } from '@/services/users/register.http-service';
-import { useRegisterForm } from './use-register-form';
 
 // Mock the logger utility
 vi.mock('@/lib/logger.utils', () => ({

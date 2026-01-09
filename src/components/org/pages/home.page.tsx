@@ -1,9 +1,9 @@
+import { Alert, AlertDescription } from '@components/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+import { Skeleton } from '@components/ui/skeleton';
+import { useOrganizationStatsQuery } from '@services/organizations/get-organization-stats.http-service';
+import { useOrganizationStore } from '@stores/organization.store';
 import { AlertCircle, Building2, HardDrive, Terminal } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useOrganizationStatsQuery } from '@/services/organizations/get-organization-stats.http-service';
-import { useOrganizationStore } from '@/stores/organization.store';
 
 type RecentCommand = {
   id: number;

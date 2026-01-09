@@ -1,13 +1,19 @@
-import type { NavGroup, NavItem } from '../nav-group.types';
-import { getSidebarData } from './sidebar-data';
-import type { SidebarData } from './sidebar-data.types';
+import { getSidebarData } from '@components/layout/data/sidebar-data';
+import type { SidebarData } from '@components/layout/data/sidebar-data.types';
+import type { NavGroup, NavItem } from '@components/layout/nav-group.types';
 
 describe('Sidebar Data', () => {
   const testSlug = 'test-org';
+  const testOrganization = {
+    id: 'org-123',
+    name: 'Test Organization',
+    slug: testSlug,
+    createdAt: new Date(),
+  };
   let sidebarData: SidebarData;
 
   beforeEach(() => {
-    sidebarData = getSidebarData(testSlug);
+    sidebarData = getSidebarData(testOrganization);
   });
 
   it('should have valid structure', () => {
@@ -124,11 +130,13 @@ describe('Sidebar Data', () => {
   });
 
   it('should handle missing organization slug', () => {
-    const sidebarDataWithoutSlug = getSidebarData();
+    const sidebarDataWithoutSlug = getSidebarData(undefined);
     const generalGroup = sidebarDataWithoutSlug.navGroups[0];
     const dashboardItem = generalGroup?.items[0];
 
-    expect('url' in dashboardItem && dashboardItem.url).toBe('/');
+    expect(dashboardItem && 'url' in dashboardItem && dashboardItem.url).toBe(
+      '/',
+    );
   });
 
   it('should have all required nav item properties', () => {

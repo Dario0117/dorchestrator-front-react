@@ -3,7 +3,7 @@
  * Replaces js-cookie dependency for better consistency
  */
 
-import { DEFAULT_MAX_AGE } from './cookies.utils.constants';
+import { DEFAULT_MAX_AGE } from '@lib/cookies.utils.constants';
 
 /**
  * Get a cookie value by name

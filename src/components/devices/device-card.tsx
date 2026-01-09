@@ -1,14 +1,14 @@
-import { Play, Trash2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@components/ui/badge';
+import { Button } from '@components/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import type { ListDevicesDevice } from '@/services/devices/list-devices.http-service';
+} from '@components/ui/card';
+import type { ListDevicesDevice } from '@services/devices/list-devices.http-service';
+import { Play, Trash2 } from 'lucide-react';
 
 interface DeviceCardProps {
   device: ListDevicesDevice;

@@ -1,5 +1,5 @@
+import { DevicesPage } from '@components/org/pages/devices.page';
 import { render, screen } from '@testing-library/react';
-import { DevicesPage } from './devices.page';
 
 describe('DevicesPage', () => {
   it('should render the page content', () => {

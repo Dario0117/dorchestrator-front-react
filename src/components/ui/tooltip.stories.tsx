@@ -1,6 +1,10 @@
+import { Button } from '@components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@components/ui/tooltip';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 
 const meta = {
   title: 'UI/Tooltip',

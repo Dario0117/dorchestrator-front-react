@@ -1,5 +1,5 @@
-import type { LogContext } from '@/lib/logger.utils.types';
-import { logError, logInfo, logWarning } from './logger.utils';
+import { logError, logInfo, logWarning } from '@lib/logger.utils';
+import type { LogContext } from '@lib/logger.utils.types';
 
 describe('logger utils', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>;

@@ -1,8 +1,8 @@
-import { logError } from '@/lib/logger.utils';
-import type { useRegisterMutationType } from '@/services/users/register.http-service';
-import { registerFormSchema } from '../validation/register-form.schema';
-import { useAppForm } from './app-form';
-import type { UseRegisterFormProps } from './use-register-form.types';
+import { useAppForm } from '@components/org/forms/hooks/app-form';
+import type { UseRegisterFormProps } from '@components/org/forms/hooks/use-register-form.types';
+import { registerFormSchema } from '@components/org/forms/validation/register-form.schema';
+import { logError } from '@lib/logger.utils';
+import type { useRegisterMutationType } from '@services/users/register.http-service';
 
 export function useRegisterForm({
   registerMutation,

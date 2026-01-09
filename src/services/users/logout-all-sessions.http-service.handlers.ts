@@ -1,5 +1,5 @@
+import { buildBackendUrl } from '@lib/test.utils';
 import { HttpResponse, http } from 'msw';
-import { buildBackendUrl } from '@/lib/test.utils';
 
 type RevokeSessionsResponse = {
   status: boolean;

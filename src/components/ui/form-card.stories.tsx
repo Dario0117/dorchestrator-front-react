@@ -1,6 +1,5 @@
+import { FormCard } from '@components/ui/form-card';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-
-import { FormCard } from './form-card';
 
 const meta = {
   component: FormCard,

@@ -1,7 +1,7 @@
+import type { HeaderProps } from '@components/layout/header.types';
+import { SidebarTrigger } from '@components/ui/sidebar';
+import { cn } from '@lib/utils';
 import { useEffect, useState } from 'react';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { cn } from '@/lib/utils';
-import type { HeaderProps } from './header.types';
 
 export function Header({ className, fixed, children, ...props }: HeaderProps) {
   const [offset, setOffset] = useState(0);

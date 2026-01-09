@@ -1,11 +1,11 @@
+import { RegisterForm } from '@components/org/forms/register.form';
+import { buildBackendUrl } from '@lib/test.utils';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useRegisterMutation } from '@services/users/register.http-service';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
-import { buildBackendUrl } from '@/lib/test.utils';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useRegisterMutation } from '@/services/users/register.http-service';
-import { RegisterForm } from './register.form';
 
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {
   const registerMutation = useRegisterMutation();

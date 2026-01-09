@@ -1,6 +1,6 @@
+import { UpdatePasswordForm } from '@components/org/forms/update-password.form';
+import type { useUpdatePasswordMutationType } from '@services/users/update-password.http-service';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { useUpdatePasswordMutationType } from '@/services/users/update-password.http-service';
-import { UpdatePasswordForm } from './update-password.form';
 
 // Mock handlers for Storybook
 const mockHandleUpdateSuccess = async (password: string, confirm: string) => {

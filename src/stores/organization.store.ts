@@ -1,9 +1,9 @@
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
 import type {
   OrganizationActions,
   OrganizationState,
-} from '@/stores/organization.store.types';
+} from '@stores/organization.store.types';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 const DEFAULT_ORGANIZATION_ID = 'DEFAULT_ORGANIZATION_ID';
 

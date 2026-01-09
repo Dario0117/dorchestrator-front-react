@@ -1,11 +1,3 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import {
-  CalendarIcon,
-  CreditCardIcon,
-  SettingsIcon,
-  SmileIcon,
-  UserIcon,
-} from 'lucide-react';
 import {
   Command,
   CommandEmpty,
@@ -15,7 +7,15 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from './command';
+} from '@components/ui/command';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import {
+  CalendarIcon,
+  CreditCardIcon,
+  SettingsIcon,
+  SmileIcon,
+  UserIcon,
+} from 'lucide-react';
 
 const meta = {
   title: 'UI/Command',

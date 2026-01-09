@@ -1,5 +1,5 @@
+import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
 import { render, screen } from '@testing-library/react';
-import { Alert, AlertDescription, AlertTitle } from './alert';
 
 describe('Alert', () => {
   it('should render with correct role', () => {

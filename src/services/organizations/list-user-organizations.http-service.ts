@@ -1,6 +1,6 @@
+import { logError } from '@lib/logger.utils';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { logError } from '@/lib/logger.utils';
-import { authClient } from '../../better-auth.client';
+import { authClient } from '@/better-auth.client';
 
 export const useUserOrganizationsQueryOptions = {
   queryKey: ['user-organizations'],

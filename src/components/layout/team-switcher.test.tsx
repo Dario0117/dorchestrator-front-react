@@ -1,9 +1,9 @@
+import { TeamSwitcher } from '@components/layout/team-switcher';
+import { SidebarProvider } from '@components/ui/sidebar';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { TeamSwitcher } from './team-switcher';
 
 const mockTeams = [
   {

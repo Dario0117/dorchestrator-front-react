@@ -1,10 +1,7 @@
-import { useNavigate } from '@tanstack/react-router';
-import { Plus } from 'lucide-react';
-import { useState } from 'react';
-import { ConfirmDialog } from '@/components/confirm-dialog';
-import { AddDeviceModal } from '@/components/devices/add-device-modal';
-import { DeviceCard } from '@/components/devices/device-card';
-import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@components/confirm-dialog';
+import { AddDeviceModal } from '@components/devices/add-device-modal';
+import { DeviceCard } from '@components/devices/device-card';
+import { Button } from '@components/ui/button';
 import {
   Pagination,
   PaginationContent,
@@ -12,11 +9,14 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination';
-import { Route } from '@/routes/(authenticated)/$organizationSlug/devices';
-import { useDevicesQuery } from '@/services/devices/list-devices.http-service';
-import { useRemoveDeviceMutation } from '@/services/devices/remove-device.http-service';
-import { useOrganizationStore } from '@/stores/organization.store';
+} from '@components/ui/pagination';
+import { Route } from '@routes/(authenticated)/$organizationSlug/devices';
+import { useDevicesQuery } from '@services/devices/list-devices.http-service';
+import { useRemoveDeviceMutation } from '@services/devices/remove-device.http-service';
+import { useOrganizationStore } from '@stores/organization.store';
+import { useNavigate } from '@tanstack/react-router';
+import { Plus } from 'lucide-react';
+import { useState } from 'react';
 
 export function DevicesPage() {
   const { currentOrganization } = useOrganizationStore();

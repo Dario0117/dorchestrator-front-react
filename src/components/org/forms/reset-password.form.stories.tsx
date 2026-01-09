@@ -1,6 +1,6 @@
+import { ResetPasswordForm } from '@components/org/forms/reset-password.form';
+import type { useResetPasswordMutationType } from '@services/users/reset-password.http-service';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { useResetPasswordMutationType } from '@/services/users/reset-password.http-service';
-import { ResetPasswordForm } from './reset-password.form';
 
 // Mock handlers for Storybook
 const mockHandleResetSuccess = async (email: string) => {

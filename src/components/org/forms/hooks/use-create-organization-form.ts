@@ -1,7 +1,7 @@
-import { logError } from '@/lib/logger.utils';
-import type { useCreateOrganizationMutationType } from '@/services/organizations/create-organization.http-service';
-import { createOrganizationFormSchema } from '../validation/create-organization-form.schema';
-import { useAppForm } from './app-form';
+import { useAppForm } from '@components/org/forms/hooks/app-form';
+import { createOrganizationFormSchema } from '@components/org/forms/validation/create-organization-form.schema';
+import { logError } from '@lib/logger.utils';
+import type { useCreateOrganizationMutationType } from '@services/organizations/create-organization.http-service';
 
 interface UseCreateOrganizationFormProps {
   createOrganizationMutation: useCreateOrganizationMutationType;

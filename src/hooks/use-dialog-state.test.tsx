@@ -1,5 +1,5 @@
+import useDialogState from '@hooks/use-dialog-state';
 import { act, renderHook } from '@testing-library/react';
-import useDialogState from './use-dialog-state';
 
 describe('useDialogState', () => {
   describe('with default initial state', () => {

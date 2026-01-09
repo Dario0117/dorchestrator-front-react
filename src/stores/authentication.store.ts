@@ -1,9 +1,9 @@
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
 import type {
   AuthActions,
   AuthState,
-} from '@/stores/authentication.store.types';
+} from '@stores/authentication.store.types';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 export const useAuthenticationStore = create<AuthState & AuthActions>()(
   immer((set) => ({

@@ -1,5 +1,5 @@
+import { Separator } from '@components/ui/separator';
 import { render, screen } from '@testing-library/react';
-import { Separator } from './separator';
 
 describe('Separator', () => {
   it('renders separator with default props', () => {

@@ -1,6 +1,6 @@
+import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
+import { useLogoutMutation } from '@services/users/logout.http-service';
 import { renderHook, waitFor } from '@testing-library/react';
-import { createQueryThemeWrapper } from '@/lib/test-wrappers.utils';
-import { useLogoutMutation } from './users.http-service';
 
 describe('useLogoutMutation', () => {
   it('should call handleSuccess callback when mutation succeeds', async () => {

@@ -1,8 +1,8 @@
+import { NavUser } from '@components/layout/nav-user';
+import { SidebarProvider } from '@components/ui/sidebar';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { NavUser } from './nav-user';
 
 vi.mock('@tanstack/react-router', () => ({
   Link: ({

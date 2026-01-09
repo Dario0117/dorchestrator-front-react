@@ -1,7 +1,7 @@
+import { TeamSwitcher } from '@components/layout/team-switcher';
+import { SidebarProvider } from '@components/ui/sidebar';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Building2, Rocket, Shield, Zap } from 'lucide-react';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { TeamSwitcher } from './team-switcher';
 
 // Mock teams data
 const mockTeams = [

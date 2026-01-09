@@ -1,6 +1,6 @@
+import type { RegisterFormData } from '@components/org/forms/validation/register-form.schema';
 import { useMutation } from '@tanstack/react-query';
-import type { RegisterFormData } from '@/components/org/forms/validation/register-form.schema';
-import { authClient } from '../../better-auth.client';
+import { authClient } from '@/better-auth.client';
 
 export function useRegisterMutation() {
   return useMutation({

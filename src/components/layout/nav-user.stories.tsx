@@ -1,7 +1,7 @@
+import { NavUser } from '@components/layout/nav-user';
+import { SidebarProvider } from '@components/ui/sidebar';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { NavUser } from './nav-user';
 
 const queryClient = new QueryClient({
   defaultOptions: {

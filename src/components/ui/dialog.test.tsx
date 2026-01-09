@@ -1,5 +1,3 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import {
   Dialog,
   DialogClose,
@@ -11,7 +9,9 @@ import {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
-} from './dialog';
+} from '@components/ui/dialog';
+import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 describe('Dialog', () => {
   it('should render dialog root with correct data-slot', () => {

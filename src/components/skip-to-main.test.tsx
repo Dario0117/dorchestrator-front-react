@@ -1,5 +1,5 @@
+import { SkipToMain } from '@components/skip-to-main';
 import { render, screen } from '@testing-library/react';
-import { SkipToMain } from './skip-to-main';
 
 describe('SkipToMain', () => {
   it('renders skip to main link', () => {

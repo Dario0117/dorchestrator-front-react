@@ -1,5 +1,5 @@
+import { DraftsPage } from '@components/org/pages/drafts.page';
 import { render, screen } from '@testing-library/react';
-import { DraftsPage } from './drafts.page';
 
 describe('DraftsPage', () => {
   it('should render the page content', () => {

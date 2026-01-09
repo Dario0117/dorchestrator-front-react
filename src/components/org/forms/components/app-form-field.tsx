@@ -1,7 +1,7 @@
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useFieldContext } from '../hooks/app-form';
-import type { FormFieldProps } from './app-form-field.types';
+import type { FormFieldProps } from '@components/org/forms/components/app-form-field.types';
+import { useFieldContext } from '@components/org/forms/hooks/app-form';
+import { Input } from '@components/ui/input';
+import { Label } from '@components/ui/label';
 
 export function AppFormField({
   label,

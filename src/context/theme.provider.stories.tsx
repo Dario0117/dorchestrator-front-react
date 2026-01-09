@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Button } from '@/components/ui/button';
+import { Button } from '@components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { ThemeProvider, useTheme } from './theme.provider';
+} from '@components/ui/card';
+import { ThemeProvider, useTheme } from '@context/theme.provider';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 // Demo component that uses the theme
 function ThemeDemo() {

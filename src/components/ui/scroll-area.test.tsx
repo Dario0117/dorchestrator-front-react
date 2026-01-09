@@ -1,5 +1,5 @@
+import { ScrollArea } from '@components/ui/scroll-area';
 import { render, screen } from '@testing-library/react';
-import { ScrollArea } from './scroll-area';
 
 describe('ScrollArea', () => {
   it('should render scroll area with children', () => {

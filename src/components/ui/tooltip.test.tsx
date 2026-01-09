@@ -1,5 +1,9 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@components/ui/tooltip';
 import { render, screen } from '@testing-library/react';
-import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 
 describe('Tooltip', () => {
   it('should render tooltip trigger', () => {

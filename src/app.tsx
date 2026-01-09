@@ -1,7 +1,7 @@
+import { queryClient } from '@context/query.provider';
+import { useOrganizationStore } from '@stores/organization.store';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { queryClient } from './context/query.provider';
-import { routeTree } from './routeTree.gen';
-import { useOrganizationStore } from './stores/organization.store';
+import { routeTree } from '@/routeTree.gen';
 
 const router = createRouter({
   routeTree,

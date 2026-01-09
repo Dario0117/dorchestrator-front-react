@@ -1,4 +1,4 @@
-import { queryClient } from '@/context/query.provider';
+import { queryClient } from '@context/query.provider';
 import { $api } from '@/http-service-setup';
 
 export function useRemoveDeviceMutation() {

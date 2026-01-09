@@ -1,5 +1,5 @@
+import { useOrganizationStore } from '@stores/organization.store';
 import { createFileRoute, Navigate } from '@tanstack/react-router';
-import { useOrganizationStore } from '@/stores/organization.store';
 
 function RedirectToOrganization() {
   const { organizations } = useOrganizationStore();

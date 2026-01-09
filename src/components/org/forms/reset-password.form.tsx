@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useResetPasswordForm } from './hooks/use-reset-password-form';
-import type { ResetPasswordFormProps } from './reset-password.form.types';
+import { useResetPasswordForm } from '@components/org/forms/hooks/use-reset-password-form';
+import type { ResetPasswordFormProps } from '@components/org/forms/reset-password.form.types';
+import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 
 export function ResetPasswordForm({
   resetPasswordMutation,

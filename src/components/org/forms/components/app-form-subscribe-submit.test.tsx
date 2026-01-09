@@ -1,6 +1,6 @@
+import { useAppForm } from '@components/org/forms/hooks/app-form';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useAppForm } from '../hooks/app-form';
 
 describe('AppSubscribeSubmitButton', () => {
   const TestFormWrapper = ({

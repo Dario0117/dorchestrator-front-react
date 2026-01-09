@@ -1,5 +1,5 @@
+import { FormErrorDisplay } from '@components/ui/form-error-display';
 import { render, screen } from '@testing-library/react';
-import { FormErrorDisplay } from './form-error-display';
 
 describe('FormErrorDisplay', () => {
   it('should not render anything when error is null', () => {

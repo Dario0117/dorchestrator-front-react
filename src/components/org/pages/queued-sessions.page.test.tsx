@@ -1,5 +1,5 @@
+import { QueuedSessionsPage } from '@components/org/pages/queued-sessions.page';
 import { render, screen } from '@testing-library/react';
-import { QueuedSessionsPage } from './queued-sessions.page';
 
 describe('QueuedSessionsPage', () => {
   it('should render the page content', () => {

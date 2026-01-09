@@ -1,8 +1,8 @@
-import { logError } from '@/lib/logger.utils';
-import type { useResetPasswordMutationType } from '@/services/users/reset-password.http-service';
-import { resetPasswordFormSchema } from '../validation/reset-password-form.schema';
-import { useAppForm } from './app-form';
-import type { UseResetPasswordFormProps } from './use-reset-password-form.types';
+import { useAppForm } from '@components/org/forms/hooks/app-form';
+import type { UseResetPasswordFormProps } from '@components/org/forms/hooks/use-reset-password-form.types';
+import { resetPasswordFormSchema } from '@components/org/forms/validation/reset-password-form.schema';
+import { logError } from '@lib/logger.utils';
+import type { useResetPasswordMutationType } from '@services/users/reset-password.http-service';
 
 export function useResetPasswordForm({
   resetPasswordMutation,

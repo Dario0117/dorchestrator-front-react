@@ -1,7 +1,7 @@
+import { RegisterPage } from '@components/org/pages/register.page';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { RegisterPage } from './register.page';
 
 interface LinkProps {
   children: React.ReactNode;

@@ -1,8 +1,8 @@
-import { logError } from '@/lib/logger.utils';
-import type { useLoginMutationType } from '@/services/users/login.http-service';
-import { loginFormSchema } from '../validation/login-form.schema';
-import { useAppForm } from './app-form';
-import type { UseLoginFormProps } from './use-login-form.types';
+import { useAppForm } from '@components/org/forms/hooks/app-form';
+import type { UseLoginFormProps } from '@components/org/forms/hooks/use-login-form.types';
+import { loginFormSchema } from '@components/org/forms/validation/login-form.schema';
+import { logError } from '@lib/logger.utils';
+import type { useLoginMutationType } from '@services/users/login.http-service';
 
 export function useLoginForm({
   loginMutation,

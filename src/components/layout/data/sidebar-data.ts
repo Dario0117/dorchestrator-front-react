@@ -1,3 +1,5 @@
+import type { SidebarData } from '@components/layout/data/sidebar-data.types';
+import type { OrganizationItem } from '@stores/organization.store.types';
 import {
   GalleryVerticalEnd,
   HardDrive,
@@ -5,8 +7,6 @@ import {
   Settings,
   Terminal,
 } from 'lucide-react';
-import type { OrganizationItem } from '@/stores/organization.store.types';
-import type { SidebarData } from './sidebar-data.types';
 
 export function getSidebarData(
   organization: OrganizationItem | undefined,

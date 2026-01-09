@@ -1,7 +1,6 @@
+import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AlertCircleIcon, InfoIcon } from 'lucide-react';
-
-import { Alert, AlertDescription, AlertTitle } from './alert';
 
 const meta = {
   title: 'UI/Alert',

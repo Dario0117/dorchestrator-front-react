@@ -2,9 +2,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import './main.css';
-import App from './app';
-import { QueryProvider } from './context/query.provider';
-import { ThemeProvider } from './context/theme.provider';
+import { QueryProvider } from '@context/query.provider';
+import { ThemeProvider } from '@context/theme.provider';
+import App from '@/app';
 
 const rootElement = document.getElementById('root') as Element;
 if (!rootElement.innerHTML) {

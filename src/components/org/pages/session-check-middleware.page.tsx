@@ -1,8 +1,8 @@
+import type { SessionCheckMiddlewareProps } from '@components/org/pages/session-check-middleware.page.types';
+import { useProfileSuspendedQuery } from '@services/users/get-profile.http-service';
+import { useAuthenticationStore } from '@stores/authentication.store';
 import { Navigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { useProfileSuspendedQuery } from '@/services/users/get-profile.http-service';
-import { useAuthenticationStore } from '@/stores/authentication.store';
-import type { SessionCheckMiddlewareProps } from './session-check-middleware.page.types';
 
 export function SessionCheckMiddleware(props: SessionCheckMiddlewareProps) {
   const { profile, setProfile } = useAuthenticationStore();

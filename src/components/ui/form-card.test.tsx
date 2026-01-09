@@ -1,5 +1,5 @@
+import { FormCard } from '@components/ui/form-card';
 import { render, screen } from '@testing-library/react';
-import { FormCard } from './form-card';
 
 describe('FormCard', () => {
   it('should render successfully with title, description and children', () => {

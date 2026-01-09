@@ -1,8 +1,8 @@
+import { ProfileDropdown } from '@components/profile-dropdown';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useAuthenticationStore } from '@stores/authentication.store';
 import { act, renderHook, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useAuthenticationStore } from '@/stores/authentication.store';
-import { ProfileDropdown } from './profile-dropdown';
 
 vi.mock('@tanstack/react-router', () => ({
   Link: ({

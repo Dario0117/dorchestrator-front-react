@@ -1,10 +1,10 @@
+import { Alert, AlertDescription } from '@components/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+import { Skeleton } from '@components/ui/skeleton';
+import { useOrganizationDetailsQuery } from '@services/organizations/get-organization-details.http-service';
+import { useAuthenticationStore } from '@stores/authentication.store';
+import { useOrganizationStore } from '@stores/organization.store';
 import { AlertCircle, Info } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useOrganizationDetailsQuery } from '@/services/organizations/get-organization-details.http-service';
-import { useAuthenticationStore } from '@/stores/authentication.store';
-import { useOrganizationStore } from '@/stores/organization.store';
 
 export function OrganizationSettingsPage() {
   const { profile } = useAuthenticationStore();

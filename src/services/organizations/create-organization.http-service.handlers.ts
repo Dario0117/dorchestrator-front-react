@@ -1,6 +1,6 @@
+import { buildBackendUrl } from '@lib/test.utils';
 import type { Organization } from 'better-auth/plugins/organization';
 import { HttpResponse, http } from 'msw';
-import { buildBackendUrl } from '@/lib/test.utils';
 
 type OrganizationCreateResponse = Organization & {
   metadata: unknown;

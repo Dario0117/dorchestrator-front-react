@@ -1,7 +1,7 @@
+import { useTheme } from '@context/theme.provider';
+import { matchMediaMock, renderWithProviders } from '@lib/test-wrappers.utils';
 import { act, render, screen } from '@testing-library/react';
 import React from 'react';
-import { matchMediaMock, renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useTheme } from './theme.provider';
 
 // Mock localStorage
 const localStorageMock = {

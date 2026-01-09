@@ -1,6 +1,6 @@
+import { buildBackendUrl } from '@lib/test.utils';
 import type { User } from 'better-auth/client';
 import { HttpResponse, http } from 'msw';
-import { buildBackendUrl } from '@/lib/test.utils';
 
 type SignUpResponse = {
   user: User;

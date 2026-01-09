@@ -1,6 +1,6 @@
+import { Badge } from '@components/ui/badge';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AlertTriangle, Check, Star, X } from 'lucide-react';
-import { Badge } from './badge';
 
 const meta = {
   title: 'UI/Badge',

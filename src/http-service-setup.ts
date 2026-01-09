@@ -1,7 +1,7 @@
+import { getAppVersion } from '@lib/version.utils';
 import createFetchClient, { type Middleware } from 'openapi-fetch';
 import createClient from 'openapi-react-query';
-import { getAppVersion } from './lib/version.utils';
-import type { paths } from './types/api.generated.types';
+import type { paths } from '@/types/api.generated.types';
 
 const authMiddleware: Middleware = {
   // biome-ignore lint/suspicious/useAwait: no need to await

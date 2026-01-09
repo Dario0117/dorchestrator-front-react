@@ -1,14 +1,14 @@
+import { getSidebarData } from '@components/layout/data/sidebar-data';
+import { NavGroup } from '@components/layout/nav-group';
+import { TeamSwitcher } from '@components/layout/team-switcher';
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarRail,
-} from '@/components/ui/sidebar';
-import { useLayout } from '@/context/layout.provider';
-import { useOrganizationStore } from '@/stores/organization.store';
-import { getSidebarData } from './data/sidebar-data';
-import { NavGroup } from './nav-group';
-import { TeamSwitcher } from './team-switcher';
+} from '@components/ui/sidebar';
+import { useLayout } from '@context/layout.provider';
+import { useOrganizationStore } from '@stores/organization.store';
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout();

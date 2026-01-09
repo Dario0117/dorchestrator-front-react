@@ -1,4 +1,4 @@
-import type { useUserOrganizationsQueryReturnType } from '@/services/organizations/list-user-organizations.http-service';
+import type { useUserOrganizationsQueryReturnType } from '@services/organizations/list-user-organizations.http-service';
 
 export type OrganizationItem = NonNullable<
   useUserOrganizationsQueryReturnType['data']

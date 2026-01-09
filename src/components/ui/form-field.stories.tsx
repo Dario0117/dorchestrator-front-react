@@ -1,8 +1,7 @@
+import { Button } from '@components/ui/button';
+import { FormField } from '@components/ui/form-field';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { AnyFieldApi } from '@tanstack/react-form';
-
-import { Button } from './button';
-import { FormField } from './form-field';
 
 // Mock field API for Storybook
 const createMockField = (overrides: Partial<AnyFieldApi> = {}): AnyFieldApi => {

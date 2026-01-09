@@ -1,10 +1,10 @@
+import { SessionCheckMiddleware } from '@components/org/pages/session-check-middleware.page';
+import { buildBackendUrl } from '@lib/test.utils';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useAuthenticationStore } from '@stores/authentication.store';
 import { screen, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
-import { buildBackendUrl } from '@/lib/test.utils';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useAuthenticationStore } from '@/stores/authentication.store';
-import { SessionCheckMiddleware } from './session-check-middleware.page';
 
 // Mock the navigation component
 vi.mock('@tanstack/react-router', () => ({

@@ -1,9 +1,7 @@
+import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
+import { useOrganizationDetailsQuery } from '@services/organizations/get-organization-details.http-service';
+import { useOrganizationStatsQuery } from '@services/organizations/get-organization-stats.http-service';
 import { renderHook, waitFor } from '@testing-library/react';
-import { createQueryThemeWrapper } from '@/lib/test-wrappers.utils';
-import {
-  useOrganizationDetailsQuery,
-  useOrganizationStatsQuery,
-} from './organizations.http-service';
 
 describe('Organization HTTP Service', () => {
   describe('useOrganizationDetailsQuery', () => {

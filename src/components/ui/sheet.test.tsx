@@ -1,5 +1,3 @@
-import { render, screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import {
   Sheet,
   SheetClose,
@@ -9,7 +7,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from './sheet';
+} from '@components/ui/sheet';
+import { render, screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 describe('Sheet', () => {
   it('should render sheet with trigger', () => {

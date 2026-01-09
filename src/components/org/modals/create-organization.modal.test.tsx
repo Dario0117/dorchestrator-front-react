@@ -1,7 +1,7 @@
+import { CreateOrganizationModal } from '@components/org/modals/create-organization.modal';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { CreateOrganizationModal } from './create-organization.modal';
 
 describe('CreateOrganizationModal', () => {
   const mockOnSuccess = vi.fn();

@@ -1,7 +1,7 @@
+import { DevicesPage } from '@components/org/pages/devices.page';
+import { useDevicesQueryOptions } from '@services/devices/list-devices.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod/v4';
-import { DevicesPage } from '@/components/org/pages/devices.page';
-import { useDevicesQueryOptions } from '@/services/devices/list-devices.http-service';
 
 const searchParamsSchema = z.object({
   page: z.coerce.number().int().positive().default(1).catch(1),

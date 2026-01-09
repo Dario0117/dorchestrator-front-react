@@ -1,7 +1,7 @@
+import { useLoginForm } from '@components/org/forms/hooks/use-login-form';
+import type { LoginFormProps } from '@components/org/forms/login.form.types';
+import { FormCard } from '@components/ui/form-card';
 import { Link } from '@tanstack/react-router';
-import { FormCard } from '@/components/ui/form-card';
-import { useLoginForm } from './hooks/use-login-form';
-import type { LoginFormProps } from './login.form.types';
 
 export function LoginForm({ loginMutation, handleSuccess }: LoginFormProps) {
   const form = useLoginForm({ loginMutation, handleSuccess });

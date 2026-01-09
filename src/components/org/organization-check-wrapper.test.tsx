@@ -1,10 +1,10 @@
+import { OrganizationCheckWrapper } from '@components/layout/organization-check-wrapper';
+import { buildBackendUrl } from '@lib/test.utils';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { server } from '@/../testsSetup';
-import { buildBackendUrl } from '@/lib/test.utils';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { OrganizationCheckWrapper } from '../layout/organization-check-wrapper';
 
 describe('OrganizationCheckWrapper', () => {
   it('should show loading state while fetching organizations', () => {

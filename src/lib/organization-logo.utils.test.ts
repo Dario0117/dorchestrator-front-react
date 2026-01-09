@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest';
 import {
   generateInitials,
   generateSlugSuggestion,
   isValidSlug,
-} from './organization-logo.utils';
+} from '@lib/organization-logo.utils';
+import { describe, expect, it } from 'vitest';
 
 describe('generateInitials', () => {
   it('should generate initials from organization name', () => {

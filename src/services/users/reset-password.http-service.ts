@@ -1,6 +1,6 @@
+import type { ResetPasswordFormData } from '@components/org/forms/validation/reset-password-form.schema';
 import { useMutation } from '@tanstack/react-query';
-import type { ResetPasswordFormData } from '@/components/org/forms/validation/reset-password-form.schema';
-import { authClient } from '../../better-auth.client';
+import { authClient } from '@/better-auth.client';
 
 export function useResetPasswordMutation() {
   return useMutation({

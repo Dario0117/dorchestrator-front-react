@@ -1,6 +1,6 @@
+import { RegisterForm } from '@components/org/forms/register.form';
+import type { useRegisterMutationType } from '@services/users/register.http-service';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { useRegisterMutationType } from '@/services/users/register.http-service';
-import { RegisterForm } from './register.form';
 
 // Mock handlers for Storybook
 const mockHandleRegisterSuccess = async (

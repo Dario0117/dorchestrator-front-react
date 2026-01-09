@@ -1,6 +1,5 @@
+import { FormErrorDisplay } from '@components/ui/form-error-display';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-
-import { FormErrorDisplay } from './form-error-display';
 
 const meta = {
   title: 'UI/FormErrorDisplay',

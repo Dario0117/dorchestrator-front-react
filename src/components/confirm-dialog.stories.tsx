@@ -1,8 +1,8 @@
+import { ConfirmDialog } from '@components/confirm-dialog';
+import { Button } from '@components/ui/button';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Archive, Trash2, UserX } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ConfirmDialog } from './confirm-dialog';
 
 // Interactive wrapper component for stories
 function ConfirmDialogDemo(

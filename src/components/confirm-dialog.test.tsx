@@ -1,6 +1,6 @@
+import { ConfirmDialog } from '@components/confirm-dialog';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { ConfirmDialog } from './confirm-dialog';
 
 describe('ConfirmDialog', () => {
   const mockHandleConfirm = vi.fn();

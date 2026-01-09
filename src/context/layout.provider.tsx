@@ -1,18 +1,18 @@
-import { createContext, useContext, useState } from 'react';
-import { getCookie, setCookie } from '@/lib/cookies.utils';
 import {
   DEFAULT_COLLAPSIBLE,
   DEFAULT_VARIANT,
   LAYOUT_COLLAPSIBLE_COOKIE_NAME,
   LAYOUT_COOKIE_MAX_AGE,
   LAYOUT_VARIANT_COOKIE_NAME,
-} from './layout.provider.constants';
+} from '@context/layout.provider.constants';
 import type {
   Collapsible,
   LayoutContextType,
   LayoutProviderProps,
   Variant,
-} from './layout.provider.types';
+} from '@context/layout.provider.types';
+import { getCookie, setCookie } from '@lib/cookies.utils';
+import { createContext, useContext, useState } from 'react';
 
 const LayoutContext = createContext<LayoutContextType | null>(null);
 

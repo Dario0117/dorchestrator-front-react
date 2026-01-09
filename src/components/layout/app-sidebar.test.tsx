@@ -1,8 +1,8 @@
+import { AppSidebar } from '@components/layout/app-sidebar';
+import { SidebarProvider } from '@components/ui/sidebar';
+import { LayoutProvider } from '@context/layout.provider';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen } from '@testing-library/react';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { LayoutProvider } from '@/context/layout.provider';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { AppSidebar } from './app-sidebar';
 
 vi.mock('@tanstack/react-router', () => ({
   Link: ({

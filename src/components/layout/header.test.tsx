@@ -1,7 +1,7 @@
+import { Header } from '@components/layout/header';
+import { SidebarProvider } from '@components/ui/sidebar';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { Header } from './header';
 
 function renderHeader(props = {}) {
   return renderWithProviders(

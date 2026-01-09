@@ -1,12 +1,12 @@
+import { CreateOrganizationForm } from '@components/org/forms/create-organization.form';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { useCreateOrganizationMutation } from '@/services/organizations/create-organization.http-service';
-import { CreateOrganizationForm } from '../forms/create-organization.form';
+} from '@components/ui/dialog';
+import { useCreateOrganizationMutation } from '@services/organizations/create-organization.http-service';
 
 interface CreateOrganizationModalProps {
   isOpen: boolean;

@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ChevronRight } from 'lucide-react';
-import { Button } from './button';
+import { Button } from '@components/ui/button';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from './collapsible';
+} from '@components/ui/collapsible';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { ChevronRight } from 'lucide-react';
 
 const meta = {
   title: 'UI/Collapsible',

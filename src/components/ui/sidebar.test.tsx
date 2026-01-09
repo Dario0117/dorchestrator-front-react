@@ -1,5 +1,3 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import {
   Sidebar,
   SidebarContent,
@@ -25,8 +23,10 @@ import {
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,
-} from './sidebar';
-import { SIDEBAR_KEYBOARD_SHORTCUT } from './sidebar.constants';
+} from '@components/ui/sidebar';
+import { SIDEBAR_KEYBOARD_SHORTCUT } from '@components/ui/sidebar.constants';
+import { render, screen, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 
 // Mock useIsMobile hook - default to desktop
 const mockUseIsMobile = vi.fn(() => false);

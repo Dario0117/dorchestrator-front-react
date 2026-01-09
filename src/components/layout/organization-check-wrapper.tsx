@@ -1,8 +1,8 @@
+import { CreateOrganizationModal } from '@components/org/modals/create-organization.modal';
+import { queryClient } from '@context/query.provider';
+import { useUserOrganizationsSuspendedQuery } from '@services/organizations/list-user-organizations.http-service';
+import { useOrganizationStore } from '@stores/organization.store';
 import { useEffect, useState } from 'react';
-import { queryClient } from '@/context/query.provider';
-import { useUserOrganizationsSuspendedQuery } from '@/services/organizations/list-user-organizations.http-service';
-import { useOrganizationStore } from '@/stores/organization.store';
-import { CreateOrganizationModal } from '../org/modals/create-organization.modal';
 
 interface OrganizationCheckWrapperProps {
   children: React.ReactNode;

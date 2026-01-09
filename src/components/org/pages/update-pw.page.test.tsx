@@ -1,7 +1,7 @@
+import { UpdatePasswordPage } from '@components/org/pages/update-pw.page';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { UpdatePasswordPage } from './update-pw.page';
 
 // Mock the navigation hook
 vi.mock('@tanstack/react-router', () => ({

@@ -1,10 +1,7 @@
+import { HomePage } from '@components/org/pages/home.page';
+import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { setMobileViewport, setTabletViewport } from '@lib/viewport-test-utils';
 import { screen, waitFor } from '@testing-library/react';
-import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import {
-  setMobileViewport,
-  setTabletViewport,
-} from '@/lib/viewport-test-utils';
-import { HomePage } from './home.page';
 
 describe('HomePage', () => {
   it('should render loading state initially', () => {
