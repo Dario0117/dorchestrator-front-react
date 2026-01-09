@@ -5,7 +5,7 @@ import { server } from '@/../testsSetup';
 import { logError } from '@/lib/logger.utils';
 import { buildBackendUrl } from '@/lib/test.utils';
 import { createQueryThemeWrapper } from '@/lib/test-wrappers.utils';
-import { useRegisterMutation } from '@/services/users.http-service';
+import { useRegisterMutation } from '@/services/users/register.http-service';
 import { useRegisterForm } from './use-register-form';
 
 // Mock the logger utility

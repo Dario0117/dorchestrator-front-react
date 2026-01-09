@@ -1,0 +1,26 @@
+import { useMutation } from '@tanstack/react-query';
+import { queryClient } from '@/context/query.provider';
+import { authClient } from '../auth.http-service';
+
+export function useLogoutMutation({
+  handleSuccess,
+}: {
+  handleSuccess: () => void;
+}) {
+  return useMutation({
+    mutationFn: () => {
+      return authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            handleSuccess();
+            queryClient.removeQueries({
+              queryKey: ['profile'],
+            });
+          },
+        },
+      });
+    },
+  });
+}
+
+export type useLogoutMutationType = ReturnType<typeof useLogoutMutation>;

@@ -20,6 +20,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/{organizationId}/agent/poll": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdAgentPoll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/{organizationId}/organization": {
         parameters: {
             query?: never;
@@ -59,10 +75,26 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["getApiV1ByOrganizationIdDevices"];
         put?: never;
         post: operations["postApiV1ByOrganizationIdDevices"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/devices/{deviceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["deleteApiV1ByOrganizationIdDevicesByDeviceId"];
         options?: never;
         head?: never;
         patch?: never;
@@ -5115,6 +5147,46 @@ export interface operations {
             };
         };
     };
+    getApiV1ByOrganizationIdAgentPoll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                commandId: number;
+                                command: string;
+                            }[];
+                            hasNext: boolean;
+                            hasPrevious: boolean;
+                            totalResults: number;
+                            totalPages: number;
+                            page: number;
+                            size: number;
+                        } | null;
+                        responseErrors: ({
+                            nonFieldErrors?: string[];
+                        } & {
+                            [key: string]: string[];
+                        }) | null;
+                    };
+                };
+            };
+        };
+    };
     getApiV1ByOrganizationIdOrganization: {
         parameters: {
             query?: never;
@@ -5190,6 +5262,53 @@ export interface operations {
             };
         };
     };
+    getApiV1ByOrganizationIdDevices: {
+        parameters: {
+            query: {
+                page: number;
+                size: number;
+            };
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: number;
+                                deviceName: string;
+                                /** @enum {string} */
+                                platform: "linux" | "macos" | "windows";
+                                lastSeenAt: string | null;
+                                createdAt: string;
+                            }[];
+                            hasNext: boolean;
+                            hasPrevious: boolean;
+                            totalResults: number;
+                            totalPages: number;
+                            page: number;
+                            size: number;
+                        } | null;
+                        responseErrors: ({
+                            nonFieldErrors?: string[];
+                        } & {
+                            [key: string]: string[];
+                        }) | null;
+                    };
+                };
+            };
+        };
+    };
     postApiV1ByOrganizationIdDevices: {
         parameters: {
             query?: never;
@@ -5213,6 +5332,38 @@ export interface operations {
                                 token: string;
                                 expiresAt: string;
                             };
+                        } | null;
+                        responseErrors: ({
+                            nonFieldErrors?: string[];
+                        } & {
+                            [key: string]: string[];
+                        }) | null;
+                    };
+                };
+            };
+        };
+    };
+    deleteApiV1ByOrganizationIdDevicesByDeviceId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deviceId: number;
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
                         } | null;
                         responseErrors: ({
                             nonFieldErrors?: string[];

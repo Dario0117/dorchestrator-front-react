@@ -1,4 +1,4 @@
-import type { useResetPasswordMutationType } from '@/services/users.http-service';
+import type { useResetPasswordMutationType } from '@/services/users/reset-password.http-service';
 
 export interface UseResetPasswordFormProps {
   resetPasswordMutation: useResetPasswordMutationType;

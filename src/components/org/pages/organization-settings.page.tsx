@@ -2,30 +2,24 @@ import { AlertCircle, Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  useOrganizationDetailsQuery,
-  useUserOrganizationsQuery,
-} from '@/services/organizations.http-service';
+import { useOrganizationDetailsQuery } from '@/services/organizations/get-organization-details.http-service';
 import { useAuthenticationStore } from '@/stores/authentication.store';
+import { useOrganizationStore } from '@/stores/organization.store';
 
 export function OrganizationSettingsPage() {
   const { profile } = useAuthenticationStore();
-  const { data: organizations, isLoading: orgsLoading } =
-    useUserOrganizationsQuery();
 
-  // Get first organization ID (for MVP, user has one org)
-  const organizationId = organizations?.[0]?.id;
+  const { currentOrganization } = useOrganizationStore();
+  const organizationId = currentOrganization?.id ?? '';
 
   const { data: orgDetails, isLoading: detailsLoading } =
-    useOrganizationDetailsQuery(organizationId ?? '');
+    useOrganizationDetailsQuery(organizationId);
 
-  const isLoading = orgsLoading || detailsLoading;
-
-  if (isLoading) {
+  if (detailsLoading) {
     return <SettingsSkeleton />;
   }
 
-  if (!organizationId || !organizations?.[0]) {
+  if (!currentOrganization) {
     return (
       <section className="p-6 md:p-10">
         <Alert>
@@ -38,7 +32,6 @@ export function OrganizationSettingsPage() {
     );
   }
 
-  const organization = organizations[0];
   const details = orgDetails?.responseData?.results;
 
   return (
@@ -64,14 +57,16 @@ export function OrganizationSettingsPage() {
                 <dt className="text-sm font-medium text-muted-foreground">
                   Organization Name
                 </dt>
-                <dd className="text-base">{organization.name}</dd>
+                <dd className="text-base">{currentOrganization.name}</dd>
               </div>
 
               <div>
                 <dt className="text-sm font-medium text-muted-foreground">
                   Organization ID
                 </dt>
-                <dd className="text-base font-mono">{organization.id}</dd>
+                <dd className="text-base font-mono">
+                  {currentOrganization.id}
+                </dd>
               </div>
 
               <div>

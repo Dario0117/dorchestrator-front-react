@@ -99,11 +99,13 @@ This is a React frontend template using modern tooling and patterns:
   - `query.provider.tsx` - TanStack Query wrapper
   - Each exports a custom hook that throws if used outside provider
 
-**API Services**: Pattern-based organization:
-  - Service file: `[domain].http-service.ts` exports custom hooks using `$api.useMutation()` or `$api.useQuery()`
-  - Handler file: `[domain].http-service.handlers.ts` contains MSW handlers for testing
+**API Services**: One-request-per-file pattern:
+  - Service file: `[domain]/[action-description].http-service.ts` exports a single hook, query options (if applicable), and related types
+  - Handler file: `[domain]/[action-description].http-service.handlers.ts` contains a single MSW handler for that specific request
   - Type exports: Each hook exports its return type (e.g., `useLoginMutationType`)
+  - Example: `users/login.http-service.ts` + `users/login.http-service.handlers.ts` for the login endpoint
   - Central setup: `http-service-setup.ts` configures openapi-fetch client with middleware
+  - Handler aggregation: All individual handlers are imported and aggregated in `lib/test.utils.ts` for MSW setup
 
 **Testing**: Vitest with React Testing Library. Test files use `.test.ts` or `.test.tsx` suffix and are co-located with source files. MSW for HTTP mocking. Testing utilities in `/lib/test-wrappers.utils.tsx` provide provider wrappers. Global setup in `testsSetup.ts`. Storybook stories use `.stories.tsx` suffix.
 
@@ -315,9 +317,20 @@ This is a React frontend template using modern tooling and patterns:
 
 ### API approach
 
-- All paths defined in the `paths` interface located in `src/types/api.generated.types.ts` file must be defined in the `src/services/[next-path-after-api-version].http-service.ts` file and they must have a corresponding MSW handler inside of `src/services/[next-path-after-api-version].http-service.handlers.ts` file.
-- All endpoints must be defined inside of `src/services/[next-path-after-api-version].http-service.ts` file and they must have a corresponding MSW handler inside of `src/services/[next-path-after-api-version].http-service.handlers.ts` file.
-- Only write tests for the http service if it has custom logic outside of invalidating queries, if it only exposes the query and mutation functions, don't write tests for it, create a test file and add a comment saying that no meaningful logic is implemented in the source file, so there's no need to test it.
+- **One request per file**: Each API endpoint must have its own service file and handler file following the pattern `[domain]/[action-description].http-service.ts` and `[domain]/[action-description].http-service.handlers.ts`
+- **Service files**: Located in `src/services/[domain]/[action-description].http-service.ts`, contain:
+  - A single hook (mutation or query) using `$api.useMutation()`, `$api.useQuery()`, or TanStack Query hooks directly
+  - Query options if it's a query (e.g., `queryOptions` object)
+  - All type exports related to that specific request (e.g., `useLoginMutationType`, `useLoginMutationReturnType`)
+- **Handler files**: Located in `src/services/[domain]/[action-description].http-service.handlers.ts`, contain:
+  - A single MSW handler for that specific endpoint
+  - Handler should be exported with a descriptive name (e.g., `loginHandler`, `createOrganizationHandler`)
+- **Examples**:
+  - `src/services/users/login.http-service.ts` + `src/services/users/login.http-service.handlers.ts`
+  - `src/services/organizations/create-organization.http-service.ts` + `src/services/organizations/create-organization.http-service.handlers.ts`
+  - `src/services/devices/list-devices.http-service.ts` + `src/services/devices/list-devices.http-service.handlers.ts`
+- **Handler aggregation**: All individual handlers must be imported and returned as an array in `src/lib/test.utils.ts` via the `MSWSuccessHandlers()` function
+- **Testing**: Only write tests for the http service if it has custom logic outside of invalidating queries. If it only exposes the query and mutation functions, don't write tests for it - create a test file and add a comment saying that no meaningful logic is implemented in the source file, so there's no need to test it.
 
 ##  STRICT RULES, DON'T BREAK THEM, ASK FIRST
 
@@ -341,3 +354,4 @@ This is a React frontend template using modern tooling and patterns:
 - Never commit changes
 - Never add docstring to the code, unless you are asked to do so
 - Never write tests while implementing a feature, write them afterwards, do it on the review step
+- Never add return types, they must be automatically inferred to avoid any issues on the caller's side

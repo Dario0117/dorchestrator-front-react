@@ -1,5 +1,5 @@
 import { logError } from '@/lib/logger.utils';
-import type { useRegisterMutationType } from '@/services/users.http-service';
+import type { useRegisterMutationType } from '@/services/users/register.http-service';
 import { registerFormSchema } from '../validation/register-form.schema';
 import { useAppForm } from './app-form';
 import type { UseRegisterFormProps } from './use-register-form.types';

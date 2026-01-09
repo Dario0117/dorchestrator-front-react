@@ -1,8 +1,15 @@
 import type { NavGroup, NavItem } from '../nav-group.types';
-import { sidebarData } from './sidebar-data';
+import { getSidebarData } from './sidebar-data';
 import type { SidebarData } from './sidebar-data.types';
 
 describe('Sidebar Data', () => {
+  const testSlug = 'test-org';
+  let sidebarData: SidebarData;
+
+  beforeEach(() => {
+    sidebarData = getSidebarData(testSlug);
+  });
+
   it('should have valid structure', () => {
     expect(sidebarData).toBeDefined();
     expect(sidebarData).toHaveProperty('teams');
@@ -70,7 +77,7 @@ describe('Sidebar Data', () => {
       return;
     }
     expect(dashboardItem.title).toBe('Dashboard');
-    expect('url' in dashboardItem && dashboardItem.url).toBe('/');
+    expect('url' in dashboardItem && dashboardItem.url).toBe(`/${testSlug}/`);
     expect(dashboardItem.icon).toBeDefined();
 
     // Test Devices item
@@ -79,7 +86,9 @@ describe('Sidebar Data', () => {
       return;
     }
     expect(devicesItem.title).toBe('Devices');
-    expect('url' in devicesItem && devicesItem.url).toBe('/devices');
+    expect('url' in devicesItem && devicesItem.url).toBe(
+      `/${testSlug}/devices`,
+    );
     expect(devicesItem.icon).toBeDefined();
 
     // Test Commands item
@@ -88,7 +97,9 @@ describe('Sidebar Data', () => {
       return;
     }
     expect(commandsItem.title).toBe('Commands');
-    expect('url' in commandsItem && commandsItem.url).toBe('/commands');
+    expect('url' in commandsItem && commandsItem.url).toBe(
+      `/${testSlug}/commands`,
+    );
     expect(commandsItem.icon).toBeDefined();
   });
 
@@ -107,9 +118,17 @@ describe('Sidebar Data', () => {
     }
     expect(orgSettingsItem.title).toBe('Organization Settings');
     expect('url' in orgSettingsItem && orgSettingsItem.url).toBe(
-      '/organization/settings',
+      `/${testSlug}/settings`,
     );
     expect(orgSettingsItem.icon).toBeDefined();
+  });
+
+  it('should handle missing organization slug', () => {
+    const sidebarDataWithoutSlug = getSidebarData();
+    const generalGroup = sidebarDataWithoutSlug.navGroups[0];
+    const dashboardItem = generalGroup?.items[0];
+
+    expect('url' in dashboardItem && dashboardItem.url).toBe('/');
   });
 
   it('should have all required nav item properties', () => {

@@ -5,7 +5,7 @@ import {
   generateInitials,
   generateSlugSuggestion,
 } from '@/lib/organization-logo.utils';
-import type { useCreateOrganizationMutationType } from '@/services/organizations.http-service';
+import type { useCreateOrganizationMutationType } from '@/services/organizations/create-organization.http-service';
 import { useCreateOrganizationForm } from './hooks/use-create-organization-form';
 import { SlugStatus, useSlugValidation } from './hooks/use-slug-validation';
 

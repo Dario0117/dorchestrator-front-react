@@ -1,4 +1,4 @@
-import type { useUpdatePasswordMutationType } from '@/services/users.http-service';
+import type { useUpdatePasswordMutationType } from '@/services/users/update-password.http-service';
 
 export interface UpdatePasswordFormProps {
   updatePasswordMutation: useUpdatePasswordMutationType;

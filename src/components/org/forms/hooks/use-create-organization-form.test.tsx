@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { createQueryThemeWrapper } from '@/lib/test-wrappers.utils';
-import type { useCreateOrganizationMutationType } from '@/services/organizations.http-service';
+import type { useCreateOrganizationMutationType } from '@/services/organizations/create-organization.http-service';
 import { useCreateOrganizationForm } from './use-create-organization-form';
 
 describe('useCreateOrganizationForm', () => {

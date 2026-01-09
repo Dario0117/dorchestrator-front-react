@@ -3,7 +3,7 @@ import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
 import { buildBackendUrl } from '@/lib/test.utils';
 import { createQueryThemeWrapper } from '@/lib/test-wrappers.utils';
-import { useResetPasswordMutation } from '@/services/users.http-service';
+import { useResetPasswordMutation } from '@/services/users/reset-password.http-service';
 import { useResetPasswordForm } from './use-reset-password-form';
 
 describe('useResetPasswordForm', () => {

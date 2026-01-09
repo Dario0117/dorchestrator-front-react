@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { LoginForm } from '@/components/org/forms/login.form';
-import { useLoginMutation } from '@/services/users.http-service';
+import { useLoginMutation } from '@/services/users/login.http-service';
 
 export function LoginPage() {
   const navigate = useNavigate({ from: '/login' });

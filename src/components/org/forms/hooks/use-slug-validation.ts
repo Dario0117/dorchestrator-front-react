@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useCheckSlugAvailabilityMutation } from '@/services/organizations.http-service';
+import { useCheckSlugAvailabilityMutation } from '@/services/organizations/check-slug-availability.http-service';
 
 export const SlugStatus = {
   UNCHECKED: 'unchecked',

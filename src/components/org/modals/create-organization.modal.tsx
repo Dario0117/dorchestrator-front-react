@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useCreateOrganizationMutation } from '@/services/organizations.http-service';
+import { useCreateOrganizationMutation } from '@/services/organizations/create-organization.http-service';
 import { CreateOrganizationForm } from '../forms/create-organization.form';
 
 interface CreateOrganizationModalProps {

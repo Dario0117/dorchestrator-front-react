@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { useUpdatePasswordMutationType } from '@/services/users.http-service';
+import type { useUpdatePasswordMutationType } from '@/services/users/update-password.http-service';
 import { UpdatePasswordForm } from './update-password.form';
 
 // Mock handlers for Storybook

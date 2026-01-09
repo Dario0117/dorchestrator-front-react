@@ -1,0 +1,16 @@
+import { useMutation } from '@tanstack/react-query';
+import type { LoginFormData } from '@/components/org/forms/validation/login-form.schema';
+import { authClient } from '../auth.http-service';
+
+export function useLoginMutation() {
+  return useMutation({
+    mutationFn: ({ email, password }: LoginFormData) => {
+      return authClient.signIn.email({
+        email,
+        password,
+      });
+    },
+  });
+}
+
+export type useLoginMutationType = ReturnType<typeof useLoginMutation>;

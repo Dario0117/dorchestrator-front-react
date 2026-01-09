@@ -2,10 +2,8 @@ import { AlertCircle, Building2, HardDrive, Terminal } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  useOrganizationStatsQuery,
-  useUserOrganizationsQuery,
-} from '@/services/organizations.http-service';
+import { useOrganizationStatsQuery } from '@/services/organizations/get-organization-stats.http-service';
+import { useOrganizationStore } from '@/stores/organization.store';
 
 type RecentCommand = {
   id: number;
@@ -15,23 +13,18 @@ type RecentCommand = {
 };
 
 export function HomePage() {
-  const { data: organizations, isLoading: orgsLoading } =
-    useUserOrganizationsQuery();
+  const { currentOrganization } = useOrganizationStore();
 
-  // Get first organization ID (for MVP, user has one org)
-  const organizationId = organizations?.[0]?.id;
+  const organizationId = currentOrganization?.id ?? '';
 
-  const { data: stats, isLoading: statsLoading } = useOrganizationStatsQuery(
-    organizationId ?? '',
-  );
+  const { data: stats, isLoading: statsLoading } =
+    useOrganizationStatsQuery(organizationId);
 
-  const isLoading = orgsLoading || statsLoading;
-
-  if (isLoading) {
+  if (statsLoading) {
     return <DashboardSkeleton />;
   }
 
-  if (!organizationId || !organizations?.[0]) {
+  if (!currentOrganization) {
     return (
       <section className="p-6 md:p-10">
         <Alert>
@@ -44,13 +37,11 @@ export function HomePage() {
     );
   }
 
-  const organization = organizations[0];
-
   return (
     <section className="p-6 md:p-10 space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          Welcome to {organization.name}
+          Welcome to {currentOrganization.name}
         </h1>
         <p className="text-muted-foreground">
           Manage your devices and execute remote commands

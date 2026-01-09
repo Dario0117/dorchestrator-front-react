@@ -4,7 +4,7 @@ import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
 import { buildBackendUrl } from '@/lib/test.utils';
 import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useResetPasswordMutation } from '@/services/users.http-service';
+import { useResetPasswordMutation } from '@/services/users/reset-password.http-service';
 import { ResetPasswordForm } from './reset-password.form';
 
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {

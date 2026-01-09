@@ -16,12 +16,14 @@ import { Route as unauthenticatedUpdatePasswordRouteImport } from './routes/(una
 import { Route as unauthenticatedResetPasswordRouteImport } from './routes/(unauthenticated)/reset-password'
 import { Route as unauthenticatedRegisterRouteImport } from './routes/(unauthenticated)/register'
 import { Route as unauthenticatedLoginRouteImport } from './routes/(unauthenticated)/login'
-import { Route as authenticatedQueuedSessionsRouteImport } from './routes/(authenticated)/queued-sessions'
-import { Route as authenticatedProjectsRouteImport } from './routes/(authenticated)/projects'
-import { Route as authenticatedDraftsRouteImport } from './routes/(authenticated)/drafts'
-import { Route as authenticatedDevicesRouteImport } from './routes/(authenticated)/devices'
-import { Route as authenticatedApiRouteImport } from './routes/(authenticated)/api'
-import { Route as authenticatedOrganizationSettingsRouteImport } from './routes/(authenticated)/organization/settings'
+import { Route as authenticatedOrganizationSlugRouteRouteImport } from './routes/(authenticated)/$organizationSlug/route'
+import { Route as authenticatedOrganizationSlugIndexRouteImport } from './routes/(authenticated)/$organizationSlug/index'
+import { Route as authenticatedOrganizationSlugSettingsRouteImport } from './routes/(authenticated)/$organizationSlug/settings'
+import { Route as authenticatedOrganizationSlugQueuedSessionsRouteImport } from './routes/(authenticated)/$organizationSlug/queued-sessions'
+import { Route as authenticatedOrganizationSlugProjectsRouteImport } from './routes/(authenticated)/$organizationSlug/projects'
+import { Route as authenticatedOrganizationSlugDraftsRouteImport } from './routes/(authenticated)/$organizationSlug/drafts'
+import { Route as authenticatedOrganizationSlugDevicesRouteImport } from './routes/(authenticated)/$organizationSlug/devices'
+import { Route as authenticatedOrganizationSlugApiRouteImport } from './routes/(authenticated)/$organizationSlug/api'
 
 const unauthenticatedRouteRoute = unauthenticatedRouteRouteImport.update({
   id: '/(unauthenticated)',
@@ -58,123 +60,149 @@ const unauthenticatedLoginRoute = unauthenticatedLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => unauthenticatedRouteRoute,
 } as any)
-const authenticatedQueuedSessionsRoute =
-  authenticatedQueuedSessionsRouteImport.update({
-    id: '/queued-sessions',
-    path: '/queued-sessions',
+const authenticatedOrganizationSlugRouteRoute =
+  authenticatedOrganizationSlugRouteRouteImport.update({
+    id: '/$organizationSlug',
+    path: '/$organizationSlug',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
-const authenticatedProjectsRoute = authenticatedProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
-  getParentRoute: () => authenticatedRouteRoute,
-} as any)
-const authenticatedDraftsRoute = authenticatedDraftsRouteImport.update({
-  id: '/drafts',
-  path: '/drafts',
-  getParentRoute: () => authenticatedRouteRoute,
-} as any)
-const authenticatedDevicesRoute = authenticatedDevicesRouteImport.update({
-  id: '/devices',
-  path: '/devices',
-  getParentRoute: () => authenticatedRouteRoute,
-} as any)
-const authenticatedApiRoute = authenticatedApiRouteImport.update({
-  id: '/api',
-  path: '/api',
-  getParentRoute: () => authenticatedRouteRoute,
-} as any)
-const authenticatedOrganizationSettingsRoute =
-  authenticatedOrganizationSettingsRouteImport.update({
-    id: '/organization/settings',
-    path: '/organization/settings',
-    getParentRoute: () => authenticatedRouteRoute,
+const authenticatedOrganizationSlugIndexRoute =
+  authenticatedOrganizationSlugIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
+const authenticatedOrganizationSlugSettingsRoute =
+  authenticatedOrganizationSlugSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
+const authenticatedOrganizationSlugQueuedSessionsRoute =
+  authenticatedOrganizationSlugQueuedSessionsRouteImport.update({
+    id: '/queued-sessions',
+    path: '/queued-sessions',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
+const authenticatedOrganizationSlugProjectsRoute =
+  authenticatedOrganizationSlugProjectsRouteImport.update({
+    id: '/projects',
+    path: '/projects',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
+const authenticatedOrganizationSlugDraftsRoute =
+  authenticatedOrganizationSlugDraftsRouteImport.update({
+    id: '/drafts',
+    path: '/drafts',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
+const authenticatedOrganizationSlugDevicesRoute =
+  authenticatedOrganizationSlugDevicesRouteImport.update({
+    id: '/devices',
+    path: '/devices',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
+const authenticatedOrganizationSlugApiRoute =
+  authenticatedOrganizationSlugApiRouteImport.update({
+    id: '/api',
+    path: '/api',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof authenticatedIndexRoute
-  '/api': typeof authenticatedApiRoute
-  '/devices': typeof authenticatedDevicesRoute
-  '/drafts': typeof authenticatedDraftsRoute
-  '/projects': typeof authenticatedProjectsRoute
-  '/queued-sessions': typeof authenticatedQueuedSessionsRoute
+  '/$organizationSlug': typeof authenticatedOrganizationSlugRouteRouteWithChildren
   '/login': typeof unauthenticatedLoginRoute
   '/register': typeof unauthenticatedRegisterRoute
   '/reset-password': typeof unauthenticatedResetPasswordRoute
   '/update-password': typeof unauthenticatedUpdatePasswordRoute
-  '/organization/settings': typeof authenticatedOrganizationSettingsRoute
+  '/$organizationSlug/api': typeof authenticatedOrganizationSlugApiRoute
+  '/$organizationSlug/devices': typeof authenticatedOrganizationSlugDevicesRoute
+  '/$organizationSlug/drafts': typeof authenticatedOrganizationSlugDraftsRoute
+  '/$organizationSlug/projects': typeof authenticatedOrganizationSlugProjectsRoute
+  '/$organizationSlug/queued-sessions': typeof authenticatedOrganizationSlugQueuedSessionsRoute
+  '/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
+  '/$organizationSlug/': typeof authenticatedOrganizationSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authenticatedIndexRoute
-  '/api': typeof authenticatedApiRoute
-  '/devices': typeof authenticatedDevicesRoute
-  '/drafts': typeof authenticatedDraftsRoute
-  '/projects': typeof authenticatedProjectsRoute
-  '/queued-sessions': typeof authenticatedQueuedSessionsRoute
   '/login': typeof unauthenticatedLoginRoute
   '/register': typeof unauthenticatedRegisterRoute
   '/reset-password': typeof unauthenticatedResetPasswordRoute
   '/update-password': typeof unauthenticatedUpdatePasswordRoute
-  '/organization/settings': typeof authenticatedOrganizationSettingsRoute
+  '/$organizationSlug/api': typeof authenticatedOrganizationSlugApiRoute
+  '/$organizationSlug/devices': typeof authenticatedOrganizationSlugDevicesRoute
+  '/$organizationSlug/drafts': typeof authenticatedOrganizationSlugDraftsRoute
+  '/$organizationSlug/projects': typeof authenticatedOrganizationSlugProjectsRoute
+  '/$organizationSlug/queued-sessions': typeof authenticatedOrganizationSlugQueuedSessionsRoute
+  '/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
+  '/$organizationSlug': typeof authenticatedOrganizationSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/(unauthenticated)': typeof unauthenticatedRouteRouteWithChildren
-  '/(authenticated)/api': typeof authenticatedApiRoute
-  '/(authenticated)/devices': typeof authenticatedDevicesRoute
-  '/(authenticated)/drafts': typeof authenticatedDraftsRoute
-  '/(authenticated)/projects': typeof authenticatedProjectsRoute
-  '/(authenticated)/queued-sessions': typeof authenticatedQueuedSessionsRoute
+  '/(authenticated)/$organizationSlug': typeof authenticatedOrganizationSlugRouteRouteWithChildren
   '/(unauthenticated)/login': typeof unauthenticatedLoginRoute
   '/(unauthenticated)/register': typeof unauthenticatedRegisterRoute
   '/(unauthenticated)/reset-password': typeof unauthenticatedResetPasswordRoute
   '/(unauthenticated)/update-password': typeof unauthenticatedUpdatePasswordRoute
   '/(authenticated)/': typeof authenticatedIndexRoute
-  '/(authenticated)/organization/settings': typeof authenticatedOrganizationSettingsRoute
+  '/(authenticated)/$organizationSlug/api': typeof authenticatedOrganizationSlugApiRoute
+  '/(authenticated)/$organizationSlug/devices': typeof authenticatedOrganizationSlugDevicesRoute
+  '/(authenticated)/$organizationSlug/drafts': typeof authenticatedOrganizationSlugDraftsRoute
+  '/(authenticated)/$organizationSlug/projects': typeof authenticatedOrganizationSlugProjectsRoute
+  '/(authenticated)/$organizationSlug/queued-sessions': typeof authenticatedOrganizationSlugQueuedSessionsRoute
+  '/(authenticated)/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
+  '/(authenticated)/$organizationSlug/': typeof authenticatedOrganizationSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/api'
-    | '/devices'
-    | '/drafts'
-    | '/projects'
-    | '/queued-sessions'
+    | '/$organizationSlug'
     | '/login'
     | '/register'
     | '/reset-password'
     | '/update-password'
-    | '/organization/settings'
+    | '/$organizationSlug/api'
+    | '/$organizationSlug/devices'
+    | '/$organizationSlug/drafts'
+    | '/$organizationSlug/projects'
+    | '/$organizationSlug/queued-sessions'
+    | '/$organizationSlug/settings'
+    | '/$organizationSlug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/api'
-    | '/devices'
-    | '/drafts'
-    | '/projects'
-    | '/queued-sessions'
     | '/login'
     | '/register'
     | '/reset-password'
     | '/update-password'
-    | '/organization/settings'
+    | '/$organizationSlug/api'
+    | '/$organizationSlug/devices'
+    | '/$organizationSlug/drafts'
+    | '/$organizationSlug/projects'
+    | '/$organizationSlug/queued-sessions'
+    | '/$organizationSlug/settings'
+    | '/$organizationSlug'
   id:
     | '__root__'
     | '/(authenticated)'
     | '/(unauthenticated)'
-    | '/(authenticated)/api'
-    | '/(authenticated)/devices'
-    | '/(authenticated)/drafts'
-    | '/(authenticated)/projects'
-    | '/(authenticated)/queued-sessions'
+    | '/(authenticated)/$organizationSlug'
     | '/(unauthenticated)/login'
     | '/(unauthenticated)/register'
     | '/(unauthenticated)/reset-password'
     | '/(unauthenticated)/update-password'
     | '/(authenticated)/'
-    | '/(authenticated)/organization/settings'
+    | '/(authenticated)/$organizationSlug/api'
+    | '/(authenticated)/$organizationSlug/devices'
+    | '/(authenticated)/$organizationSlug/drafts'
+    | '/(authenticated)/$organizationSlug/projects'
+    | '/(authenticated)/$organizationSlug/queued-sessions'
+    | '/(authenticated)/$organizationSlug/settings'
+    | '/(authenticated)/$organizationSlug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -233,70 +261,107 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof unauthenticatedLoginRouteImport
       parentRoute: typeof unauthenticatedRouteRoute
     }
-    '/(authenticated)/queued-sessions': {
-      id: '/(authenticated)/queued-sessions'
+    '/(authenticated)/$organizationSlug': {
+      id: '/(authenticated)/$organizationSlug'
+      path: '/$organizationSlug'
+      fullPath: '/$organizationSlug'
+      preLoaderRoute: typeof authenticatedOrganizationSlugRouteRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(authenticated)/$organizationSlug/': {
+      id: '/(authenticated)/$organizationSlug/'
+      path: '/'
+      fullPath: '/$organizationSlug/'
+      preLoaderRoute: typeof authenticatedOrganizationSlugIndexRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
+    '/(authenticated)/$organizationSlug/settings': {
+      id: '/(authenticated)/$organizationSlug/settings'
+      path: '/settings'
+      fullPath: '/$organizationSlug/settings'
+      preLoaderRoute: typeof authenticatedOrganizationSlugSettingsRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
+    '/(authenticated)/$organizationSlug/queued-sessions': {
+      id: '/(authenticated)/$organizationSlug/queued-sessions'
       path: '/queued-sessions'
-      fullPath: '/queued-sessions'
-      preLoaderRoute: typeof authenticatedQueuedSessionsRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+      fullPath: '/$organizationSlug/queued-sessions'
+      preLoaderRoute: typeof authenticatedOrganizationSlugQueuedSessionsRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
-    '/(authenticated)/projects': {
-      id: '/(authenticated)/projects'
+    '/(authenticated)/$organizationSlug/projects': {
+      id: '/(authenticated)/$organizationSlug/projects'
       path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof authenticatedProjectsRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+      fullPath: '/$organizationSlug/projects'
+      preLoaderRoute: typeof authenticatedOrganizationSlugProjectsRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
-    '/(authenticated)/drafts': {
-      id: '/(authenticated)/drafts'
+    '/(authenticated)/$organizationSlug/drafts': {
+      id: '/(authenticated)/$organizationSlug/drafts'
       path: '/drafts'
-      fullPath: '/drafts'
-      preLoaderRoute: typeof authenticatedDraftsRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+      fullPath: '/$organizationSlug/drafts'
+      preLoaderRoute: typeof authenticatedOrganizationSlugDraftsRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
-    '/(authenticated)/devices': {
-      id: '/(authenticated)/devices'
+    '/(authenticated)/$organizationSlug/devices': {
+      id: '/(authenticated)/$organizationSlug/devices'
       path: '/devices'
-      fullPath: '/devices'
-      preLoaderRoute: typeof authenticatedDevicesRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+      fullPath: '/$organizationSlug/devices'
+      preLoaderRoute: typeof authenticatedOrganizationSlugDevicesRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
-    '/(authenticated)/api': {
-      id: '/(authenticated)/api'
+    '/(authenticated)/$organizationSlug/api': {
+      id: '/(authenticated)/$organizationSlug/api'
       path: '/api'
-      fullPath: '/api'
-      preLoaderRoute: typeof authenticatedApiRouteImport
-      parentRoute: typeof authenticatedRouteRoute
-    }
-    '/(authenticated)/organization/settings': {
-      id: '/(authenticated)/organization/settings'
-      path: '/organization/settings'
-      fullPath: '/organization/settings'
-      preLoaderRoute: typeof authenticatedOrganizationSettingsRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+      fullPath: '/$organizationSlug/api'
+      preLoaderRoute: typeof authenticatedOrganizationSlugApiRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
   }
 }
 
+interface authenticatedOrganizationSlugRouteRouteChildren {
+  authenticatedOrganizationSlugApiRoute: typeof authenticatedOrganizationSlugApiRoute
+  authenticatedOrganizationSlugDevicesRoute: typeof authenticatedOrganizationSlugDevicesRoute
+  authenticatedOrganizationSlugDraftsRoute: typeof authenticatedOrganizationSlugDraftsRoute
+  authenticatedOrganizationSlugProjectsRoute: typeof authenticatedOrganizationSlugProjectsRoute
+  authenticatedOrganizationSlugQueuedSessionsRoute: typeof authenticatedOrganizationSlugQueuedSessionsRoute
+  authenticatedOrganizationSlugSettingsRoute: typeof authenticatedOrganizationSlugSettingsRoute
+  authenticatedOrganizationSlugIndexRoute: typeof authenticatedOrganizationSlugIndexRoute
+}
+
+const authenticatedOrganizationSlugRouteRouteChildren: authenticatedOrganizationSlugRouteRouteChildren =
+  {
+    authenticatedOrganizationSlugApiRoute:
+      authenticatedOrganizationSlugApiRoute,
+    authenticatedOrganizationSlugDevicesRoute:
+      authenticatedOrganizationSlugDevicesRoute,
+    authenticatedOrganizationSlugDraftsRoute:
+      authenticatedOrganizationSlugDraftsRoute,
+    authenticatedOrganizationSlugProjectsRoute:
+      authenticatedOrganizationSlugProjectsRoute,
+    authenticatedOrganizationSlugQueuedSessionsRoute:
+      authenticatedOrganizationSlugQueuedSessionsRoute,
+    authenticatedOrganizationSlugSettingsRoute:
+      authenticatedOrganizationSlugSettingsRoute,
+    authenticatedOrganizationSlugIndexRoute:
+      authenticatedOrganizationSlugIndexRoute,
+  }
+
+const authenticatedOrganizationSlugRouteRouteWithChildren =
+  authenticatedOrganizationSlugRouteRoute._addFileChildren(
+    authenticatedOrganizationSlugRouteRouteChildren,
+  )
+
 interface authenticatedRouteRouteChildren {
-  authenticatedApiRoute: typeof authenticatedApiRoute
-  authenticatedDevicesRoute: typeof authenticatedDevicesRoute
-  authenticatedDraftsRoute: typeof authenticatedDraftsRoute
-  authenticatedProjectsRoute: typeof authenticatedProjectsRoute
-  authenticatedQueuedSessionsRoute: typeof authenticatedQueuedSessionsRoute
+  authenticatedOrganizationSlugRouteRoute: typeof authenticatedOrganizationSlugRouteRouteWithChildren
   authenticatedIndexRoute: typeof authenticatedIndexRoute
-  authenticatedOrganizationSettingsRoute: typeof authenticatedOrganizationSettingsRoute
 }
 
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
-  authenticatedApiRoute: authenticatedApiRoute,
-  authenticatedDevicesRoute: authenticatedDevicesRoute,
-  authenticatedDraftsRoute: authenticatedDraftsRoute,
-  authenticatedProjectsRoute: authenticatedProjectsRoute,
-  authenticatedQueuedSessionsRoute: authenticatedQueuedSessionsRoute,
+  authenticatedOrganizationSlugRouteRoute:
+    authenticatedOrganizationSlugRouteRouteWithChildren,
   authenticatedIndexRoute: authenticatedIndexRoute,
-  authenticatedOrganizationSettingsRoute:
-    authenticatedOrganizationSettingsRoute,
 }
 
 const authenticatedRouteRouteWithChildren =

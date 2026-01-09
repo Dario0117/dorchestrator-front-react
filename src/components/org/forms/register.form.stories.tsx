@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { useRegisterMutationType } from '@/services/users.http-service';
+import type { useRegisterMutationType } from '@/services/users/register.http-service';
 import { RegisterForm } from './register.form';
 
 // Mock handlers for Storybook

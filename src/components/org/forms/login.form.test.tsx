@@ -4,7 +4,7 @@ import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
 import { buildBackendUrl } from '@/lib/test.utils';
 import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useLoginMutation } from '@/services/users.http-service';
+import { useLoginMutation } from '@/services/users/login.http-service';
 import { LoginForm } from './login.form';
 
 interface LinkProps {

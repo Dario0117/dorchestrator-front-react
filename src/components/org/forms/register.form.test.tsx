@@ -4,7 +4,7 @@ import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
 import { buildBackendUrl } from '@/lib/test.utils';
 import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useRegisterMutation } from '@/services/users.http-service';
+import { useRegisterMutation } from '@/services/users/register.http-service';
 import { RegisterForm } from './register.form';
 
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {

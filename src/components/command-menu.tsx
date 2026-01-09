@@ -12,13 +12,15 @@ import {
 } from '@/components/ui/command';
 import { useSearch } from '@/context/search.provider';
 import { useTheme } from '@/context/theme.provider';
-import { sidebarData } from './layout/data/sidebar-data';
+import { useOrganizationStore } from '@/stores/organization.store';
+import { getSidebarData } from './layout/data/sidebar-data';
 import { ScrollArea } from './ui/scroll-area';
 
 export function CommandMenu() {
   const navigate = useNavigate();
   const { setTheme } = useTheme();
   const { open, setOpen } = useSearch();
+  const { currentOrganization } = useOrganizationStore();
 
   const runCommand = React.useCallback(
     (command: () => unknown) => {
@@ -41,7 +43,7 @@ export function CommandMenu() {
           className="h-72 pe-1"
         >
           <CommandEmpty>No results found.</CommandEmpty>
-          {sidebarData.navGroups.map((group) => (
+          {getSidebarData(currentOrganization).navGroups.map((group) => (
             <CommandGroup
               key={group.title}
               heading={group.title}

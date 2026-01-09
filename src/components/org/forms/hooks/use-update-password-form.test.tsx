@@ -3,7 +3,7 @@ import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
 import { buildBackendUrl } from '@/lib/test.utils';
 import { createQueryThemeWrapper } from '@/lib/test-wrappers.utils';
-import { useUpdatePasswordMutation } from '@/services/users.http-service';
+import { useUpdatePasswordMutation } from '@/services/users/update-password.http-service';
 import { useUpdatePasswordForm } from './use-update-password-form';
 
 // Mock useParams

@@ -1,5 +1,5 @@
 import { ConfirmDialog } from '@/components/confirm-dialog';
-import { useLogoutMutation } from '@/services/users.http-service';
+import { useLogoutMutation } from '@/services/users/logout.http-service';
 import { useAuthenticationStore } from '@/stores/authentication.store';
 import type { SignOutDialogProps } from './sign-out-dialog.types';
 

@@ -1,5 +1,5 @@
 import { logError } from '@/lib/logger.utils';
-import type { useUpdatePasswordMutationType } from '@/services/users.http-service';
+import type { useUpdatePasswordMutationType } from '@/services/users/update-password.http-service';
 import { updatePasswordFormSchema } from '../validation/update-password-form.schema';
 import { useAppForm } from './app-form';
 import type { UseUpdatePasswordFormProps } from './use-update-password-form.types';

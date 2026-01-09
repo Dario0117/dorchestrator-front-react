@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { server } from '@/../testsSetup';
 import { buildBackendUrl } from '@/lib/test.utils';
 import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useCreateOrganizationMutation } from '@/services/organizations.http-service';
+import { useCreateOrganizationMutation } from '@/services/organizations/create-organization.http-service';
 import { CreateOrganizationForm } from './create-organization.form';
 
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {

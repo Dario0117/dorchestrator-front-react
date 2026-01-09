@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { UpdatePasswordForm } from '@/components/org/forms/update-password.form';
-import { useUpdatePasswordMutation } from '@/services/users.http-service';
+import { useUpdatePasswordMutation } from '@/services/users/update-password.http-service';
 
 export function UpdatePasswordPage({ token }: { token: string }) {
   const navigate = useNavigate({

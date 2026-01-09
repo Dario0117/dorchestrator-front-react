@@ -17,3 +17,15 @@
 - [ ] Regenerate the claude.md file
 - [ ] Move reading from env vars to an util file, that way we can mock it in tests and have it centralized
 - [ ] Remove the requirement for tests during development, combine this with a command/subagent to create tests to speed up development and only write tests when the code is reviewed and manually tested
+- [ ] Refreshing doesn't keep the current page
+- [ ] Implement structured logging and open telemetry
+- [ ] Refactor login/session flow to use ctx.context.queryClient.ensureQueryData inside of the loader of the router, session and organization info must be present before loading anything else, those are key resources.
+- [ ] Implement branded IDs
+- [ ] Default current organization must be marked somehow on the data layer, that way we don't use the first organization in the list as the default (see src/stores/organization.store.ts)
+- [ ] Remove the undefined on organization store for current organization, add a dummy organization object with dummy data so we can avoid checking for undefined everywhere
+- [ ] When attempting to add a second device, the UI is showing the old token instead of prompting to generate a new one
+- [ ] Refactor the code to add all list/get requests to be loaded on the router loader, this way we can ensure the data is loaded before rendering the page
+- [ ] Implement layered architecture pattern (repository (http calls / hooks) <- service (custom hooks with behavior logic) <- component (only ui logic and service hooks) <- pages (layouts and full pages) <- routes (url paths, params, pre-fetching, etc.))
+- [ ] Add a concept of "entity" to map every object in the API, that way we don't have to always build types because we don't know from where they are coming from (e.g., devices, commands, etc.) we can add something like `/entities/api/[entity].types.ts` and if we need to add new local entities we can do `/entities/local/[entity].types.ts`
+- [ ] Correctly handle dates and change them to the local timezone, the expected date coming from the API is in UTC, we need to convert it to the local timezone
+- [ ] Move to bun tests from vitest

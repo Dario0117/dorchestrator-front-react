@@ -1,5 +1,5 @@
 import { logError } from '@/lib/logger.utils';
-import type { useCreateOrganizationMutationType } from '@/services/organizations.http-service';
+import type { useCreateOrganizationMutationType } from '@/services/organizations/create-organization.http-service';
 import { createOrganizationFormSchema } from '../validation/create-organization-form.schema';
 import { useAppForm } from './app-form';
 

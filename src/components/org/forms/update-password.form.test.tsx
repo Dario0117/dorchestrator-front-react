@@ -4,7 +4,7 @@ import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
 import { buildBackendUrl } from '@/lib/test.utils';
 import { renderWithProviders } from '@/lib/test-wrappers.utils';
-import { useUpdatePasswordMutation } from '@/services/users.http-service';
+import { useUpdatePasswordMutation } from '@/services/users/update-password.http-service';
 import { UpdatePasswordForm } from './update-password.form';
 
 // Mock the router hooks
