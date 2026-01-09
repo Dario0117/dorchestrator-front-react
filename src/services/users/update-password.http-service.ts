@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import type { UpdatePasswordFormData } from '@/components/org/forms/validation/update-password-form.schema';
-import { authClient } from '../auth.http-service';
+import { authClient } from '../../better-auth.client';
 
 export function useUpdatePasswordMutation(token: string) {
   return useMutation({

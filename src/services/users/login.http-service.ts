@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import type { LoginFormData } from '@/components/org/forms/validation/login-form.schema';
-import { authClient } from '../auth.http-service';
+import { authClient } from '../../better-auth.client';
 
 export function useLoginMutation() {
   return useMutation({

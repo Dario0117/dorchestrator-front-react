@@ -1,5 +1,5 @@
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { authClient } from '../auth.http-service';
+import { authClient } from '../../better-auth.client';
 
 export const profileQueryOptions = {
   queryKey: ['profile'],

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { logError } from '@/lib/logger.utils';
-import { authClient } from '../auth.http-service';
+import { authClient } from '../../better-auth.client';
 
 export function useCheckSlugAvailabilityMutation() {
   return useMutation({
