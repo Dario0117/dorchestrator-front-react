@@ -4,32 +4,19 @@ import { Skeleton } from '@components/ui/skeleton';
 import { useOrganizationDetailsQuery } from '@services/organizations/get-organization-details.http-service';
 import { useAuthenticationStore } from '@stores/authentication.store';
 import { useOrganizationStore } from '@stores/organization.store';
-import { AlertCircle, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 export function OrganizationSettingsPage() {
   const { profile } = useAuthenticationStore();
 
   const { currentOrganization } = useOrganizationStore();
-  const organizationId = currentOrganization?.id ?? '';
+  const organizationId = currentOrganization.id;
 
   const { data: orgDetails, isLoading: detailsLoading } =
     useOrganizationDetailsQuery(organizationId);
 
   if (detailsLoading) {
     return <SettingsSkeleton />;
-  }
-
-  if (!currentOrganization) {
-    return (
-      <section className="p-6 md:p-10">
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            No organization found. Please contact support.
-          </AlertDescription>
-        </Alert>
-      </section>
-    );
   }
 
   const details = orgDetails?.responseData?.results;

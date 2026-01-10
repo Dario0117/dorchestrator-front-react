@@ -13,6 +13,8 @@ export const Route = createFileRoute('/(authenticated)')({
       <AuthenticatedLayout />
     </SessionCheckMiddleware>
   ),
+  pendingComponent: () => <div>Loading...</div>,
+  errorComponent: () => <div>Error loading page</div>,
   loader: async (ctx) => {
     await Promise.all([
       ctx.context.queryClient.ensureQueryData(profileQueryOptions),

@@ -1,5 +1,6 @@
 import { DevicesPage } from '@components/org/pages/devices.page';
 import { useDevicesQueryOptions } from '@services/devices/list-devices.http-service';
+import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod/v4';
 
@@ -16,6 +17,7 @@ export const Route = createFileRoute(
   loaderDeps: ({ search: { page, size } }) => ({ page, size }),
   loader: async (ctx) => {
     await Promise.all([
+      ctx.context.queryClient.ensureQueryData(useUserOrganizationsQueryOptions),
       ctx.context.queryClient.ensureQueryData(
         useDevicesQueryOptions(
           ctx.context.currentOrganization.id,

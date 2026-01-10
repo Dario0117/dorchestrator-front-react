@@ -47,6 +47,8 @@
     "editor.defaultFormatter": "biomejs.biome",
     "editor.formatOnSave": true
   },
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
   "files.insertFinalNewline": true,
   "cSpell.words": ["dorchestrator"]
 }

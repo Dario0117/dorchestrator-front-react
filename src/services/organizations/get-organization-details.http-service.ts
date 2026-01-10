@@ -1,3 +1,4 @@
+import { DEFAULT_ORGANIZATION_ID } from '@stores/organization.store.constants';
 import { $api } from '@/http-service-setup';
 
 export function useOrganizationDetailsQuery(organizationId: string) {
@@ -10,7 +11,7 @@ export function useOrganizationDetailsQuery(organizationId: string) {
       },
     },
     {
-      enabled: !!organizationId,
+      enabled: organizationId !== DEFAULT_ORGANIZATION_ID,
     },
   );
 }

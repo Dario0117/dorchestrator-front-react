@@ -1,11 +1,10 @@
+import { DEFAULT_ORGANIZATION_ID } from '@stores/organization.store.constants';
 import type {
   OrganizationActions,
   OrganizationState,
 } from '@stores/organization.store.types';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-
-const DEFAULT_ORGANIZATION_ID = 'DEFAULT_ORGANIZATION_ID';
 
 export const useOrganizationStore = create<
   OrganizationState & OrganizationActions

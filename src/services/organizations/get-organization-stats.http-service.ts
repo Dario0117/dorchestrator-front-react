@@ -1,3 +1,4 @@
+import { DEFAULT_ORGANIZATION_ID } from '@stores/organization.store.constants';
 import { $api } from '@/http-service-setup';
 
 export function useOrganizationStatsQuery(organizationId: string) {
@@ -10,7 +11,7 @@ export function useOrganizationStatsQuery(organizationId: string) {
       },
     },
     {
-      enabled: !!organizationId,
+      enabled: organizationId !== DEFAULT_ORGANIZATION_ID,
       refetchInterval: 30000, // Refresh every 30 seconds
     },
   );

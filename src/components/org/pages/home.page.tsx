@@ -1,9 +1,8 @@
-import { Alert, AlertDescription } from '@components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import { Skeleton } from '@components/ui/skeleton';
 import { useOrganizationStatsQuery } from '@services/organizations/get-organization-stats.http-service';
 import { useOrganizationStore } from '@stores/organization.store';
-import { AlertCircle, Building2, HardDrive, Terminal } from 'lucide-react';
+import { Building2, HardDrive, Terminal } from 'lucide-react';
 
 type RecentCommand = {
   id: number;
@@ -15,26 +14,13 @@ type RecentCommand = {
 export function HomePage() {
   const { currentOrganization } = useOrganizationStore();
 
-  const organizationId = currentOrganization?.id ?? '';
+  const organizationId = currentOrganization.id;
 
   const { data: stats, isLoading: statsLoading } =
     useOrganizationStatsQuery(organizationId);
 
   if (statsLoading) {
     return <DashboardSkeleton />;
-  }
-
-  if (!currentOrganization) {
-    return (
-      <section className="p-6 md:p-10">
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            No organization found. Please contact support.
-          </AlertDescription>
-        </Alert>
-      </section>
-    );
   }
 
   return (

@@ -28,7 +28,7 @@ export function DevicesPage() {
     name: string;
   } | null>(null);
 
-  const organizationId = currentOrganization?.id ?? '';
+  const organizationId = currentOrganization.id;
 
   // Fetch devices
   const { data, isLoading, error } = useDevicesQuery(
