@@ -36,14 +36,7 @@ export function LoginForm({ loginMutation, handleSuccess }: LoginFormProps) {
                 type="password"
                 placeholder="Password"
                 required
-              >
-                <Link
-                  to="/reset-password"
-                  className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                >
-                  Forgot your password?
-                </Link>
-              </field.AppFormField>
+              />
             )}
           </form.AppField>
 
@@ -59,7 +52,19 @@ export function LoginForm({ loginMutation, handleSuccess }: LoginFormProps) {
         </form.AppForm>
 
         <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account? <Link to="/register">Register</Link>
+          <Link
+            to="/reset-password"
+            className="underline-offset-4 hover:underline"
+          >
+            Forgot your password?
+          </Link>
+        </div>
+
+        <div className="mt-4 text-center text-sm">
+          Don&apos;t have an account?{' '}
+          <Link to="/register" className="underline-offset-4 hover:underline">
+            Register
+          </Link>
         </div>
       </form>
     </FormCard>

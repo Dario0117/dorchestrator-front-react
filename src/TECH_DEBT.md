@@ -2,9 +2,7 @@
 
 - [ ] CSRF?
 - [ ] Add email verification
-- [ ] On useResetPasswordMutation, change the redirectTo to a environment dependant value instead of a hardcoded value.
 - [ ] On ResetPasswordPage, add a toast to show the user that the password has been reset and they need to check their email (a message is coming from the backend, we can use that one).
-- [ ] On the login form, the TAB navigation is weird, it jumps from email to forgot password and then to password. It should be email -> password -> submit -> forgot password -> register.
 - [ ] Update CI to use bun instead of pnpm
 - [ ] Add claude code commands for common actions (test, fix-ts, add new endpoint, etc)
 - [ ] Update to shadcn v2
@@ -36,3 +34,4 @@
 - [ ] When logging out clear all data (probably worth just instead of navigating to the login page, refresh the page or force the reload once on login to delete any remaining data on queries and contexts)
 - [ ] Fix storybook
 - [ ] the index/dashboard is not selected when you click on the sidebar or load the page, not happening for devices page
+- [ ] Interacting with any field on the login form, marks others as error and shows the error message
