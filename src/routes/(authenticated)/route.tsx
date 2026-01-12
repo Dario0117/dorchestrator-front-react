@@ -1,24 +1,22 @@
 import { AuthenticatedLayout } from '@components/layout/authenticated-layout';
-import { SessionCheckMiddleware } from '@components/org/pages/session-check-middleware.page';
 import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { profileQueryOptions } from '@services/users/get-profile.http-service';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(authenticated)')({
-  component: () => (
-    <SessionCheckMiddleware
-      to="/login"
-      whenProfileExist={false}
-    >
-      <AuthenticatedLayout />
-    </SessionCheckMiddleware>
-  ),
-  pendingComponent: () => <div>Loading...</div>,
-  errorComponent: () => <div>Error loading page</div>,
-  loader: async (ctx) => {
-    await Promise.all([
-      ctx.context.queryClient.ensureQueryData(profileQueryOptions),
-      ctx.context.queryClient.ensureQueryData(useUserOrganizationsQueryOptions),
-    ]);
+  component: () => <AuthenticatedLayout />,
+  beforeLoad: async (ctx) => {
+    try {
+      await ctx.context.queryClient.ensureQueryData(profileQueryOptions);
+    } catch {
+      throw redirect({
+        to: '/login',
+        replace: true,
+        search: window.location.search,
+      });
+    }
+    await ctx.context.queryClient.ensureQueryData(
+      useUserOrganizationsQueryOptions,
+    );
   },
 });

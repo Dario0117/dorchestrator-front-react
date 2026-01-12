@@ -3,5 +3,8 @@ import type { QueryClient } from '@tanstack/react-query';
 
 export interface RouterContext {
   queryClient: QueryClient;
-  currentOrganization: OrganizationItem;
+  _getNullableCurrentOrganizationFromSlug: (
+    slug: string,
+  ) => OrganizationItem | undefined;
+  getCurrentOrganizationFromSlug: (slug: string) => OrganizationItem;
 }

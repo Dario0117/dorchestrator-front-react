@@ -1,6 +1,9 @@
 import { CreateOrganizationModal } from '@components/org/modals/create-organization.modal';
 import { queryClient } from '@context/query.provider';
-import { useUserOrganizationsSuspendedQuery } from '@services/organizations/list-user-organizations.http-service';
+import {
+  useUserOrganizationsQueryOptions,
+  useUserOrganizationsSuspendedQuery,
+} from '@services/organizations/list-user-organizations.http-service';
 import { useOrganizationStore } from '@stores/organization.store';
 import { useEffect, useState } from 'react';
 
@@ -24,7 +27,9 @@ export function OrganizationCheckWrapper({
 
   const handleOrganizationCreated = () => {
     // Refetch organizations to update the list
-    queryClient.invalidateQueries({ queryKey: ['user-organizations'] });
+    queryClient.invalidateQueries({
+      queryKey: useUserOrganizationsQueryOptions.queryKey,
+    });
     setShowModal(false);
   };
 

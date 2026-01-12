@@ -1,12 +1,23 @@
 import { queryClient } from '@context/query.provider';
-import { useOrganizationStore } from '@stores/organization.store';
+import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
+import type { OrganizationItem } from '@stores/organization.store.types';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from '@/routeTree.gen';
 
 const router = createRouter({
   routeTree,
-  // biome-ignore lint/style/noNonNullAssertion: Recommendation from the lib maintainers
-  context: { queryClient: undefined!, currentOrganization: undefined! },
+  context: {
+    // biome-ignore lint/style/noNonNullAssertion: Recommendation from the lib maintainers
+    queryClient: undefined!,
+    _getNullableCurrentOrganizationFromSlug: ():
+      | OrganizationItem
+      | undefined => {
+      throw new Error('Function not implemented.');
+    },
+    getCurrentOrganizationFromSlug: (): OrganizationItem => {
+      throw new Error('Function not implemented.');
+    },
+  },
 });
 
 declare module '@tanstack/react-router' {
@@ -15,14 +26,33 @@ declare module '@tanstack/react-router' {
   }
 }
 
+function _getNullableCurrentOrganizationFromSlug(
+  slug: string,
+): OrganizationItem | undefined {
+  /**
+   * This is a workaround
+   * for the fact that the router doesn't have access to the current organization in the context
+   * when you are loading the router for the first time
+   */
+  const organizations = queryClient.getQueryData(
+    useUserOrganizationsQueryOptions.queryKey,
+  ) as unknown as OrganizationItem[];
+  const currentOrg = organizations.find((org) => org.slug === slug);
+  return currentOrg;
+}
+
 export default function App() {
-  const { currentOrganization } = useOrganizationStore();
   return (
     <RouterProvider
       router={router}
       context={{
         queryClient,
-        currentOrganization,
+        _getNullableCurrentOrganizationFromSlug:
+          _getNullableCurrentOrganizationFromSlug,
+        getCurrentOrganizationFromSlug(slug: string) {
+          // biome-ignore lint/style/noNonNullAssertion: At this point, currentOrganization must be defined (see route.tsx:beforeLoad)
+          return _getNullableCurrentOrganizationFromSlug(slug)!;
+        },
       }}
     />
   );

@@ -29,3 +29,8 @@
 - [ ] Add a concept of "entity" to map every object in the API, that way we don't have to always build types because we don't know from where they are coming from (e.g., devices, commands, etc.) we can add something like `/entities/api/[entity].types.ts` and if we need to add new local entities we can do `/entities/local/[entity].types.ts`
 - [ ] Correctly handle dates and change them to the local timezone, the expected date coming from the API is in UTC, we need to convert it to the local timezone
 - [ ] Move to bun tests from vitest
+- [ ] When logout it redirects to the org page
+- [ ] When you load the base page it throws error
+- [ ] Going to login page throws error
+- [ ] When the login succeeds, it still shows an error before redirecting to the org page
+- [ ] Profile info is not showing in the navbar
