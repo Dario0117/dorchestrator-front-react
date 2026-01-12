@@ -1,13 +1,17 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { $api } from '@/http-service-setup';
 
-export function useOrganizationDetailsQuery(organizationId: string) {
-  return $api.useQuery('get', '/api/v1/{organizationId}/organization', {
+export const useOrganizationDetailsQueryOptions = (organizationId: string) =>
+  $api.queryOptions('get', '/api/v1/{organizationId}/organization', {
     params: {
-      path: { organizationId },
+      path: { organizationId: organizationId },
     },
   });
+
+export function useOrganizationDetailsSuspenseQuery(organizationId: string) {
+  return useSuspenseQuery(useOrganizationDetailsQueryOptions(organizationId));
 }
 
 export type useOrganizationDetailsQueryReturnType = ReturnType<
-  typeof useOrganizationDetailsQuery
+  typeof useOrganizationDetailsSuspenseQuery
 >;

@@ -1,5 +1,5 @@
 import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
-import { useOrganizationDetailsQuery } from '@services/organizations/get-organization-details.http-service';
+import { useOrganizationDetailsSuspenseQuery } from '@services/organizations/get-organization-details.http-service';
 import { useOrganizationStatsSuspenseQuery } from '@services/organizations/get-organization-stats.http-service';
 import { renderHook, waitFor } from '@testing-library/react';
 
@@ -7,7 +7,7 @@ describe('Organization HTTP Service', () => {
   describe('useOrganizationDetailsQuery', () => {
     it('should fetch organization details successfully', async () => {
       const { result } = renderHook(
-        () => useOrganizationDetailsQuery('org-123'),
+        () => useOrganizationDetailsSuspenseQuery('org-123'),
         {
           wrapper: createQueryThemeWrapper(),
         },
@@ -27,9 +27,12 @@ describe('Organization HTTP Service', () => {
     });
 
     it('should not fetch when organizationId is empty', () => {
-      const { result } = renderHook(() => useOrganizationDetailsQuery(''), {
-        wrapper: createQueryThemeWrapper(),
-      });
+      const { result } = renderHook(
+        () => useOrganizationDetailsSuspenseQuery(''),
+        {
+          wrapper: createQueryThemeWrapper(),
+        },
+      );
 
       expect(result.current.data).toBeUndefined();
       expect(result.current.isLoading).toBe(false);

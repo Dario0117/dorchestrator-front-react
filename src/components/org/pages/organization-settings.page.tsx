@@ -1,25 +1,20 @@
 import { Alert, AlertDescription } from '@components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
-import { Skeleton } from '@components/ui/skeleton';
-import { useOrganizationDetailsQuery } from '@services/organizations/get-organization-details.http-service';
-import { useAuthenticationStore } from '@stores/authentication.store';
+import { useOrganizationDetailsSuspenseQuery } from '@services/organizations/get-organization-details.http-service';
+import { useProfileSuspendedQuery } from '@services/users/get-profile.http-service';
 import { useOrganizationStore } from '@stores/organization.store';
 import { Info } from 'lucide-react';
 
 export function OrganizationSettingsPage() {
-  const { profile } = useAuthenticationStore();
+  const { data: profile } = useProfileSuspendedQuery();
 
   const { currentOrganization } = useOrganizationStore();
   const organizationId = currentOrganization.id;
 
-  const { data: orgDetails, isLoading: detailsLoading } =
-    useOrganizationDetailsQuery(organizationId);
+  const { data: orgDetails } =
+    useOrganizationDetailsSuspenseQuery(organizationId);
 
-  if (detailsLoading) {
-    return <SettingsSkeleton />;
-  }
-
-  const details = orgDetails?.responseData?.results;
+  const details = orgDetails.responseData?.results;
 
   return (
     <section className="p-6 md:p-10 space-y-6">
@@ -129,7 +124,7 @@ export function OrganizationSettingsPage() {
                 <dt className="text-sm font-medium text-muted-foreground">
                   Current User
                 </dt>
-                <dd className="text-base">{profile?.email ?? 'Unknown'}</dd>
+                <dd className="text-base">{profile.email ?? 'Unknown'}</dd>
               </div>
             </dl>
 
@@ -141,31 +136,6 @@ export function OrganizationSettingsPage() {
             </Alert>
           </CardContent>
         </Card>
-      </div>
-    </section>
-  );
-}
-
-function SettingsSkeleton() {
-  return (
-    <section className="p-6 md:p-10 space-y-6">
-      <div>
-        <Skeleton className="h-9 w-64 mb-2" />
-        <Skeleton className="h-5 w-96" />
-      </div>
-
-      <div className="grid gap-6">
-        {[1, 2, 3].map((i) => (
-          <Card key={i}>
-            <CardHeader>
-              <Skeleton className="h-6 w-48" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Skeleton className="h-16 w-full" />
-              <Skeleton className="h-16 w-full" />
-            </CardContent>
-          </Card>
-        ))}
       </div>
     </section>
   );

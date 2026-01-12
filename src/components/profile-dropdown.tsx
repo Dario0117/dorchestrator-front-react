@@ -12,14 +12,14 @@ import {
   DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
 import useDialogState from '@hooks/use-dialog-state';
-import { useAuthenticationStore } from '@stores/authentication.store';
+import { useProfileSuspendedQuery } from '@services/users/get-profile.http-service';
 import { Link } from '@tanstack/react-router';
 
 export function ProfileDropdown() {
   const [open, setOpen] = useDialogState();
-  const { profile } = useAuthenticationStore();
+  const { data: profile } = useProfileSuspendedQuery();
 
-  const avatarFallback = profile ? profile.name.charAt(0) : '';
+  const avatarFallback = profile.name.charAt(0);
 
   return (
     <>

@@ -1,15 +1,14 @@
 import { ConfirmDialog } from '@components/confirm-dialog';
 import type { SignOutDialogProps } from '@components/sign-out-dialog.types';
+import { queryClient } from '@context/query.provider';
 import { useLogoutMutation } from '@services/users/logout.http-service';
-import { useAuthenticationStore } from '@stores/authentication.store';
 import { useNavigate } from '@tanstack/react-router';
 
 export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
-  const { setProfile } = useAuthenticationStore();
   const navigate = useNavigate();
   const logout = useLogoutMutation({
     handleSuccess: () => {
-      setProfile(undefined);
+      queryClient.invalidateQueries();
     },
   });
 

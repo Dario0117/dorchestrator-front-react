@@ -31,12 +31,12 @@ export function HomePage() {
       <div className="grid gap-4 md:grid-cols-3">
         <StatCard
           title="Devices"
-          value={stats?.responseData?.results?.deviceCount ?? 0}
+          value={stats.responseData?.results?.deviceCount ?? 0}
           icon={HardDrive}
         />
         <StatCard
           title="Commands (24h)"
-          value={stats?.responseData?.results?.recentCommandCount ?? 0}
+          value={stats.responseData?.results?.recentCommandCount ?? 0}
           icon={Terminal}
         />
         <StatCard
@@ -69,7 +69,7 @@ export function HomePage() {
           <CardTitle>Recent Activity</CardTitle>
         </CardHeader>
         <CardContent>
-          {stats?.responseData?.results?.recentCommands &&
+          {stats.responseData?.results?.recentCommands &&
           stats.responseData.results.recentCommands.length > 0 ? (
             <div className="space-y-2">
               {(

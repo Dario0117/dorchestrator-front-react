@@ -35,3 +35,4 @@
 - [ ] When the login succeeds, it still shows an error before redirecting to the org page
 - [ ] Profile info is not showing in the navbar
 - [ ] When creating organization for the first time, on the sidebar selector the name is not updated to the newly created organization
+- [ ] When logging out clear all data (probably worth just instead of navigating to the login page, refresh the page or force the reload once on login to delete any remaining data on queries and contexts)
