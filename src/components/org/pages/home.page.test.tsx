@@ -1,18 +1,29 @@
 import { HomePage } from '@components/org/pages/home.page';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { setMobileViewport, setTabletViewport } from '@lib/viewport-test-utils';
+import { useOrganizationStore } from '@stores/organization.store';
 import { screen, waitFor } from '@testing-library/react';
+import { Suspense } from 'react';
 
 describe('HomePage', () => {
-  it('should render loading state initially', () => {
-    const { container } = renderWithProviders(<HomePage />);
-
-    const skeletons = container.querySelectorAll('[data-slot="skeleton"]');
-    expect(skeletons.length).toBeGreaterThan(0);
+  beforeEach(() => {
+    // Seed the organization store with test data
+    useOrganizationStore.getState().setOrganizations([
+      {
+        id: 'org-123',
+        name: 'Test Organization',
+        slug: 'test-org',
+        createdAt: new Date('2025-12-21T10:00:00.000Z'),
+      },
+    ]);
   });
 
   it('should render organization dashboard with stats', async () => {
-    renderWithProviders(<HomePage />);
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <HomePage />
+      </Suspense>,
+    );
 
     await waitFor(() => {
       expect(
@@ -26,7 +37,11 @@ describe('HomePage', () => {
   });
 
   it('should render stat cards with correct data', async () => {
-    renderWithProviders(<HomePage />);
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <HomePage />
+      </Suspense>,
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Devices')).toBeInTheDocument();
@@ -38,7 +53,11 @@ describe('HomePage', () => {
   });
 
   it('should render recent activity section', async () => {
-    renderWithProviders(<HomePage />);
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <HomePage />
+      </Suspense>,
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Recent Activity')).toBeInTheDocument();
@@ -46,9 +65,18 @@ describe('HomePage', () => {
   });
 
   describe('Mobile Responsive Layout (AC2, AC3)', () => {
-    it('uses responsive padding on mobile (375px)', () => {
+    it('uses responsive padding on mobile (375px)', async () => {
       setMobileViewport();
-      const { container } = renderWithProviders(<HomePage />);
+      const { container } = renderWithProviders(
+        <Suspense fallback={<div>Loading...</div>}>
+          <HomePage />
+        </Suspense>,
+      );
+
+      await waitFor(() => {
+        const section = container.querySelector('section');
+        expect(section).toBeInTheDocument();
+      });
 
       const section = container.querySelector('section');
       // p-6 on mobile, md:p-10 on desktop
@@ -58,7 +86,11 @@ describe('HomePage', () => {
 
     it('renders stats cards in single column on mobile', async () => {
       setMobileViewport();
-      const { container } = renderWithProviders(<HomePage />);
+      const { container } = renderWithProviders(
+        <Suspense fallback={<div>Loading...</div>}>
+          <HomePage />
+        </Suspense>,
+      );
 
       await waitFor(() => {
         const statsGrid = container.querySelector('.grid.md\\:grid-cols-3');
@@ -72,7 +104,11 @@ describe('HomePage', () => {
 
     it('renders stats cards in 3 columns on tablet and desktop', async () => {
       setTabletViewport();
-      const { container } = renderWithProviders(<HomePage />);
+      const { container } = renderWithProviders(
+        <Suspense fallback={<div>Loading...</div>}>
+          <HomePage />
+        </Suspense>,
+      );
 
       await waitFor(() => {
         const statsGrid = container.querySelector('.grid.md\\:grid-cols-3');
@@ -81,19 +117,6 @@ describe('HomePage', () => {
           expect(statsGrid).toHaveClass('md:grid-cols-3');
         }
       });
-    });
-
-    it('renders dashboard skeleton with responsive layout', () => {
-      setMobileViewport();
-      const { container } = renderWithProviders(<HomePage />);
-
-      const skeletons = container.querySelectorAll('[data-slot="skeleton"]');
-      expect(skeletons.length).toBeGreaterThan(0);
-
-      // Verify skeleton uses same responsive padding
-      const section = container.querySelector('section');
-      expect(section).toHaveClass('p-6');
-      expect(section).toHaveClass('md:p-10');
     });
   });
 });

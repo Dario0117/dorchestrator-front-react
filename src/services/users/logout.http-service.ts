@@ -13,9 +13,7 @@ export function useLogoutMutation({
         fetchOptions: {
           onSuccess: () => {
             handleSuccess();
-            queryClient.removeQueries({
-              queryKey: ['profile'],
-            });
+            queryClient.removeQueries();
           },
         },
       });

@@ -1,8 +1,10 @@
 import { AuthenticatedLayout } from '@components/layout/authenticated-layout';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useOrganizationStore } from '@stores/organization.store';
 import { screen, waitFor } from '@testing-library/react';
+import { Suspense } from 'react';
 
-vi.mock('@/lib/cookies', () => ({
+vi.mock('@lib/cookies.utils', () => ({
   getCookie: vi.fn(() => 'true'),
   setCookie: vi.fn(),
 }));
@@ -48,13 +50,26 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 
 async function renderAuthenticatedLayout(children?: React.ReactNode) {
+  // Seed the organization store with test data before rendering
+  // This mimics what the route wrapper does
+  useOrganizationStore.getState().setOrganizations([
+    {
+      id: 'org-123',
+      name: 'Test Organization',
+      slug: 'test-org',
+      createdAt: new Date('2025-12-21T10:00:00.000Z'),
+    },
+  ]);
+
   const result = renderWithProviders(
-    <AuthenticatedLayout>
-      {children || <div data-testid="child-content">Child Content</div>}
-    </AuthenticatedLayout>,
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthenticatedLayout>
+        {children || <div data-testid="child-content">Child Content</div>}
+      </AuthenticatedLayout>
+    </Suspense>,
   );
 
-  // Wait for organizations to load (OrganizationCheckWrapper loading state to complete)
+  // Wait for suspense to resolve (profile query)
   await waitFor(() => {
     expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
   });
@@ -72,7 +87,7 @@ describe('AuthenticatedLayout', () => {
   it('should render app sidebar', async () => {
     await renderAuthenticatedLayout();
 
-    expect(screen.getByText('Dorchestrator')).toBeInTheDocument();
+    expect(screen.getByText('Test Organization')).toBeInTheDocument();
   });
 
   it('should render header with theme switch', async () => {
@@ -110,7 +125,7 @@ describe('AuthenticatedLayout', () => {
   it('should provide layout context', async () => {
     await renderAuthenticatedLayout();
 
-    expect(screen.getByText('Dorchestrator')).toBeInTheDocument();
+    expect(screen.getByText('Test Organization')).toBeInTheDocument();
   });
 
   it('should provide search context', async () => {

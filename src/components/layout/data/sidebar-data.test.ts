@@ -43,7 +43,7 @@ describe('Sidebar Data', () => {
     const { teams } = sidebarData;
 
     expect(teams).toHaveLength(1);
-    expect(teams[0]?.name).toBe('Dorchestrator');
+    expect(teams[0]?.name).toBe('Test Organization');
     expect(teams[0]?.plan).toBe('Free Tier');
   });
 

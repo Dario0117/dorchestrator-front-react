@@ -1,20 +1,21 @@
 import { OrganizationCheckWrapper } from '@components/layout/organization-check-wrapper';
-import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useOrganizationStore } from '@stores/organization.store';
+import { DEFAULT_ORGANIZATION_ID } from '@stores/organization.store.constants';
 import { screen, waitFor } from '@testing-library/react';
-import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
-import { server } from '@/../testsSetup';
 
 describe('OrganizationCheckWrapper', () => {
-  it('should show loading state while fetching organizations', () => {
-    // Delay the response to ensure loading state is visible
-    server.use(
-      http.get(buildBackendUrl('/api/v1/organization/list'), async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        return HttpResponse.json([]);
-      }),
-    );
+  it('should render children when user has organizations', () => {
+    // Seed the store with a real organization
+    useOrganizationStore.getState().setOrganizations([
+      {
+        id: 'org-123',
+        name: 'Test Organization',
+        slug: 'test-org',
+        createdAt: new Date('2025-12-21T10:00:00.000Z'),
+      },
+    ]);
 
     renderWithProviders(
       <OrganizationCheckWrapper>
@@ -22,31 +23,21 @@ describe('OrganizationCheckWrapper', () => {
       </OrganizationCheckWrapper>,
     );
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-    expect(screen.queryByText('Child Content')).not.toBeInTheDocument();
-  });
-
-  it('should render children when user has organizations', async () => {
-    // Default handler already returns an organization, so no need to override
-
-    renderWithProviders(
-      <OrganizationCheckWrapper>
-        <div>Child Content</div>
-      </OrganizationCheckWrapper>,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Child Content')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Child Content')).toBeInTheDocument();
     expect(screen.queryByText('Welcome!')).not.toBeInTheDocument();
   });
 
   it('should show modal when user has no organizations', async () => {
-    server.use(
-      http.get(buildBackendUrl('/api/v1/organization/list'), () => {
-        return HttpResponse.json([]);
-      }),
-    );
+    // Reset store to default state (no real organizations)
+    const store = useOrganizationStore.getState();
+    store.setOrganizations([]);
+    // Manually set to default organization since setOrganizations doesn't reset it
+    store.setCurrentOrganization({
+      id: DEFAULT_ORGANIZATION_ID,
+      name: 'Dorchestrator',
+      slug: 'dorchestrator',
+      createdAt: new Date(),
+    });
 
     renderWithProviders(
       <OrganizationCheckWrapper>
@@ -64,12 +55,16 @@ describe('OrganizationCheckWrapper', () => {
     ).toBeInTheDocument();
   });
 
-  it('should handle null data by treating it as empty organizations', async () => {
-    server.use(
-      http.get(buildBackendUrl('/api/v1/organization/list'), () => {
-        return HttpResponse.json(null);
-      }),
-    );
+  it('should render children even when modal is shown', () => {
+    // Reset store to default state
+    const store = useOrganizationStore.getState();
+    store.setOrganizations([]);
+    store.setCurrentOrganization({
+      id: DEFAULT_ORGANIZATION_ID,
+      name: 'Dorchestrator',
+      slug: 'dorchestrator',
+      createdAt: new Date(),
+    });
 
     renderWithProviders(
       <OrganizationCheckWrapper>
@@ -77,14 +72,28 @@ describe('OrganizationCheckWrapper', () => {
       </OrganizationCheckWrapper>,
     );
 
-    // When API returns null, service converts it to [], which triggers the modal
-    await waitFor(() => {
-      expect(screen.getByText('Welcome!')).toBeInTheDocument();
-    });
-    expect(
-      screen.getByText(
-        /Before you can continue, you need to create an organization/,
-      ),
-    ).toBeInTheDocument();
+    // Both should be rendered, children are always shown
+    expect(screen.getByText('Child Content')).toBeInTheDocument();
+  });
+
+  it('should not show modal when user has a real organization', () => {
+    // Seed the store with a different organization
+    useOrganizationStore.getState().setOrganizations([
+      {
+        id: 'org-456',
+        name: 'Another Organization',
+        slug: 'another-org',
+        createdAt: new Date('2025-12-21T10:00:00.000Z'),
+      },
+    ]);
+
+    renderWithProviders(
+      <OrganizationCheckWrapper>
+        <div>Child Content</div>
+      </OrganizationCheckWrapper>,
+    );
+
+    expect(screen.getByText('Child Content')).toBeInTheDocument();
+    expect(screen.queryByText('Welcome!')).not.toBeInTheDocument();
   });
 });

@@ -1,3 +1,4 @@
+import { buildBackendUrl } from '@lib/test.utils';
 import { HttpResponse, http } from 'msw';
 
 const mockDevices = [
@@ -39,7 +40,7 @@ const mockDevices = [
 ];
 
 export const listDevicesHandler = http.get(
-  '/api/v1/:organizationId/devices',
+  buildBackendUrl('/api/v1/:organizationId/devices'),
   ({ request }) => {
     const url = new URL(request.url);
     const page = Number.parseInt(url.searchParams.get('page') ?? '1', 10);

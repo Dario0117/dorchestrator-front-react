@@ -1,8 +1,8 @@
 import { ProfileDropdown } from '@components/profile-dropdown';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { useAuthenticationStore } from '@stores/authentication.store';
-import { act, renderHook, screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
+import { Suspense } from 'react';
 
 vi.mock('@tanstack/react-router', () => ({
   Link: ({
@@ -28,35 +28,42 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 
 describe('ProfileDropdown', () => {
-  beforeAll(() => {
-    const { result: res } = renderHook(() => useAuthenticationStore());
-    act(() => {
-      res.current.setProfile({
-        id: 'test-user-id',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        email: 'test@example.com',
-        emailVerified: true,
-        name: 'Test User',
-        image: null,
-      });
+  // No beforeEach needed - using real profile query with MSW handler
+
+  it('should render profile avatar button', async () => {
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProfileDropdown />
+      </Suspense>,
+    );
+    await waitFor(() => {
+      const button = screen.getByRole('button');
+      expect(button).toBeInTheDocument();
     });
   });
-  it('should render profile avatar button', () => {
-    renderWithProviders(<ProfileDropdown />);
-    const button = screen.getByRole('button');
-    expect(button).toBeInTheDocument();
-  });
 
-  it('should render avatar fallback', () => {
-    renderWithProviders(<ProfileDropdown />);
+  it('should render avatar fallback', async () => {
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProfileDropdown />
+      </Suspense>,
+    );
 
-    expect(screen.getByText('T')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('T')).toBeInTheDocument();
+    });
   });
 
   it('should open dropdown menu when avatar is clicked', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProfileDropdown />);
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProfileDropdown />
+      </Suspense>,
+    );
+    await waitFor(() => {
+      expect(screen.getByRole('button')).toBeInTheDocument();
+    });
     const button = screen.getByRole('button');
     await user.click(button);
     expect(screen.getByText('Test User')).toBeInTheDocument();
@@ -65,7 +72,14 @@ describe('ProfileDropdown', () => {
 
   it('should render menu items', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProfileDropdown />);
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProfileDropdown />
+      </Suspense>,
+    );
+    await waitFor(() => {
+      expect(screen.getByRole('button')).toBeInTheDocument();
+    });
     const button = screen.getByRole('button');
     await user.click(button);
     expect(screen.getByText('Profile')).toBeInTheDocument();
@@ -77,7 +91,14 @@ describe('ProfileDropdown', () => {
 
   it('should render keyboard shortcuts', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProfileDropdown />);
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProfileDropdown />
+      </Suspense>,
+    );
+    await waitFor(() => {
+      expect(screen.getByRole('button')).toBeInTheDocument();
+    });
     const button = screen.getByRole('button');
     await user.click(button);
     expect(screen.getByText('⇧⌘P')).toBeInTheDocument();
@@ -88,7 +109,14 @@ describe('ProfileDropdown', () => {
 
   it('should open sign out dialog when sign out is clicked', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProfileDropdown />);
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProfileDropdown />
+      </Suspense>,
+    );
+    await waitFor(() => {
+      expect(screen.getByRole('button')).toBeInTheDocument();
+    });
     const button = screen.getByRole('button');
     await user.click(button);
     const signOutItem = screen.getByText('Sign out');
@@ -102,7 +130,14 @@ describe('ProfileDropdown', () => {
 
   it('should render profile links', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProfileDropdown />);
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProfileDropdown />
+      </Suspense>,
+    );
+    await waitFor(() => {
+      expect(screen.getByRole('button')).toBeInTheDocument();
+    });
     const button = screen.getByRole('button');
     await user.click(button);
     const profileLink = screen.getByText('Profile').closest('a');

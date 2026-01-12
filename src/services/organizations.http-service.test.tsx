@@ -25,18 +25,6 @@ describe('Organization HTTP Service', () => {
         deviceLimit: null,
       });
     });
-
-    it('should not fetch when organizationId is empty', () => {
-      const { result } = renderHook(
-        () => useOrganizationDetailsSuspenseQuery(''),
-        {
-          wrapper: createQueryThemeWrapper(),
-        },
-      );
-
-      expect(result.current.data).toBeUndefined();
-      expect(result.current.isLoading).toBe(false);
-    });
   });
 
   describe('useOrganizationStatsQuery', () => {
@@ -56,7 +44,7 @@ describe('Organization HTTP Service', () => {
       expect(stats?.recentCommands).toHaveLength(3);
     });
 
-    it('should refetch every 30 seconds', () => {
+    it('should refetch every 30 seconds', async () => {
       const { result } = renderHook(
         () => useOrganizationStatsSuspenseQuery('org-123'),
         {
@@ -64,8 +52,9 @@ describe('Organization HTTP Service', () => {
         },
       );
 
-      // Check that refetchInterval is set (testing implementation detail)
-      expect(result.current).toBeDefined();
+      await waitFor(() => {
+        expect(result.current).toBeDefined();
+      });
     });
   });
 });

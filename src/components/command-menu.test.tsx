@@ -1,5 +1,6 @@
 import { SearchProvider } from '@context/search.provider';
 import { renderWithProviders as renderWithBaseProviders } from '@lib/test-wrappers.utils';
+import { useOrganizationStore } from '@stores/organization.store';
 import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
@@ -50,53 +51,20 @@ vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-// Mock sidebar data with collapsible items containing subitems
-vi.mock('@/components/layout/data/sidebar-data', () => ({
-  sidebarData: {
-    teams: [],
-    navGroups: [
-      {
-        title: 'General',
-        items: [
-          {
-            title: 'Home',
-            url: '/',
-          },
-          {
-            title: 'Projects',
-            url: '/projects',
-          },
-        ],
-      },
-      {
-        title: 'Settings',
-        items: [
-          {
-            title: 'Account',
-            items: [
-              {
-                title: 'Profile',
-                url: '/account/profile',
-              },
-              {
-                title: 'Security',
-                url: '/account/security',
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-}));
-
 describe('CommandMenu', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-  });
+    mockNavigate.mockClear();
 
-  afterEach(() => {
-    vi.clearAllMocks();
+    // Seed the organization store with test data
+    // This will make getSidebarData work with real data
+    useOrganizationStore.getState().setOrganizations([
+      {
+        id: 'org-123',
+        name: 'Test Organization',
+        slug: 'test-org',
+        createdAt: new Date('2025-12-21T10:00:00.000Z'),
+      },
+    ]);
   });
 
   it('should render command menu when open', async () => {
@@ -151,36 +119,38 @@ describe('CommandMenu', () => {
     expect(input).toBeInTheDocument();
   });
 
-  it('should render collapsible nav items with subitems', async () => {
+  it('should render nav items from sidebar data', async () => {
     renderWithProviders();
     await openCommandMenu();
 
-    // Check that subitems from Account collapsible are rendered
-    expect(screen.getByText(/Profile/)).toBeInTheDocument();
-    expect(screen.getByText(/Security/)).toBeInTheDocument();
+    // Check that nav items from real sidebar data are rendered
+    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Devices')).toBeInTheDocument();
+    expect(screen.getByText('Commands')).toBeInTheDocument();
+    expect(screen.getByText('Organization Settings')).toBeInTheDocument();
   });
 
-  it('should navigate to subitem url when subitem is selected', async () => {
+  it('should navigate to url when nav item is selected', async () => {
     const user = userEvent.setup();
     renderWithProviders();
     await openCommandMenu();
 
-    // Find and click on the Profile subitem
-    const profileItem = screen.getByText(/Profile/);
-    await user.click(profileItem);
+    // Find and click on the Dashboard item
+    const dashboardItem = screen.getByText('Dashboard');
+    await user.click(dashboardItem);
 
-    expect(mockNavigate).toHaveBeenCalledWith({ to: '/account/profile' });
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/test-org/' });
   });
 
-  it('should navigate to url when regular nav item is selected', async () => {
+  it('should navigate to devices when devices item is selected', async () => {
     const user = userEvent.setup();
     renderWithProviders();
     await openCommandMenu();
 
-    // Find and click on the Home item
-    const homeItem = screen.getByText('Home');
-    await user.click(homeItem);
+    // Find and click on the Devices item
+    const devicesItem = screen.getByText('Devices');
+    await user.click(devicesItem);
 
-    expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/test-org/devices' });
   });
 });

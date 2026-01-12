@@ -1,14 +1,20 @@
 import { SignOutDialog } from '@components/sign-out-dialog';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { useAuthenticationStore } from '@stores/authentication.store';
-import { act, renderHook, screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
+
+const mockNavigate = vi.fn();
+
+vi.mock('@tanstack/react-router', () => ({
+  useNavigate: vi.fn(() => mockNavigate),
+}));
 
 describe('SignOutDialog', () => {
   const mockOnOpenChange = vi.fn();
 
   beforeEach(() => {
     mockOnOpenChange.mockClear();
+    mockNavigate.mockClear();
   });
 
   it('should render dialog with title and description', () => {
@@ -35,20 +41,7 @@ describe('SignOutDialog', () => {
     expect(screen.getByText('Cancel')).toBeInTheDocument();
   });
 
-  it('should trigger logout when sign out button is clicked', async () => {
-    const { result: res } = renderHook(() => useAuthenticationStore());
-    const profile = {
-      id: 'test-user-id',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      email: 'test@example.com',
-      emailVerified: true,
-      name: 'Test User',
-      image: null,
-    };
-    act(() => {
-      res.current.setProfile(profile);
-    });
+  it('should trigger logout and navigate when sign out button is clicked', async () => {
     const user = userEvent.setup();
     renderWithProviders(
       <SignOutDialog
@@ -63,13 +56,15 @@ describe('SignOutDialog', () => {
       throw new Error('Sign out button not found');
     }
 
-    const { result: preLogoutResult } = renderHook(() =>
-      useAuthenticationStore(),
-    );
-    expect(preLogoutResult.current.profile).toBe(profile);
     await user.click(signOutButton);
-    const { result } = renderHook(() => useAuthenticationStore());
 
-    expect(result.current.profile).toBeUndefined();
+    // Wait for the mutation to complete and navigation to be called
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith({
+        to: '/login',
+        replace: true,
+        search: window.location.search,
+      });
+    });
   });
 });
