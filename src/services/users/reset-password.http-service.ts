@@ -7,7 +7,7 @@ export function useResetPasswordMutation() {
     mutationFn: ({ email }: ResetPasswordFormData) => {
       return authClient.requestPasswordReset({
         email,
-        redirectTo: 'http://localhost:5173/update-password',
+        redirectTo: `${import.meta.env.FRONTEND_BASE_URL}/update-password`,
       });
     },
   });

@@ -27,11 +27,15 @@ export default defineConfig(({ mode }) => {
    * for anything else this must be true
    */
   const isVSCodeDebug = env.VITE_IS_VSCODE_DEBUG === 'true';
+  const backendBaseUrl = env.VITE_BACKEND_BASE_URL;
+  const frontendBaseUrl = env.VITE_FRONTEND_BASE_URL;
+
   return {
     define: {
       // Inject git SHA as environment variable for production builds
       'import.meta.env.VITE_APP_VERSION': JSON.stringify(gitSha),
-      'import.meta.env.BACKEND_BASE_URL': "'http://localhost:9000'",
+      'import.meta.env.BACKEND_BASE_URL': JSON.stringify(backendBaseUrl),
+      'import.meta.env.FRONTEND_BASE_URL': JSON.stringify(frontendBaseUrl),
     },
     test: {
       watch: false,

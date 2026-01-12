@@ -1,7 +1,5 @@
 # Tech Debt items
 
-- [ ] Typescript issues
-- [ ] Fix env variables
 - [ ] CSRF?
 - [ ] Add email verification
 - [ ] On useResetPasswordMutation, change the redirectTo to a environment dependant value instead of a hardcoded value.
@@ -37,3 +35,4 @@
 - [ ] When creating organization for the first time, on the sidebar selector the name is not updated to the newly created organization
 - [ ] When logging out clear all data (probably worth just instead of navigating to the login page, refresh the page or force the reload once on login to delete any remaining data on queries and contexts)
 - [ ] Fix storybook
+- [ ] the index/dashboard is not selected when you click on the sidebar or load the page, not happening for devices page

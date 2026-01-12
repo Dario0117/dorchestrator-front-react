@@ -5,6 +5,6 @@ const BASE_PATH = '/api/v1';
 
 export const authClient = createAuthClient({
   basePath: BASE_PATH,
-  baseURL: import.meta.env.BACKEND_BASE_URL ?? 'http://localhost:9000',
+  baseURL: import.meta.env.BACKEND_BASE_URL,
   plugins: [emailOTPClient(), organizationClient()],
 });
