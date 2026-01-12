@@ -1,4 +1,3 @@
-import { DEFAULT_ORGANIZATION_ID } from '@stores/organization.store.constants';
 import { useQuery } from '@tanstack/react-query';
 import { $api } from '@/http-service-setup';
 
@@ -22,7 +21,6 @@ export const useDevicesQueryOptions = (
       },
     },
     {
-      enabled: organizationId !== DEFAULT_ORGANIZATION_ID,
       refetchInterval: 10000, // Poll every 10s for status updates
     },
   );

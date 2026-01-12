@@ -1,6 +1,6 @@
 import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
 import { useOrganizationDetailsQuery } from '@services/organizations/get-organization-details.http-service';
-import { useOrganizationStatsQuery } from '@services/organizations/get-organization-stats.http-service';
+import { useOrganizationStatsSuspenseQuery } from '@services/organizations/get-organization-stats.http-service';
 import { renderHook, waitFor } from '@testing-library/react';
 
 describe('Organization HTTP Service', () => {
@@ -39,7 +39,7 @@ describe('Organization HTTP Service', () => {
   describe('useOrganizationStatsQuery', () => {
     it('should fetch organization stats successfully', async () => {
       const { result } = renderHook(
-        () => useOrganizationStatsQuery('org-123'),
+        () => useOrganizationStatsSuspenseQuery('org-123'),
         {
           wrapper: createQueryThemeWrapper(),
         },
@@ -55,7 +55,7 @@ describe('Organization HTTP Service', () => {
 
     it('should refetch every 30 seconds', () => {
       const { result } = renderHook(
-        () => useOrganizationStatsQuery('org-123'),
+        () => useOrganizationStatsSuspenseQuery('org-123'),
         {
           wrapper: createQueryThemeWrapper(),
         },

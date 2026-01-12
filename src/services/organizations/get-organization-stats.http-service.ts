@@ -1,22 +1,24 @@
-import { DEFAULT_ORGANIZATION_ID } from '@stores/organization.store.constants';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { $api } from '@/http-service-setup';
 
-export function useOrganizationStatsQuery(organizationId: string) {
-  return $api.useQuery(
+export const useOrganizationStatsQueryOptions = (organizationId: string) =>
+  $api.queryOptions(
     'get',
     '/api/v1/{organizationId}/organization/stats',
     {
       params: {
-        path: { organizationId },
+        path: { organizationId: organizationId },
       },
     },
     {
-      enabled: organizationId !== DEFAULT_ORGANIZATION_ID,
       refetchInterval: 30000, // Refresh every 30 seconds
     },
   );
+
+export function useOrganizationStatsSuspenseQuery(organizationId: string) {
+  return useSuspenseQuery(useOrganizationStatsQueryOptions(organizationId));
 }
 
 export type useOrganizationStatsQueryReturnType = ReturnType<
-  typeof useOrganizationStatsQuery
+  typeof useOrganizationStatsSuspenseQuery
 >;

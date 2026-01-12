@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
-import { Skeleton } from '@components/ui/skeleton';
-import { useOrganizationStatsQuery } from '@services/organizations/get-organization-stats.http-service';
+import { useOrganizationStatsSuspenseQuery } from '@services/organizations/get-organization-stats.http-service';
 import { useOrganizationStore } from '@stores/organization.store';
 import { Building2, HardDrive, Terminal } from 'lucide-react';
 
@@ -16,12 +15,7 @@ export function HomePage() {
 
   const organizationId = currentOrganization.id;
 
-  const { data: stats, isLoading: statsLoading } =
-    useOrganizationStatsQuery(organizationId);
-
-  if (statsLoading) {
-    return <DashboardSkeleton />;
-  }
+  const { data: stats } = useOrganizationStatsSuspenseQuery(organizationId);
 
   return (
     <section className="p-6 md:p-10 space-y-6">
@@ -127,34 +121,5 @@ function StatCard({
         <div className="text-2xl font-bold">{value}</div>
       </CardContent>
     </Card>
-  );
-}
-
-function DashboardSkeleton() {
-  return (
-    <section className="p-6 md:p-10 space-y-6">
-      <div>
-        <Skeleton className="h-9 w-64 mb-2" />
-        <Skeleton className="h-5 w-96" />
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-3">
-        {[1, 2, 3].map((i) => (
-          <Card key={i}>
-            <CardHeader className="pb-2">
-              <Skeleton className="h-4 w-24" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-8 w-16" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="flex gap-4">
-        <Skeleton className="h-10 w-32" />
-        <Skeleton className="h-10 w-40" />
-      </div>
-    </section>
   );
 }
