@@ -51,12 +51,6 @@ describe('DevicesPage', () => {
     ]);
   });
 
-  it('should render loading state initially', () => {
-    renderWithProviders(<DevicesPage />);
-
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-  });
-
   it('should render devices page with device cards', async () => {
     renderWithProviders(<DevicesPage />);
 

@@ -14,8 +14,6 @@
 - [ ] Implement structured logging and open telemetry
 - [ ] Implement branded IDs
 - [ ] Default current organization must be marked somehow on the data layer, that way we don't use the first organization in the list as the default (see src/stores/organization.store.ts) - Use the metadata of the organization to mark it as default
-- [ ] When attempting to add a second device, the UI is showing the old token instead of prompting to generate a new one
-- [ ] Refactor the code to add all list/get requests to be loaded on the router loader, this way we can ensure the data is loaded before rendering the page
 - [ ] Implement layered architecture pattern (repository (http calls / hooks) <- service (custom hooks with behavior logic) <- component (only ui logic and service hooks) <- pages (layouts and full pages) <- routes (url paths, params, pre-fetching, etc.))
 - [ ] Add a concept of "entity" to map every object in the API, that way we don't have to always build types because we don't know from where they are coming from (e.g., devices, commands, etc.) we can add something like `/entities/api/[entity].types.ts` and if we need to add new local entities we can do `/entities/local/[entity].types.ts`
 - [ ] Correctly handle dates and change them to the local timezone, the expected date coming from the API is in UTC, we need to convert it to the local timezone

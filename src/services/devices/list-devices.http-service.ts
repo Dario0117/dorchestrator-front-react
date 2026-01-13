@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { $api } from '@/http-service-setup';
 
 export const useDevicesQueryOptions = (
@@ -25,17 +25,24 @@ export const useDevicesQueryOptions = (
     },
   );
 
-export function useDevicesQuery(organizationId: string, page = 1, size = 10) {
-  return useQuery(useDevicesQueryOptions(organizationId, page, size));
+export function useDevicesSuspenseQuery(
+  organizationId: string,
+  page = 1,
+  size = 10,
+) {
+  return useSuspenseQuery(useDevicesQueryOptions(organizationId, page, size));
 }
 
-export type useDevicesQueryReturnType = ReturnType<typeof useDevicesQuery>;
-export type useDevicesQueryData = useDevicesQueryReturnType['data'];
-export type useDevicesQueryResponseData = NonNullable<
-  NonNullable<useDevicesQueryData>['responseData']
+export type useDevicesSuspenseQueryReturnType = ReturnType<
+  typeof useDevicesSuspenseQuery
 >;
-export type useDevicesQueryResponseErrors = NonNullable<
-  NonNullable<useDevicesQueryData>['responseErrors']
+export type useDevicesSuspenseQueryData =
+  useDevicesSuspenseQueryReturnType['data'];
+export type useDevicesSuspenseQueryResponseData = NonNullable<
+  NonNullable<useDevicesSuspenseQueryData>['responseData']
+>;
+export type useDevicesSuspenseQueryResponseErrors = NonNullable<
+  NonNullable<useDevicesSuspenseQueryData>['responseErrors']
 >;
 export type ListDevicesDevice =
-  NonNullable<useDevicesQueryResponseData>['results'][0];
+  NonNullable<useDevicesSuspenseQueryResponseData>['results'][0];

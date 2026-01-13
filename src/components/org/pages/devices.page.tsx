@@ -12,7 +12,7 @@ import {
 } from '@components/ui/pagination';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { Route } from '@routes/(authenticated)/$organizationSlug/devices';
-import { useDevicesQuery } from '@services/devices/list-devices.http-service';
+import { useDevicesSuspenseQuery } from '@services/devices/list-devices.http-service';
 import { useRemoveDeviceMutation } from '@services/devices/remove-device.http-service';
 import { useNavigate } from '@tanstack/react-router';
 import { Plus } from 'lucide-react';
@@ -30,23 +30,11 @@ export function DevicesPage() {
 
   const organizationId = currentOrganization.id;
 
-  // Fetch devices
-  const { data, isLoading, error } = useDevicesQuery(
-    organizationId,
-    page,
-    size,
-  );
+  // Fetch devices (pre-loaded by route loader)
+  const { data } = useDevicesSuspenseQuery(organizationId, page, size);
 
   // Delete device mutation
   const deleteMutation = useRemoveDeviceMutation();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!data || error) {
-    return <div>Error loading devices</div>;
-  }
 
   const devices = data.responseData?.results || [];
   const totalPages = data.responseData?.totalPages || 0;

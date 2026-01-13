@@ -390,3 +390,4 @@ import { Button } from '../../components/ui/button';
 - Never add docstring to the code, unless you are asked to do so
 - Never write tests while implementing a feature, write them afterwards, do it on the review step
 - Never add return types, they must be automatically inferred to avoid any issues on the caller's side
+- Never write tests for http services `*.http-service.ts`
