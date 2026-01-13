@@ -379,4 +379,88 @@ describe('NavGroup', () => {
       },
     );
   });
+
+  it('should match URLs with trailing slashes', () => {
+    mockUseLocation.mockImplementation(
+      ({
+        select,
+      }: {
+        select?: (location: { href: string }) => string;
+      } = {}) => {
+        const location = { href: '/dashboard' };
+        return select ? select(location) : location;
+      },
+    );
+
+    const itemsWithTrailingSlash: NavItem[] = [
+      {
+        title: 'Dashboard',
+        url: '/dashboard/',
+        icon: FolderKanban,
+      },
+      {
+        title: 'Settings',
+        url: '/settings',
+        icon: FilePenLine,
+      },
+    ];
+
+    renderNavGroup(itemsWithTrailingSlash);
+
+    const dashboardLink = screen.getByRole('link', { name: /dashboard/i });
+    expect(dashboardLink).toHaveAttribute('data-active', 'true');
+
+    mockUseLocation.mockImplementation(
+      ({
+        select,
+      }: {
+        select?: (location: { href: string }) => string;
+      } = {}) => {
+        const location = { href: '/' };
+        return select ? select(location) : location;
+      },
+    );
+  });
+
+  it('should match URLs without trailing slashes when current location has trailing slash', () => {
+    mockUseLocation.mockImplementation(
+      ({
+        select,
+      }: {
+        select?: (location: { href: string }) => string;
+      } = {}) => {
+        const location = { href: '/settings/' };
+        return select ? select(location) : location;
+      },
+    );
+
+    const itemsWithoutTrailingSlash: NavItem[] = [
+      {
+        title: 'Dashboard',
+        url: '/dashboard',
+        icon: FolderKanban,
+      },
+      {
+        title: 'Settings',
+        url: '/settings',
+        icon: FilePenLine,
+      },
+    ];
+
+    renderNavGroup(itemsWithoutTrailingSlash);
+
+    const settingsLink = screen.getByRole('link', { name: /settings/i });
+    expect(settingsLink).toHaveAttribute('data-active', 'true');
+
+    mockUseLocation.mockImplementation(
+      ({
+        select,
+      }: {
+        select?: (location: { href: string }) => string;
+      } = {}) => {
+        const location = { href: '/' };
+        return select ? select(location) : location;
+      },
+    );
+  });
 });
