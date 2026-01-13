@@ -120,6 +120,78 @@ describe('AppFormField', () => {
     expect(input).toHaveAttribute('type', 'password');
   });
 
+  it('should render PasswordInput component with toggle button for password type', () => {
+    render(
+      <TestFormWrapper
+        type="password"
+        label="Password"
+      />,
+    );
+
+    const input = screen.getByLabelText('Password');
+    expect(input).toHaveAttribute('type', 'password');
+
+    // Should have a toggle button
+    const toggleButton = screen.getByRole('button', { name: 'Show password' });
+    expect(toggleButton).toBeInTheDocument();
+  });
+
+  it('should toggle password visibility in form context', async () => {
+    const user = userEvent.setup();
+    render(
+      <TestFormWrapper
+        type="password"
+        label="Password"
+      />,
+    );
+
+    const input = screen.getByLabelText('Password');
+    const toggleButton = screen.getByRole('button', { name: 'Show password' });
+
+    // Initially password type
+    expect(input).toHaveAttribute('type', 'password');
+
+    // Click to show password
+    await user.click(toggleButton);
+    expect(input).toHaveAttribute('type', 'text');
+    expect(
+      screen.getByRole('button', { name: 'Hide password' }),
+    ).toBeInTheDocument();
+
+    // Click again to hide password
+    await user.click(toggleButton);
+    expect(input).toHaveAttribute('type', 'password');
+    expect(
+      screen.getByRole('button', { name: 'Show password' }),
+    ).toBeInTheDocument();
+  });
+
+  it('should maintain password value when toggling visibility', async () => {
+    const user = userEvent.setup();
+    render(
+      <TestFormWrapper
+        type="password"
+        label="Password"
+        initialValue="SecurePassword123"
+      />,
+    );
+
+    const input = screen.getByLabelText('Password') as HTMLInputElement;
+    const toggleButton = screen.getByRole('button', { name: 'Show password' });
+
+    expect(input.value).toBe('SecurePassword123');
+
+    // Toggle visibility
+    await user.click(toggleButton);
+    expect(input.value).toBe('SecurePassword123');
+    expect(input).toHaveAttribute('type', 'text');
+
+    // Toggle back
+    await user.click(toggleButton);
+    expect(input.value).toBe('SecurePassword123');
+    expect(input).toHaveAttribute('type', 'password');
+  });
+
   it('should render text input by default', () => {
     render(<TestFormWrapper label="Name" />);
 

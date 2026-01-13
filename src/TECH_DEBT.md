@@ -7,17 +7,16 @@
 - [ ] Add claude code commands for common actions (test, fix-ts, add new endpoint, etc)
 - [ ] Update to shadcn v2
 - [ ] Implement git hooks for formatting (no linting, no ts checking, no tests)
-- [ ] Add "reveal password" option to password inputs
+- [ ] Regenerate the claude.md file
+- [ ] Remove the requirement for tests during development, combine this with a command/subagent to create tests to speed up development and only write tests when the code is reviewed and manually tested
+
+- [ ] Refreshing doesn't keep the current page
 - [ ] Show org and teams in sidebar
 - [ ] Add an option to create an org and a team in the sidebar
-- [ ] Regenerate the claude.md file
-- [ ] Move reading from env vars to an util file, that way we can mock it in tests and have it centralized
-- [ ] Remove the requirement for tests during development, combine this with a command/subagent to create tests to speed up development and only write tests when the code is reviewed and manually tested
-- [ ] Refreshing doesn't keep the current page
 - [ ] Implement structured logging and open telemetry
 - [ ] Refactor login/session flow to use ctx.context.queryClient.ensureQueryData inside of the loader of the router, session and organization info must be present before loading anything else, those are key resources.
 - [ ] Implement branded IDs
-- [ ] Default current organization must be marked somehow on the data layer, that way we don't use the first organization in the list as the default (see src/stores/organization.store.ts)
+- [ ] Default current organization must be marked somehow on the data layer, that way we don't use the first organization in the list as the default (see src/stores/organization.store.ts) - Use the metadata of the organization to mark it as default
 - [ ] Remove the undefined on organization store for current organization, add a dummy organization object with dummy data so we can avoid checking for undefined everywhere
 - [ ] When attempting to add a second device, the UI is showing the old token instead of prompting to generate a new one
 - [ ] Refactor the code to add all list/get requests to be loaded on the router loader, this way we can ensure the data is loaded before rendering the page

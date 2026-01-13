@@ -62,7 +62,10 @@ export function LoginForm({ loginMutation, handleSuccess }: LoginFormProps) {
 
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{' '}
-          <Link to="/register" className="underline-offset-4 hover:underline">
+          <Link
+            to="/register"
+            className="underline-offset-4 hover:underline"
+          >
             Register
           </Link>
         </div>

@@ -267,6 +267,9 @@ describe('RegisterForm', () => {
     const emailInput = screen.getByLabelText(/Email/);
     const passwordInput = screen.getByPlaceholderText('Password');
     const confirmPasswordInput = screen.getByLabelText(/Confirm Password/);
+    const passwordToggleButtons = screen.getAllByRole('button', {
+      name: /password/i,
+    });
 
     // Tab navigation should work through input fields
     await user.tab();
@@ -278,6 +281,11 @@ describe('RegisterForm', () => {
     await user.tab();
     expect(passwordInput).toHaveFocus();
 
+    // Password toggle button is next in tab order
+    await user.tab();
+    expect(passwordToggleButtons[0]).toHaveFocus();
+
+    // Confirm password input is next
     await user.tab();
     expect(confirmPasswordInput).toHaveFocus();
 
@@ -297,6 +305,11 @@ describe('RegisterForm', () => {
       expect(submitButton).not.toBeDisabled();
     });
 
+    // Confirm password toggle button is next after confirm password input
+    await user.tab();
+    expect(passwordToggleButtons[1]).toHaveFocus();
+
+    // Submit button is next
     await user.tab();
     await waitFor(() => {
       expect(submitButton).toHaveFocus();

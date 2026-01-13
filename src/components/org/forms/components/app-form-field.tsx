@@ -2,6 +2,7 @@ import type { FormFieldProps } from '@components/org/forms/components/app-form-f
 import { useFieldContext } from '@components/org/forms/hooks/app-form';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
+import { PasswordInput } from '@components/ui/password-input';
 
 export function AppFormField({
   label,
@@ -26,23 +27,42 @@ export function AppFormField({
         </Label>
         {children}
       </div>
-      <Input
-        id={field.name}
-        name={field.name}
-        type={type}
-        value={field.state.value}
-        onBlur={field.handleBlur}
-        onChange={(e) => {
-          field.handleChange(e.target.value);
-          if (onChange) {
-            onChange(e);
-          }
-        }}
-        placeholder={placeholder}
-        required={required}
-        aria-invalid={hasError}
-        aria-describedby={hasError ? `${field.name}-error` : undefined}
-      />
+      {type === 'password' ? (
+        <PasswordInput
+          id={field.name}
+          name={field.name}
+          value={field.state.value}
+          onBlur={field.handleBlur}
+          onChange={(e) => {
+            field.handleChange(e.target.value);
+            if (onChange) {
+              onChange(e);
+            }
+          }}
+          placeholder={placeholder}
+          required={required}
+          aria-invalid={hasError}
+          aria-describedby={hasError ? `${field.name}-error` : undefined}
+        />
+      ) : (
+        <Input
+          id={field.name}
+          name={field.name}
+          type={type}
+          value={field.state.value}
+          onBlur={field.handleBlur}
+          onChange={(e) => {
+            field.handleChange(e.target.value);
+            if (onChange) {
+              onChange(e);
+            }
+          }}
+          placeholder={placeholder}
+          required={required}
+          aria-invalid={hasError}
+          aria-describedby={hasError ? `${field.name}-error` : undefined}
+        />
+      )}
       {helperText && (
         <p className="text-sm text-muted-foreground">{helperText}</p>
       )}
