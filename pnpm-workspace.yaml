@@ -1,6 +1,0 @@
-minimumReleaseAge: 1440
-savePrefix: ''
-
-onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
-  - msw
