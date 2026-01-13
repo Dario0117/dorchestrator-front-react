@@ -1,43 +1,36 @@
 import { OrganizationCheckWrapper } from '@components/layout/organization-check-wrapper';
+import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { useOrganizationStore } from '@stores/organization.store';
-import { DEFAULT_ORGANIZATION_ID } from '@stores/organization.store.constants';
 import { screen, waitFor } from '@testing-library/react';
+import { HttpResponse, http } from 'msw';
+import { Suspense } from 'react';
 import { describe, expect, it } from 'vitest';
+import { server } from '@/../testsSetup';
 
 describe('OrganizationCheckWrapper', () => {
-  it('should render children when user has organizations', () => {
-    // Seed the store with a real organization
-    useOrganizationStore.getState().setOrganizations([
-      {
-        id: 'org-123',
-        name: 'Test Organization',
-        slug: 'test-org',
-        createdAt: new Date('2025-12-21T10:00:00.000Z'),
-      },
-    ]);
-
+  it('should render children when user has organizations', async () => {
+    // Default MSW handler returns organizations
     renderWithProviders(
-      <OrganizationCheckWrapper>
-        <div>Child Content</div>
-      </OrganizationCheckWrapper>,
+      <Suspense fallback={<div>Loading...</div>}>
+        <OrganizationCheckWrapper>
+          <div>Child Content</div>
+        </OrganizationCheckWrapper>
+      </Suspense>,
     );
 
-    expect(screen.getByText('Child Content')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Child Content')).toBeInTheDocument();
+    });
     expect(screen.queryByText('Welcome!')).not.toBeInTheDocument();
   });
 
   it('should show modal when user has no organizations', async () => {
-    // Reset store to default state (no real organizations)
-    const store = useOrganizationStore.getState();
-    store.setOrganizations([]);
-    // Manually set to default organization since setOrganizations doesn't reset it
-    store.setCurrentOrganization({
-      id: DEFAULT_ORGANIZATION_ID,
-      name: 'Dorchestrator',
-      slug: 'dorchestrator',
-      createdAt: new Date(),
-    });
+    // Override MSW handler to return empty organizations
+    server.use(
+      http.get(buildBackendUrl('/api/v1/organization/list'), () => {
+        return HttpResponse.json([]);
+      }),
+    );
 
     renderWithProviders(
       <OrganizationCheckWrapper>
@@ -55,45 +48,41 @@ describe('OrganizationCheckWrapper', () => {
     ).toBeInTheDocument();
   });
 
-  it('should render children even when modal is shown', () => {
-    // Reset store to default state
-    const store = useOrganizationStore.getState();
-    store.setOrganizations([]);
-    store.setCurrentOrganization({
-      id: DEFAULT_ORGANIZATION_ID,
-      name: 'Dorchestrator',
-      slug: 'dorchestrator',
-      createdAt: new Date(),
-    });
+  it('should render children even when modal is shown', async () => {
+    // Override MSW handler to return empty organizations
+    server.use(
+      http.get(buildBackendUrl('/api/v1/organization/list'), () => {
+        return HttpResponse.json([]);
+      }),
+    );
 
     renderWithProviders(
-      <OrganizationCheckWrapper>
-        <div>Child Content</div>
-      </OrganizationCheckWrapper>,
+      <Suspense fallback={<div>Loading...</div>}>
+        <OrganizationCheckWrapper>
+          <div>Child Content</div>
+        </OrganizationCheckWrapper>
+      </Suspense>,
     );
 
     // Both should be rendered, children are always shown
-    expect(screen.getByText('Child Content')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Child Content')).toBeInTheDocument();
+    });
   });
 
-  it('should not show modal when user has a real organization', () => {
-    // Seed the store with a different organization
-    useOrganizationStore.getState().setOrganizations([
-      {
-        id: 'org-456',
-        name: 'Another Organization',
-        slug: 'another-org',
-        createdAt: new Date('2025-12-21T10:00:00.000Z'),
-      },
-    ]);
-
+  it('should not show modal when user has a real organization', async () => {
+    // Default MSW handler returns organizations
     renderWithProviders(
-      <OrganizationCheckWrapper>
-        <div>Child Content</div>
-      </OrganizationCheckWrapper>,
+      <Suspense fallback={<div>Loading...</div>}>
+        <OrganizationCheckWrapper>
+          <div>Child Content</div>
+        </OrganizationCheckWrapper>
+      </Suspense>,
     );
 
-    expect(screen.getByText('Child Content')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Child Content')).toBeInTheDocument();
+    });
     expect(screen.queryByText('Welcome!')).not.toBeInTheDocument();
   });
 });

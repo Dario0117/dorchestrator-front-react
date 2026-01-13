@@ -25,3 +25,7 @@ export function useUserOrganizationsSuspendedQuery() {
 export type useUserOrganizationsQueryReturnType = ReturnType<
   typeof useUserOrganizationsSuspendedQuery
 >;
+
+export type OrganizationItem = NonNullable<
+  useUserOrganizationsQueryReturnType['data']
+>[0];

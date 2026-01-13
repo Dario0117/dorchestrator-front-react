@@ -1,8 +1,9 @@
 import { CreateOrganizationModal } from '@components/org/modals/create-organization.modal';
 import { queryClient } from '@context/query.provider';
-import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
-import { useOrganizationStore } from '@stores/organization.store';
-import { DEFAULT_ORGANIZATION_ID } from '@stores/organization.store.constants';
+import {
+  useUserOrganizationsQueryOptions,
+  useUserOrganizationsSuspendedQuery,
+} from '@services/organizations/list-user-organizations.http-service';
 import { useEffect, useState } from 'react';
 
 interface OrganizationCheckWrapperProps {
@@ -12,15 +13,14 @@ interface OrganizationCheckWrapperProps {
 export function OrganizationCheckWrapper({
   children,
 }: OrganizationCheckWrapperProps) {
-  const { currentOrganization } = useOrganizationStore();
+  const { data: organizations } = useUserOrganizationsSuspendedQuery();
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     // Check if user has at least one organization
-    const hasDefaultOrganization =
-      currentOrganization.id !== DEFAULT_ORGANIZATION_ID;
-    setShowModal(!hasDefaultOrganization);
-  }, [currentOrganization]);
+    const hasOrganizations = organizations.length > 0;
+    setShowModal(!hasOrganizations);
+  }, [organizations]);
 
   const handleOrganizationCreated = () => {
     // Refetch organizations to update the list

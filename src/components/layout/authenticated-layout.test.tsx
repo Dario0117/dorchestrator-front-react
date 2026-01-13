@@ -1,6 +1,5 @@
 import { AuthenticatedLayout } from '@components/layout/authenticated-layout';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { useOrganizationStore } from '@stores/organization.store';
 import { screen, waitFor } from '@testing-library/react';
 import { Suspense } from 'react';
 
@@ -21,46 +20,61 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 });
 
-vi.mock('@tanstack/react-router', () => ({
-  Link: ({
-    to,
-    children,
-    ...props
-  }: {
-    to: string;
-    children: React.ReactNode;
-  }) => (
-    <a
-      href={to}
-      {...props}
-    >
-      {children}
-    </a>
-  ),
-  useLocation: ({
-    select,
-  }: {
-    select?: (location: { href: string }) => string;
-  } = {}) => {
-    const location = { href: '/' };
-    return select ? select(location) : location;
-  },
-  useNavigate: () => vi.fn(),
-  Outlet: () => <div data-testid="outlet">Outlet</div>,
+const mockOrganization = {
+  id: 'org-1',
+  name: 'Test Organization',
+  slug: 'test-org',
+  createdAt: new Date('2025-12-21T10:00:00.000Z'),
+};
+
+vi.mock('@tanstack/react-router', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('@tanstack/react-router')>();
+  return {
+    ...actual,
+    Link: ({
+      to,
+      children,
+      ...props
+    }: {
+      to: string;
+      children: React.ReactNode;
+    }) => (
+      <a
+        href={to}
+        {...props}
+      >
+        {children}
+      </a>
+    ),
+    useLocation: ({
+      select,
+    }: {
+      select?: (location: { href: string }) => string;
+    } = {}) => {
+      const location = { href: '/' };
+      return select ? select(location) : location;
+    },
+    useNavigate: () => vi.fn(),
+    Outlet: () => <div data-testid="outlet">Outlet</div>,
+    useParams: () => ({ organizationSlug: 'test-org' }),
+    useRouterState: () => ({
+      matches: [
+        {
+          context: {
+            _getNullableCurrentOrganizationFromSlug: () => mockOrganization,
+          },
+        },
+      ],
+    }),
+  };
+});
+
+vi.mock('@/app', () => ({
+  _getNullableCurrentOrganizationFromSlug: () => mockOrganization,
 }));
 
 async function renderAuthenticatedLayout(children?: React.ReactNode) {
-  // Seed the organization store with test data before rendering
-  // This mimics what the route wrapper does
-  useOrganizationStore.getState().setOrganizations([
-    {
-      id: 'org-123',
-      name: 'Test Organization',
-      slug: 'test-org',
-      createdAt: new Date('2025-12-21T10:00:00.000Z'),
-    },
-  ]);
-
   const result = renderWithProviders(
     <Suspense fallback={<div>Loading...</div>}>
       <AuthenticatedLayout>

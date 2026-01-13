@@ -10,16 +10,16 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@components/ui/pagination';
+import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { Route } from '@routes/(authenticated)/$organizationSlug/devices';
 import { useDevicesQuery } from '@services/devices/list-devices.http-service';
 import { useRemoveDeviceMutation } from '@services/devices/remove-device.http-service';
-import { useOrganizationStore } from '@stores/organization.store';
 import { useNavigate } from '@tanstack/react-router';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
 export function DevicesPage() {
-  const { currentOrganization } = useOrganizationStore();
+  const currentOrganization = useCurrentOrganization();
   const { page, size } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [addModalOpen, setAddModalOpen] = useState(false);

@@ -1,34 +1,51 @@
 import { AppSidebar } from '@components/layout/app-sidebar';
 import { SidebarProvider } from '@components/ui/sidebar';
 import { LayoutProvider } from '@context/layout.provider';
+import { queryClient } from '@context/query.provider';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { screen } from '@testing-library/react';
 
-vi.mock('@tanstack/react-router', () => ({
-  Link: ({
-    to,
-    children,
-    ...props
-  }: {
-    to: string;
-    children: React.ReactNode;
-  }) => (
-    <a
-      href={to}
-      {...props}
-    >
-      {children}
-    </a>
-  ),
-  useLocation: ({
-    select,
-  }: {
-    select?: (location: { href: string }) => string;
-  } = {}) => {
-    const location = { href: '/' };
-    return select ? select(location) : location;
-  },
-}));
+vi.mock('@tanstack/react-router', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('@tanstack/react-router')>();
+  return {
+    ...actual,
+    Link: ({
+      to,
+      children,
+      ...props
+    }: {
+      to: string;
+      children: React.ReactNode;
+    }) => (
+      <a
+        href={to}
+        {...props}
+      >
+        {children}
+      </a>
+    ),
+    useLocation: ({
+      select,
+    }: {
+      select?: (location: { href: string }) => string;
+    } = {}) => {
+      const location = { href: '/' };
+      return select ? select(location) : location;
+    },
+    useParams: () => ({ organizationSlug: 'test-org' }),
+  };
+});
+
+const mockOrganization = {
+  id: 'org-1',
+  name: 'Test Organization',
+  slug: 'test-org',
+  createdAt: new Date('2025-12-21T10:00:00.000Z'),
+  logo: null,
+  metadata: {},
+};
 function renderAppSidebar() {
   return renderWithProviders(
     <LayoutProvider>
@@ -40,6 +57,12 @@ function renderAppSidebar() {
 }
 
 describe('AppSidebar', () => {
+  beforeEach(() => {
+    // Seed query cache with organization data
+    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, [
+      mockOrganization,
+    ]);
+  });
   it('should render sidebar', () => {
     const { container } = renderAppSidebar();
 
@@ -50,7 +73,7 @@ describe('AppSidebar', () => {
   it('should render team switcher', () => {
     renderAppSidebar();
 
-    expect(screen.getByText('Dorchestrator')).toBeInTheDocument();
+    expect(screen.getByText('Test Organization')).toBeInTheDocument();
   });
 
   it('should render navigation groups', () => {
@@ -84,7 +107,7 @@ describe('AppSidebar', () => {
   it('should render all team options', () => {
     renderAppSidebar();
 
-    expect(screen.getByText('Dorchestrator')).toBeInTheDocument();
+    expect(screen.getByText('Test Organization')).toBeInTheDocument();
   });
 
   it('should have correct sidebar structure', () => {

@@ -1,12 +1,18 @@
-import { useOrganizationStore } from '@stores/organization.store';
+import { useUserOrganizationsSuspendedQuery } from '@services/organizations/list-user-organizations.http-service';
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 
 function RedirectToOrganization() {
-  const { currentOrganization } = useOrganizationStore();
+  const { data: organizations } = useUserOrganizationsSuspendedQuery();
+  const firstOrganization = organizations[0];
+
+  if (!firstOrganization) {
+    throw new Error('No organizations found');
+  }
+
   return (
     <Navigate
       to="/$organizationSlug"
-      params={{ organizationSlug: currentOrganization.slug }}
+      params={{ organizationSlug: firstOrganization.slug }}
     />
   );
 }

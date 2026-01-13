@@ -1,6 +1,8 @@
 import { queryClient } from '@context/query.provider';
-import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
-import type { OrganizationItem } from '@stores/organization.store.types';
+import {
+  type OrganizationItem,
+  useUserOrganizationsQueryOptions,
+} from '@services/organizations/list-user-organizations.http-service';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from '@/routeTree.gen';
 
@@ -26,7 +28,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
-function _getNullableCurrentOrganizationFromSlug(
+export function _getNullableCurrentOrganizationFromSlug(
   slug: string,
 ): OrganizationItem | undefined {
   /**

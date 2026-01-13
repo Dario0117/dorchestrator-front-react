@@ -1,14 +1,10 @@
 import { AuthenticatedLayout } from '@components/layout/authenticated-layout';
-import {
-  useUserOrganizationsQueryOptions,
-  useUserOrganizationsSuspendedQuery,
-} from '@services/organizations/list-user-organizations.http-service';
+import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { profileQueryOptions } from '@services/users/get-profile.http-service';
-import { useOrganizationStore } from '@stores/organization.store';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(authenticated)')({
-  component: () => <AuthenticatedLayoutWithOrgs />,
+  component: AuthenticatedLayout,
   beforeLoad: async (ctx) => {
     try {
       await ctx.context.queryClient.ensureQueryData(profileQueryOptions);
@@ -24,11 +20,3 @@ export const Route = createFileRoute('/(authenticated)')({
     );
   },
 });
-
-const AuthenticatedLayoutWithOrgs = () => {
-  const { data: organizations } = useUserOrganizationsSuspendedQuery();
-  useOrganizationStore((state) => {
-    state.setOrganizations(organizations);
-  });
-  return <AuthenticatedLayout />;
-};

@@ -1,20 +1,33 @@
 import { HomePage } from '@components/org/pages/home.page';
+import { queryClient } from '@context/query.provider';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { setMobileViewport, setTabletViewport } from '@lib/viewport-test-utils';
-import { useOrganizationStore } from '@stores/organization.store';
+import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { screen, waitFor } from '@testing-library/react';
 import { Suspense } from 'react';
 
+vi.mock('@tanstack/react-router', async () => {
+  const actual = await vi.importActual('@tanstack/react-router');
+  return {
+    ...actual,
+    useParams: () => ({ organizationSlug: 'test-org' }),
+  };
+});
+
+const mockOrganization = {
+  id: 'org-1',
+  name: 'Test Organization',
+  slug: 'test-org',
+  createdAt: new Date('2025-12-21T10:00:00.000Z'),
+  logo: null,
+  metadata: {},
+};
+
 describe('HomePage', () => {
   beforeEach(() => {
-    // Seed the organization store with test data
-    useOrganizationStore.getState().setOrganizations([
-      {
-        id: 'org-123',
-        name: 'Test Organization',
-        slug: 'test-org',
-        createdAt: new Date('2025-12-21T10:00:00.000Z'),
-      },
+    // Seed query cache with organization data
+    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, [
+      mockOrganization,
     ]);
   });
 

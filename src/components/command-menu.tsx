@@ -11,7 +11,7 @@ import {
 import { ScrollArea } from '@components/ui/scroll-area';
 import { useSearch } from '@context/search.provider';
 import { useTheme } from '@context/theme.provider';
-import { useOrganizationStore } from '@stores/organization.store';
+import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useNavigate } from '@tanstack/react-router';
 import { ArrowRight, ChevronRight, Laptop, Moon, Sun } from 'lucide-react';
 import React from 'react';
@@ -20,7 +20,7 @@ export function CommandMenu() {
   const navigate = useNavigate();
   const { setTheme } = useTheme();
   const { open, setOpen } = useSearch();
-  const { currentOrganization } = useOrganizationStore();
+  const currentOrganization = useCurrentOrganization();
 
   const runCommand = React.useCallback(
     (command: () => unknown) => {

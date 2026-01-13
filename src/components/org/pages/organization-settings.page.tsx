@@ -1,18 +1,17 @@
 import { Alert, AlertDescription } from '@components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useOrganizationDetailsSuspenseQuery } from '@services/organizations/get-organization-details.http-service';
 import { useProfileSuspendedQuery } from '@services/users/get-profile.http-service';
-import { useOrganizationStore } from '@stores/organization.store';
 import { Info } from 'lucide-react';
 
 export function OrganizationSettingsPage() {
   const { data: profile } = useProfileSuspendedQuery();
+  const currentOrganization = useCurrentOrganization();
 
-  const { currentOrganization } = useOrganizationStore();
-  const organizationId = currentOrganization.id;
-
-  const { data: orgDetails } =
-    useOrganizationDetailsSuspenseQuery(organizationId);
+  const { data: orgDetails } = useOrganizationDetailsSuspenseQuery(
+    currentOrganization.id,
+  );
 
   const details = orgDetails.responseData?.results;
 

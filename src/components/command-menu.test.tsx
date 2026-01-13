@@ -1,6 +1,5 @@
 import { SearchProvider } from '@context/search.provider';
 import { renderWithProviders as renderWithBaseProviders } from '@lib/test-wrappers.utils';
-import { useOrganizationStore } from '@stores/organization.store';
 import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
@@ -47,24 +46,30 @@ beforeAll(() => {
 
 const mockNavigate = vi.fn();
 
-vi.mock('@tanstack/react-router', () => ({
-  useNavigate: () => mockNavigate,
+const mockOrganization = {
+  id: 'org-123',
+  name: 'Test Organization',
+  slug: 'test-org',
+  createdAt: new Date('2025-12-21T10:00:00.000Z'),
+};
+
+vi.mock('@tanstack/react-router', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('@tanstack/react-router')>();
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+    useParams: () => ({ organizationSlug: 'test-org' }),
+  };
+});
+
+vi.mock('@/app', () => ({
+  _getNullableCurrentOrganizationFromSlug: () => mockOrganization,
 }));
 
 describe('CommandMenu', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
-
-    // Seed the organization store with test data
-    // This will make getSidebarData work with real data
-    useOrganizationStore.getState().setOrganizations([
-      {
-        id: 'org-123',
-        name: 'Test Organization',
-        slug: 'test-org',
-        createdAt: new Date('2025-12-21T10:00:00.000Z'),
-      },
-    ]);
   });
 
   it('should render command menu when open', async () => {

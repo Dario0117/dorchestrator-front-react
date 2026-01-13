@@ -8,11 +8,12 @@ import {
   SidebarRail,
 } from '@components/ui/sidebar';
 import { useLayout } from '@context/layout.provider';
-import { useOrganizationStore } from '@stores/organization.store';
+import { useCurrentOrganization } from '@hooks/use-current-organization';
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout();
-  const { currentOrganization } = useOrganizationStore();
+  const currentOrganization = useCurrentOrganization();
+
   const sidebarData = getSidebarData(currentOrganization);
 
   return (

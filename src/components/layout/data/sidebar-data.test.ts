@@ -129,16 +129,6 @@ describe('Sidebar Data', () => {
     expect(orgSettingsItem.icon).toBeDefined();
   });
 
-  it('should handle missing organization slug', () => {
-    const sidebarDataWithoutSlug = getSidebarData(undefined);
-    const generalGroup = sidebarDataWithoutSlug.navGroups[0];
-    const dashboardItem = generalGroup?.items[0];
-
-    expect(dashboardItem && 'url' in dashboardItem && dashboardItem.url).toBe(
-      '/',
-    );
-  });
-
   it('should have all required nav item properties', () => {
     const validateNavItem = (item: NavItem) => {
       expect(item).toHaveProperty('title');

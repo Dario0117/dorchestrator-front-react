@@ -10,10 +10,17 @@ import { LayoutProvider } from '@context/layout.provider';
 import { SearchProvider } from '@context/search.provider';
 import { getCookie } from '@lib/cookies.utils';
 import { cn } from '@lib/utils';
-import { Outlet } from '@tanstack/react-router';
+import { Outlet, useParams } from '@tanstack/react-router';
 
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   const defaultOpen = getCookie('sidebar_state') !== 'false';
+  const params = useParams({ strict: false });
+  const hasOrganizationSlug = 'organizationSlug' in params;
+
+  if (!hasOrganizationSlug) {
+    return children ?? <Outlet />;
+  }
+
   return (
     <SearchProvider>
       <LayoutProvider>

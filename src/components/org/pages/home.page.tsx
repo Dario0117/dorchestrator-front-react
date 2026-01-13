@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useOrganizationStatsSuspenseQuery } from '@services/organizations/get-organization-stats.http-service';
-import { useOrganizationStore } from '@stores/organization.store';
 import { Building2, HardDrive, Terminal } from 'lucide-react';
 
 type RecentCommand = {
@@ -11,8 +11,7 @@ type RecentCommand = {
 };
 
 export function HomePage() {
-  const { currentOrganization } = useOrganizationStore();
-
+  const currentOrganization = useCurrentOrganization();
   const organizationId = currentOrganization.id;
 
   const { data: stats } = useOrganizationStatsSuspenseQuery(organizationId);
