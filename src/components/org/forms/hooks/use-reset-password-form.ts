@@ -13,7 +13,7 @@ export function useResetPasswordForm({
       email: '',
     },
     validators: {
-      onChange: resetPasswordFormSchema,
+      onBlur: resetPasswordFormSchema,
       async onSubmitAsync({ value }) {
         try {
           const results = await resetPasswordMutation.mutateAsync({
@@ -27,7 +27,6 @@ export function useResetPasswordForm({
               results.data as unknown as useResetPasswordMutationType['data'],
             );
           }
-          throw results; // Rethrow to handle error
         } catch (exception: unknown) {
           const error = exception as useResetPasswordMutationType['error'];
           if (!error?.message) {

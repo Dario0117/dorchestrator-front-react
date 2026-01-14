@@ -14,7 +14,7 @@ export function useUpdatePasswordForm({
       confirm: '',
     },
     validators: {
-      onChange: updatePasswordFormSchema,
+      onBlur: updatePasswordFormSchema,
       async onSubmitAsync({ value }) {
         try {
           const results = await updatePasswordMutation.mutateAsync({
@@ -28,7 +28,6 @@ export function useUpdatePasswordForm({
               results.data as unknown as useUpdatePasswordMutationType['data'],
             );
           }
-          throw results; // Rethrow to handle error
         } catch (exception: unknown) {
           const error = exception as useUpdatePasswordMutationType['error'];
           if (!error?.message) {

@@ -232,8 +232,10 @@ describe('UpdatePasswordForm', () => {
     await user.type(passwordInput, 'testpassword');
     await user.click(confirmPasswordInput);
     await user.type(confirmPasswordInput, 'testpassword');
+    // Tab to blur the last field and trigger onBlur validation
+    await user.tab();
 
-    // Now the submit button should be enabled and focusable
+    // Now the submit button should be enabled
     const submitButton = screen.getByRole('button', {
       name: 'Update password',
     });
@@ -241,11 +243,10 @@ describe('UpdatePasswordForm', () => {
       expect(submitButton).not.toBeDisabled();
     });
 
-    // Confirm password toggle button is next after confirm password input
-    await user.tab();
+    // After blur, confirm password toggle button should have focus
     expect(passwordToggleButtons[1]).toHaveFocus();
 
-    // Submit button is next
+    // Submit button is next in tab order
     await user.tab();
     await waitFor(() => {
       expect(submitButton).toHaveFocus();

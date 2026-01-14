@@ -16,7 +16,7 @@ export function useRegisterForm({
       email: '',
     },
     validators: {
-      onChange: registerFormSchema,
+      onBlur: registerFormSchema,
       async onSubmitAsync({ value }) {
         try {
           const results = await registerMutation.mutateAsync({
@@ -32,7 +32,6 @@ export function useRegisterForm({
               results.data as unknown as useRegisterMutationType['data'],
             );
           }
-          throw results; // Rethrow to handle error
         } catch (exception: unknown) {
           const error = exception as useRegisterMutationType['error'];
           if (!error?.message) {

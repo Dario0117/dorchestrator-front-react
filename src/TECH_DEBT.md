@@ -21,8 +21,6 @@
 - [ ] When logout it redirects to the org page
 - [ ] When you load the base page it throws error
 - [ ] Going to login page throws error
-- [ ] When the login succeeds, it still shows an error before redirecting to the org page
 - [ ] Profile info is not showing in the navbar
 - [ ] When creating organization for the first time, on the sidebar selector the name is not updated to the newly created organization
 - [ ] When logging out clear all data (probably worth just instead of navigating to the login page, refresh the page or force the reload once on login to delete any remaining data on queries and contexts)
-- [ ] Interacting with any field on the login form, marks others as error and shows the error message

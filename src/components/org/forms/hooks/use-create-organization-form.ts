@@ -20,7 +20,7 @@ export function useCreateOrganizationForm({
       slug: '',
     },
     validators: {
-      onChange: createOrganizationFormSchema,
+      onBlur: createOrganizationFormSchema,
       async onSubmitAsync({ value }) {
         try {
           const result = await createOrganizationMutation.mutateAsync({
