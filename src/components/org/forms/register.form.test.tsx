@@ -267,9 +267,6 @@ describe('RegisterForm', () => {
     const emailInput = screen.getByLabelText(/Email/);
     const passwordInput = screen.getByPlaceholderText('Password');
     const confirmPasswordInput = screen.getByLabelText(/Confirm Password/);
-    const passwordToggleButtons = screen.getAllByRole('button', {
-      name: /password/i,
-    });
 
     // Tab navigation should work through input fields
     await user.tab();
@@ -281,10 +278,7 @@ describe('RegisterForm', () => {
     await user.tab();
     expect(passwordInput).toHaveFocus();
 
-    // Password toggle button is next in tab order
-    await user.tab();
-    expect(passwordToggleButtons[0]).toHaveFocus();
-
+    // Password toggle buttons are excluded from tab order (tabIndex=-1)
     // Confirm password input is next
     await user.tab();
     expect(confirmPasswordInput).toHaveFocus();
@@ -298,22 +292,20 @@ describe('RegisterForm', () => {
     await user.type(passwordInput, 'testpassword');
     await user.click(confirmPasswordInput);
     await user.type(confirmPasswordInput, 'testpassword');
-    // Tab to blur the last field and trigger onBlur validation
+
+    // Blur to trigger validation
     await user.tab();
 
-    // Now the submit button should be enabled
+    // Now the submit button should be enabled after validation
     const submitButton = screen.getByRole('button', { name: 'Register' });
     await waitFor(() => {
       expect(submitButton).not.toBeDisabled();
     });
 
-    // After blur, confirm password toggle button should have focus
-    expect(passwordToggleButtons[1]).toHaveFocus();
-
-    // Submit button is next in tab order
+    // Once enabled, we can tab to the submit button
+    // Focus the confirm password input first, then tab to submit
+    confirmPasswordInput.focus();
     await user.tab();
-    await waitFor(() => {
-      expect(submitButton).toHaveFocus();
-    });
+    expect(submitButton).toHaveFocus();
   });
 });

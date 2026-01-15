@@ -115,7 +115,7 @@ describe('PasswordInput', () => {
     });
 
     expect(toggleButton).toHaveAttribute('type', 'button');
-    expect(toggleButton).toHaveAttribute('tabIndex', '0');
+    expect(toggleButton).toHaveAttribute('tabIndex', '-1');
     expect(toggleButton).toHaveAttribute('aria-label', 'Show password');
   });
 

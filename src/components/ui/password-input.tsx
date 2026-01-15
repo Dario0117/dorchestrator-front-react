@@ -28,7 +28,7 @@ function PasswordInput({
         className="absolute right-3 top-1/2 -translate-y-1/2 size-11"
         onClick={togglePasswordVisibility}
         aria-label={showPassword ? 'Hide password' : 'Show password'}
-        tabIndex={0}
+        tabIndex={-1}
       >
         {showPassword ? (
           <EyeOff className="size-5" />

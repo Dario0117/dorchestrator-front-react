@@ -203,9 +203,6 @@ describe('LoginForm', () => {
 
     const emailInput = screen.getByLabelText(/Email/);
     const passwordInput = screen.getByLabelText(/Password/);
-    const passwordToggleButton = screen.getByRole('button', {
-      name: 'Show password',
-    });
     const forgotPasswordLink = screen.getByRole('link', {
       name: 'Forgot your password?',
     });
@@ -217,11 +214,8 @@ describe('LoginForm', () => {
     await user.tab();
     expect(passwordInput).toHaveFocus();
 
-    // Password toggle button is next in tab order
-    await user.tab();
-    expect(passwordToggleButton).toHaveFocus();
-
-    // Forgot password link is after the toggle button
+    // Password toggle button is excluded from tab order (tabIndex=-1)
+    // Forgot password link is next
     await user.tab();
     expect(forgotPasswordLink).toHaveFocus();
 
