@@ -3,18 +3,19 @@ import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
-const mockNavigate = vi.fn();
-
-vi.mock('@tanstack/react-router', () => ({
-  useNavigate: vi.fn(() => mockNavigate),
-}));
-
 describe('SignOutDialog', () => {
   const mockOnOpenChange = vi.fn();
+  let originalLocation: Location;
 
   beforeEach(() => {
     mockOnOpenChange.mockClear();
-    mockNavigate.mockClear();
+    originalLocation = window.location;
+    delete (window as { location?: Location }).location;
+    window.location = { ...originalLocation, href: '' } as Location;
+  });
+
+  afterEach(() => {
+    window.location = originalLocation;
   });
 
   it('should render dialog with title and description', () => {
@@ -41,7 +42,7 @@ describe('SignOutDialog', () => {
     expect(screen.getByText('Cancel')).toBeInTheDocument();
   });
 
-  it('should trigger logout and navigate when sign out button is clicked', async () => {
+  it('should trigger logout and redirect to login page when sign out button is clicked', async () => {
     const user = userEvent.setup();
     renderWithProviders(
       <SignOutDialog
@@ -58,13 +59,9 @@ describe('SignOutDialog', () => {
 
     await user.click(signOutButton);
 
-    // Wait for the mutation to complete and navigation to be called
+    // Wait for the mutation to complete and page redirect
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith({
-        to: '/login',
-        replace: true,
-        search: window.location.search,
-      });
+      expect(window.location.href).toBe('/login');
     });
   });
 });
