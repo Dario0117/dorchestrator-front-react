@@ -13,13 +13,12 @@
 - [ ] Add an option to create an org and a team in the sidebar
 - [ ] Implement structured logging and open telemetry
 - [ ] Implement branded IDs
-- [ ] Default current organization must be marked somehow on the data layer, that way we don't use the first organization in the list as the default (see src/stores/organization.store.ts) - Use the metadata of the organization to mark it as default
-- [ ] Implement layered architecture pattern (repository (http calls / hooks) <- service (custom hooks with behavior logic) <- component (only ui logic and service hooks) <- pages (layouts and full pages) <- routes (url paths, params, pre-fetching, etc.))
-- [ ] Add a concept of "entity" to map every object in the API, that way we don't have to always build types because we don't know from where they are coming from (e.g., devices, commands, etc.) we can add something like `/entities/api/[entity].types.ts` and if we need to add new local entities we can do `/entities/local/[entity].types.ts`
+- [ ] Default current organization must be marked somehow on the data layer, that way we don't use the first organization in the list as the default - Use the metadata of the organization to mark it as default
 - [ ] Correctly handle dates and change them to the local timezone, the expected date coming from the API is in UTC, we need to convert it to the local timezone
 - [ ] Move to bun tests from vitest
 - [ ] When logout it redirects to the org page
 - [ ] When you load the base page it throws error
 - [ ] Going to login page throws error
 - [ ] Profile info is not showing in the navbar
-- [ ] When creating organization for the first time, on the sidebar selector the name is not updated to the newly created organization
+- [ ] Fix the tab order on password fields, tab goes to the reveal button
+- [ ] Add feedback when successfully registering

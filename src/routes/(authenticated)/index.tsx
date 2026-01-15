@@ -6,7 +6,7 @@ function RedirectToOrganization() {
   const firstOrganization = organizations[0];
 
   if (!firstOrganization) {
-    throw new Error('No organizations found');
+    return null;
   }
 
   return (

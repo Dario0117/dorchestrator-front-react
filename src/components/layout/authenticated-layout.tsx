@@ -18,7 +18,11 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   const hasOrganizationSlug = 'organizationSlug' in params;
 
   if (!hasOrganizationSlug) {
-    return children ?? <Outlet />;
+    return (
+      <OrganizationCheckWrapper>
+        {children ?? <Outlet />}
+      </OrganizationCheckWrapper>
+    );
   }
 
   return (
