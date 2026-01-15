@@ -1,8 +1,7 @@
 import { useAppForm } from '@components/org/forms/hooks/app-form';
 import type { UseRegisterFormProps } from '@components/org/forms/hooks/use-register-form.types';
 import { registerFormSchema } from '@components/org/forms/validation/register-form.schema';
-import { logError } from '@lib/logger.utils';
-import type { useRegisterMutationType } from '@services/users/register.http-service';
+import { handleFormSubmission } from '@lib/form-submission.utils';
 
 export function useRegisterForm({
   registerMutation,
@@ -16,39 +15,19 @@ export function useRegisterForm({
       email: '',
     },
     validators: {
-      onBlur: registerFormSchema,
       async onSubmitAsync({ value }) {
-        try {
-          const results = await registerMutation.mutateAsync({
-            name: value.name,
-            password: value.password,
-            email: value.email,
-          });
-          if (results.error) {
-            throw results.error;
-          }
-          if (results.data) {
-            handleSuccess(
-              results.data as unknown as useRegisterMutationType['data'],
-            );
-          }
-        } catch (exception: unknown) {
-          const error = exception as useRegisterMutationType['error'];
-          if (!error?.message) {
-            logError({
-              message: 'Unexpected error type',
-              error,
-            });
-            return {
-              form: ['Something went wrong, please try again later.'],
-              fields: {},
-            };
-          }
-          return {
-            form: [error.message],
-            fields: {},
-          };
-        }
+        return await handleFormSubmission({
+          formValues: value,
+          schema: registerFormSchema,
+          mutation: registerMutation,
+          mapToMutationData: (data) => ({
+            name: data.name,
+            password: data.password,
+            email: data.email,
+          }),
+          handleSuccess,
+          errorContext: 'Registration failed',
+        });
       },
     },
   });

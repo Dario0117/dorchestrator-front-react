@@ -1,5 +1,6 @@
 import { useLoginForm } from '@components/org/forms/hooks/use-login-form';
 import type { LoginFormProps } from '@components/org/forms/login.form.types';
+import { loginFormSchema } from '@components/org/forms/validation/login-form.schema';
 import { FormCard } from '@components/ui/form-card';
 import { Link } from '@tanstack/react-router';
 
@@ -19,7 +20,12 @@ export function LoginForm({ loginMutation, handleSuccess }: LoginFormProps) {
         }}
       >
         <div className="flex flex-col gap-6">
-          <form.AppField name="email">
+          <form.AppField
+            name="email"
+            validators={{
+              onBlur: loginFormSchema.shape.email,
+            }}
+          >
             {(field) => (
               <field.AppFormField
                 label="Email"
@@ -29,7 +35,12 @@ export function LoginForm({ loginMutation, handleSuccess }: LoginFormProps) {
             )}
           </form.AppField>
 
-          <form.AppField name="password">
+          <form.AppField
+            name="password"
+            validators={{
+              onBlur: loginFormSchema.shape.password,
+            }}
+          >
             {(field) => (
               <field.AppFormField
                 label="Password"

@@ -1,5 +1,6 @@
 import { useResetPasswordForm } from '@components/org/forms/hooks/use-reset-password-form';
 import type { ResetPasswordFormProps } from '@components/org/forms/reset-password.form.types';
+import { resetPasswordFormSchema } from '@components/org/forms/validation/reset-password-form.schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 
 export function ResetPasswordForm({
@@ -22,7 +23,12 @@ export function ResetPasswordForm({
             }}
           >
             <div className="flex flex-col gap-6">
-              <form.AppField name="email">
+              <form.AppField
+                name="email"
+                validators={{
+                  onBlur: resetPasswordFormSchema.shape.email,
+                }}
+              >
                 {(field) => (
                   <field.AppFormField
                     label="Email"

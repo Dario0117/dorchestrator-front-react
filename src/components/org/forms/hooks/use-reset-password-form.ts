@@ -1,8 +1,7 @@
 import { useAppForm } from '@components/org/forms/hooks/app-form';
 import type { UseResetPasswordFormProps } from '@components/org/forms/hooks/use-reset-password-form.types';
 import { resetPasswordFormSchema } from '@components/org/forms/validation/reset-password-form.schema';
-import { logError } from '@lib/logger.utils';
-import type { useResetPasswordMutationType } from '@services/users/reset-password.http-service';
+import { handleFormSubmission } from '@lib/form-submission.utils';
 
 export function useResetPasswordForm({
   resetPasswordMutation,
@@ -13,37 +12,17 @@ export function useResetPasswordForm({
       email: '',
     },
     validators: {
-      onBlur: resetPasswordFormSchema,
       async onSubmitAsync({ value }) {
-        try {
-          const results = await resetPasswordMutation.mutateAsync({
-            email: value.email,
-          });
-          if (results.error) {
-            throw results.error;
-          }
-          if (results.data) {
-            handleSuccess(
-              results.data as unknown as useResetPasswordMutationType['data'],
-            );
-          }
-        } catch (exception: unknown) {
-          const error = exception as useResetPasswordMutationType['error'];
-          if (!error?.message) {
-            logError({
-              message: 'Unexpected error type',
-              error,
-            });
-            return {
-              form: ['Something went wrong, please try again later.'],
-              fields: {},
-            };
-          }
-          return {
-            form: [error.message],
-            fields: {},
-          };
-        }
+        return await handleFormSubmission({
+          formValues: value,
+          schema: resetPasswordFormSchema,
+          mutation: resetPasswordMutation,
+          mapToMutationData: (data) => ({
+            email: data.email,
+          }),
+          handleSuccess,
+          errorContext: 'Password reset failed',
+        });
       },
     },
   });

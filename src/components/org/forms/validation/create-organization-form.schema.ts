@@ -1,5 +1,5 @@
 import { isValidSlug } from '@lib/organization-logo.utils';
-import * as z from 'zod';
+import { z } from 'zod/v4';
 
 export const createOrganizationFormSchema = z.object({
   name: z

@@ -1,5 +1,6 @@
 import { useAppForm } from '@components/org/forms/hooks/app-form';
 import { createOrganizationFormSchema } from '@components/org/forms/validation/create-organization-form.schema';
+import { handleFormSubmission } from '@lib/form-submission.utils';
 import { logError } from '@lib/logger.utils';
 import type { useCreateOrganizationMutationType } from '@services/organizations/create-organization.http-service';
 
@@ -20,44 +21,44 @@ export function useCreateOrganizationForm({
       slug: '',
     },
     validators: {
-      onBlur: createOrganizationFormSchema,
       async onSubmitAsync({ value }) {
-        try {
-          const result = await createOrganizationMutation.mutateAsync({
-            name: value.name,
-            slug: value.slug,
-          });
+        return await handleFormSubmission({
+          formValues: value,
+          schema: createOrganizationFormSchema,
+          mutation: createOrganizationMutation,
+          mapToMutationData: (data) => ({
+            name: data.name,
+            slug: data.slug,
+          }),
+          handleSuccess,
+          customErrorHandler: (error) => {
+            logError({
+              message: 'Organization creation failed',
+              error,
+            });
 
-          if (result) {
-            handleSuccess(result);
-          }
-        } catch (exception: unknown) {
-          const error = exception as Error;
-          logError({
-            message: 'Organization creation failed',
-            error,
-          });
+            // Check for slug uniqueness error
+            if (
+              error.message?.includes('slug') ||
+              error.message?.includes('already taken')
+            ) {
+              return {
+                form: ['Please fix the errors below'],
+                fields: {
+                  slug: 'This slug is already taken',
+                },
+              };
+            }
 
-          // Check for slug uniqueness error
-          if (
-            error.message?.includes('slug') ||
-            error.message?.includes('already taken')
-          ) {
             return {
-              form: [],
-              fields: {
-                slug: ['This slug is already taken'],
-              },
+              form: [
+                error.message ||
+                  'Something went wrong, please try again later.',
+              ],
+              fields: {},
             };
-          }
-
-          return {
-            form: [
-              error.message || 'Something went wrong, please try again later.',
-            ],
-            fields: {},
-          };
-        }
+          },
+        });
       },
     },
   });

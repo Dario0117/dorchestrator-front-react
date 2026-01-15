@@ -1,8 +1,7 @@
 import { useAppForm } from '@components/org/forms/hooks/app-form';
 import type { UseLoginFormProps } from '@components/org/forms/hooks/use-login-form.types';
 import { loginFormSchema } from '@components/org/forms/validation/login-form.schema';
-import { logError } from '@lib/logger.utils';
-import type { useLoginMutationType } from '@services/users/login.http-service';
+import { handleFormSubmission } from '@lib/form-submission.utils';
 
 export function useLoginForm({
   loginMutation,
@@ -14,38 +13,18 @@ export function useLoginForm({
       password: '',
     },
     validators: {
-      onBlur: loginFormSchema,
       async onSubmitAsync({ value }) {
-        try {
-          const results = await loginMutation.mutateAsync({
-            email: value.email,
-            password: value.password,
-          });
-          if (results.error) {
-            throw results.error;
-          }
-          if (results.data) {
-            handleSuccess(
-              results.data as unknown as useLoginMutationType['data'],
-            );
-          }
-        } catch (exception: unknown) {
-          const error = exception as useLoginMutationType['error'];
-          if (!error?.message) {
-            logError({
-              message: 'Unexpected error type',
-              error,
-            });
-            return {
-              form: ['Something went wrong, please try again later.'],
-              fields: {},
-            };
-          }
-          return {
-            form: [error.message],
-            fields: {},
-          };
-        }
+        return await handleFormSubmission({
+          formValues: value,
+          schema: loginFormSchema,
+          mutation: loginMutation,
+          mapToMutationData: (data) => ({
+            email: data.email,
+            password: data.password,
+          }),
+          handleSuccess,
+          errorContext: 'Login failed',
+        });
       },
     },
   });

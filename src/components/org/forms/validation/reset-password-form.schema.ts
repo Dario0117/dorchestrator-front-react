@@ -1,7 +1,7 @@
-import * as z from 'zod';
+import { z } from 'zod/v4';
 
 export const resetPasswordFormSchema = z.object({
-  email: z.email(),
+  email: z.string().email('Invalid email address'),
 });
 
 export type ResetPasswordFormData = z.infer<typeof resetPasswordFormSchema>;

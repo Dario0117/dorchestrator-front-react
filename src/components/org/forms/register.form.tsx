@@ -1,5 +1,6 @@
 import { useRegisterForm } from '@components/org/forms/hooks/use-register-form';
 import type { RegisterFormProps } from '@components/org/forms/register.form.types';
+import { registerFormBaseSchema } from '@components/org/forms/validation/register-form.schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 
 export function RegisterForm({
@@ -23,7 +24,12 @@ export function RegisterForm({
             }}
           >
             <div className="flex flex-col gap-6">
-              <form.AppField name="name">
+              <form.AppField
+                name="name"
+                validators={{
+                  onBlur: registerFormBaseSchema.shape.name,
+                }}
+              >
                 {(field) => (
                   <field.AppFormField
                     label="Name"
@@ -32,7 +38,12 @@ export function RegisterForm({
                   />
                 )}
               </form.AppField>
-              <form.AppField name="email">
+              <form.AppField
+                name="email"
+                validators={{
+                  onBlur: registerFormBaseSchema.shape.email,
+                }}
+              >
                 {(field) => (
                   <field.AppFormField
                     label="Email"
@@ -41,7 +52,12 @@ export function RegisterForm({
                   />
                 )}
               </form.AppField>
-              <form.AppField name="password">
+              <form.AppField
+                name="password"
+                validators={{
+                  onBlur: registerFormBaseSchema.shape.password,
+                }}
+              >
                 {(field) => (
                   <field.AppFormField
                     label="Password"
@@ -51,7 +67,12 @@ export function RegisterForm({
                   />
                 )}
               </form.AppField>
-              <form.AppField name="confirm">
+              <form.AppField
+                name="confirm"
+                validators={{
+                  onBlur: registerFormBaseSchema.shape.confirm,
+                }}
+              >
                 {(field) => (
                   <field.AppFormField
                     label="Confirm Password"
