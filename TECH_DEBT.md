@@ -16,9 +16,3 @@
 - [ ] Default current organization must be marked somehow on the data layer, that way we don't use the first organization in the list as the default - Use the metadata of the organization to mark it as default
 - [ ] Correctly handle dates and change them to the local timezone, the expected date coming from the API is in UTC, we need to convert it to the local timezone
 - [ ] Move to bun tests from vitest
-- [ ] When logout it redirects to the org page
-- [ ] When you load the base page it throws error
-- [ ] Going to login page throws error
-- [ ] Profile info is not showing in the navbar
-- [ ] Fix the tab order on password fields, tab goes to the reveal button
-- [ ] Add feedback when successfully registering

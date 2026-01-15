@@ -12,7 +12,6 @@ export const Route = createFileRoute('/(authenticated)')({
       throw redirect({
         to: '/login',
         replace: true,
-        search: window.location.search,
       });
     }
     await ctx.context.queryClient.ensureQueryData(

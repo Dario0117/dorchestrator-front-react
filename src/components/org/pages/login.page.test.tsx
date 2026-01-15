@@ -9,6 +9,10 @@ interface LinkProps {
   [key: string]: unknown;
 }
 
+const { mockUseSearch } = vi.hoisted(() => ({
+  mockUseSearch: vi.fn(),
+}));
+
 // Mock the navigation hook
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: vi.fn(),
@@ -22,6 +26,13 @@ vi.mock('@tanstack/react-router', () => ({
   ),
 }));
 
+// Mock the route to provide useSearch
+vi.mock('@routes/(unauthenticated)/login', () => ({
+  Route: {
+    useSearch: mockUseSearch,
+  },
+}));
+
 const mockUseNavigate = vi.mocked(
   await import('@tanstack/react-router'),
 ).useNavigate;
@@ -33,6 +44,7 @@ mockUseNavigate.mockReturnValue(mockNavigate);
 describe('LoginPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    mockUseSearch.mockReturnValue({});
   });
 
   it('should render login form when user is not logged in', () => {
@@ -42,6 +54,25 @@ describe('LoginPage', () => {
     expect(screen.getByLabelText(/Email/)).toBeInTheDocument();
     expect(screen.getByLabelText(/Password/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
+  });
+
+  it('should display success message when registered flag is true', () => {
+    mockUseSearch.mockReturnValue({ registered: true });
+
+    renderWithProviders(<LoginPage />);
+
+    expect(
+      screen.getByText('Account created successfully. Please log in.'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+  });
+
+  it('should not display alert when registered flag is not set', () => {
+    mockUseSearch.mockReturnValue({});
+
+    renderWithProviders(<LoginPage />);
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('should render login form regardless of authentication state', () => {

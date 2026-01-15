@@ -95,7 +95,10 @@ describe('RegisterPage', () => {
 
     // Wait for the mutation to complete and navigation to occur
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith({ to: '/login' });
+      expect(mockNavigate).toHaveBeenCalledWith({
+        to: '/login',
+        search: { registered: true },
+      });
     });
   });
 });

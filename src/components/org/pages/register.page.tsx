@@ -12,7 +12,10 @@ export function RegisterPage() {
         <RegisterForm
           registerMutation={register}
           handleSuccess={() => {
-            navigate({ to: '/login' });
+            navigate({
+              to: '/login',
+              search: { registered: true },
+            });
           }}
         />
       </div>
