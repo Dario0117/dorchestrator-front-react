@@ -25,6 +25,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Testing
 
 - `bun run test` - Run tests with Vitest
+- `bun run test -- path/to/file.test.tsx` - Run a single test file
 - `bun run test:forAgents` - Run tests with sequential execution (single worker, no concurrency) to prevent resource exhaustion when running via Claude Code or other agents
 - `bun run coverage` - Run tests with coverage report (outputs to `/coverage`, runs tests once without watch mode)
 
@@ -73,7 +74,7 @@ This is a React frontend template using modern tooling and patterns:
 - `/src/stores/` - Zustand stores for global state (authentication)
 - `/src/hooks/` - Custom React hooks (use-dialog-state, use-mobile)
 - `/src/services/` - API service layers with MSW handlers
-  - Pattern: `[domain].http-service.ts` + `[domain].http-service.handlers.ts`
+  - Pattern: `[domain]/[action-description].http-service.ts` + `[domain]/[action-description].http-service.handlers.ts`
 - `/src/types/` - Global TypeScript type definitions
   - `api.generated.types.ts` (auto-generated, do not edit)
   - `router.types.ts` (router context types)
@@ -384,7 +385,6 @@ Follow this conventions always, if for some reason you need to break any of them
 ### NEVER DO
 
 - Install any new dependencies, respect the Tech Stack, ask first if you need to add a new library and explain why
-- Use the project's standard tooling (Bun) to run checks and tests (use the package.json command)
 - Try to analyze code from the installed dependencies
 - Create management commands when adding new functionality, unless you are asked to do so. You can do it on intermediary steps during your development, but remove it afterwards
 - Add docstring to the code (JS doc), unless you are asked to do so
