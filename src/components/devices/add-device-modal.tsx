@@ -24,28 +24,36 @@ export function AddDeviceModal({
   const [token, setToken] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setError] = useState<string[] | null>(null);
 
   const generateTokenMutation = useGenerateTokenMutation();
 
-  const handleGenerateToken = async () => {
-    try {
-      setError(null);
-      const result = await generateTokenMutation.mutateAsync({
+  const handleGenerateToken = () => {
+    setError(null);
+    generateTokenMutation.mutate(
+      {
         params: {
           path: {
             organizationId: organizationId,
           },
         },
-      });
-
-      if (result?.responseData?.results) {
-        setToken(result.responseData.results.token);
-        setExpiresAt(result.responseData.results.expiresAt);
-      }
-    } catch (_err) {
-      setError('Failed to generate token. Please try again.');
-    }
+      },
+      {
+        onSuccess: (result) => {
+          if (result?.responseData?.results) {
+            setToken(result.responseData.results.token);
+            setExpiresAt(result.responseData.results.expiresAt);
+          }
+        },
+        onError: (error) => {
+          setError(
+            error.responseErrors.nonFieldErrors ?? [
+              'Failed to generate token. Please try again.',
+            ],
+          );
+        },
+      },
+    );
   };
 
   const copyToClipboard = async (text: string) => {
@@ -81,9 +89,13 @@ export function AddDeviceModal({
             device:
           </p>
 
-          {error && (
+          {errors && (
             <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">
-              {error}
+              <ul>
+                {errors.map((error) => (
+                  <li key={error}>{error}</li>
+                ))}
+              </ul>
             </div>
           )}
 

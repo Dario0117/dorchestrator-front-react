@@ -42,7 +42,7 @@ describe('ResetPasswordForm', () => {
     ).toBeInTheDocument();
   });
 
-  it('should call mutateAsync with correct email on form submission', async () => {
+  it('should call mutation with correct email on form submission', async () => {
     const user = userEvent.setup();
 
     renderWithProviders(<TestWrapper handleSuccess={mockHandleSuccess} />);
@@ -57,10 +57,14 @@ describe('ResetPasswordForm', () => {
       await user.click(submitButton);
     });
 
+    // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
       expect(mockHandleSuccess).toHaveBeenCalledWith({
-        status: true,
-        message: 'Password reset email sent',
+        data: {
+          status: true,
+          message: 'Password reset email sent',
+        },
+        error: null,
       });
     });
   });
@@ -80,10 +84,14 @@ describe('ResetPasswordForm', () => {
       await user.click(submitButton);
     });
 
+    // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
       expect(mockHandleSuccess).toHaveBeenCalledWith({
-        status: true,
-        message: 'Password reset email sent',
+        data: {
+          status: true,
+          message: 'Password reset email sent',
+        },
+        error: null,
       });
     });
   });
@@ -258,10 +266,14 @@ describe('ResetPasswordForm', () => {
       await user.type(emailInput, email);
       await user.click(submitButton);
 
+      // better-auth wraps responses in { data: ..., error: null } format
       await waitFor(() => {
         expect(mockHandleSuccess).toHaveBeenCalledWith({
-          status: true,
-          message: 'Password reset email sent',
+          data: {
+            status: true,
+            message: 'Password reset email sent',
+          },
+          error: null,
         });
       });
 

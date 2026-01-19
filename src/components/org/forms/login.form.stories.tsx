@@ -90,9 +90,45 @@ function MockLoginForm({ loginMutation, handleSuccess }: LoginFormProps) {
   );
 }
 
+// Helper to create mock mutation with success response
+function createSuccessMutation(
+  handler: (
+    email: string,
+    password: string,
+  ) => Promise<{ data: unknown; error: null }>,
+): useLoginMutationType {
+  return {
+    mutate: (
+      variables: { email: string; password: string },
+      options?: { onSuccess?: (data: unknown) => void; onError?: () => void },
+    ) => {
+      handler(variables.email, variables.password)
+        .then((result) => options?.onSuccess?.(result))
+        .catch(() => options?.onError?.());
+    },
+    error: null,
+  } as unknown as useLoginMutationType;
+}
+
+// Helper to create mock mutation with error response
+function createErrorMutation(
+  handler: (email: string, password: string) => Promise<never>,
+): useLoginMutationType {
+  return {
+    mutate: (
+      variables: { email: string; password: string },
+      options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+    ) => {
+      handler(variables.email, variables.password).catch((error) =>
+        options?.onError?.(error),
+      );
+    },
+    error: null,
+  } as unknown as useLoginMutationType;
+}
+
 // Mock handlers for Storybook
 const mockHandleLoginSuccess = async (email: string, password: string) => {
-  // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   console.log('Login attempt:', { email, password });
@@ -114,7 +150,10 @@ const mockHandleLoginSuccess = async (email: string, password: string) => {
   };
 };
 
-const mockHandleLoginError = async (email: string, password: string) => {
+const mockHandleLoginError = async (
+  email: string,
+  password: string,
+): Promise<never> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   console.log('Login attempt with error:', { email, password });
@@ -123,7 +162,10 @@ const mockHandleLoginError = async (email: string, password: string) => {
   );
 };
 
-const mockHandleLoginNetworkError = async (email: string, password: string) => {
+const mockHandleLoginNetworkError = async (
+  email: string,
+  password: string,
+): Promise<never> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   console.log('Login attempt with network error:', { email, password });
@@ -153,16 +195,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    loginMutation: {
-      mutateAsync: async ({
-        email,
-        password,
-      }: {
-        email: string;
-        password: string;
-      }) => mockHandleLoginSuccess(email, password),
-      error: null,
-    } as useLoginMutationType,
+    loginMutation: createSuccessMutation(mockHandleLoginSuccess),
     handleSuccess: (data) => {
       console.log('Login successful:', data);
     },
@@ -171,16 +204,7 @@ export const Default: Story = {
 
 export const WithError: Story = {
   args: {
-    loginMutation: {
-      mutateAsync: async ({
-        email,
-        password,
-      }: {
-        email: string;
-        password: string;
-      }) => mockHandleLoginError(email, password),
-      error: null,
-    } as unknown as useLoginMutationType,
+    loginMutation: createErrorMutation(mockHandleLoginError),
     handleSuccess: (data) => {
       console.log('Login successful:', data);
     },
@@ -198,25 +222,29 @@ export const WithError: Story = {
 export const Interactive: Story = {
   args: {
     loginMutation: {
-      mutateAsync: async ({
-        email,
-        password,
-      }: {
-        email: string;
-        password: string;
-      }) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      mutate: (
+        variables: { email: string; password: string },
+        options?: {
+          onSuccess?: (data: unknown) => void;
+          onError?: (error: Error) => void;
+        },
+      ) => {
+        const { email, password } = variables;
 
-        // Simulate different responses based on credentials
-        if (email === 'admin@example.com' && password === 'password') {
-          return mockHandleLoginSuccess(email, password);
-        }
-
-        if (email === 'network-error@example.com') {
-          return mockHandleLoginNetworkError(email, password);
-        }
-
-        return mockHandleLoginError(email, password);
+        setTimeout(async () => {
+          try {
+            if (email === 'admin@example.com' && password === 'password') {
+              const result = await mockHandleLoginSuccess(email, password);
+              options?.onSuccess?.(result);
+            } else if (email === 'network-error@example.com') {
+              await mockHandleLoginNetworkError(email, password);
+            } else {
+              await mockHandleLoginError(email, password);
+            }
+          } catch (error) {
+            options?.onError?.(error as Error);
+          }
+        }, 0);
       },
       error: null,
     } as unknown as useLoginMutationType,

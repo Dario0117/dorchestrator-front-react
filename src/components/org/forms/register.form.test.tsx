@@ -75,15 +75,19 @@ describe('RegisterForm', () => {
     await user.type(confirmPasswordInput, 'testpassword');
     await user.click(submitButton);
 
+    // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
       expect(mockHandleSuccess).toHaveBeenCalledWith(
         expect.objectContaining({
-          token: null,
-          user: expect.objectContaining({
-            id: 'test-user-id',
-            email: 'test@example.com',
-            name: 'Test User',
+          data: expect.objectContaining({
+            token: null,
+            user: expect.objectContaining({
+              id: 'test-user-id',
+              email: 'test@example.com',
+              name: 'Test User',
+            }),
           }),
+          error: null,
         }),
       );
     });
@@ -106,15 +110,19 @@ describe('RegisterForm', () => {
     await user.type(confirmPasswordInput, 'testpassword');
     await user.click(submitButton);
 
+    // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
       expect(mockHandleSuccess).toHaveBeenCalledWith(
         expect.objectContaining({
-          token: null,
-          user: expect.objectContaining({
-            id: 'test-user-id',
-            email: 'test@example.com',
-            name: 'Test User',
+          data: expect.objectContaining({
+            token: null,
+            user: expect.objectContaining({
+              id: 'test-user-id',
+              email: 'test@example.com',
+              name: 'Test User',
+            }),
           }),
+          error: null,
         }),
       );
     });
@@ -123,13 +131,11 @@ describe('RegisterForm', () => {
   it('should display error when mutation fails', async () => {
     const user = userEvent.setup();
 
-    // Override the handler to return an error
+    // Return HTTP 400 error so better-auth wraps it as { data: null, error: {...} }
     server.use(
       http.post(buildBackendUrl('/api/v1/sign-up/email'), () => {
         return HttpResponse.json(
-          {
-            nonFieldErrors: ['Email already exists'],
-          },
+          { message: 'Email already exists' },
           { status: 400 },
         );
       }),

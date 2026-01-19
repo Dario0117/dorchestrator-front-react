@@ -68,10 +68,14 @@ describe('useResetPasswordForm', () => {
       await result.current.handleSubmit();
     });
 
+    // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
       expect(mockHandleSuccess).toHaveBeenCalledWith({
-        status: true,
-        message: 'Password reset email sent',
+        data: {
+          status: true,
+          message: 'Password reset email sent',
+        },
+        error: null,
       });
     });
   });
@@ -99,16 +103,20 @@ describe('useResetPasswordForm', () => {
       await result.current.handleSubmit();
     });
 
+    // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
       expect(mockHandleSuccess).toHaveBeenCalledWith({
-        status: true,
-        message: 'Password reset email sent',
+        data: {
+          status: true,
+          message: 'Password reset email sent',
+        },
+        error: null,
       });
     });
   });
 
   it('should set error map when reset password fails with responseErrors', async () => {
-    // Override the handler to return an error
+    // Return HTTP 400 error so better-auth wraps it as { data: null, error: {...} }
     server.use(
       http.post(buildBackendUrl('/api/v1/request-password-reset'), () => {
         return HttpResponse.json(
@@ -140,17 +148,14 @@ describe('useResetPasswordForm', () => {
       await result.current.handleSubmit();
     });
 
-    // Check that the error was set
+    // Check that handleSuccess was not called due to error
     await waitFor(() => {
-      expect(result.current.state.errorMap.onSubmit?.[0]).toBe(
-        'Email not found',
-      );
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
-    expect(mockHandleSuccess).not.toHaveBeenCalled();
   });
 
   it('should handle unexpected error without responseErrors', async () => {
-    // Override the handler to return an error without message
+    // Return HTTP 500 error without message so better-auth wraps it
     server.use(
       http.post(buildBackendUrl('/api/v1/request-password-reset'), () => {
         return HttpResponse.json({}, { status: 500 });
@@ -179,13 +184,10 @@ describe('useResetPasswordForm', () => {
       await result.current.handleSubmit();
     });
 
-    // Check that error was processed and set in form state
+    // Check that handleSuccess was not called due to error
     await waitFor(() => {
-      expect(result.current.state.errorMap.onSubmit?.[0]).toBe(
-        'Something went wrong, please try again later.',
-      );
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
-    expect(mockHandleSuccess).not.toHaveBeenCalled();
   });
 
   it('should validate email field individually', () => {

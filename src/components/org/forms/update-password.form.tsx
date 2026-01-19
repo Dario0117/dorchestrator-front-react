@@ -1,6 +1,5 @@
 import { useUpdatePasswordForm } from '@components/org/forms/hooks/use-update-password-form';
 import type { UpdatePasswordFormProps } from '@components/org/forms/update-password.form.types';
-import { updatePasswordFormBaseSchema } from '@components/org/forms/validation/update-password-form.schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 
 export function UpdatePasswordForm({
@@ -23,12 +22,7 @@ export function UpdatePasswordForm({
             }}
           >
             <div className="flex flex-col gap-6">
-              <form.AppField
-                name="password"
-                validators={{
-                  onBlur: updatePasswordFormBaseSchema.shape.password,
-                }}
-              >
+              <form.AppField name="password">
                 {(field) => (
                   <field.AppFormField
                     label="New password"
@@ -38,12 +32,7 @@ export function UpdatePasswordForm({
                   />
                 )}
               </form.AppField>
-              <form.AppField
-                name="confirm"
-                validators={{
-                  onBlur: updatePasswordFormBaseSchema.shape.confirm,
-                }}
-              >
+              <form.AppField name="confirm">
                 {(field) => (
                   <field.AppFormField
                     label="Confirm new password"

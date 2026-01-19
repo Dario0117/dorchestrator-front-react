@@ -3,7 +3,6 @@ import {
   SlugStatus,
   useSlugValidation,
 } from '@components/org/forms/hooks/use-slug-validation';
-import { createOrganizationFormSchema } from '@components/org/forms/validation/create-organization-form.schema';
 import { Button } from '@components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import {
@@ -81,12 +80,7 @@ export function CreateOrganizationForm({
               </p>
 
               {/* Organization Name Field */}
-              <form.AppField
-                name="name"
-                validators={{
-                  onBlur: createOrganizationFormSchema.shape.name,
-                }}
-              >
+              <form.AppField name="name">
                 {(field) => (
                   <field.AppFormField
                     label="Organization Name"
@@ -108,12 +102,7 @@ export function CreateOrganizationForm({
               </form.AppField>
 
               {/* Organization Slug Field */}
-              <form.AppField
-                name="slug"
-                validators={{
-                  onBlur: createOrganizationFormSchema.shape.slug,
-                }}
-              >
+              <form.AppField name="slug">
                 {(field) => (
                   <div className="space-y-2">
                     <field.AppFormField

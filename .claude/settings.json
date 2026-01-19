@@ -7,7 +7,7 @@
       "mcp__shadcn__get_item_examples_from_registries",
       "mcp__shadcn__get_add_command_for_items",
       "Bash(bunx --bun shadcn@latest add:*)",
-      "Bash(bun run test:*)",
+      "Bash(bun run test)",
       "Bash(bun coverage)",
       "Bash(bun check-ts)",
       "Bash(bun format-and-lint:fix)",

@@ -2,19 +2,57 @@ import { UpdatePasswordForm } from '@components/org/forms/update-password.form';
 import type { useUpdatePasswordMutationType } from '@services/users/update-password.http-service';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+interface UpdatePasswordBody {
+  password: string;
+  confirm: string;
+}
+
+// Helper to create mock mutation with success response
+function createSuccessMutation(
+  handler: (body: UpdatePasswordBody) => Promise<unknown>,
+): useUpdatePasswordMutationType {
+  return {
+    mutate: (
+      variables: { body: UpdatePasswordBody },
+      options?: { onSuccess?: (data: unknown) => void; onError?: () => void },
+    ) => {
+      handler(variables.body)
+        .then((result) => options?.onSuccess?.(result))
+        .catch(() => options?.onError?.());
+    },
+    error: null,
+  } as unknown as useUpdatePasswordMutationType;
+}
+
+// Helper to create mock mutation with error response
+function createErrorMutation(
+  handler: (body: UpdatePasswordBody) => Promise<never>,
+): useUpdatePasswordMutationType {
+  return {
+    mutate: (
+      variables: { body: UpdatePasswordBody },
+      options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+    ) => {
+      handler(variables.body).catch((error) => options?.onError?.(error));
+    },
+    error: null,
+  } as unknown as useUpdatePasswordMutationType;
+}
+
 // Mock handlers for Storybook
-const mockHandleUpdateSuccess = async (password: string, confirm: string) => {
-  // Simulate API delay
+const mockHandleUpdateSuccess = async (body: UpdatePasswordBody) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  console.log('Update password request:', { password, confirm });
+  console.log('Update password request:', body);
   return { responseData: ['Password updated successfully'] };
 };
 
-const mockHandleUpdateError = async (password: string, confirm: string) => {
+const mockHandleUpdateError = async (
+  body: UpdatePasswordBody,
+): Promise<never> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  console.log('Update password request with error:', { password, confirm });
+  console.log('Update password request with error:', body);
   const error = new Error('Invalid token or expired link');
   Object.assign(error, {
     responseErrors: {
@@ -27,15 +65,11 @@ const mockHandleUpdateError = async (password: string, confirm: string) => {
 };
 
 const mockHandleUpdateWeakPassword = async (
-  password: string,
-  confirm: string,
-) => {
+  body: UpdatePasswordBody,
+): Promise<never> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  console.log('Update password request with weak password:', {
-    password,
-    confirm,
-  });
+  console.log('Update password request with weak password:', body);
   const error = new Error('Weak password');
   Object.assign(error, {
     responseErrors: {
@@ -72,28 +106,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    updatePasswordMutation: {
-      mutateAsync: async ({
-        body,
-      }: {
-        body: { password: string; confirm: string };
-      }) => mockHandleUpdateSuccess(body.password, body.confirm),
-      error: null,
-    } as unknown as useUpdatePasswordMutationType,
+    updatePasswordMutation: createSuccessMutation(mockHandleUpdateSuccess),
     handleSuccess: mockHandleSuccess,
   },
 };
 
 export const InvalidToken: Story = {
   args: {
-    updatePasswordMutation: {
-      mutateAsync: async ({
-        body,
-      }: {
-        body: { password: string; confirm: string };
-      }) => mockHandleUpdateError(body.password, body.confirm),
-      error: null,
-    } as unknown as useUpdatePasswordMutationType,
+    updatePasswordMutation: createErrorMutation(mockHandleUpdateError),
     handleSuccess: mockHandleSuccess,
   },
   parameters: {
@@ -108,14 +128,7 @@ export const InvalidToken: Story = {
 
 export const WeakPassword: Story = {
   args: {
-    updatePasswordMutation: {
-      mutateAsync: async ({
-        body,
-      }: {
-        body: { password: string; confirm: string };
-      }) => mockHandleUpdateWeakPassword(body.password, body.confirm),
-      error: null,
-    } as unknown as useUpdatePasswordMutationType,
+    updatePasswordMutation: createErrorMutation(mockHandleUpdateWeakPassword),
     handleSuccess: mockHandleSuccess,
   },
   parameters: {
@@ -131,25 +144,33 @@ export const WeakPassword: Story = {
 export const Interactive: Story = {
   args: {
     updatePasswordMutation: {
-      mutateAsync: async ({
-        body,
-      }: {
-        body: { password: string; confirm: string };
-      }) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      mutate: (
+        variables: { body: UpdatePasswordBody },
+        options?: {
+          onSuccess?: (data: unknown) => void;
+          onError?: (error: Error) => void;
+        },
+      ) => {
+        const body = variables.body;
 
-        const password = body.password;
+        setTimeout(async () => {
+          try {
+            if (body.password === 'weak') {
+              await mockHandleUpdateWeakPassword(body);
+              return;
+            }
 
-        // Simulate different responses based on password
-        if (password === 'weak') {
-          return mockHandleUpdateWeakPassword(body.password, body.confirm);
-        }
+            if (body.password === 'invalid-token') {
+              await mockHandleUpdateError(body);
+              return;
+            }
 
-        if (password === 'invalid-token') {
-          return mockHandleUpdateError(body.password, body.confirm);
-        }
-
-        return mockHandleUpdateSuccess(body.password, body.confirm);
+            const result = await mockHandleUpdateSuccess(body);
+            options?.onSuccess?.(result);
+          } catch (error) {
+            options?.onError?.(error as Error);
+          }
+        }, 0);
       },
       error: null,
     } as unknown as useUpdatePasswordMutationType,

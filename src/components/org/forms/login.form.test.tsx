@@ -104,16 +104,20 @@ describe('LoginForm', () => {
       await user.click(submitButton);
     });
 
+    // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
       expect(mockHandleSuccess).toHaveBeenCalledWith(
         expect.objectContaining({
-          redirect: false,
-          token: 'random-token',
-          user: expect.objectContaining({
-            id: 'test-user-id',
-            email: 'test@example.com',
-            name: 'Test User',
+          data: expect.objectContaining({
+            redirect: false,
+            token: 'random-token',
+            user: expect.objectContaining({
+              id: 'test-user-id',
+              email: 'test@example.com',
+              name: 'Test User',
+            }),
           }),
+          error: null,
         }),
       );
     });

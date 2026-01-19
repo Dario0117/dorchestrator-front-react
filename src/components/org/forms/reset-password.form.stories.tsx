@@ -2,19 +2,56 @@ import { ResetPasswordForm } from '@components/org/forms/reset-password.form';
 import type { useResetPasswordMutationType } from '@services/users/reset-password.http-service';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+interface ResetPasswordBody {
+  email: string;
+}
+
+// Helper to create mock mutation with success response
+function createSuccessMutation(
+  handler: (body: ResetPasswordBody) => Promise<unknown>,
+): useResetPasswordMutationType {
+  return {
+    mutate: (
+      variables: { body: ResetPasswordBody },
+      options?: { onSuccess?: (data: unknown) => void; onError?: () => void },
+    ) => {
+      handler(variables.body)
+        .then((result) => options?.onSuccess?.(result))
+        .catch(() => options?.onError?.());
+    },
+    error: null,
+  } as unknown as useResetPasswordMutationType;
+}
+
+// Helper to create mock mutation with error response
+function createErrorMutation(
+  handler: (body: ResetPasswordBody) => Promise<never>,
+): useResetPasswordMutationType {
+  return {
+    mutate: (
+      variables: { body: ResetPasswordBody },
+      options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+    ) => {
+      handler(variables.body).catch((error) => options?.onError?.(error));
+    },
+    error: null,
+  } as unknown as useResetPasswordMutationType;
+}
+
 // Mock handlers for Storybook
-const mockHandleResetSuccess = async (email: string) => {
-  // Simulate API delay
+const mockHandleResetSuccess = async (body: ResetPasswordBody) => {
   await new Promise((resolve) => setTimeout(resolve, 1200));
 
-  console.log('Reset password request:', { email });
+  console.log('Reset password request:', body);
   return { responseData: [] };
 };
 
-const mockHandleResetEmailNotFound = async (email: string) => {
+const mockHandleResetEmailNotFound = async (
+  body: ResetPasswordBody,
+): Promise<never> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  console.log('Reset password request with email not found:', { email });
+  console.log('Reset password request with email not found:', body);
   const error = new Error('Email not found');
   Object.assign(error, {
     responseErrors: {
@@ -26,10 +63,12 @@ const mockHandleResetEmailNotFound = async (email: string) => {
   throw error;
 };
 
-const mockHandleResetRateLimited = async (email: string) => {
+const mockHandleResetRateLimited = async (
+  body: ResetPasswordBody,
+): Promise<never> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
-  console.log('Reset password request with rate limit:', { email });
+  console.log('Reset password request with rate limit:', body);
   const error = new Error('Rate limited');
   Object.assign(error, {
     responseErrors: {
@@ -66,22 +105,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    resetPasswordMutation: {
-      mutateAsync: async ({ body }: { body: { email: string } }) =>
-        mockHandleResetSuccess(body.email),
-      error: null,
-    } as unknown as useResetPasswordMutationType,
+    resetPasswordMutation: createSuccessMutation(mockHandleResetSuccess),
     handleSuccess: mockHandleSuccess,
   },
 };
 
 export const EmailNotFound: Story = {
   args: {
-    resetPasswordMutation: {
-      mutateAsync: async ({ body }: { body: { email: string } }) =>
-        mockHandleResetEmailNotFound(body.email),
-      error: null,
-    } as unknown as useResetPasswordMutationType,
+    resetPasswordMutation: createErrorMutation(mockHandleResetEmailNotFound),
     handleSuccess: mockHandleSuccess,
   },
   parameters: {
@@ -96,11 +127,7 @@ export const EmailNotFound: Story = {
 
 export const RateLimited: Story = {
   args: {
-    resetPasswordMutation: {
-      mutateAsync: async ({ body }: { body: { email: string } }) =>
-        mockHandleResetRateLimited(body.email),
-      error: null,
-    } as unknown as useResetPasswordMutationType,
+    resetPasswordMutation: createErrorMutation(mockHandleResetRateLimited),
     handleSuccess: mockHandleSuccess,
   },
   parameters: {
@@ -116,21 +143,33 @@ export const RateLimited: Story = {
 export const Interactive: Story = {
   args: {
     resetPasswordMutation: {
-      mutateAsync: async ({ body }: { body: { email: string } }) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      mutate: (
+        variables: { body: ResetPasswordBody },
+        options?: {
+          onSuccess?: (data: unknown) => void;
+          onError?: (error: Error) => void;
+        },
+      ) => {
+        const body = variables.body;
 
-        const email = body.email;
+        setTimeout(async () => {
+          try {
+            if (body.email === 'notfound@example.com') {
+              await mockHandleResetEmailNotFound(body);
+              return;
+            }
 
-        // Simulate different responses based on email
-        if (email === 'notfound@example.com') {
-          return mockHandleResetEmailNotFound(email);
-        }
+            if (body.email === 'ratelimit@example.com') {
+              await mockHandleResetRateLimited(body);
+              return;
+            }
 
-        if (email === 'ratelimit@example.com') {
-          return mockHandleResetRateLimited(email);
-        }
-
-        return mockHandleResetSuccess(email);
+            const result = await mockHandleResetSuccess(body);
+            options?.onSuccess?.(result);
+          } catch (error) {
+            options?.onError?.(error as Error);
+          }
+        }, 0);
       },
       error: null,
     } as unknown as useResetPasswordMutationType,

@@ -1,7 +1,8 @@
 import { useAppForm } from '@components/org/forms/hooks/app-form';
 import type { UseResetPasswordFormProps } from '@components/org/forms/hooks/use-reset-password-form.types';
+import type { ResetPasswordFormData } from '@components/org/forms/validation/reset-password-form.schema';
 import { resetPasswordFormSchema } from '@components/org/forms/validation/reset-password-form.schema';
-import { handleFormSubmission } from '@lib/form-submission.utils';
+import { logError } from '@lib/logger.utils';
 
 export function useResetPasswordForm({
   resetPasswordMutation,
@@ -12,19 +13,56 @@ export function useResetPasswordForm({
       email: '',
     },
     validators: {
-      async onSubmitAsync({ value }) {
-        return await handleFormSubmission({
-          formValues: value,
-          schema: resetPasswordFormSchema,
-          mutation: resetPasswordMutation,
-          mapToMutationData: (data) => ({
-            email: data.email,
-          }),
-          handleSuccess,
-          errorContext: 'Password reset failed',
-        });
-      },
+      onBlur: resetPasswordFormSchema,
+    },
+    onSubmit({ value }) {
+      resetPasswordMutation.mutate(value, {
+        onSuccess(data) {
+          // better-auth returns errors wrapped in success response
+          if (
+            data &&
+            typeof data === 'object' &&
+            'error' in data &&
+            data.error
+          ) {
+            const appError = data.error;
+            const errorMessage = appError.message || '';
+            const message =
+              errorMessage || 'Something went wrong, please try again later.';
+
+            if (!errorMessage) {
+              logError({ message: 'Password reset failed', error: appError });
+            }
+
+            form.setErrorMap({
+              onSubmit: { form: message, fields: {} },
+            });
+            return;
+          }
+          handleSuccess(data);
+        },
+        onError(error) {
+          const errorMessage =
+            error && typeof error === 'object' && 'message' in error
+              ? (error as { message: string }).message
+              : '';
+
+          const message =
+            errorMessage || 'Something went wrong, please try again later.';
+
+          if (!errorMessage) {
+            logError({ message: 'Password reset failed', error });
+          }
+
+          form.setErrorMap({
+            onSubmit: { form: message, fields: {} },
+          });
+        },
+      });
     },
   });
   return form;
 }
+
+export type ResetPasswordFormType = ReturnType<typeof useResetPasswordForm>;
+export type ResetPasswordFormFieldName = keyof ResetPasswordFormData;

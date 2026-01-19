@@ -2,17 +2,50 @@ import { RegisterForm } from '@components/org/forms/register.form';
 import type { useRegisterMutationType } from '@services/users/register.http-service';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+interface RegisterBody {
+  username: string;
+  email: string;
+  password: string;
+  confirm: string;
+}
+
+// Helper to create mock mutation with success response
+function createSuccessMutation(
+  handler: (body: RegisterBody) => Promise<unknown>,
+): useRegisterMutationType {
+  return {
+    mutate: (
+      variables: { body: RegisterBody },
+      options?: { onSuccess?: (data: unknown) => void; onError?: () => void },
+    ) => {
+      handler(variables.body)
+        .then((result) => options?.onSuccess?.(result))
+        .catch(() => options?.onError?.());
+    },
+    error: null,
+  } as unknown as useRegisterMutationType;
+}
+
+// Helper to create mock mutation with error response
+function createErrorMutation(
+  handler: (body: RegisterBody) => Promise<never>,
+): useRegisterMutationType {
+  return {
+    mutate: (
+      variables: { body: RegisterBody },
+      options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+    ) => {
+      handler(variables.body).catch((error) => options?.onError?.(error));
+    },
+    error: null,
+  } as unknown as useRegisterMutationType;
+}
+
 // Mock handlers for Storybook
-const mockHandleRegisterSuccess = async (
-  username: string,
-  email: string,
-  password: string,
-  confirm: string,
-) => {
-  // Simulate API delay
+const mockHandleRegisterSuccess = async (body: RegisterBody) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  console.log('Register attempt:', { username, email, password, confirm });
+  console.log('Register attempt:', body);
   return {
     responseData: ['Account created successfully!'],
     responseErrors: null,
@@ -20,19 +53,11 @@ const mockHandleRegisterSuccess = async (
 };
 
 const mockHandleRegisterConflict = async (
-  username: string,
-  email: string,
-  password: string,
-  confirm: string,
-) => {
+  body: RegisterBody,
+): Promise<never> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  console.log('Register attempt with conflict:', {
-    username,
-    email,
-    password,
-    confirm,
-  });
+  console.log('Register attempt with conflict:', body);
   const error = new Error('Username or email already exists');
   Object.assign(error, {
     responseErrors: {
@@ -45,19 +70,11 @@ const mockHandleRegisterConflict = async (
 };
 
 const mockHandleRegisterWeakPassword = async (
-  username: string,
-  email: string,
-  password: string,
-  confirm: string,
-) => {
+  body: RegisterBody,
+): Promise<never> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  console.log('Register attempt with weak password:', {
-    username,
-    email,
-    password,
-    confirm,
-  });
+  console.log('Register attempt with weak password:', body);
   const error = new Error('Weak password');
   Object.assign(error, {
     responseErrors: {
@@ -94,50 +111,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    registerMutation: {
-      mutateAsync: async ({
-        body,
-      }: {
-        body: {
-          username: string;
-          email: string;
-          password: string;
-          confirm: string;
-        };
-      }) =>
-        mockHandleRegisterSuccess(
-          body.username,
-          body.email,
-          body.password,
-          body.confirm,
-        ),
-      error: null,
-    } as unknown as useRegisterMutationType,
+    registerMutation: createSuccessMutation(mockHandleRegisterSuccess),
     handleSuccess: mockHandleSuccess,
   },
 };
 
 export const UsernameConflict: Story = {
   args: {
-    registerMutation: {
-      mutateAsync: async ({
-        body,
-      }: {
-        body: {
-          username: string;
-          email: string;
-          password: string;
-          confirm: string;
-        };
-      }) =>
-        mockHandleRegisterConflict(
-          body.username,
-          body.email,
-          body.password,
-          body.confirm,
-        ),
-      error: null,
-    } as unknown as useRegisterMutationType,
+    registerMutation: createErrorMutation(mockHandleRegisterConflict),
     handleSuccess: mockHandleSuccess,
   },
   parameters: {
@@ -152,25 +133,7 @@ export const UsernameConflict: Story = {
 
 export const WeakPassword: Story = {
   args: {
-    registerMutation: {
-      mutateAsync: async ({
-        body,
-      }: {
-        body: {
-          username: string;
-          email: string;
-          password: string;
-          confirm: string;
-        };
-      }) =>
-        mockHandleRegisterWeakPassword(
-          body.username,
-          body.email,
-          body.password,
-          body.confirm,
-        ),
-      error: null,
-    } as unknown as useRegisterMutationType,
+    registerMutation: createErrorMutation(mockHandleRegisterWeakPassword),
     handleSuccess: mockHandleSuccess,
   },
   parameters: {
@@ -186,43 +149,36 @@ export const WeakPassword: Story = {
 export const Interactive: Story = {
   args: {
     registerMutation: {
-      mutateAsync: async ({
-        body,
-      }: {
-        body: {
-          username: string;
-          email: string;
-          password: string;
-          confirm: string;
-        };
-      }) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      mutate: (
+        variables: { body: RegisterBody },
+        options?: {
+          onSuccess?: (data: unknown) => void;
+          onError?: (error: Error) => void;
+        },
+      ) => {
+        const body = variables.body;
 
-        // Simulate different responses based on credentials
-        if (body.username === 'admin' || body.email === 'admin@example.com') {
-          return mockHandleRegisterConflict(
-            body.username,
-            body.email,
-            body.password,
-            body.confirm,
-          );
-        }
+        setTimeout(async () => {
+          try {
+            if (
+              body.username === 'admin' ||
+              body.email === 'admin@example.com'
+            ) {
+              await mockHandleRegisterConflict(body);
+              return;
+            }
 
-        if (body.password === 'weak') {
-          return mockHandleRegisterWeakPassword(
-            body.username,
-            body.email,
-            body.password,
-            body.confirm,
-          );
-        }
+            if (body.password === 'weak') {
+              await mockHandleRegisterWeakPassword(body);
+              return;
+            }
 
-        return mockHandleRegisterSuccess(
-          body.username,
-          body.email,
-          body.password,
-          body.confirm,
-        );
+            const result = await mockHandleRegisterSuccess(body);
+            options?.onSuccess?.(result);
+          } catch (error) {
+            options?.onError?.(error as Error);
+          }
+        }, 0);
       },
       error: null,
     } as unknown as useRegisterMutationType,

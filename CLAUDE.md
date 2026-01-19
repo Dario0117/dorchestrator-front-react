@@ -367,27 +367,39 @@ import { Button } from '../../components/ui/button';
 - **Handler aggregation**: All individual handlers must be imported and returned as an array in `src/lib/test.utils.ts` via the `MSWSuccessHandlers()` function
 - **Testing**: Only write tests for the http service if it has custom logic outside of invalidating queries. If it only exposes the query and mutation functions, don't write tests for it - create a test file and add a comment saying that no meaningful logic is implemented in the source file, so there's no need to test it.
 
-##  STRICT RULES, DON'T BREAK THEM, ASK FIRST
+## STRICT RULES
 
+Follow this conventions always, if for some reason you need to break any of them, ask first.
+
+### ALWAYS DO
+
+- Implement performant code
+- Follow security measures following OWASP guidelines
+- When finished with the code, run all quality checks to ensure all tests pass and code is formatted correctly, execute these commands until no errors or issues are found
+- Follow the project's architecture and conventions, if you need to change something, ask first
+- Follow SOLID principles
 - Before starting any work, first execute `bun open-api` to generate the latest OpenAPI schema for API
-- Don't install any new dependencies, respect the Tech Stack, ask first if you need to add a new library and explain why
-- Only use bun scripts to run checks and tests, if you need to add a new script, ask first and explain why
-- Always write unit tests for any piece of code, even if it's a simple function or class
-- Always follow the project's architecture and conventions, if you need to change something, ask first
-- Always follow SOLID principles
-- If there's a design system, always use it, if not you can use Tailwind CSS to build new components that match the style pattern of the existing components
-- Don't try to analyze code from the installed dependencies
-- Don't add unsafe modifications from biome
-- Never delete or update auto generated files (src/types/api.generated.types.ts, src/routes/routeTree.gen.ts)
-- Never re-export things from another files, refactor the code on the dependant file to use the new location of the thing you want to re-export
-- When asked to fix tests or add tests or fix typescript issues, don't change the tested code, accommodate the tests to comply with the code
+
+### NEVER DO
+
+- Install any new dependencies, respect the Tech Stack, ask first if you need to add a new library and explain why
+- Use the project's standard tooling (Bun) to run checks and tests (use the package.json command)
+- Try to analyze code from the installed dependencies
+- Create management commands when adding new functionality, unless you are asked to do so. You can do it on intermediary steps during your development, but remove it afterwards
+- Add docstring to the code (JS doc), unless you are asked to do so
+- Commit anything, leave everything on the working directory
+- When asked to fix or add tests, don't change the tested code, accommodate the tests to comply with the code
+- Use enums, they aren't standard, prefer using an object with a string key or a constant variable to define the keys
+- Mock internal modules or functions in tests (only mock external 3rd party requests)
+- Use any npm command, we use bun. If you need to use `npx` use `bunx`
+- Test exceptions unless they have any custom code internally, they are usually just a simple extension of the base exception so we can catch them and handle them in different ways, no need to test a simple wrapper
+- Write tests while implementing a feature, write them afterwards, do it on the review step
+- Add return types, they must be automatically inferred to avoid any issues on the caller's side
+- Delete or update auto generated files (src/types/api.generated.types.ts, src/routes/routeTree.gen.ts)
+- Re-export things from another files, refactor the code on the dependant file to use the new location of the thing you want to re-export
 - When asked to fix typescript issues, don't create new types even if they were deleted from the code, it was deleted intentionally, only add new interfaces or types to existing ones unless the type is necessary for the code to work
-- Never run biome on unsafe mode to fix issues
-- Never create storybook stories for `*.page.tsx` files
-- Never use enums, they aren't standard, prefer using an object with a string key or a constant variable to define the keys
-- Never create wrappers on tests, use the ones already exist in `test-wrappers.utils`, update them if needed
-- Never commit changes
-- Never add docstring to the code, unless you are asked to do so
-- Never write tests while implementing a feature, write them afterwards, do it on the review step
-- Never add return types, they must be automatically inferred to avoid any issues on the caller's side
-- Never write tests for http services `*.http-service.ts`
+- Run biome on unsafe mode to fix issues
+- Create storybook stories for `*.page.tsx` files
+- Create wrappers on tests, use the ones already exist in `test-wrappers.utils`, update them if needed
+- Write tests for http services `*.http-service.ts`
+- Run other command to run tests run the specified one (`bun run test`)

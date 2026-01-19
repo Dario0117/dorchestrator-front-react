@@ -81,9 +81,11 @@ describe('UpdatePasswordForm', () => {
       await user.click(submitButton);
     });
 
+    // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
       expect(mockHandleSuccess).toHaveBeenCalledWith({
-        status: true,
+        data: { status: true },
+        error: null,
       });
     });
   });

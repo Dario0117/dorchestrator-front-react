@@ -21,22 +21,27 @@ export function useSlugValidation() {
     setStatus(SlugStatus.UNCHECKED);
   };
 
-  const checkSlugAvailability = async (slug: string) => {
+  const checkSlugAvailability = (slug: string) => {
     if (!slug) {
       return;
     }
 
     setStatus(SlugStatus.CHECKING);
 
-    const result = await checkSlugMutation.mutateAsync(slug);
-
-    if (result.available) {
-      setStatus(SlugStatus.AVAILABLE);
-    } else if (result.taken) {
-      setStatus(SlugStatus.TAKEN);
-    } else {
-      setStatus(SlugStatus.UNCHECKED);
-    }
+    checkSlugMutation.mutate(slug, {
+      onSuccess: (result) => {
+        if (result.available) {
+          setStatus(SlugStatus.AVAILABLE);
+        } else if (result.taken) {
+          setStatus(SlugStatus.TAKEN);
+        } else {
+          setStatus(SlugStatus.UNCHECKED);
+        }
+      },
+      onError: () => {
+        setStatus(SlugStatus.UNCHECKED);
+      },
+    });
   };
 
   const isSlugValid = status === SlugStatus.AVAILABLE;

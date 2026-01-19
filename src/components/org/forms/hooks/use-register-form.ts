@@ -1,7 +1,8 @@
 import { useAppForm } from '@components/org/forms/hooks/app-form';
 import type { UseRegisterFormProps } from '@components/org/forms/hooks/use-register-form.types';
+import type { RegisterFormData } from '@components/org/forms/validation/register-form.schema';
 import { registerFormSchema } from '@components/org/forms/validation/register-form.schema';
-import { handleFormSubmission } from '@lib/form-submission.utils';
+import { logError } from '@lib/logger.utils';
 
 export function useRegisterForm({
   registerMutation,
@@ -15,21 +16,63 @@ export function useRegisterForm({
       email: '',
     },
     validators: {
-      async onSubmitAsync({ value }) {
-        return await handleFormSubmission({
-          formValues: value,
-          schema: registerFormSchema,
-          mutation: registerMutation,
-          mapToMutationData: (data) => ({
-            name: data.name,
-            password: data.password,
-            email: data.email,
-          }),
-          handleSuccess,
-          errorContext: 'Registration failed',
-        });
-      },
+      onBlur: registerFormSchema,
+    },
+    onSubmit({ value }) {
+      registerMutation.mutate(
+        {
+          name: value.name,
+          password: value.password,
+          email: value.email,
+        },
+        {
+          onSuccess(data) {
+            // better-auth returns errors wrapped in success response
+            if (
+              data &&
+              typeof data === 'object' &&
+              'error' in data &&
+              data.error
+            ) {
+              const appError = data.error;
+              const errorMessage = appError.message || '';
+              const message =
+                errorMessage || 'Something went wrong, please try again later.';
+
+              if (!errorMessage) {
+                logError({ message: 'Registration failed', error: appError });
+              }
+
+              form.setErrorMap({
+                onSubmit: { form: message, fields: {} },
+              });
+              return;
+            }
+            handleSuccess(data);
+          },
+          onError(error) {
+            const errorMessage =
+              error && typeof error === 'object' && 'message' in error
+                ? (error as { message: string }).message
+                : '';
+
+            const message =
+              errorMessage || 'Something went wrong, please try again later.';
+
+            if (!errorMessage) {
+              logError({ message: 'Registration failed', error });
+            }
+
+            form.setErrorMap({
+              onSubmit: { form: message, fields: {} },
+            });
+          },
+        },
+      );
     },
   });
   return form;
 }
+
+export type RegisterFormType = ReturnType<typeof useRegisterForm>;
+export type RegisterFormFieldName = keyof RegisterFormData;

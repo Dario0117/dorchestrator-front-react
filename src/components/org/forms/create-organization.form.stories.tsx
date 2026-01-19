@@ -11,14 +11,55 @@ const queryClient = new QueryClient({
   },
 });
 
-const mockHandleSuccess = async (name: string, slug: string) => {
+interface CreateOrgInput {
+  name: string;
+  slug: string;
+}
+
+// Helper to create mock mutation with success response
+function createSuccessMutation(
+  handler: (input: CreateOrgInput) => Promise<unknown>,
+): useCreateOrganizationMutationType {
+  return {
+    mutate: (
+      variables: CreateOrgInput,
+      options?: { onSuccess?: (data: unknown) => void; onError?: () => void },
+    ) => {
+      handler(variables)
+        .then((result) => options?.onSuccess?.(result))
+        .catch(() => options?.onError?.());
+    },
+    error: null,
+    data: null,
+    isPending: false,
+  } as unknown as useCreateOrganizationMutationType;
+}
+
+// Helper to create mock mutation with error response
+function createErrorMutation(
+  handler: (input: CreateOrgInput) => Promise<never>,
+): useCreateOrganizationMutationType {
+  return {
+    mutate: (
+      variables: CreateOrgInput,
+      options?: { onSuccess?: () => void; onError?: (error: Error) => void },
+    ) => {
+      handler(variables).catch((error) => options?.onError?.(error));
+    },
+    error: null,
+    data: null,
+    isPending: false,
+  } as unknown as useCreateOrganizationMutationType;
+}
+
+const mockHandleSuccess = async (input: CreateOrgInput) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  console.log('Organization created:', { name, slug });
+  console.log('Organization created:', input);
   return {
     data: {
       id: 'org-123',
-      name,
-      slug,
+      name: input.name,
+      slug: input.slug,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -26,9 +67,9 @@ const mockHandleSuccess = async (name: string, slug: string) => {
   };
 };
 
-const mockHandleError = async (name: string, slug: string) => {
+const mockHandleError = async (input: CreateOrgInput): Promise<never> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  console.log('Organization creation failed:', { name, slug });
+  console.log('Organization creation failed:', input);
   throw new Error('Failed to create organization. Please try again.');
 };
 
@@ -60,13 +101,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    createOrganizationMutation: {
-      mutateAsync: async ({ name, slug }: { name: string; slug: string }) =>
-        mockHandleSuccess(name, slug),
-      error: null,
-      data: null,
-      isPending: false,
-    } as unknown as useCreateOrganizationMutationType,
+    createOrganizationMutation: createSuccessMutation(mockHandleSuccess),
     handleSuccess: (data) => {
       console.log('Success:', data);
     },
@@ -75,13 +110,7 @@ export const Default: Story = {
 
 export const WithError: Story = {
   args: {
-    createOrganizationMutation: {
-      mutateAsync: async ({ name, slug }: { name: string; slug: string }) =>
-        mockHandleError(name, slug),
-      error: null,
-      data: null,
-      isPending: false,
-    } as unknown as useCreateOrganizationMutationType,
+    createOrganizationMutation: createErrorMutation(mockHandleError),
     handleSuccess: (data) => {
       console.log('Success:', data);
     },
@@ -99,18 +128,30 @@ export const WithError: Story = {
 export const Interactive: Story = {
   args: {
     createOrganizationMutation: {
-      mutateAsync: async ({ name, slug }: { name: string; slug: string }) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      mutate: (
+        variables: CreateOrgInput,
+        options?: {
+          onSuccess?: (data: unknown) => void;
+          onError?: (error: Error) => void;
+        },
+      ) => {
+        setTimeout(async () => {
+          try {
+            if (variables.slug === 'taken-slug') {
+              throw new Error('Organization slug is already taken');
+            }
 
-        if (slug === 'taken-slug') {
-          throw new Error('Organization slug is already taken');
-        }
+            if (variables.slug === 'error-slug') {
+              await mockHandleError(variables);
+              return;
+            }
 
-        if (slug === 'error-slug') {
-          return mockHandleError(name, slug);
-        }
-
-        return mockHandleSuccess(name, slug);
+            const result = await mockHandleSuccess(variables);
+            options?.onSuccess?.(result);
+          } catch (error) {
+            options?.onError?.(error as Error);
+          }
+        }, 0);
       },
       error: null,
       data: null,
