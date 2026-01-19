@@ -1,7 +1,9 @@
+import type { SidebarData } from '@components/layout/data/sidebar-data.types';
 import { SearchProvider } from '@context/search.provider';
 import { renderWithProviders as renderWithBaseProviders } from '@lib/test-wrappers.utils';
 import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
+import { Home, Settings } from 'lucide-react';
 
 const renderWithProviders = () => {
   return renderWithBaseProviders(
@@ -34,6 +36,7 @@ beforeAll(() => {
 });
 
 const mockNavigate = vi.fn();
+const mockSetTheme = vi.fn();
 
 const mockOrganization = {
   id: 'org-123',
@@ -56,9 +59,72 @@ vi.mock('@/app', () => ({
   _getNullableCurrentOrganizationFromSlug: () => mockOrganization,
 }));
 
+vi.mock('@context/theme.provider', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('@context/theme.provider')>();
+  return {
+    ...actual,
+    useTheme: () => ({
+      theme: 'system',
+      setTheme: mockSetTheme,
+    }),
+  };
+});
+
+const mockSidebarDataWithSubItems: SidebarData = {
+  teams: [{ name: 'Test Org', logo: Home, plan: 'Free' }],
+  navGroups: [
+    {
+      title: 'Main',
+      items: [
+        {
+          title: 'Parent Item',
+          icon: Settings,
+          items: [
+            { title: 'Sub Item 1', url: '/test-org/sub-1' },
+            { title: 'Sub Item 2', url: '/test-org/sub-2' },
+          ],
+        },
+      ],
+    },
+    {
+      title: 'Theme',
+      items: [],
+    },
+  ],
+};
+
+const mockGetSidebarData = vi.fn();
+
+vi.mock('@components/layout/data/sidebar-data', () => ({
+  getSidebarData: (...args: unknown[]) => mockGetSidebarData(...args),
+}));
+
+const defaultSidebarData: SidebarData = {
+  teams: [{ name: 'Test Organization', logo: Home, plan: 'Free Tier' }],
+  navGroups: [
+    {
+      title: 'General',
+      items: [
+        { title: 'Dashboard', url: '/test-org/', icon: Home },
+        { title: 'Devices', url: '/test-org/devices', icon: Home },
+        { title: 'Commands', url: '/test-org/commands', icon: Home },
+      ],
+    },
+    {
+      title: 'Settings',
+      items: [
+        { title: 'Organization Settings', url: '/test-org/settings', icon: Settings },
+      ],
+    },
+  ],
+};
+
 describe('CommandMenu', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    mockSetTheme.mockClear();
+    mockGetSidebarData.mockReturnValue(defaultSidebarData);
   });
 
   it('should render command menu when open', async () => {
@@ -146,5 +212,65 @@ describe('CommandMenu', () => {
     await user.click(devicesItem);
 
     expect(mockNavigate).toHaveBeenCalledWith({ to: '/test-org/devices' });
+  });
+
+  it('should change theme to light when Light option is selected', async () => {
+    const user = userEvent.setup();
+    renderWithProviders();
+    await openCommandMenu();
+
+    const lightOption = screen.getByText('Light');
+    await user.click(lightOption);
+
+    expect(mockSetTheme).toHaveBeenCalledWith('light');
+  });
+
+  it('should change theme to dark when Dark option is selected', async () => {
+    const user = userEvent.setup();
+    renderWithProviders();
+    await openCommandMenu();
+
+    const darkOption = screen.getByText('Dark');
+    await user.click(darkOption);
+
+    expect(mockSetTheme).toHaveBeenCalledWith('dark');
+  });
+
+  it('should change theme to system when System option is selected', async () => {
+    const user = userEvent.setup();
+    renderWithProviders();
+    await openCommandMenu();
+
+    const systemOption = screen.getByText('System');
+    await user.click(systemOption);
+
+    expect(mockSetTheme).toHaveBeenCalledWith('system');
+  });
+});
+
+describe('CommandMenu with sub-items', () => {
+  beforeEach(() => {
+    mockNavigate.mockClear();
+    mockSetTheme.mockClear();
+    mockGetSidebarData.mockReturnValue(mockSidebarDataWithSubItems);
+  });
+
+  it('should render sub-items from collapsible nav item', async () => {
+    renderWithProviders();
+    await openCommandMenu();
+
+    expect(screen.getByText(/Sub Item 1/)).toBeInTheDocument();
+    expect(screen.getByText(/Sub Item 2/)).toBeInTheDocument();
+  });
+
+  it('should navigate to sub-item url when sub-item is selected', async () => {
+    const user = userEvent.setup();
+    renderWithProviders();
+    await openCommandMenu();
+
+    const subItem = screen.getByText(/Sub Item 1/);
+    await user.click(subItem);
+
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/test-org/sub-1' });
   });
 });

@@ -1,7 +1,8 @@
+import { buildBackendUrl } from '@lib/test.utils';
 import { HttpResponse, http } from 'msw';
 
 export const removeDeviceHandler = http.delete(
-  '/api/v1/:organizationId/devices/:deviceId',
+  buildBackendUrl('/api/v1/:organizationId/devices/:deviceId'),
   () => {
     return HttpResponse.json({
       responseData: {

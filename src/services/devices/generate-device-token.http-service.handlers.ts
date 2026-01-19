@@ -1,7 +1,8 @@
+import { buildBackendUrl } from '@lib/test.utils';
 import { HttpResponse, http } from 'msw';
 
 export const generateDeviceTokenHandler = http.post(
-  '/api/v1/:organizationId/devices',
+  buildBackendUrl('/api/v1/:organizationId/devices'),
   () => {
     return HttpResponse.json({
       responseData: {

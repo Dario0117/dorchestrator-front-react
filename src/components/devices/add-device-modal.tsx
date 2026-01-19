@@ -2,6 +2,7 @@ import { Button } from '@components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@components/ui/dialog';
@@ -81,13 +82,13 @@ export function AddDeviceModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Add New Device</DialogTitle>
+          <DialogDescription>
+            Generate a registration token and run the command below on your
+            device.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Generate a registration token and run the command below on your
-            device:
-          </p>
 
           {errors && (
             <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">

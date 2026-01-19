@@ -5124,8 +5124,8 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Response for status 200 */
-            200: {
+            /** @description Response for status 201 */
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5653,8 +5653,8 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Response for status 200 */
-            200: {
+            /** @description Response for status 201 */
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
