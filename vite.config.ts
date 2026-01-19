@@ -27,6 +27,7 @@ export default defineConfig(({ mode }) => {
    * for anything else this must be true
    */
   const isVSCodeDebug = env.VITE_IS_VSCODE_DEBUG === 'true';
+  const isAgentTest = env.VITEST_IS_AGENT_TEST === 'true';
   const backendBaseUrl = env.VITE_BACKEND_BASE_URL;
   const frontendBaseUrl = env.VITE_FRONTEND_BASE_URL;
 
@@ -40,9 +41,15 @@ export default defineConfig(({ mode }) => {
     test: {
       watch: false,
       globals: true,
-      fileParallelism: false,
       environment: 'jsdom',
       setupFiles: './testsSetup.ts',
+      // Limit parallel test execution for agent runs to prevent resource exhaustion
+      // Vitest 4 uses top-level options instead of poolOptions
+      ...(isAgentTest && {
+        fileParallelism: false,
+        maxWorkers: 1,
+        maxConcurrency: 1,
+      }),
       coverage: {
         provider: 'v8',
         reporter: ['html', 'json'],

@@ -7,6 +7,7 @@
     "dev": "bunx --bun concurrently 'vite' 'bun open-api'",
     "dev:debug": "VITE_IS_VSCODE_DEBUG=true vite",
     "test": "vitest",
+    "test:forAgents": "VITEST_IS_AGENT_TEST=true vitest",
     "coverage": "vitest run --coverage",
     "check-ts": "tsc -b --noEmit",
     "build": "tsc -b && vite build",

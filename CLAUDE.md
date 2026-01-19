@@ -24,7 +24,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Testing
 
-- `bun run test` - Run tests with Vitest in watch mode
+- `bun run test` - Run tests with Vitest
+- `bun run test:forAgents` - Run tests with sequential execution (single worker, no concurrency) to prevent resource exhaustion when running via Claude Code or other agents
 - `bun run coverage` - Run tests with coverage report (outputs to `/coverage`, runs tests once without watch mode)
 
 ### Storybook
