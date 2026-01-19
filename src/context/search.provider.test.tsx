@@ -1,5 +1,5 @@
 import { SearchProvider, useSearch } from '@context/search.provider';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 
 // Mock the CommandMenu component
 vi.mock('@/components/command-menu', () => ({
@@ -239,9 +239,11 @@ describe('SearchProvider', () => {
     } as unknown as KeyboardEvent;
 
     // Call the handler directly with our mock event
-    if (keydownHandler) {
-      keydownHandler(mockEvent);
-    }
+    act(() => {
+      if (keydownHandler) {
+        keydownHandler(mockEvent);
+      }
+    });
 
     expect(mockPreventDefault).toHaveBeenCalled();
 

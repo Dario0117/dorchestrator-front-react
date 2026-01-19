@@ -1,23 +1,23 @@
 import { UpdatePasswordForm } from '@components/org/forms/update-password.form';
-import { buildBackendUrl } from '@lib/test.utils';
+import * as loggerUtils from '@lib/logger.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { useUpdatePasswordMutation } from '@services/users/update-password.http-service';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { HttpResponse, http } from 'msw';
-import { server } from '@/../testsSetup';
 
 // Mock the router hooks
 vi.mock('@tanstack/react-router', () => ({
-  useParams: vi.fn(),
+  useParams: vi.fn().mockReturnValue({ token: 'test-token-123' }),
 }));
 
-const mockUseParams = vi.mocked(
-  await import('@tanstack/react-router'),
-).useParams;
-
-// Mock params with token
-mockUseParams.mockReturnValue({ token: 'test-token-123' });
+// Mock better-auth client to avoid internal React state updates that cause act warnings
+const mockResetPassword = vi.fn();
+vi.mock('@/better-auth.client', () => ({
+  authClient: {
+    resetPassword: (params: { newPassword: string; token: string }) =>
+      mockResetPassword(params),
+  },
+}));
 
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {
   const updatePasswordMutation = useUpdatePasswordMutation('test-token-123');
@@ -34,6 +34,12 @@ describe('UpdatePasswordForm', () => {
 
   beforeEach(() => {
     mockHandleSuccess.mockClear();
+    mockResetPassword.mockClear();
+    // Default: successful response
+    mockResetPassword.mockResolvedValue({
+      data: { status: true },
+      error: null,
+    });
   });
 
   it('should render update password form with all required fields', () => {
@@ -75,11 +81,9 @@ describe('UpdatePasswordForm', () => {
       name: 'Update password',
     });
 
-    await act(async () => {
-      await user.type(passwordInput, 'newpassword123');
-      await user.type(confirmPasswordInput, 'newpassword123');
-      await user.click(submitButton);
-    });
+    await user.type(passwordInput, 'newpassword123');
+    await user.type(confirmPasswordInput, 'newpassword123');
+    await user.click(submitButton);
 
     // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
@@ -91,19 +95,14 @@ describe('UpdatePasswordForm', () => {
   });
 
   it('should display error when mutation fails', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     const user = userEvent.setup();
 
-    // Override the handler to return an error
-    server.use(
-      http.post(buildBackendUrl('/api/v1/reset-password'), () => {
-        return HttpResponse.json(
-          {
-            nonFieldErrors: ['Invalid or expired token'],
-          },
-          { status: 400 },
-        );
-      }),
-    );
+    // Override the mock to return an error
+    mockResetPassword.mockResolvedValue({
+      data: null,
+      error: { message: 'Invalid or expired token' },
+    });
 
     renderWithProviders(<TestWrapper handleSuccess={mockHandleSuccess} />);
 
@@ -113,11 +112,9 @@ describe('UpdatePasswordForm', () => {
       name: 'Update password',
     });
 
-    await act(async () => {
-      await user.type(passwordInput, 'newpassword123');
-      await user.type(confirmPasswordInput, 'newpassword123');
-      await user.click(submitButton);
-    });
+    await user.type(passwordInput, 'newpassword123');
+    await user.type(confirmPasswordInput, 'newpassword123');
+    await user.click(submitButton);
 
     await waitFor(() => {
       expect(mockHandleSuccess).not.toHaveBeenCalled();
@@ -135,11 +132,9 @@ describe('UpdatePasswordForm', () => {
       name: 'Update password',
     });
 
-    await act(async () => {
-      await user.type(passwordInput, 'password123');
-      await user.type(confirmPasswordInput, 'differentpassword');
-      await user.click(submitButton);
-    });
+    await user.type(passwordInput, 'password123');
+    await user.type(confirmPasswordInput, 'differentpassword');
+    await user.click(submitButton);
 
     // Should not call handleSuccess if passwords don't match
     await waitFor(
@@ -153,7 +148,7 @@ describe('UpdatePasswordForm', () => {
     expect(errorMessage).toBeInTheDocument();
   });
 
-  it('should prevent default form submission', () => {
+  it('should prevent default form submission', async () => {
     const mockPreventDefault = vi.fn();
     const mockStopPropagation = vi.fn();
 
@@ -169,12 +164,17 @@ describe('UpdatePasswordForm', () => {
       event.preventDefault = mockPreventDefault;
       event.stopPropagation = mockStopPropagation;
 
-      act(() => {
-        fireEvent(form, event);
-      });
+      fireEvent(form, event);
 
       expect(mockPreventDefault).toHaveBeenCalled();
       expect(mockStopPropagation).toHaveBeenCalled();
+
+      // Wait for any pending form validation updates to complete
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: 'Update password' }),
+        ).toBeInTheDocument();
+      });
     }
   });
 
@@ -196,9 +196,7 @@ describe('UpdatePasswordForm', () => {
     const submitButton = screen.getByRole('button', {
       name: 'Update password',
     });
-    await act(async () => {
-      await user.click(submitButton);
-    });
+    await user.click(submitButton);
 
     // Form allows empty passwords (both match), so mutation will be called
     await waitFor(() => {
@@ -261,13 +259,11 @@ describe('UpdatePasswordForm', () => {
     const passwords = ['password123', 'verysecure456', 'complex!pass789'];
 
     for (const password of passwords) {
-      await act(async () => {
-        await user.clear(passwordInput);
-        await user.clear(confirmPasswordInput);
-        await user.type(passwordInput, password);
-        await user.type(confirmPasswordInput, password);
-        await user.click(submitButton);
-      });
+      await user.clear(passwordInput);
+      await user.clear(confirmPasswordInput);
+      await user.type(passwordInput, password);
+      await user.type(confirmPasswordInput, password);
+      await user.click(submitButton);
 
       await waitFor(() => {
         expect(mockHandleSuccess).toHaveBeenCalled();

@@ -1,12 +1,13 @@
+// Configure React's act() for the test environment FIRST before any imports
+// This must be at the very top to ensure React sees it when it loads
+// @ts-expect-error - Setting React act environment flag
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
 import { cleanup } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { setupServer } from 'msw/node';
 import { MSWSuccessHandlers } from './src/lib/test.utils';
-
-// // Configure React's act() for the test environment
-// // @ts-expect-error - Setting React act environment flag
-// global.IS_REACT_ACT_ENVIRONMENT = true;
 
 // Set up MSW server and start listening BEFORE any modules import the auth client
 export const server = setupServer(...MSWSuccessHandlers());

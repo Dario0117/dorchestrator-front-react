@@ -1,7 +1,7 @@
 import { Header } from '@components/layout/header';
 import { SidebarProvider } from '@components/ui/sidebar';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 
 function renderHeader(props = {}) {
   return renderWithProviders(
@@ -128,9 +128,11 @@ describe('Header', () => {
       value: 15,
     });
 
-    // Trigger scroll event
-    const scrollEvent = new Event('scroll');
-    document.dispatchEvent(scrollEvent);
+    // Trigger scroll event wrapped in act to handle state updates
+    act(() => {
+      const scrollEvent = new Event('scroll');
+      document.dispatchEvent(scrollEvent);
+    });
 
     await waitFor(() => {
       expect(header).toHaveClass('shadow');
@@ -161,9 +163,11 @@ describe('Header', () => {
       value: 20,
     });
 
-    // Trigger scroll event
-    const scrollEvent = new Event('scroll');
-    document.dispatchEvent(scrollEvent);
+    // Trigger scroll event wrapped in act to handle state updates
+    act(() => {
+      const scrollEvent = new Event('scroll');
+      document.dispatchEvent(scrollEvent);
+    });
 
     await waitFor(() => {
       expect(innerDiv).toHaveClass(
@@ -193,9 +197,11 @@ describe('Header', () => {
       value: 15,
     });
 
-    // Trigger scroll event
-    const scrollEvent = new Event('scroll');
-    document.dispatchEvent(scrollEvent);
+    // Trigger scroll event wrapped in act to handle state updates
+    act(() => {
+      const scrollEvent = new Event('scroll');
+      document.dispatchEvent(scrollEvent);
+    });
 
     expect(header).not.toHaveClass('shadow');
   });

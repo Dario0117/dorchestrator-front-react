@@ -2,7 +2,7 @@ import { RegisterForm } from '@components/org/forms/register.form';
 import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { useRegisterMutation } from '@services/users/register.http-service';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
@@ -187,7 +187,7 @@ describe('RegisterForm', () => {
     );
   });
 
-  it('should prevent default form submission', () => {
+  it('should prevent default form submission', async () => {
     const mockPreventDefault = vi.fn();
     const mockStopPropagation = vi.fn();
 
@@ -203,12 +203,17 @@ describe('RegisterForm', () => {
       event.preventDefault = mockPreventDefault;
       event.stopPropagation = mockStopPropagation;
 
-      act(() => {
-        fireEvent(form, event);
-      });
+      fireEvent(form, event);
 
       expect(mockPreventDefault).toHaveBeenCalled();
       expect(mockStopPropagation).toHaveBeenCalled();
+
+      // Wait for any pending form validation updates to complete
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: 'Register' }),
+        ).toBeInTheDocument();
+      });
     }
   });
 

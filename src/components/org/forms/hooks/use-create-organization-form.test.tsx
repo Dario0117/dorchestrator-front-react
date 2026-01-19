@@ -1,7 +1,8 @@
 import { useCreateOrganizationForm } from '@components/org/forms/hooks/use-create-organization-form';
+import * as loggerUtils from '@lib/logger.utils';
 import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
 import type { useCreateOrganizationMutationType } from '@services/organizations/create-organization.http-service';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 
 /**
  * Helper to create a mock mutation with mutate callback pattern.
@@ -67,10 +68,11 @@ describe('useCreateOrganizationForm', () => {
       { wrapper: createQueryThemeWrapper() },
     );
 
-    result.current.setFieldValue('name', 'Test Org');
-    result.current.setFieldValue('slug', 'test-org');
-
-    await result.current.handleSubmit();
+    await act(async () => {
+      result.current.setFieldValue('name', 'Test Org');
+      result.current.setFieldValue('slug', 'test-org');
+      await result.current.handleSubmit();
+    });
 
     await waitFor(() => {
       expect(mockMutation.mutate).toHaveBeenCalledWith(
@@ -85,6 +87,7 @@ describe('useCreateOrganizationForm', () => {
   });
 
   it('should handle slug uniqueness error', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     const mockMutation = createErrorMutation(
       new Error('The slug is already taken'),
     );
@@ -99,10 +102,11 @@ describe('useCreateOrganizationForm', () => {
       { wrapper: createQueryThemeWrapper() },
     );
 
-    result.current.setFieldValue('name', 'Test Org');
-    result.current.setFieldValue('slug', 'taken-slug');
-
-    await result.current.handleSubmit();
+    await act(async () => {
+      result.current.setFieldValue('name', 'Test Org');
+      result.current.setFieldValue('slug', 'taken-slug');
+      await result.current.handleSubmit();
+    });
 
     await waitFor(() => {
       expect(mockHandleSuccess).not.toHaveBeenCalled();
@@ -110,6 +114,7 @@ describe('useCreateOrganizationForm', () => {
   });
 
   it('should handle generic errors', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     const mockMutation = createErrorMutation(new Error('Network error'));
     const mockHandleSuccess = vi.fn();
 
@@ -122,10 +127,11 @@ describe('useCreateOrganizationForm', () => {
       { wrapper: createQueryThemeWrapper() },
     );
 
-    result.current.setFieldValue('name', 'Test Org');
-    result.current.setFieldValue('slug', 'test-org');
-
-    await result.current.handleSubmit();
+    await act(async () => {
+      result.current.setFieldValue('name', 'Test Org');
+      result.current.setFieldValue('slug', 'test-org');
+      await result.current.handleSubmit();
+    });
 
     await waitFor(() => {
       expect(mockHandleSuccess).not.toHaveBeenCalled();
@@ -147,8 +153,10 @@ describe('useCreateOrganizationForm', () => {
       { wrapper: createQueryThemeWrapper() },
     );
 
-    result.current.setFieldValue('name', 'New Organization');
-    result.current.setFieldValue('slug', 'new-org');
+    act(() => {
+      result.current.setFieldValue('name', 'New Organization');
+      result.current.setFieldValue('slug', 'new-org');
+    });
 
     expect(result.current.state.values.name).toBe('New Organization');
     expect(result.current.state.values.slug).toBe('new-org');
@@ -167,10 +175,11 @@ describe('useCreateOrganizationForm', () => {
       { wrapper: createQueryThemeWrapper() },
     );
 
-    result.current.setFieldValue('name', 'Test Org');
-    result.current.setFieldValue('slug', 'test-org');
-
-    await result.current.handleSubmit();
+    await act(async () => {
+      result.current.setFieldValue('name', 'Test Org');
+      result.current.setFieldValue('slug', 'test-org');
+      await result.current.handleSubmit();
+    });
 
     await waitFor(() => {
       expect(mockMutation.mutate).toHaveBeenCalled();
@@ -180,6 +189,7 @@ describe('useCreateOrganizationForm', () => {
   });
 
   it('should handle error without message', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     const mockMutation = {
       mutate: vi.fn((_, options) => {
         options?.onError?.({} as Error, undefined as never, undefined);
@@ -196,10 +206,11 @@ describe('useCreateOrganizationForm', () => {
       { wrapper: createQueryThemeWrapper() },
     );
 
-    result.current.setFieldValue('name', 'Test Org');
-    result.current.setFieldValue('slug', 'test-org');
-
-    await result.current.handleSubmit();
+    await act(async () => {
+      result.current.setFieldValue('name', 'Test Org');
+      result.current.setFieldValue('slug', 'test-org');
+      await result.current.handleSubmit();
+    });
 
     await waitFor(() => {
       expect(mockHandleSuccess).not.toHaveBeenCalled();

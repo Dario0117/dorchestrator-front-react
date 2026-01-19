@@ -25,7 +25,7 @@ import {
   useSidebar,
 } from '@components/ui/sidebar';
 import { SIDEBAR_KEYBOARD_SHORTCUT } from '@components/ui/sidebar.constants';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
 // Mock useIsMobile hook - default to desktop
@@ -122,7 +122,9 @@ describe('SidebarProvider', () => {
       bubbles: true,
       cancelable: true,
     });
-    window.dispatchEvent(event);
+    act(() => {
+      window.dispatchEvent(event);
+    });
 
     // Wait for state to update
     await screen.findByText('collapsed');

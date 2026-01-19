@@ -403,3 +403,4 @@ Follow this conventions always, if for some reason you need to break any of them
 - Create wrappers on tests, use the ones already exist in `test-wrappers.utils`, update them if needed
 - Write tests for http services `*.http-service.ts`
 - Run other command to run tests run the specified one (`bun run test`)
+- Introduce new warning/errors when writing tests, fix them immediately

@@ -1,11 +1,9 @@
 import { LoginForm } from '@components/org/forms/login.form';
-import { buildBackendUrl } from '@lib/test.utils';
+import * as loggerUtils from '@lib/logger.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { useLoginMutation } from '@services/users/login.http-service';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { HttpResponse, http } from 'msw';
-import { server } from '@/../testsSetup';
 
 interface LinkProps {
   children: React.ReactNode;
@@ -25,6 +23,17 @@ vi.mock('@tanstack/react-router', () => ({
   ),
 }));
 
+// Mock better-auth client to avoid internal React state updates that cause act warnings
+const mockSignInEmail = vi.fn();
+vi.mock('@/better-auth.client', () => ({
+  authClient: {
+    signIn: {
+      email: (params: { email: string; password: string }) =>
+        mockSignInEmail(params),
+    },
+  },
+}));
+
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {
   const loginMutation = useLoginMutation();
   return (
@@ -40,6 +49,20 @@ describe('LoginForm', () => {
 
   beforeEach(() => {
     mockHandleSuccess.mockClear();
+    mockSignInEmail.mockClear();
+    // Default: successful response
+    mockSignInEmail.mockResolvedValue({
+      data: {
+        redirect: false,
+        token: 'random-token',
+        user: {
+          id: 'test-id',
+          email: 'test@example.com',
+          name: 'Test User',
+        },
+      },
+      error: null,
+    });
   });
 
   it('should render login form with all required fields', () => {
@@ -98,11 +121,9 @@ describe('LoginForm', () => {
     const passwordInput = screen.getByLabelText(/Password/);
     const submitButton = screen.getByRole('button', { name: 'Login' });
 
-    await act(async () => {
-      await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'testpassword');
-      await user.click(submitButton);
-    });
+    await user.type(emailInput, 'test@example.com');
+    await user.type(passwordInput, 'testpassword');
+    await user.click(submitButton);
 
     // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
@@ -112,7 +133,7 @@ describe('LoginForm', () => {
             redirect: false,
             token: 'random-token',
             user: expect.objectContaining({
-              id: 'test-user-id',
+              id: 'test-id',
               email: 'test@example.com',
               name: 'Test User',
             }),
@@ -123,7 +144,7 @@ describe('LoginForm', () => {
     });
   });
 
-  it('should prevent default form submission', () => {
+  it('should prevent default form submission', async () => {
     const mockPreventDefault = vi.fn();
     const mockStopPropagation = vi.fn();
 
@@ -137,12 +158,17 @@ describe('LoginForm', () => {
       event.preventDefault = mockPreventDefault;
       event.stopPropagation = mockStopPropagation;
 
-      act(() => {
-        fireEvent(form, event);
-      });
+      fireEvent(form, event);
 
       expect(mockPreventDefault).toHaveBeenCalled();
       expect(mockStopPropagation).toHaveBeenCalled();
+
+      // Wait for any pending form validation updates to complete
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: 'Login' }),
+        ).toBeInTheDocument();
+      });
     }
   });
 
@@ -151,28 +177,21 @@ describe('LoginForm', () => {
     renderWithProviders(<TestWrapper handleSuccess={mockHandleSuccess} />);
 
     const submitButton = screen.getByRole('button', { name: 'Login' });
-    await act(async () => {
-      await user.click(submitButton);
-    });
+    await user.click(submitButton);
 
     // Form should handle validation internally
     expect(mockHandleSuccess).not.toHaveBeenCalled();
   });
 
   it('should display form error when loginMutation fails', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     const user = userEvent.setup();
 
-    // Override the handler to return an error
-    server.use(
-      http.post(buildBackendUrl('/api/v1/sign-in/email'), () => {
-        return HttpResponse.json(
-          {
-            nonFieldErrors: ['Invalid credentials'],
-          },
-          { status: 400 },
-        );
-      }),
-    );
+    // Override the mock to return an error
+    mockSignInEmail.mockResolvedValue({
+      data: null,
+      error: { message: 'Invalid credentials' },
+    });
 
     renderWithProviders(<TestWrapper handleSuccess={mockHandleSuccess} />);
 
@@ -180,11 +199,9 @@ describe('LoginForm', () => {
     const passwordInput = screen.getByLabelText(/Password/);
     const submitButton = screen.getByRole('button', { name: 'Login' });
 
-    await act(async () => {
-      await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'wrongpassword');
-      await user.click(submitButton);
-    });
+    await user.type(emailInput, 'test@example.com');
+    await user.type(passwordInput, 'wrongpassword');
+    await user.click(submitButton);
 
     await waitFor(() => {
       expect(mockHandleSuccess).not.toHaveBeenCalled();

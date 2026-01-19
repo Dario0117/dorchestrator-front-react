@@ -1,4 +1,5 @@
 import { useResetPasswordForm } from '@components/org/forms/hooks/use-reset-password-form';
+import * as loggerUtils from '@lib/logger.utils';
 import { buildBackendUrl } from '@lib/test.utils';
 import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
 import { useResetPasswordMutation } from '@services/users/reset-password.http-service';
@@ -155,6 +156,7 @@ describe('useResetPasswordForm', () => {
   });
 
   it('should handle unexpected error without responseErrors', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     // Return HTTP 500 error without message so better-auth wraps it
     server.use(
       http.post(buildBackendUrl('/api/v1/request-password-reset'), () => {

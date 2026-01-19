@@ -2,6 +2,7 @@ import {
   SlugStatus,
   useSlugValidation,
 } from '@components/org/forms/hooks/use-slug-validation';
+import * as loggerUtils from '@lib/logger.utils';
 import { buildBackendUrl } from '@lib/test.utils';
 import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
 import { act, renderHook, waitFor } from '@testing-library/react';
@@ -39,14 +40,14 @@ describe('useSlugValidation', () => {
       wrapper: createQueryThemeWrapper(),
     });
 
-    const checkPromise = result.current.checkSlugAvailability('available-slug');
-
-    // Status should immediately be CHECKING
-    await waitFor(() => {
-      expect(result.current.isChecking).toBe(false); // After resolution
+    await act(async () => {
+      await result.current.checkSlugAvailability('available-slug');
     });
 
-    await checkPromise;
+    // Status should be AVAILABLE after resolution
+    await waitFor(() => {
+      expect(result.current.isChecking).toBe(false);
+    });
   });
 
   it('should set status to available when slug is available', async () => {
@@ -54,7 +55,9 @@ describe('useSlugValidation', () => {
       wrapper: createQueryThemeWrapper(),
     });
 
-    await result.current.checkSlugAvailability('available-slug');
+    await act(async () => {
+      await result.current.checkSlugAvailability('available-slug');
+    });
 
     await waitFor(() => {
       expect(result.current.status).toBe(SlugStatus.AVAILABLE);
@@ -63,6 +66,7 @@ describe('useSlugValidation', () => {
   });
 
   it('should set status to taken when slug is not available', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     const { result } = renderHook(() => useSlugValidation(), {
       wrapper: createQueryThemeWrapper(),
     });
@@ -70,7 +74,9 @@ describe('useSlugValidation', () => {
     // MSW handler treats any slug containing 'taken' as unavailable (returns 409 error)
     // The service differentiates 409 errors (slug taken) from other errors
     // The hook sets status to TAKEN when the slug is unavailable
-    await result.current.checkSlugAvailability('taken-slug');
+    await act(async () => {
+      await result.current.checkSlugAvailability('taken-slug');
+    });
 
     await waitFor(() => {
       expect(result.current.status).toBe(SlugStatus.TAKEN);
@@ -79,6 +85,7 @@ describe('useSlugValidation', () => {
   });
 
   it('should set status to unchecked when there is an error', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     // Override MSW handler to return an error
     server.use(
       http.post(buildBackendUrl('/api/v1/organization/check-slug'), () => {
@@ -90,7 +97,9 @@ describe('useSlugValidation', () => {
       wrapper: createQueryThemeWrapper(),
     });
 
-    await result.current.checkSlugAvailability('test-slug');
+    await act(async () => {
+      await result.current.checkSlugAvailability('test-slug');
+    });
 
     await waitFor(() => {
       expect(result.current.status).toBe(SlugStatus.UNCHECKED);

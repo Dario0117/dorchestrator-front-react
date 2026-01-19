@@ -21,11 +21,18 @@ Object.defineProperty(window, 'matchMedia', {
   value: matchMediaMock,
 });
 
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+// Mock ResizeObserver as a proper class (required for Vitest 4)
+global.ResizeObserver = class ResizeObserver {
+  observe() {
+    // noop
+  }
+  unobserve() {
+    // noop
+  }
+  disconnect() {
+    // noop
+  }
+};
 
 export const createQueryThemeWrapper = (options?: ProviderWrapperOptions) => {
   const { storageKey = 'core-ui-theme', defaultTheme = 'system' } =

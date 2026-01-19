@@ -1,11 +1,18 @@
 import { ResetPasswordForm } from '@components/org/forms/reset-password.form';
-import { buildBackendUrl } from '@lib/test.utils';
+import * as loggerUtils from '@lib/logger.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { useResetPasswordMutation } from '@services/users/reset-password.http-service';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { HttpResponse, http } from 'msw';
-import { server } from '@/../testsSetup';
+
+// Mock better-auth client to avoid internal React state updates that cause act warnings
+const mockRequestPasswordReset = vi.fn();
+vi.mock('@/better-auth.client', () => ({
+  authClient: {
+    requestPasswordReset: (params: { email: string; redirectTo: string }) =>
+      mockRequestPasswordReset(params),
+  },
+}));
 
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {
   const resetPasswordMutation = useResetPasswordMutation();
@@ -22,6 +29,12 @@ describe('ResetPasswordForm', () => {
 
   beforeEach(() => {
     mockHandleSuccess.mockClear();
+    mockRequestPasswordReset.mockClear();
+    // Default: successful response
+    mockRequestPasswordReset.mockResolvedValue({
+      data: { status: true },
+      error: null,
+    });
   });
 
   it('should render reset password form with all required fields', () => {
@@ -52,18 +65,13 @@ describe('ResetPasswordForm', () => {
       name: 'Send reset email',
     });
 
-    await act(async () => {
-      await user.type(emailInput, 'test@example.com');
-      await user.click(submitButton);
-    });
+    await user.type(emailInput, 'test@example.com');
+    await user.click(submitButton);
 
     // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
       expect(mockHandleSuccess).toHaveBeenCalledWith({
-        data: {
-          status: true,
-          message: 'Password reset email sent',
-        },
+        data: { status: true },
         error: null,
       });
     });
@@ -79,37 +87,27 @@ describe('ResetPasswordForm', () => {
       name: 'Send reset email',
     });
 
-    await act(async () => {
-      await user.type(emailInput, 'test@example.com');
-      await user.click(submitButton);
-    });
+    await user.type(emailInput, 'test@example.com');
+    await user.click(submitButton);
 
     // better-auth wraps responses in { data: ..., error: null } format
     await waitFor(() => {
       expect(mockHandleSuccess).toHaveBeenCalledWith({
-        data: {
-          status: true,
-          message: 'Password reset email sent',
-        },
+        data: { status: true },
         error: null,
       });
     });
   });
 
   it('should display error when mutation fails', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     const user = userEvent.setup();
 
-    // Override the handler to return an error
-    server.use(
-      http.post(buildBackendUrl('/api/v1/request-password-reset'), () => {
-        return HttpResponse.json(
-          {
-            nonFieldErrors: ['Email not found'],
-          },
-          { status: 400 },
-        );
-      }),
-    );
+    // Override the mock to return an error
+    mockRequestPasswordReset.mockResolvedValue({
+      data: null,
+      error: { message: 'Email not found' },
+    });
 
     renderWithProviders(<TestWrapper handleSuccess={mockHandleSuccess} />);
 
@@ -118,10 +116,8 @@ describe('ResetPasswordForm', () => {
       name: 'Send reset email',
     });
 
-    await act(async () => {
-      await user.type(emailInput, 'nonexistent@example.com');
-      await user.click(submitButton);
-    });
+    await user.type(emailInput, 'nonexistent@example.com');
+    await user.click(submitButton);
 
     // Check that handleSuccess was not called due to error
     await waitFor(() => {
@@ -139,10 +135,8 @@ describe('ResetPasswordForm', () => {
       name: 'Send reset email',
     });
 
-    await act(async () => {
-      await user.type(emailInput, 'invalid-email');
-      await user.click(submitButton);
-    });
+    await user.type(emailInput, 'invalid-email');
+    await user.click(submitButton);
 
     // Should not call handleSuccess if email is invalid
     await waitFor(
@@ -153,7 +147,7 @@ describe('ResetPasswordForm', () => {
     );
   });
 
-  it('should prevent default form submission', () => {
+  it('should prevent default form submission', async () => {
     const mockPreventDefault = vi.fn();
     const mockStopPropagation = vi.fn();
 
@@ -169,12 +163,17 @@ describe('ResetPasswordForm', () => {
       event.preventDefault = mockPreventDefault;
       event.stopPropagation = mockStopPropagation;
 
-      act(() => {
-        fireEvent(form, event);
-      });
+      fireEvent(form, event);
 
       expect(mockPreventDefault).toHaveBeenCalled();
       expect(mockStopPropagation).toHaveBeenCalled();
+
+      // Wait for any pending form validation updates to complete
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: 'Send reset email' }),
+        ).toBeInTheDocument();
+      });
     }
   });
 
@@ -269,10 +268,7 @@ describe('ResetPasswordForm', () => {
       // better-auth wraps responses in { data: ..., error: null } format
       await waitFor(() => {
         expect(mockHandleSuccess).toHaveBeenCalledWith({
-          data: {
-            status: true,
-            message: 'Password reset email sent',
-          },
+          data: { status: true },
           error: null,
         });
       });

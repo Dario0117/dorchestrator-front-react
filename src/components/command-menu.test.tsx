@@ -12,35 +12,24 @@ const renderWithProviders = () => {
 };
 
 const openCommandMenu = async () => {
-  // Trigger Cmd+K to open command menu
-  await act(async () => {
+  // Trigger Cmd+K to open command menu - wrap event dispatch in act for state updates
+  act(() => {
     const event = new KeyboardEvent('keydown', {
       key: 'k',
       metaKey: true,
       bubbles: true,
     });
     document.dispatchEvent(event);
-    await waitFor(() => {
-      expect(
-        screen.queryByPlaceholderText('Type a command or search...'),
-      ).toBeInTheDocument();
-    });
+  });
+
+  await waitFor(() => {
+    expect(
+      screen.queryByPlaceholderText('Type a command or search...'),
+    ).toBeInTheDocument();
   });
 };
 
 beforeAll(() => {
-  global.ResizeObserver = class ResizeObserver {
-    observe() {
-      // Mock implementation
-    }
-    unobserve() {
-      // Mock implementation
-    }
-    disconnect() {
-      // Mock implementation
-    }
-  };
-
   Element.prototype.scrollIntoView = vi.fn();
 });
 

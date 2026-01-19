@@ -1,4 +1,5 @@
 import { CreateOrganizationForm } from '@components/org/forms/create-organization.form';
+import * as loggerUtils from '@lib/logger.utils';
 import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { useCreateOrganizationMutation } from '@services/organizations/create-organization.http-service';
@@ -161,6 +162,7 @@ describe('CreateOrganizationForm', () => {
   });
 
   it('should show error message when slug is taken', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     const user = userEvent.setup();
 
     renderWithProviders(<TestWrapper handleSuccess={mockHandleSuccess} />);

@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => {
     test: {
       watch: false,
       globals: true,
-      parallel: true,
+      fileParallelism: false,
       environment: 'jsdom',
       setupFiles: './testsSetup.ts',
       coverage: {
