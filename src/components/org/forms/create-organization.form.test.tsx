@@ -9,6 +9,12 @@ import { HttpResponse, http } from 'msw';
 import { describe, expect, it, vi } from 'vitest';
 import { server } from '@/../testsSetup';
 
+// The OpenAPI schema doesn't define a 200 response for this endpoint,
+// but the actual API returns { status: true } on success
+type CheckSlugSuccessResponse = {
+  status: boolean;
+};
+
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {
   const createOrganizationMutation = useCreateOrganizationMutation();
   return (
@@ -116,11 +122,11 @@ describe('CreateOrganizationForm', () => {
 
     // Add delay to the check-slug endpoint to test the checking state
     server.use(
-      http.post(
+      http.post<never, never, CheckSlugSuccessResponse>(
         buildBackendUrl('/api/v1/organization/check-slug'),
         async () => {
           await new Promise((resolve) => setTimeout(resolve, 100));
-          return HttpResponse.json({ available: true });
+          return HttpResponse.json({ status: true });
         },
       ),
     );

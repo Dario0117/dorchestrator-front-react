@@ -1,3 +1,4 @@
+import type { paths } from '@myTypes/api.generated.types';
 import { generateDeviceTokenHandler } from '@services/devices/generate-device-token.http-service.handlers';
 import { listDevicesHandler } from '@services/devices/list-devices.http-service.handlers';
 import { removeDeviceHandler } from '@services/devices/remove-device.http-service.handlers';
@@ -14,8 +15,13 @@ import { registerHandler } from '@services/users/register.http-service.handlers'
 import { resetPasswordHandler } from '@services/users/reset-password.http-service.handlers';
 import { updatePasswordHandler } from '@services/users/update-password.http-service.handlers';
 
-export function buildBackendUrl(path: string) {
-  return `${import.meta.env.BACKEND_BASE_URL ?? 'http://localhost:9000'}${path}`;
+type OpenAPIPath = keyof paths & string;
+
+function openApiPathToMSW(path: OpenAPIPath): string {
+  return path.replace(/\{([^}]+)\}/g, ':$1');
+}
+export function buildBackendUrl(path: OpenAPIPath) {
+  return `${import.meta.env.BACKEND_BASE_URL}${openApiPathToMSW(path)}`;
 }
 
 export function MSWSuccessHandlers() {

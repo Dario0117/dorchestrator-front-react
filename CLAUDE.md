@@ -362,6 +362,40 @@ import { Button } from '../../components/ui/button';
 - **Handler files**: Located in `src/services/[domain]/[action-description].http-service.handlers.ts`, contain:
   - A single MSW handler for that specific endpoint
   - Handler should be exported with a descriptive name (e.g., `loginHandler`, `createOrganizationHandler`)
+  - **IMPORTANT**: All MSW handlers MUST use types directly from `@/types/api.generated.types.ts` via the `operations` interface. Never use inline hardcoded types for request/response bodies.
+- **MSW Handler Typing**: Use MSW's generic type parameters with types extracted from the auto-generated `operations` interface:
+  ```typescript
+  import type { operations } from '@/types/api.generated.types';
+
+  // Define types from the operations interface
+  type SignInRequestBody = operations['signInEmail']['requestBody']['content']['application/json'];
+  type SignInSuccessResponse = operations['signInEmail']['responses']['200']['content']['application/json'];
+
+  // POST handler with typed generics: http.post<PathParams, RequestBody, ResponseBody>
+  export const loginHandler = http.post<never, SignInRequestBody, SignInSuccessResponse>(
+    buildBackendUrl('/api/v1/sign-in/email'),
+    async ({ request }) => {
+      const body = await request.json();  // Typed as SignInRequestBody
+      return HttpResponse.json({ ... });  // Must match SignInSuccessResponse
+    }
+  );
+
+  // GET handler with path params
+  type OrgPathParams = operations['getApiV1ByOrganizationIdOrganization']['parameters']['path'];
+  type OrgResponse = operations['getApiV1ByOrganizationIdOrganization']['responses']['200']['content']['application/json'];
+
+  export const getOrgHandler = http.get<OrgPathParams, never, OrgResponse>(
+    buildBackendUrl('/api/v1/:organizationId/organization'),
+    ({ params }) => {
+      const { organizationId } = params;  // Typed correctly
+      return HttpResponse.json({ ... });
+    }
+  );
+
+  // For error responses
+  type SignInErrorResponse = operations['signInEmail']['responses']['400']['content']['application/json'];
+  return HttpResponse.json<SignInErrorResponse>({ message: 'Invalid credentials' }, { status: 400 });
+  ```
 - **Examples**:
   - `src/services/users/login.http-service.ts` + `src/services/users/login.http-service.handlers.ts`
   - `src/services/organizations/create-organization.http-service.ts` + `src/services/organizations/create-organization.http-service.handlers.ts`
@@ -405,3 +439,4 @@ Follow this conventions always, if for some reason you need to break any of them
 - Write tests for http services `*.http-service.ts`
 - Run other command to run tests run the specified one (`bun run test`)
 - Introduce new warning/errors when writing tests, fix them immediately
+- Use inline hardcoded types for MSW handler request/response bodies - always use types from `operations` interface in `@/types/api.generated.types.ts`

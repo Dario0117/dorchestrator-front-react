@@ -1,18 +1,19 @@
 import { buildBackendUrl } from '@lib/test.utils';
 import { HttpResponse, http } from 'msw';
+import type { operations } from '@/types/api.generated.types';
 
-type PasswordResetRequestResponse = {
-  status: boolean;
-  message: string;
-};
+type RequestPasswordResetRequestBody =
+  operations['requestPasswordReset']['requestBody']['content']['application/json'];
+type RequestPasswordResetSuccessResponse =
+  operations['requestPasswordReset']['responses']['200']['content']['application/json'];
 
-export const resetPasswordHandler = http.post(
-  buildBackendUrl('/api/v1/request-password-reset'),
-  () => {
-    const data: PasswordResetRequestResponse = {
-      status: true,
-      message: 'Password reset email sent',
-    };
-    return HttpResponse.json(data);
-  },
-);
+export const resetPasswordHandler = http.post<
+  never,
+  RequestPasswordResetRequestBody,
+  RequestPasswordResetSuccessResponse
+>(buildBackendUrl('/api/v1/request-password-reset'), () => {
+  return HttpResponse.json({
+    status: true,
+    message: 'Password reset email sent',
+  });
+});

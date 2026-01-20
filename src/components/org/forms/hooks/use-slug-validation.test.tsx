@@ -9,6 +9,10 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { server } from '@/../testsSetup';
+import type { paths } from '@/types/api.generated.types';
+
+type CheckSlugErrorResponse =
+  paths['/api/v1/organization/check-slug']['post']['responses']['500']['content']['application/json'];
 
 describe('useSlugValidation', () => {
   it('should initialize with unchecked status', () => {
@@ -88,9 +92,15 @@ describe('useSlugValidation', () => {
     vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     // Override MSW handler to return an error
     server.use(
-      http.post(buildBackendUrl('/api/v1/organization/check-slug'), () => {
-        return HttpResponse.json({ message: 'Network error' }, { status: 500 });
-      }),
+      http.post<never, never, CheckSlugErrorResponse>(
+        buildBackendUrl('/api/v1/organization/check-slug'),
+        () => {
+          return HttpResponse.json(
+            { message: 'Network error' },
+            { status: 500 },
+          );
+        },
+      ),
     );
 
     const { result } = renderHook(() => useSlugValidation(), {

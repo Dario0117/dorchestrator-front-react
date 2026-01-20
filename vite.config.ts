@@ -90,7 +90,7 @@ export default defineConfig(({ mode }) => {
         '@lib': path.resolve(__dirname, './src/lib'),
         '@context': path.resolve(__dirname, './src/context'),
         '@stores': path.resolve(__dirname, './src/stores'),
-        '@types': path.resolve(__dirname, './src/types'),
+        '@myTypes': path.resolve(__dirname, './src/types'),
         '@routes': path.resolve(__dirname, './src/routes'),
         '@assets': path.resolve(__dirname, './src/assets'),
         '@': path.resolve(__dirname, './src'),

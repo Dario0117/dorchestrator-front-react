@@ -1,16 +1,16 @@
 import { buildBackendUrl } from '@lib/test.utils';
 import { HttpResponse, http } from 'msw';
+import type { paths } from '@/types/api.generated.types';
 
-type RevokeSessionsResponse = {
-  status: boolean;
-};
+type RevokeSessionsSuccessResponse =
+  paths['/api/v1/revoke-sessions']['post']['responses']['200']['content']['application/json'];
 
-export const logoutAllSessionsHandler = http.post(
-  buildBackendUrl('/api/v1/revoke-sessions'),
-  () => {
-    const data: RevokeSessionsResponse = {
-      status: true,
-    };
-    return HttpResponse.json(data);
-  },
-);
+export const logoutAllSessionsHandler = http.post<
+  never,
+  never,
+  RevokeSessionsSuccessResponse
+>(buildBackendUrl('/api/v1/revoke-sessions'), () => {
+  return HttpResponse.json({
+    status: true,
+  });
+});

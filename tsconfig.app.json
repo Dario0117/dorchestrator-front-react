@@ -27,7 +27,7 @@
       "@lib/*": ["./src/lib/*"],
       "@context/*": ["./src/context/*"],
       "@stores/*": ["./src/stores/*"],
-      "@types/*": ["./src/types/*"],
+      "@myTypes/*": ["./src/types/*"],
       "@routes/*": ["./src/routes/*"],
       "@assets/*": ["./src/assets/*"],
       "@/*": ["./src/*"]

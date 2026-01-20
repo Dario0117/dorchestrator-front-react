@@ -6,6 +6,10 @@ import { HttpResponse, http } from 'msw';
 import { Suspense } from 'react';
 import { describe, expect, it } from 'vitest';
 import { server } from '@/../testsSetup';
+import type { paths } from '@/types/api.generated.types';
+
+type ListOrganizationsSuccessResponse =
+  paths['/api/v1/organization/list']['get']['responses']['200']['content']['application/json'];
 
 describe('OrganizationCheckWrapper', () => {
   it('should render children when user has organizations', async () => {
@@ -27,9 +31,12 @@ describe('OrganizationCheckWrapper', () => {
   it('should show modal when user has no organizations', async () => {
     // Override MSW handler to return empty organizations
     server.use(
-      http.get(buildBackendUrl('/api/v1/organization/list'), () => {
-        return HttpResponse.json([]);
-      }),
+      http.get<never, never, ListOrganizationsSuccessResponse>(
+        buildBackendUrl('/api/v1/organization/list'),
+        () => {
+          return HttpResponse.json([]);
+        },
+      ),
     );
 
     renderWithProviders(
@@ -51,9 +58,12 @@ describe('OrganizationCheckWrapper', () => {
   it('should render children even when modal is shown', async () => {
     // Override MSW handler to return empty organizations
     server.use(
-      http.get(buildBackendUrl('/api/v1/organization/list'), () => {
-        return HttpResponse.json([]);
-      }),
+      http.get<never, never, ListOrganizationsSuccessResponse>(
+        buildBackendUrl('/api/v1/organization/list'),
+        () => {
+          return HttpResponse.json([]);
+        },
+      ),
     );
 
     renderWithProviders(

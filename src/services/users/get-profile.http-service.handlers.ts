@@ -1,36 +1,34 @@
 import { buildBackendUrl } from '@lib/test.utils';
-import type { Session, User } from 'better-auth/client';
 import { HttpResponse, http } from 'msw';
+import type { operations } from '@/types/api.generated.types';
 
-type GetSessionResponse = {
-  user: User;
-  session: Session;
-};
+type GetSessionResponse =
+  operations['getSession']['responses']['200']['content']['application/json'];
 
-export const getProfileHandler = http.get(
+export const getProfileHandler = http.get<never, never, GetSessionResponse>(
   buildBackendUrl('/api/v1/get-session'),
   () => {
-    const data: GetSessionResponse = {
+    return HttpResponse.json({
       user: {
         id: 'test-user-id',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
         email: 'test@example.com',
         emailVerified: true,
         name: 'Test User',
-        image: null,
+        image: undefined,
+        banned: false,
       },
       session: {
         id: 'test-session-id',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
         userId: 'test-user-id',
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+        expiresAt: '2025-01-01T00:00:00.000Z',
         token: 'test-session-token',
         ipAddress: '127.0.0.1',
         userAgent: 'test-agent',
       },
-    };
-    return HttpResponse.json(data);
+    });
   },
 );

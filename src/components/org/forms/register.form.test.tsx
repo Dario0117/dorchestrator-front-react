@@ -6,6 +6,10 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
+import type { operations } from '@/types/api.generated.types';
+
+type SignUpErrorResponse =
+  operations['signUpWithEmailAndPassword']['responses']['400']['content']['application/json'];
 
 function TestWrapper({ handleSuccess }: { handleSuccess: () => void }) {
   const registerMutation = useRegisterMutation();
@@ -133,12 +137,15 @@ describe('RegisterForm', () => {
 
     // Return HTTP 400 error so better-auth wraps it as { data: null, error: {...} }
     server.use(
-      http.post(buildBackendUrl('/api/v1/sign-up/email'), () => {
-        return HttpResponse.json(
-          { message: 'Email already exists' },
-          { status: 400 },
-        );
-      }),
+      http.post<never, never, SignUpErrorResponse>(
+        buildBackendUrl('/api/v1/sign-up/email'),
+        () => {
+          return HttpResponse.json(
+            { message: 'Email already exists' },
+            { status: 400 },
+          );
+        },
+      ),
     );
 
     renderWithProviders(<TestWrapper handleSuccess={mockHandleSuccess} />);

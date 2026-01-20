@@ -6,6 +6,12 @@ import { useUpdatePasswordMutation } from '@services/users/update-password.http-
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
+import type { operations } from '@/types/api.generated.types';
+
+type ResetPasswordErrorResponse =
+  operations['resetPassword']['responses']['400']['content']['application/json'];
+type ResetPasswordServerErrorResponse =
+  operations['resetPassword']['responses']['500']['content']['application/json'];
 
 // Mock useParams
 vi.mock('@tanstack/react-router', () => ({
@@ -126,12 +132,15 @@ describe('useUpdatePasswordForm', () => {
   it('should set error map when update password fails with responseErrors', async () => {
     // Return HTTP 400 error so better-auth wraps it as { data: null, error: {...} }
     server.use(
-      http.post(buildBackendUrl('/api/v1/reset-password'), () => {
-        return HttpResponse.json(
-          { message: 'Invalid or expired token' },
-          { status: 400 },
-        );
-      }),
+      http.post<never, never, ResetPasswordErrorResponse>(
+        buildBackendUrl('/api/v1/reset-password'),
+        () => {
+          return HttpResponse.json(
+            { message: 'Invalid or expired token' },
+            { status: 400 },
+          );
+        },
+      ),
     );
 
     const mockHandleSuccess = vi.fn();
@@ -168,9 +177,12 @@ describe('useUpdatePasswordForm', () => {
     vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     // Return HTTP 500 error without message so better-auth wraps it
     server.use(
-      http.post(buildBackendUrl('/api/v1/reset-password'), () => {
-        return HttpResponse.json({}, { status: 500 });
-      }),
+      http.post<never, never, ResetPasswordServerErrorResponse>(
+        buildBackendUrl('/api/v1/reset-password'),
+        () => {
+          return HttpResponse.json({}, { status: 500 });
+        },
+      ),
     );
 
     const mockHandleSuccess = vi.fn();

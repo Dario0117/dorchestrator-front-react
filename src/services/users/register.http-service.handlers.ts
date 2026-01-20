@@ -1,27 +1,27 @@
 import { buildBackendUrl } from '@lib/test.utils';
-import type { User } from 'better-auth/client';
 import { HttpResponse, http } from 'msw';
+import type { operations } from '@/types/api.generated.types';
 
-type SignUpResponse = {
-  user: User;
-  token: null | string;
-};
+type SignUpSuccessResponse =
+  operations['signUpWithEmailAndPassword']['responses']['200']['content']['application/json'];
 
-export const registerHandler = http.post(
+export const registerHandler = http.post<never, never, SignUpSuccessResponse>(
   buildBackendUrl('/api/v1/sign-up/email'),
   () => {
-    const data: SignUpResponse = {
-      user: {
-        id: 'test-user-id',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        email: 'test@example.com',
-        emailVerified: false,
-        name: 'Test User',
-        image: null,
+    return HttpResponse.json(
+      {
+        user: {
+          id: 'test-user-id',
+          createdAt: '2024-01-01T00:00:00.000Z',
+          updatedAt: '2024-01-01T00:00:00.000Z',
+          email: 'test@example.com',
+          emailVerified: false,
+          name: 'Test User',
+          image: undefined,
+        },
+        token: null,
       },
-      token: null,
-    };
-    return HttpResponse.json(data, { status: 201 });
+      { status: 201 },
+    );
   },
 );

@@ -3,8 +3,14 @@ import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { http, HttpResponse } from 'msw';
+import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
+import type { operations } from '@/types/api.generated.types';
+
+type GenerateTokenErrorResponse =
+  operations['postApiV1ByOrganizationIdDevices']['responses']['400']['content']['application/json'];
+type GenerateTokenSuccessResponse =
+  operations['postApiV1ByOrganizationIdDevices']['responses']['201']['content']['application/json'];
 
 const mockToken = 'test-token-12345-abcdef-67890';
 const mockExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
@@ -128,8 +134,9 @@ describe('AddDeviceModal', () => {
 
     // Find the token input container and verify copy button exists
     const tokenInput = screen.getByLabelText('Registration Token');
-    const tokenCopyButton =
-      tokenInput.parentElement?.querySelector('button[data-slot="button"]');
+    const tokenCopyButton = tokenInput.parentElement?.querySelector(
+      'button[data-slot="button"]',
+    );
     expect(tokenCopyButton).toBeInTheDocument();
   });
 
@@ -151,8 +158,9 @@ describe('AddDeviceModal', () => {
 
     // Find the CLI input container and verify copy button exists
     const cliInput = screen.getByLabelText('CLI Command');
-    const cliCopyButton =
-      cliInput.parentElement?.querySelector('button[data-slot="button"]');
+    const cliCopyButton = cliInput.parentElement?.querySelector(
+      'button[data-slot="button"]',
+    );
     expect(cliCopyButton).toBeInTheDocument();
   });
 
@@ -197,17 +205,20 @@ describe('AddDeviceModal', () => {
 
   it('should show error message on API failure', async () => {
     server.use(
-      http.post(buildBackendUrl('/api/v1/:organizationId/devices'), () => {
-        return HttpResponse.json(
-          {
-            responseData: null,
-            responseErrors: {
-              nonFieldErrors: ['Custom error message'],
+      http.post<never, never, GenerateTokenErrorResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        () => {
+          return HttpResponse.json(
+            {
+              responseData: null,
+              responseErrors: {
+                nonFieldErrors: ['Custom error message'],
+              },
             },
-          },
-          { status: 400 },
-        );
-      }),
+            { status: 400 },
+          );
+        },
+      ),
     );
 
     const user = userEvent.setup();
@@ -228,12 +239,13 @@ describe('AddDeviceModal', () => {
 
   it('should show default error message when no nonFieldErrors provided', async () => {
     server.use(
-      http.post(buildBackendUrl('/api/v1/:organizationId/devices'), () => {
+      http.post(buildBackendUrl('/api/v1/{organizationId}/devices'), () => {
+        // Testing edge case where responseErrors is empty - use type bypass
         return HttpResponse.json(
           {
             responseData: null,
             responseErrors: {},
-          },
+          } as GenerateTokenErrorResponse,
           { status: 400 },
         );
       }),
@@ -259,18 +271,21 @@ describe('AddDeviceModal', () => {
 
   it('should show Generating... text while mutation is pending', async () => {
     server.use(
-      http.post(buildBackendUrl('/api/v1/:organizationId/devices'), async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        return HttpResponse.json({
-          responseData: {
-            results: {
-              token: mockToken,
-              expiresAt: mockExpiresAt,
+      http.post<never, never, GenerateTokenSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        async () => {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          return HttpResponse.json({
+            responseData: {
+              results: {
+                token: mockToken,
+                expiresAt: mockExpiresAt,
+              },
             },
-          },
-          responseErrors: null,
-        });
-      }),
+            responseErrors: null,
+          });
+        },
+      ),
     );
 
     const user = userEvent.setup();

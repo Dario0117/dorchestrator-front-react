@@ -89,7 +89,6 @@ export function AddDeviceModal({
         </DialogHeader>
 
         <div className="space-y-4">
-
           {errors && (
             <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">
               <ul>

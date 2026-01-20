@@ -114,7 +114,11 @@ const defaultSidebarData: SidebarData = {
     {
       title: 'Settings',
       items: [
-        { title: 'Organization Settings', url: '/test-org/settings', icon: Settings },
+        {
+          title: 'Organization Settings',
+          url: '/test-org/settings',
+          icon: Settings,
+        },
       ],
     },
   ],

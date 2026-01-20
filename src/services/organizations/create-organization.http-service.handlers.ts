@@ -1,36 +1,28 @@
 import { buildBackendUrl } from '@lib/test.utils';
-import type { Organization } from 'better-auth/plugins/organization';
 import { HttpResponse, http } from 'msw';
+import type { paths } from '@/types/api.generated.types';
 
-type OrganizationCreateResponse = Organization & {
-  metadata: unknown;
-  members: Array<
-    | {
-        id: string;
-        organizationId: string;
-        userId: string;
-        role: string;
-        createdAt: Date;
-      }
-    | undefined
-  >;
-};
+type CreateOrganizationRequestBody =
+  paths['/api/v1/organization/create']['post']['requestBody']['content']['application/json'];
+type CreateOrganizationSuccessResponse =
+  paths['/api/v1/organization/create']['post']['responses']['200']['content']['application/json'];
 
-export const createOrganizationHandler = http.post(
-  buildBackendUrl('/api/v1/organization/create'),
-  async ({ request }) => {
-    const body = (await request.json()) as { name: string; slug: string };
+export const createOrganizationHandler = http.post<
+  never,
+  CreateOrganizationRequestBody,
+  CreateOrganizationSuccessResponse
+>(buildBackendUrl('/api/v1/organization/create'), async ({ request }) => {
+  const body = await request.json();
 
-    const data: OrganizationCreateResponse = {
+  return HttpResponse.json(
+    {
       id: 'org-123',
       name: body.name,
       slug: body.slug,
-      createdAt: new Date(),
-      logo: null,
-      metadata: {},
-      members: [],
-    };
-
-    return HttpResponse.json(data, { status: 201 });
-  },
-);
+      createdAt: '2024-01-01T00:00:00.000Z',
+      logo: undefined,
+      metadata: undefined,
+    },
+    { status: 201 },
+  );
+});
