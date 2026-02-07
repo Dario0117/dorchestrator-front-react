@@ -18,17 +18,14 @@ import {
 
 let provider: WebTracerProvider | undefined;
 
-export function initializeTracing(): void {
-  const enabled = import.meta.env.VITE_OTEL_ENABLED === 'true';
-
-  if (!enabled) {
+export function initializeTracing() {
+  if (!env.OTEL_ENABLED) {
     logDebug({}, 'OpenTelemetry tracing is disabled');
     return;
   }
 
-  const serviceName =
-    import.meta.env.VITE_OTEL_SERVICE_NAME ?? 'dorchestrator-web';
-  const exporterType = import.meta.env.VITE_OTEL_EXPORTER_TYPE ?? 'none';
+  const serviceName = env.OTEL_SERVICE_NAME;
+  const exporterType = env.OTEL_EXPORTER_TYPE;
 
   const resource = resourceFromAttributes({
     [ATTR_SERVICE_NAME]: serviceName,
@@ -41,7 +38,7 @@ export function initializeTracing(): void {
   if (exporterType === 'console') {
     spanProcessors.push(new SimpleSpanProcessor(new ConsoleSpanExporter()));
   } else if (exporterType === 'otlp') {
-    const endpoint = import.meta.env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT;
+    const endpoint = env.OTEL_EXPORTER_OTLP_ENDPOINT;
     if (endpoint) {
       spanProcessors.push(
         new SimpleSpanProcessor(new OTLPTraceExporter({ url: endpoint })),
@@ -70,13 +67,13 @@ export function getTracer(name = 'dorchestrator-web') {
   return trace.getTracer(name);
 }
 
-export function getTracePropagationHeaders(): Record<string, string> {
+export function getTracePropagationHeaders() {
   const headers: Record<string, string> = {};
   propagation.inject(context.active(), headers);
   return headers;
 }
 
-export async function shutdownTracing(): Promise<void> {
+export async function shutdownTracing() {
   if (provider) {
     await provider.shutdown();
   }

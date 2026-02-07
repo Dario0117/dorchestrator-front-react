@@ -1,11 +1,26 @@
 /** biome-ignore-all lint/suspicious/noConsole: logging */
-import type { LogContext } from '@lib/logger.utils.types';
+import type { LogContext, LogHandler, LogLevel } from '@lib/logger.utils.types';
 import { trace } from '@opentelemetry/api';
 
-function getTraceContext(): {
-  traceId: string | undefined;
-  spanId: string | undefined;
-} {
+const LOG_LEVEL_TO_CONSOLE_METHOD = {
+  debug: 'log',
+  info: 'info',
+  warn: 'warn',
+  error: 'error',
+} as const satisfies Record<LogLevel, keyof Console>;
+
+const defaultLogHandler: LogHandler = (level, message, data) => {
+  const method = LOG_LEVEL_TO_CONSOLE_METHOD[level];
+  console[method](message, data);
+};
+
+let activeHandler: LogHandler = defaultLogHandler;
+
+export function configureLogHandler(handler: LogHandler) {
+  activeHandler = handler;
+}
+
+function getTraceContext() {
   const span = trace.getActiveSpan();
   if (!span) {
     return { traceId: undefined, spanId: undefined };
@@ -27,18 +42,22 @@ function buildStructuredLog(ctx: LogContext, message: string) {
   };
 }
 
+function log(level: LogLevel, ctx: LogContext, message: string) {
+  activeHandler(level, message, buildStructuredLog(ctx, message));
+}
+
 export function logWarning(ctx: LogContext, message: string) {
-  console.warn(message, buildStructuredLog(ctx, message));
+  log('warn', ctx, message);
 }
 
 export function logError(ctx: LogContext, message: string) {
-  console.error(message, buildStructuredLog(ctx, message));
+  log('error', ctx, message);
 }
 
 export function logInfo(ctx: LogContext, message: string) {
-  console.info(message, buildStructuredLog(ctx, message));
+  log('info', ctx, message);
 }
 
 export function logDebug(ctx: LogContext, message: string) {
-  console.log(message, buildStructuredLog(ctx, message));
+  log('debug', ctx, message);
 }

@@ -1,13 +1,4 @@
-/**
- * Centralized environment variable configuration with validation.
- * All environment variables should be accessed through this module.
- */
-
-/**
- * Validates that a required environment variable is defined.
- * Throws an error at initialization if the variable is missing.
- */
-function requireEnv(key: string, value: string | undefined): string {
+function requireEnv(key: string, value: string | undefined) {
   if (!value) {
     throw new Error(
       `Missing required environment variable: ${key}. Please check your .env file.`,
@@ -26,39 +17,35 @@ const frontendBaseUrl = requireEnv(
   import.meta.env.FRONTEND_BASE_URL,
 );
 
-/**
- * Environment configuration object.
- * All environment variables are validated and typed here.
- *
- * Note: IS_DEV and APP_VERSION use getters to allow test manipulation
- * of import.meta.env values.
- */
 export const env = {
-  /**
-   * Base URL for the backend API.
-   * Required for all API requests.
-   */
   BACKEND_BASE_URL: backendBaseUrl,
-
-  /**
-   * Base URL for the frontend application.
-   * Used for redirect URLs in authentication flows.
-   */
   FRONTEND_BASE_URL: frontendBaseUrl,
 
-  /**
-   * Application version (git SHA).
-   * Injected at build time, defaults to 'unknown' if not available.
-   */
-  get APP_VERSION(): string {
+  get APP_VERSION() {
     return (import.meta.env.VITE_APP_VERSION as string) || 'unknown';
   },
 
-  /**
-   * Whether the app is running in development mode.
-   * Vite built-in environment variable.
-   */
-  get IS_DEV(): boolean {
+  get IS_DEV() {
     return import.meta.env.DEV;
+  },
+
+  get OTEL_ENABLED() {
+    return import.meta.env.VITE_OTEL_ENABLED === 'true';
+  },
+
+  get OTEL_SERVICE_NAME() {
+    return (
+      (import.meta.env.VITE_OTEL_SERVICE_NAME as string) ?? 'dorchestrator-web'
+    );
+  },
+
+  get OTEL_EXPORTER_TYPE() {
+    return (import.meta.env.VITE_OTEL_EXPORTER_TYPE as string) ?? 'none';
+  },
+
+  get OTEL_EXPORTER_OTLP_ENDPOINT() {
+    return import.meta.env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT as
+      | string
+      | undefined;
   },
 } as const;

@@ -1,8 +1,7 @@
-import type { OrganizationItem } from '@services/organizations/list-user-organizations.http-service';
 import { useParams } from '@tanstack/react-router';
 import { _getNullableCurrentOrganizationFromSlug } from '@/app';
 
-export function useCurrentOrganization(): OrganizationItem {
+export function useCurrentOrganization() {
   const params = useParams({ strict: false });
 
   const organizationSlug =

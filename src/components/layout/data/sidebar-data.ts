@@ -8,10 +8,10 @@ import {
   Terminal,
 } from 'lucide-react';
 
-export function getSidebarData(organization: OrganizationItem): SidebarData {
+export function getSidebarData(organization: OrganizationItem) {
   const baseUrl = `/${organization.slug}`;
 
-  return {
+  const data: SidebarData = {
     teams: [
       {
         name: organization.name,
@@ -52,4 +52,6 @@ export function getSidebarData(organization: OrganizationItem): SidebarData {
       },
     ],
   };
+
+  return data;
 }

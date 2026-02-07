@@ -8,7 +8,7 @@ VITE_BACKEND_BASE_URL = { required = true }
 VITE_FRONTEND_BASE_URL = { required = true }
 
 [tasks.dev]
-depends = ["checkTs", "formatAndLint"]
+depends = ["checkTs", "formatAndLint", "openApi"]
 run = "bun run dev"
 
 [tasks.devnd]

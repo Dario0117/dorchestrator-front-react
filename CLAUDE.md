@@ -4,35 +4,38 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Prerequisites
 
-- **Bun**: Latest version (works as both runtime and package manager)
+- **mise**: Task runner and tool manager (manages Bun and all development tasks)
+- **Bun**: Managed by mise (works as both runtime and package manager)
 
 ## Development Commands
 
 ### Core Development
 
-- `bun dev` - Start development server (runs Vite and OpenAPI generation concurrently)
-- `bun dev:debug` - Start development server with VSCode debugging support (disables code splitting)
-- `bun build` - Build for production (runs TypeScript compilation + Vite build)
-- `bun preview` - Preview production build
+- `mise run dev` - Start development server (runs TypeScript check, linting, OpenAPI generation, then Vite dev server)
+- `mise run devnd` - Start Vite development server without dependency checks (no linting/TypeScript/OpenAPI)
+- `mise run devForAgents` - Start dev server for AI agents (no dependency checks)
+- `mise run build` - Build for production (runs TypeScript check + linting + Vite build)
+- `mise run preview` - Preview production build
 
 ### Code Quality
 
-- `bun format-and-lint:fix` - Format and lint code (auto-fix issues)
-- `bun format-and-lint:check` - Check formatting and linting without fixing
-- `bun check-ts` - TypeScript type checking without emitting files
-- `bun open-api` - Generate OpenAPI schema for API
+- `mise run formatAndLint` - Format and lint code (auto-fix issues, depends on TypeScript check)
+- `mise run formatAndLintCheck` - Check formatting and linting without fixing (depends on TypeScript check)
+- `mise run checkTs` - TypeScript type checking without emitting files
+- `mise run openApi` - Generate OpenAPI schema for API
 
 ### Testing
 
-- `bun run test` - Run tests with Vitest
-- `bun run test -- path/to/file.test.tsx` - Run a single test file
-- `bun run test:forAgents` - Run tests with sequential execution (single worker, no concurrency) to prevent resource exhaustion when running via Claude Code or other agents
-- `bun run coverage` - Run tests with coverage report (outputs to `/coverage`, runs tests once without watch mode)
+- `mise run test` - Run tests with Vitest (depends on TypeScript check + linting)
+- `mise run test -- path/to/file.test.tsx` - Run a single test file
+- `mise run testForAgents` - Run tests with sequential execution (single worker, no concurrency) to prevent resource exhaustion when running via Claude Code or other agents
+- `mise run coverage` - Run tests with coverage report (outputs to `/coverage`, runs tests once without watch mode, depends on TypeScript check + linting)
+- `mise run coverageForAgents` - Run coverage for AI agents (no dependency checks, sequential execution)
 
 ### Storybook
 
-- `bun storybook` - Start Storybook development server on port 6006
-- `bun build-storybook` - Build Storybook for production
+- `mise run storybook` - Start Storybook development server on port 6006
+- `mise run buildStorybook` - Build Storybook for production
 
 ## Architecture Overview
 
@@ -182,7 +185,7 @@ import { Button } from '../../components/ui/button';
 - Performance optimized (lazy loading, code splitting)
 - Cross-browser compatibility verified
 - Storybook documentation for each react component, this file must be placed alongside the component file
-- When finished with the code, run `bun format-and-lint:fix`, `bun check-ts` and `bun run test` to ensure all tests pass and code is formatted correctly, execute this commands until no errors or issues are found.
+- When finished with the code, run `mise run formatAndLint`, `mise run checkTs` and `mise run test` to ensure all tests pass and code is formatted correctly, execute these commands until no errors or issues are found.
 
 ### Component requirements
 
@@ -300,7 +303,7 @@ import { Button } from '../../components/ui/button';
 
 - Unit tests for all new code
 - All test files follow the naming convention of `[file_tested_name].test.ts` or `[file_tested_name].test.tsx` and must be placed alongside the file being tested
-- Comprehensive test coverage (>85%) on each component but aim for 100% if possible. To get all untested files, run `bun run coverage` and when it finishes and all tests are passing, run `jq -r 'first(to_entries[] | select(any(.value.s[]; . == 0)) | .value)' coverage/coverage-final.json` to get one file that doesn't have enough coverage and add tests to them. Once that single file is done, run `bun run coverage` again and check if there are any untested files left.
+- Comprehensive test coverage (>85%) on each component but aim for 100% if possible. To get all untested files, run `mise run coverage` and when it finishes and all tests are passing, run `jq -r 'first(to_entries[] | select(any(.value.s[]; . == 0)) | .value)' coverage/coverage-final.json` to get one file that doesn't have enough coverage and add tests to them. Once that single file is done, run `mise run coverage` again and check if there are any untested files left.
 - Don't write end to end tests, only unit and integration tests
 - Don't use mocks, stubs, or fakes, always use the real implementation, only mock external http requests using MSW, no component or function should be mocked, only external dependencies and requests.
 - Test components in isolation: each component should have its own test file. Focus on testing the component's behavior and user interactions, not implementation details. When testing composed components, verify the overall behavior rather than testing individual child components. For example, on `login.page.tsx`, there's no other logic other than the `LoginForm` component, so it's enough to test the `LoginForm` component in isolation. In this case we still need to create the test file, but add a comment saying that this component is a wrapper and the internal components are tested in isolation. Constantly check if this is still the case and if not, add more tests and remove the comment.
@@ -414,7 +417,7 @@ Follow this conventions always, if for some reason you need to break any of them
 - When finished with the code, run all quality checks to ensure all tests pass and code is formatted correctly, execute these commands until no errors or issues are found
 - Follow the project's architecture and conventions, if you need to change something, ask first
 - Follow SOLID principles
-- Before starting any work, first execute `bun open-api` to generate the latest OpenAPI schema for API
+- Before starting any work, first execute `mise run openApi` to generate the latest OpenAPI schema for API
 
 ### NEVER DO
 
@@ -426,7 +429,7 @@ Follow this conventions always, if for some reason you need to break any of them
 - When asked to fix or add tests, don't change the tested code, accommodate the tests to comply with the code
 - Use enums, they aren't standard, prefer using an object with a string key or a constant variable to define the keys
 - Mock internal modules or functions in tests (only mock external 3rd party requests)
-- Use any npm command, we use bun. If you need to use `npx` use `bunx`
+- Use any npm/bun command directly, all commands must go through mise. If you need to use `npx` use `mise exec -- bunx`
 - Test exceptions unless they have any custom code internally, they are usually just a simple extension of the base exception so we can catch them and handle them in different ways, no need to test a simple wrapper
 - Write tests while implementing a feature, write them afterwards, do it on the review step
 - Add return types, they must be automatically inferred to avoid any issues on the caller's side
@@ -437,6 +440,6 @@ Follow this conventions always, if for some reason you need to break any of them
 - Create storybook stories for `*.page.tsx` files
 - Create wrappers on tests, use the ones already exist in `test-wrappers.utils`, update them if needed
 - Write tests for http services `*.http-service.ts`
-- Run other command to run tests run the specified one (`bun run test`)
+- Run other command to run tests, use the specified one (`mise run test`)
 - Introduce new warning/errors when writing tests, fix them immediately
 - Use inline hardcoded types for MSW handler request/response bodies - always use types from `operations` interface in `@/types/api.generated.types.ts`

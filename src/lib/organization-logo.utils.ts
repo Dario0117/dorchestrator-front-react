@@ -9,7 +9,7 @@
  * generateInitials("Single") // "S"
  * generateInitials("") // ""
  */
-export function generateInitials(orgName: string): string {
+export function generateInitials(orgName: string) {
   if (!orgName || orgName.trim() === '') {
     return '';
   }
@@ -41,7 +41,7 @@ export function generateInitials(orgName: string): string {
  * - Must not start or end with hyphen
  * - No consecutive hyphens
  */
-export function isValidSlug(slug: string): boolean {
+export function isValidSlug(slug: string) {
   if (!slug || slug.trim() === '') {
     return false;
   }
@@ -60,7 +60,7 @@ export function isValidSlug(slug: string): boolean {
  * generateSlugSuggestion("Acme Corporation") // "acme-corporation"
  * generateSlugSuggestion("My Company & Co.") // "my-company-co"
  */
-export function generateSlugSuggestion(orgName: string): string {
+export function generateSlugSuggestion(orgName: string) {
   if (!orgName || orgName.trim() === '') {
     return '';
   }

@@ -6,7 +6,7 @@ export function withSpan<T>(
   name: string,
   fn: (span: Span) => T,
   attributes?: Attributes,
-): T {
+) {
   const tracer = getTracer();
   return tracer.startActiveSpan(name, (span) => {
     if (attributes) {
@@ -50,14 +50,14 @@ export function withSpan<T>(
   });
 }
 
-export function addSpanAttributes(attributes: Attributes): void {
+export function addSpanAttributes(attributes: Attributes) {
   const span = trace.getActiveSpan();
   if (span) {
     span.setAttributes(attributes);
   }
 }
 
-export function addSpanEvent(name: string, attributes?: Attributes): void {
+export function addSpanEvent(name: string, attributes?: Attributes) {
   const span = trace.getActiveSpan();
   if (span) {
     span.addEvent(name, attributes);

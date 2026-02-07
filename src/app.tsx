@@ -11,12 +11,10 @@ const router = createRouter({
   context: {
     // biome-ignore lint/style/noNonNullAssertion: Recommendation from the lib maintainers
     queryClient: undefined!,
-    _getNullableCurrentOrganizationFromSlug: ():
-      | OrganizationItem
-      | undefined => {
+    _getNullableCurrentOrganizationFromSlug: () => {
       throw new Error('Function not implemented.');
     },
-    getCurrentOrganizationFromSlug: (): OrganizationItem => {
+    getCurrentOrganizationFromSlug: () => {
       throw new Error('Function not implemented.');
     },
   },
@@ -28,9 +26,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
-export function _getNullableCurrentOrganizationFromSlug(
-  slug: string,
-): OrganizationItem | undefined {
+export function _getNullableCurrentOrganizationFromSlug(slug: string) {
   /**
    * This is a workaround
    * for the fact that the router doesn't have access to the current organization in the context

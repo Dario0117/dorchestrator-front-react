@@ -18,7 +18,7 @@ import { updatePasswordHandler } from '@services/users/update-password.http-serv
 
 type OpenAPIPath = keyof paths & string;
 
-function openApiPathToMSW(path: OpenAPIPath): string {
+function openApiPathToMSW(path: OpenAPIPath) {
   return path.replace(/\{([^}]+)\}/g, ':$1');
 }
 export function buildBackendUrl(path: OpenAPIPath) {
