@@ -1,3 +1,4 @@
+import { env } from '@lib/env.utils';
 import type { paths } from '@myTypes/api.generated.types';
 import { generateDeviceTokenHandler } from '@services/devices/generate-device-token.http-service.handlers';
 import { listDevicesHandler } from '@services/devices/list-devices.http-service.handlers';
@@ -21,7 +22,7 @@ function openApiPathToMSW(path: OpenAPIPath): string {
   return path.replace(/\{([^}]+)\}/g, ':$1');
 }
 export function buildBackendUrl(path: OpenAPIPath) {
-  return `${import.meta.env.BACKEND_BASE_URL}${openApiPathToMSW(path)}`;
+  return `${env.BACKEND_BASE_URL}${openApiPathToMSW(path)}`;
 }
 
 export function MSWSuccessHandlers() {

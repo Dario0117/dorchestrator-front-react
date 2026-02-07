@@ -21,6 +21,13 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@opentelemetry/api": "1.9.0",
+    "@opentelemetry/core": "2.5.0",
+    "@opentelemetry/exporter-trace-otlp-http": "0.211.0",
+    "@opentelemetry/resources": "2.5.0",
+    "@opentelemetry/sdk-trace-base": "2.5.0",
+    "@opentelemetry/sdk-trace-web": "2.5.0",
+    "@opentelemetry/semantic-conventions": "1.39.0",
     "@radix-ui/react-alert-dialog": "1.1.15",
     "@radix-ui/react-avatar": "1.1.10",
     "@radix-ui/react-collapsible": "1.1.12",

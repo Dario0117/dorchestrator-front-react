@@ -1,0 +1,66 @@
+[tools]
+bun = "1.3.6"
+
+[env]
+NODE_ENV = "development"
+BETTER_AUTH_URL = { required = true }
+VITE_BACKEND_BASE_URL = { required = true }
+VITE_FRONTEND_BASE_URL = { required = true }
+
+[tasks.dev]
+depends = ["checkTs", "formatAndLint"]
+run = "bun run dev"
+
+[tasks.devnd]
+run = "bun run dev"
+
+[tasks.devForAgents]
+run = "bun run dev"
+description = "Start dev server for AI agents (no dependency checks)"
+
+[tasks.test]
+depends = ["checkTs", "formatAndLint"]
+run = "bun run test"
+
+[tasks.testForAgents]
+run = "bun run test"
+env = { "VITEST_IS_AGENT_TEST" = "true" }
+
+[tasks.coverage]
+depends = ["checkTs", "formatAndLint"]
+run = "bun run coverage"
+
+[tasks.coverageForAgents]
+env = { "VITEST_IS_AGENT_TEST" = "true" }
+run = "bun run coverage"
+
+[tasks.checkTs]
+run = "bun run check-ts"
+
+[tasks.formatAndLint]
+depends = ["checkTs"]
+run = "bun format-and-lint:fix"
+
+[tasks.formatAndLintCheck]
+depends = ["checkTs"]
+run = "bun format-and-lint:check"
+
+[tasks.openApi]
+run = "bun run open-api"
+description = "Generate OpenAPI types from backend"
+
+[tasks.storybook]
+run = "bun run storybook"
+description = "Start Storybook development server"
+
+[tasks.buildStorybook]
+run = "bun run build-storybook"
+description = "Build Storybook for production"
+
+[tasks.build]
+depends = ["checkTs", "formatAndLint"]
+run = "bun run build"
+
+[tasks.preview]
+run = "bun run preview"
+description = "Preview production build"

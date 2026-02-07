@@ -5109,18 +5109,6 @@ export interface operations {
                     /** @enum {string} */
                     platform: "linux" | "macos" | "windows";
                 };
-                "application/x-www-form-urlencoded": {
-                    token: string;
-                    deviceName: string;
-                    /** @enum {string} */
-                    platform: "linux" | "macos" | "windows";
-                };
-                "multipart/form-data": {
-                    token: string;
-                    deviceName: string;
-                    /** @enum {string} */
-                    platform: "linux" | "macos" | "windows";
-                };
             };
         };
         responses: {

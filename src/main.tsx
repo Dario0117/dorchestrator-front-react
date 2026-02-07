@@ -1,3 +1,4 @@
+import { initializeTracing } from '@lib/observability/tracer';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
@@ -5,6 +6,8 @@ import './main.css';
 import { QueryProvider } from '@context/query.provider';
 import { ThemeProvider } from '@context/theme.provider';
 import App from '@/app';
+
+initializeTracing();
 
 const rootElement = document.getElementById('root') as Element;
 if (!rootElement.innerHTML) {

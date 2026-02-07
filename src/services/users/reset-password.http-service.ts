@@ -1,4 +1,5 @@
 import type { ResetPasswordFormData } from '@components/org/forms/validation/reset-password-form.schema';
+import { env } from '@lib/env.utils';
 import { useMutation } from '@tanstack/react-query';
 import { authClient } from '@/better-auth.client';
 
@@ -7,7 +8,7 @@ export function useResetPasswordMutation() {
     mutationFn: ({ email }: ResetPasswordFormData) => {
       return authClient.requestPasswordReset({
         email,
-        redirectTo: `${import.meta.env.FRONTEND_BASE_URL}/update-password`,
+        redirectTo: `${env.FRONTEND_BASE_URL}/update-password`,
       });
     },
   });
