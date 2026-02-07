@@ -1,31 +1,43 @@
 # Tech Debt items
 
+## Auth
+
 - [ ] CSRF?
 - [ ] Add email verification
 - [ ] On ResetPasswordPage, add a toast to show the user that the password has been reset and they need to check their email (a message is coming from the backend, we can use that one).
+
+## CI
+
 - [ ] Update CI to use bun instead of pnpm
+- [ ] Limit the type of code on the routes, it must be just the boilerplate pointing to the .page.tsx, no other code should live there since we are ignoring this files from the coverage
+- [ ] Add a CI step to check for warnings or errors when running tests
+
+## Misc
+
 - [ ] Add claude code commands for common actions (test, fix-ts, add new endpoint, etc)
 - [ ] Update to shadcn v2 (remove radix if possible and move it to base-ui)
 - [ ] Implement git hooks for formatting (no linting, no ts checking, no tests)
 - [ ] Regenerate the claude.md file
-- [ ] Show org and teams in sidebar
-- [ ] Add an option to create an org and a team in the sidebar
-- [ ] Implement structured logging and open telemetry
 - [ ] Implement branded IDs
-- [ ] Default current organization must be marked somehow on the data layer, that way we don't use the first organization in the list as the default - Use the metadata of the organization to mark it as default
 - [ ] Correctly handle dates and change them to the local timezone, the expected date coming from the API is in UTC, we need to convert it to the local timezone
-- [ ] Properly name the organization sidebar objects, they are called teams, we will have support for teams in the future so we need to make a clear distinction between teams and orgs
-- [ ] Add a CI step to check for warnings or errors when running tests
-- [x] Implement idempotency
+- [ ] Add scripts to look for: missing tested files, missing storybook stories, unreachable components/functions, read untested files (from test coverage)
+- [ ] Fix react debug
+- [ ] Read settings local and update claude settings json
+- [ ] Fix vitest on vs code extension, test setup is not being called and some tests fail on vs code but not on terminal (src/components/org/forms/update-password.form.test.tsx)
 - [ ] Configure mise and add parallel on dev https://mise.jdx.dev/tasks/running-tasks.html
 - [ ] Do this: https://www.aihero.dev/a-complete-guide-to-agents-md
-- [ ] Fix react debug
-- [ ] Add scripts to look for: missing tested files, missing storybook stories, unreachable components/functions, read untested files (from test coverage)
 - [ ] Create scripts for claude code to do thinks (/fix-test-coverage, /update-storybook-stories /fix-ts-issues /fix-biome-issues, /create-missing-queries-and-mutations)
-- [ ] Read settings local and update claude settings json
-- [ ] Move docs from a docusaurus to just markdown files inside of the project
-- [ ] Limit the type of code on the routes, it must be just the boilerplate pointing to the .page.tsx, no other code should live there since we are ignoring this files from the coverage
-- [ ] Fix vitest on vs code extension, test setup is not being called and some tests fail on vs code but not on terminal (src/components/org/forms/update-password.form.test.tsx)
+
+## Organizations
+
+- [ ] Show org and teams in sidebar
+- [ ] Add an option to create an org and a team in the sidebar
+- [ ] Default current organization must be marked somehow on the data layer, that way we don't use the first organization in the list as the default - Use the metadata of the organization to mark it as default
+- [ ] Properly name the organization sidebar objects, they are called teams, we will have support for teams in the future so we need to make a clear distinction between teams and orgs
+
+## Fixes
+
 - [ ] Fix env usage on src/lib/observability/tracer.ts
 - [ ] Avoid return types
 - [ ] Fix the logging storage, right now it defaults to console.something, we must configure the logging to somewhere, see src/lib/logger.utils.ts
+- [ ] Fix mise WARN  Required environment variable 'BETTER_AUTH_URL' is not defined. It must be set before mise runs or in a later config file. (Required in: ~/mine/business/dorchestrator/dorchestrator-front-react/mise.toml)
