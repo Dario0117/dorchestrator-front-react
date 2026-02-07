@@ -1,4 +1,5 @@
 import { env } from '@lib/env.utils';
+import { logDebug, logInfo, logWarning } from '@lib/logger.utils';
 import { getAppVersion } from '@lib/version.utils';
 import { context, propagation, trace } from '@opentelemetry/api';
 import { W3CTraceContextPropagator } from '@opentelemetry/core';
@@ -21,6 +22,7 @@ export function initializeTracing(): void {
   const enabled = import.meta.env.VITE_OTEL_ENABLED === 'true';
 
   if (!enabled) {
+    logDebug({}, 'OpenTelemetry tracing is disabled');
     return;
   }
 
@@ -44,6 +46,11 @@ export function initializeTracing(): void {
       spanProcessors.push(
         new SimpleSpanProcessor(new OTLPTraceExporter({ url: endpoint })),
       );
+    } else {
+      logWarning(
+        {},
+        'OTLP exporter type selected but no endpoint configured (VITE_OTEL_EXPORTER_OTLP_ENDPOINT)',
+      );
     }
   }
 
@@ -55,6 +62,8 @@ export function initializeTracing(): void {
   propagation.setGlobalPropagator(new W3CTraceContextPropagator());
 
   provider.register();
+
+  logInfo({ serviceName, exporterType }, 'OpenTelemetry tracing initialized');
 }
 
 export function getTracer(name = 'dorchestrator-web') {

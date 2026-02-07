@@ -31,7 +31,7 @@ export function useResetPasswordForm({
               errorMessage || 'Something went wrong, please try again later.';
 
             if (!errorMessage) {
-              logError({ message: 'Password reset failed', error: appError });
+              logError({ error: appError }, 'Password reset failed');
             }
 
             form.setErrorMap({
@@ -51,7 +51,7 @@ export function useResetPasswordForm({
             errorMessage || 'Something went wrong, please try again later.';
 
           if (!errorMessage) {
-            logError({ message: 'Password reset failed', error });
+            logError({ error }, 'Password reset failed');
           }
 
           form.setErrorMap({

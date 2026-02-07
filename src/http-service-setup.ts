@@ -1,5 +1,6 @@
 import { env } from '@lib/env.utils';
 import { idempotencyMiddleware } from '@lib/idempotency.middleware';
+import { logDebug, logWarning } from '@lib/logger.utils';
 import { tracePropagationMiddleware } from '@lib/observability/trace-propagation.middleware';
 import { getAppVersion } from '@lib/version.utils';
 import createFetchClient, { type Middleware } from 'openapi-fetch';
@@ -8,16 +9,45 @@ import type { paths } from '@/types/api.generated.types';
 
 const authMiddleware: Middleware = {
   // biome-ignore lint/suspicious/useAwait: no need to await
-  async onResponse({ response }) {
+  async onResponse({ response, request }) {
     if (response.status === 401) {
       const safePaths = ['/login', '/update-password/'];
       const isASafePath = safePaths.some((path) =>
         window.location.pathname.startsWith(path),
       );
       if (!isASafePath) {
+        logWarning(
+          {
+            url: request.url,
+            pathname: window.location.pathname,
+            status: response.status,
+          },
+          'Unauthorized request, redirecting to login',
+        );
         window.location.replace('/login');
       }
     }
+
+    if (response.status >= 500) {
+      logWarning(
+        {
+          url: request.url,
+          method: request.method,
+          status: response.status,
+        },
+        'Server error response received',
+      );
+    }
+  },
+  // biome-ignore lint/suspicious/useAwait: no need to await
+  async onRequest({ request }) {
+    logDebug(
+      {
+        url: request.url,
+        method: request.method,
+      },
+      'HTTP request',
+    );
   },
 };
 

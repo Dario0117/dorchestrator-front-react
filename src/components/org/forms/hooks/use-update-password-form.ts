@@ -36,10 +36,7 @@ export function useUpdatePasswordForm({
                 errorMessage || 'Something went wrong, please try again later.';
 
               if (!errorMessage) {
-                logError({
-                  message: 'Password update failed',
-                  error: appError,
-                });
+                logError({ error: appError }, 'Password update failed');
               }
 
               form.setErrorMap({
@@ -59,7 +56,7 @@ export function useUpdatePasswordForm({
               errorMessage || 'Something went wrong, please try again later.';
 
             if (!errorMessage) {
-              logError({ message: 'Password update failed', error });
+              logError({ error }, 'Password update failed');
             }
 
             form.setErrorMap({

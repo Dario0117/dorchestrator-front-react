@@ -10,10 +10,7 @@ export function useCheckSlugAvailabilityMutation() {
       });
 
       if (result.error) {
-        logError({
-          message: 'Organization slug check failed',
-          error: result.error,
-        });
+        logError({ error: result.error }, 'Organization slug check failed');
 
         // 409 means slug is taken, other errors are actual errors
         // Better-auth error object includes status code from HTTP response

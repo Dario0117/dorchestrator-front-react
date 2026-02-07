@@ -12,10 +12,7 @@ export function useCreateOrganizationMutation() {
       });
 
       if (result.error) {
-        logError({
-          message: 'Organization creation failed',
-          error: result.error,
-        });
+        logError({ error: result.error }, 'Organization creation failed');
         throw new Error(
           result.error.message ?? 'Failed to create organization',
         );

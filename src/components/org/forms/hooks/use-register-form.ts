@@ -40,7 +40,7 @@ export function useRegisterForm({
                 errorMessage || 'Something went wrong, please try again later.';
 
               if (!errorMessage) {
-                logError({ message: 'Registration failed', error: appError });
+                logError({ error: appError }, 'Registration failed');
               }
 
               form.setErrorMap({
@@ -60,7 +60,7 @@ export function useRegisterForm({
               errorMessage || 'Something went wrong, please try again later.';
 
             if (!errorMessage) {
-              logError({ message: 'Registration failed', error });
+              logError({ error }, 'Registration failed');
             }
 
             form.setErrorMap({

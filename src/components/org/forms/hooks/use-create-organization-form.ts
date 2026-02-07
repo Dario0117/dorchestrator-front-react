@@ -34,10 +34,7 @@ export function useCreateOrganizationForm({
             data.error
           ) {
             const appError = data.error as { message?: string };
-            logError({
-              message: 'Organization creation failed',
-              error: appError,
-            });
+            logError({ error: appError }, 'Organization creation failed');
 
             const errorMessage = appError.message || '';
 
@@ -68,7 +65,7 @@ export function useCreateOrganizationForm({
           handleSuccess(data);
         },
         onError(error) {
-          logError({ message: 'Organization creation failed', error });
+          logError({ error }, 'Organization creation failed');
 
           const errorMessage =
             error && typeof error === 'object' && 'message' in error

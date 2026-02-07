@@ -3,6 +3,7 @@ import type {
   ThemeProviderProps,
   ThemeProviderState,
 } from '@context/theme.provider.types';
+import { logDebug } from '@lib/logger.utils';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
@@ -39,9 +40,10 @@ export function ThemeProvider({
 
   const value = {
     theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
-      setTheme(theme);
+    setTheme: (newTheme: Theme) => {
+      logDebug({ from: theme, to: newTheme }, 'Theme changed');
+      localStorage.setItem(storageKey, newTheme);
+      setTheme(newTheme);
     },
   };
 

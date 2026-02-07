@@ -32,7 +32,7 @@ export function useLoginForm({
               errorMessage || 'Something went wrong, please try again later.';
 
             if (!errorMessage) {
-              logError({ message: 'Login failed', error: appError });
+              logError({ error: appError }, 'Login failed');
             }
 
             form.setErrorMap({
@@ -52,7 +52,7 @@ export function useLoginForm({
             errorMessage || 'Something went wrong, please try again later.';
 
           if (!errorMessage) {
-            logError({ message: 'Login failed', error });
+            logError({ error }, 'Login failed');
           }
 
           form.setErrorMap({

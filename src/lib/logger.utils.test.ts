@@ -1,5 +1,4 @@
 import { logDebug, logError, logInfo, logWarning } from '@lib/logger.utils';
-import type { LogContext } from '@lib/logger.utils.types';
 
 describe('logger utils', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
@@ -20,11 +19,7 @@ describe('logger utils', () => {
 
   describe('logWarning', () => {
     it('should call console.warn with the message and structured log', () => {
-      const ctx: LogContext = {
-        message: 'This is a warning message',
-      };
-
-      logWarning(ctx);
+      logWarning({}, 'This is a warning message');
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'This is a warning message',
@@ -37,12 +32,10 @@ describe('logger utils', () => {
     });
 
     it('should handle LogContext with error property', () => {
-      const ctx: LogContext = {
-        message: 'Warning with error context',
-        error: 'Additional error details',
-      };
-
-      logWarning(ctx);
+      logWarning(
+        { error: 'Additional error details' },
+        'Warning with error context',
+      );
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Warning with error context',
@@ -55,11 +48,7 @@ describe('logger utils', () => {
     });
 
     it('should handle empty message', () => {
-      const ctx: LogContext = {
-        message: '',
-      };
-
-      logWarning(ctx);
+      logWarning({}, '');
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         '',
@@ -71,11 +60,7 @@ describe('logger utils', () => {
 
   describe('logError', () => {
     it('should call console.error with the message and structured log', () => {
-      const ctx: LogContext = {
-        message: 'This is an error message',
-      };
-
-      logError(ctx);
+      logError({}, 'This is an error message');
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'This is an error message',
@@ -88,12 +73,10 @@ describe('logger utils', () => {
     });
 
     it('should handle LogContext with error property', () => {
-      const ctx: LogContext = {
-        message: 'Error with additional context',
-        error: 'Stack trace or error details',
-      };
-
-      logError(ctx);
+      logError(
+        { error: 'Stack trace or error details' },
+        'Error with additional context',
+      );
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Error with additional context',
@@ -106,11 +89,7 @@ describe('logger utils', () => {
     });
 
     it('should handle multiline error messages', () => {
-      const ctx: LogContext = {
-        message: 'Error occurred:\\nDetails: Something went wrong',
-      };
-
-      logError(ctx);
+      logError({}, 'Error occurred:\\nDetails: Something went wrong');
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Error occurred:\\nDetails: Something went wrong',
@@ -124,11 +103,7 @@ describe('logger utils', () => {
 
   describe('logInfo', () => {
     it('should call console.info with the message and structured log', () => {
-      const ctx: LogContext = {
-        message: 'This is an info message',
-      };
-
-      logInfo(ctx);
+      logInfo({}, 'This is an info message');
 
       expect(consoleInfoSpy).toHaveBeenCalledWith(
         'This is an info message',
@@ -141,12 +116,7 @@ describe('logger utils', () => {
     });
 
     it('should handle LogContext with error property', () => {
-      const ctx: LogContext = {
-        message: 'Info with context',
-        error: 'Additional information',
-      };
-
-      logInfo(ctx);
+      logInfo({ error: 'Additional information' }, 'Info with context');
 
       expect(consoleInfoSpy).toHaveBeenCalledWith(
         'Info with context',
@@ -159,11 +129,7 @@ describe('logger utils', () => {
     });
 
     it('should handle special characters in message', () => {
-      const ctx: LogContext = {
-        message: 'Info: User "John Doe" logged in at 2023-12-01T10:30:00Z',
-      };
-
-      logInfo(ctx);
+      logInfo({}, 'Info: User "John Doe" logged in at 2023-12-01T10:30:00Z');
 
       expect(consoleInfoSpy).toHaveBeenCalledWith(
         'Info: User "John Doe" logged in at 2023-12-01T10:30:00Z',
@@ -177,11 +143,7 @@ describe('logger utils', () => {
 
   describe('logDebug', () => {
     it('should call console.log with the message and structured log', () => {
-      const ctx: LogContext = {
-        message: 'Debug message',
-      };
-
-      logDebug(ctx);
+      logDebug({}, 'Debug message');
 
       expect(consoleLogSpy).toHaveBeenCalledWith(
         'Debug message',
@@ -196,12 +158,7 @@ describe('logger utils', () => {
 
   describe('structured log includes attributes', () => {
     it('should include custom attributes in the log output', () => {
-      const ctx: LogContext = {
-        message: 'Action completed',
-        attributes: { userId: 'abc123', action: 'login' },
-      };
-
-      logInfo(ctx);
+      logInfo({ userId: 'abc123', action: 'login' }, 'Action completed');
 
       expect(consoleInfoSpy).toHaveBeenCalledWith(
         'Action completed',
@@ -216,13 +173,9 @@ describe('logger utils', () => {
 
   describe('all loggers', () => {
     it('should not interfere with each other', () => {
-      const warningCtx: LogContext = { message: 'Warning message' };
-      const errorCtx: LogContext = { message: 'Error message' };
-      const infoCtx: LogContext = { message: 'Info message' };
-
-      logWarning(warningCtx);
-      logError(errorCtx);
-      logInfo(infoCtx);
+      logWarning({}, 'Warning message');
+      logError({}, 'Error message');
+      logInfo({}, 'Info message');
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Warning message',

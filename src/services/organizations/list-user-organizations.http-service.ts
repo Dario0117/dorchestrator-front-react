@@ -7,10 +7,7 @@ export const useUserOrganizationsQueryOptions = {
   queryFn: async () => {
     const result = await authClient.organization.list();
     if (result.error) {
-      logError({
-        message: 'Organization list failed',
-        error: result.error,
-      });
+      logError({ error: result.error }, 'Organization list failed');
       throw new Error(result.error.message ?? 'Failed to fetch organizations');
     }
     return result.data ?? [];

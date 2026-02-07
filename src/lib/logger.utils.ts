@@ -14,30 +14,31 @@ function getTraceContext(): {
   return { traceId: ctx.traceId, spanId: ctx.spanId };
 }
 
-function buildStructuredLog(ctx: LogContext) {
+function buildStructuredLog(ctx: LogContext, message: string) {
   const { traceId, spanId } = getTraceContext();
+  const { error, ...attributes } = ctx;
   return {
-    msg: ctx.message,
+    msg: message,
     ...(traceId ? { traceId } : {}),
     ...(spanId ? { spanId } : {}),
-    ...(ctx.error !== undefined ? { error: ctx.error } : {}),
-    ...(ctx.attributes ? ctx.attributes : {}),
+    ...(error !== undefined ? { error } : {}),
+    ...attributes,
     timestamp: new Date().toISOString(),
   };
 }
 
-export function logWarning(ctx: LogContext) {
-  console.warn(ctx.message, buildStructuredLog(ctx));
+export function logWarning(ctx: LogContext, message: string) {
+  console.warn(message, buildStructuredLog(ctx, message));
 }
 
-export function logError(ctx: LogContext) {
-  console.error(ctx.message, buildStructuredLog(ctx));
+export function logError(ctx: LogContext, message: string) {
+  console.error(message, buildStructuredLog(ctx, message));
 }
 
-export function logInfo(ctx: LogContext) {
-  console.info(ctx.message, buildStructuredLog(ctx));
+export function logInfo(ctx: LogContext, message: string) {
+  console.info(message, buildStructuredLog(ctx, message));
 }
 
-export function logDebug(ctx: LogContext) {
-  console.log(ctx.message, buildStructuredLog(ctx));
+export function logDebug(ctx: LogContext, message: string) {
+  console.log(message, buildStructuredLog(ctx, message));
 }

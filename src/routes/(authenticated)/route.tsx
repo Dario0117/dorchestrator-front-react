@@ -1,4 +1,5 @@
 import { AuthenticatedLayout } from '@components/layout/authenticated-layout';
+import { logWarning } from '@lib/logger.utils';
 import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { profileQueryOptions } from '@services/users/get-profile.http-service';
 import { createFileRoute, redirect } from '@tanstack/react-router';
@@ -8,7 +9,11 @@ export const Route = createFileRoute('/(authenticated)')({
   beforeLoad: async (ctx) => {
     try {
       await ctx.context.queryClient.ensureQueryData(profileQueryOptions);
-    } catch {
+    } catch (error) {
+      logWarning(
+        { error, pathname: window.location.pathname },
+        'Authentication check failed, redirecting to login',
+      );
       throw redirect({
         to: '/login',
         replace: true,

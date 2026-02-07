@@ -9,9 +9,13 @@ export const Route = createFileRoute('/(authenticated)/$organizationSlug')({
         ctx.params.organizationSlug,
       );
     if (!currentOrganization) {
-      logWarning({
-        message: `Someone is trying to access ${window.location.pathname} page without a valid organization ${ctx.params.organizationSlug}`,
-      });
+      logWarning(
+        {
+          pathname: window.location.pathname,
+          organizationSlug: ctx.params.organizationSlug,
+        },
+        'Access attempt without a valid organization',
+      );
       throw redirect({
         to: '/',
         replace: true,

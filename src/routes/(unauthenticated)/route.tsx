@@ -1,3 +1,4 @@
+import { logDebug, logInfo } from '@lib/logger.utils';
 import { profileQueryOptions } from '@services/users/get-profile.http-service';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
@@ -8,6 +9,10 @@ export const Route = createFileRoute('/(unauthenticated)')({
       const profile =
         await ctx.context.queryClient.ensureQueryData(profileQueryOptions);
       if (profile) {
+        logInfo(
+          { pathname: window.location.pathname },
+          'Authenticated user accessing unauthenticated route, redirecting to home',
+        );
         return redirect({
           to: '/',
           replace: true,
@@ -15,10 +20,10 @@ export const Route = createFileRoute('/(unauthenticated)')({
         });
       }
     } catch {
-      /**
-       * If no profile found let the request pass,
-       * this group belongs to unauthenticated pages
-       */
+      logDebug(
+        { pathname: window.location.pathname },
+        'No active session, allowing access to unauthenticated route',
+      );
       return;
     }
   },
