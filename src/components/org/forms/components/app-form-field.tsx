@@ -4,6 +4,27 @@ import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { PasswordInput } from '@components/ui/password-input';
 
+function normalizeFieldErrors(errors: unknown[]) {
+  const messages: string[] = [];
+  for (const error of errors) {
+    if (typeof error === 'string') {
+      messages.push(error);
+    } else if (Array.isArray(error)) {
+      messages.push(...error.filter((e): e is string => typeof e === 'string'));
+    } else if (
+      error !== null &&
+      typeof error === 'object' &&
+      'message' in error &&
+      typeof (error as { message: unknown }).message === 'string'
+    ) {
+      messages.push((error as { message: string }).message);
+    } else {
+      messages.push('Invalid input');
+    }
+  }
+  return messages;
+}
+
 export function AppFormField({
   label,
   placeholder,
@@ -14,9 +35,8 @@ export function AppFormField({
   onChange,
 }: FormFieldProps) {
   const field = useFieldContext<string | number>();
-  const hasError = field.state.meta.errors?.length > 0;
-  const errorMessage =
-    field.state.meta.errors?.[0]?.message || field.state.meta.errors?.[0];
+  const errorMessages = normalizeFieldErrors(field.state.meta.errors);
+  const hasError = errorMessages.length > 0;
 
   return (
     <div className="grid gap-3">
@@ -67,13 +87,15 @@ export function AppFormField({
         <p className="text-sm text-muted-foreground">{helperText}</p>
       )}
       {hasError && (
-        <p
+        <ul
           id={`${field.name}-error`}
           className="text-sm text-destructive"
           role="alert"
         >
-          {typeof errorMessage === 'string' ? errorMessage : 'Invalid input'}
-        </p>
+          {errorMessages.map((message) => (
+            <li key={message}>{message}</li>
+          ))}
+        </ul>
       )}
     </div>
   );

@@ -13,7 +13,8 @@ interface OrganizationCheckWrapperProps {
 export function OrganizationCheckWrapper({
   children,
 }: OrganizationCheckWrapperProps) {
-  const { data: organizations } = useUserOrganizationsSuspendedQuery();
+  const { data } = useUserOrganizationsSuspendedQuery();
+  const organizations = data.responseData?.results ?? [];
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {

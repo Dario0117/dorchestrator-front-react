@@ -20,12 +20,14 @@ function createSuccessMutation(
 
 /**
  * Helper to create a mock mutation that simulates error.
- * Calls onError callback with the provided error.
+ * Calls onError callback with the provided error (responseErrors shape).
  */
-function createErrorMutation(error: Error): useCreateOrganizationMutationType {
+function createErrorMutation(error: {
+  responseErrors?: Record<string, string[]> | null;
+}): useCreateOrganizationMutationType {
   return {
     mutate: vi.fn((_, options) => {
-      options?.onError?.(error, undefined as never, undefined);
+      options?.onError?.(error as never, undefined as never, undefined);
     }),
   } as unknown as useCreateOrganizationMutationType;
 }
@@ -52,9 +54,15 @@ describe('useCreateOrganizationForm', () => {
 
   it('should call handleSuccess on successful submission', async () => {
     const mockData = {
-      id: 'org-1',
-      name: 'Test Org',
-      slug: 'test-org',
+      responseData: {
+        results: {
+          id: 'org-1',
+          name: 'Test Org',
+          slug: 'test-org',
+          createdAt: '2025-12-21T10:00:00.000Z',
+        },
+      },
+      responseErrors: null,
     };
     const mockMutation = createSuccessMutation(mockData);
     const mockHandleSuccess = vi.fn();
@@ -77,8 +85,10 @@ describe('useCreateOrganizationForm', () => {
     await waitFor(() => {
       expect(mockMutation.mutate).toHaveBeenCalledWith(
         {
-          name: 'Test Org',
-          slug: 'test-org',
+          body: {
+            name: 'Test Org',
+            slug: 'test-org',
+          },
         },
         expect.any(Object),
       );
@@ -86,11 +96,11 @@ describe('useCreateOrganizationForm', () => {
     });
   });
 
-  it('should handle slug uniqueness error', async () => {
+  it('should handle slug field error', async () => {
     vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
-    const mockMutation = createErrorMutation(
-      new Error('The slug is already taken'),
-    );
+    const mockMutation = createErrorMutation({
+      responseErrors: { slug: ['This slug is already taken'] },
+    });
     const mockHandleSuccess = vi.fn();
 
     const { result } = renderHook(
@@ -113,9 +123,38 @@ describe('useCreateOrganizationForm', () => {
     });
   });
 
-  it('should handle generic errors', async () => {
+  it('should handle name field error', async () => {
     vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
-    const mockMutation = createErrorMutation(new Error('Network error'));
+    const mockMutation = createErrorMutation({
+      responseErrors: { name: ['Name is reserved'] },
+    });
+    const mockHandleSuccess = vi.fn();
+
+    const { result } = renderHook(
+      () =>
+        useCreateOrganizationForm({
+          createOrganizationMutation: mockMutation,
+          handleSuccess: mockHandleSuccess,
+        }),
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    await act(async () => {
+      result.current.setFieldValue('name', 'Admin');
+      result.current.setFieldValue('slug', 'admin-org');
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should handle non-field errors', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
+    const mockMutation = createErrorMutation({
+      responseErrors: { nonFieldErrors: ['Something went wrong'] },
+    });
     const mockHandleSuccess = vi.fn();
 
     const { result } = renderHook(
@@ -188,13 +227,11 @@ describe('useCreateOrganizationForm', () => {
     });
   });
 
-  it('should handle error without message', async () => {
+  it('should handle error without responseErrors', async () => {
     vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
-    const mockMutation = {
-      mutate: vi.fn((_, options) => {
-        options?.onError?.({} as Error, undefined as never, undefined);
-      }),
-    } as unknown as useCreateOrganizationMutationType;
+    const mockMutation = createErrorMutation({
+      responseErrors: null,
+    });
     const mockHandleSuccess = vi.fn();
 
     const { result } = renderHook(

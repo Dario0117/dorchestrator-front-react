@@ -1,7 +1,7 @@
 import { queryClient } from '@context/query.provider';
 import {
-  type OrganizationItem,
   useUserOrganizationsQueryOptions,
+  type useUserOrganizationsQueryReturnType,
 } from '@services/organizations/list-user-organizations.http-service';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from '@/routeTree.gen';
@@ -32,9 +32,10 @@ export function _getNullableCurrentOrganizationFromSlug(slug: string) {
    * for the fact that the router doesn't have access to the current organization in the context
    * when you are loading the router for the first time
    */
-  const organizations = queryClient.getQueryData(
+  const data = queryClient.getQueryData(
     useUserOrganizationsQueryOptions.queryKey,
-  ) as unknown as OrganizationItem[];
+  ) as useUserOrganizationsQueryReturnType['data'] | undefined;
+  const organizations = data?.responseData?.results ?? [];
   const currentOrg = organizations.find((org) => org.slug === slug);
   return currentOrg;
 }

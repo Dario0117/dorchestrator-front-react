@@ -7,7 +7,10 @@ const mockOrganization = {
   id: 'org-123',
   name: 'Test Organization',
   slug: 'test-org',
-  createdAt: new Date('2025-12-21T10:00:00.000Z'),
+  role: 'owner',
+  memberCount: 1,
+  createdAt: '2025-12-21T10:00:00.000Z',
+  isDefault: true,
 };
 
 const mockUseParams = vi.fn();
@@ -24,10 +27,19 @@ describe('useCurrentOrganization', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Seed the query cache with organizations data
-    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, [
-      mockOrganization,
-    ]);
+    // Seed the query cache with organizations data (new API response shape)
+    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
+      responseData: {
+        results: [mockOrganization],
+        hasNext: false,
+        hasPrevious: false,
+        totalResults: 1,
+        totalPages: 1,
+        page: 1,
+        size: 100,
+      },
+      responseErrors: null,
+    });
 
     mockUseParams.mockReturnValue({ organizationSlug: 'test-org' });
   });

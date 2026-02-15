@@ -1,25 +1,25 @@
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { authClient } from '@/better-auth.client';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { $api } from '@/http-service-setup';
 
-export const profileQueryOptions = {
-  queryKey: ['profile'],
-  queryFn: async () => {
-    const session = await authClient.getSession();
-    if (session.data?.user) {
-      return session.data.user;
-    }
-    throw new Error(session.error?.message ?? 'No user found');
+export const profileQueryOptions = $api.queryOptions(
+  'get',
+  '/api/v1/me',
+  {},
+  {
+    staleTime: Number.POSITIVE_INFINITY,
+    retry: false,
   },
-  staleTime: Number.POSITIVE_INFINITY,
-  retry: false,
-};
-
-export function useProfileQuery() {
-  return useQuery(profileQueryOptions);
-}
+);
 
 export function useProfileSuspendedQuery() {
-  return useSuspenseQuery(profileQueryOptions);
+  const query = useSuspenseQuery(profileQueryOptions);
+  const profile = query.data.responseData?.results;
+  if (!profile) {
+    throw new Error('No user found');
+  }
+  return { ...query, data: profile };
 }
 
-export type useProfileQueryReturnType = ReturnType<typeof useProfileQuery>;
+export type useProfileQueryReturnType = ReturnType<
+  typeof useProfileSuspendedQuery
+>;

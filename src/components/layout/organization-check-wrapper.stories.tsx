@@ -36,16 +36,29 @@ export const WithOrganizations: Story = {
       },
     });
 
-    // Pre-populate the cache with organization data
-    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, [
-      {
-        id: 'org-1',
-        slug: 'acme-corp',
-        name: 'Acme Corporation',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+    // Pre-populate the cache with organization data (new API response shape)
+    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
+      responseData: {
+        results: [
+          {
+            id: 'org-1',
+            slug: 'acme-corp',
+            name: 'Acme Corporation',
+            role: 'owner',
+            memberCount: 1,
+            createdAt: new Date().toISOString(),
+            isDefault: true,
+          },
+        ],
+        hasNext: false,
+        hasPrevious: false,
+        totalResults: 1,
+        totalPages: 1,
+        page: 1,
+        size: 100,
       },
-    ]);
+      responseErrors: null,
+    });
 
     return (
       <QueryClientProvider client={queryClient}>
@@ -82,8 +95,19 @@ export const WithoutOrganizations: Story = {
       },
     });
 
-    // Pre-populate the cache with empty organization list
-    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, []);
+    // Pre-populate the cache with empty organization list (new API response shape)
+    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
+      responseData: {
+        results: [],
+        hasNext: false,
+        hasPrevious: false,
+        totalResults: 0,
+        totalPages: 0,
+        page: 1,
+        size: 100,
+      },
+      responseErrors: null,
+    });
 
     return (
       <QueryClientProvider client={queryClient}>

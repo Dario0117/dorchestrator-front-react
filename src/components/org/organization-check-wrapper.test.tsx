@@ -9,7 +9,7 @@ import { server } from '@/../testsSetup';
 import type { paths } from '@/types/api.generated.types';
 
 type ListOrganizationsSuccessResponse =
-  paths['/api/v1/organization/list']['get']['responses']['200']['content']['application/json'];
+  paths['/api/v1/organizations']['get']['responses']['200']['content']['application/json'];
 
 describe('OrganizationCheckWrapper', () => {
   it('should render children when user has organizations', async () => {
@@ -32,9 +32,20 @@ describe('OrganizationCheckWrapper', () => {
     // Override MSW handler to return empty organizations
     server.use(
       http.get<never, never, ListOrganizationsSuccessResponse>(
-        buildBackendUrl('/api/v1/organization/list'),
+        buildBackendUrl('/api/v1/organizations'),
         () => {
-          return HttpResponse.json([]);
+          return HttpResponse.json({
+            responseData: {
+              results: [],
+              hasNext: false,
+              hasPrevious: false,
+              totalResults: 0,
+              totalPages: 0,
+              page: 1,
+              size: 100,
+            },
+            responseErrors: null,
+          });
         },
       ),
     );
@@ -59,9 +70,20 @@ describe('OrganizationCheckWrapper', () => {
     // Override MSW handler to return empty organizations
     server.use(
       http.get<never, never, ListOrganizationsSuccessResponse>(
-        buildBackendUrl('/api/v1/organization/list'),
+        buildBackendUrl('/api/v1/organizations'),
         () => {
-          return HttpResponse.json([]);
+          return HttpResponse.json({
+            responseData: {
+              results: [],
+              hasNext: false,
+              hasPrevious: false,
+              totalResults: 0,
+              totalPages: 0,
+              page: 1,
+              size: 100,
+            },
+            responseErrors: null,
+          });
         },
       ),
     );

@@ -2,7 +2,8 @@ import { useUserOrganizationsSuspendedQuery } from '@services/organizations/list
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 
 function RedirectToOrganization() {
-  const { data: organizations } = useUserOrganizationsSuspendedQuery();
+  const { data } = useUserOrganizationsSuspendedQuery();
+  const organizations = data.responseData?.results ?? [];
   const firstOrganization = organizations[0];
 
   if (!firstOrganization) {

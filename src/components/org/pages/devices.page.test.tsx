@@ -37,18 +37,28 @@ const mockOrganization = {
   id: 'org-1',
   name: 'Test Organization',
   slug: 'test-org',
-  createdAt: new Date('2025-12-21T10:00:00.000Z'),
-  logo: null,
-  metadata: {},
+  role: 'owner',
+  memberCount: 1,
+  createdAt: '2025-12-21T10:00:00.000Z',
+  isDefault: true,
 };
 
 describe('DevicesPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
-    // Seed query cache with organization data
-    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, [
-      mockOrganization,
-    ]);
+    // Seed query cache with organization data (new API response shape)
+    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
+      responseData: {
+        results: [mockOrganization],
+        hasNext: false,
+        hasPrevious: false,
+        totalResults: 1,
+        totalPages: 1,
+        page: 1,
+        size: 100,
+      },
+      responseErrors: null,
+    });
   });
 
   it('should render devices page with device cards', async () => {

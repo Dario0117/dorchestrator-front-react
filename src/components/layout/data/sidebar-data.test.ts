@@ -8,7 +8,10 @@ describe('Sidebar Data', () => {
     id: 'org-123',
     name: 'Test Organization',
     slug: testSlug,
-    createdAt: new Date(),
+    role: 'owner',
+    memberCount: 1,
+    createdAt: '2025-12-21T10:00:00.000Z',
+    isDefault: true,
   };
   let sidebarData: SidebarData;
 
