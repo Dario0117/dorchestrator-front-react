@@ -450,4 +450,262 @@ describe('AppFormField', () => {
     const flexContainer = container.querySelector('.flex.items-center');
     expect(flexContainer).toBeInTheDocument();
   });
+
+  it('should call custom onChange handler for password field', async () => {
+    const customOnChange = vi.fn();
+    const user = userEvent.setup();
+
+    const TestFormWithPasswordOnChange = () => {
+      const form = useAppForm({
+        defaultValues: { testField: '' },
+        onSubmit: async () => {
+          // Intentionally empty for testing
+        },
+      });
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <form.AppField name="testField">
+            {(field) => (
+              <field.AppFormField
+                label="Password"
+                type="password"
+                onChange={customOnChange}
+              />
+            )}
+          </form.AppField>
+        </form>
+      );
+    };
+
+    render(<TestFormWithPasswordOnChange />);
+
+    const input = screen.getByLabelText('Password');
+    await user.type(input, 'secret');
+
+    expect(customOnChange).toHaveBeenCalled();
+  });
+
+  it('should call custom onChange handler for text field', async () => {
+    const customOnChange = vi.fn();
+    const user = userEvent.setup();
+
+    const TestFormWithTextOnChange = () => {
+      const form = useAppForm({
+        defaultValues: { testField: '' },
+        onSubmit: async () => {
+          // Intentionally empty for testing
+        },
+      });
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <form.AppField name="testField">
+            {(field) => (
+              <field.AppFormField
+                label="Name"
+                type="text"
+                onChange={customOnChange}
+              />
+            )}
+          </form.AppField>
+        </form>
+      );
+    };
+
+    render(<TestFormWithTextOnChange />);
+
+    const input = screen.getByLabelText('Name');
+    await user.type(input, 'hello');
+
+    expect(customOnChange).toHaveBeenCalled();
+  });
+
+  it('should handle array error in normalizeFieldErrors', async () => {
+    const user = userEvent.setup();
+
+    const TestFormWithArrayError = () => {
+      const form = useAppForm({
+        defaultValues: { testField: '' },
+        onSubmit: async () => {
+          // Intentionally empty for testing
+        },
+      });
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <form.AppField
+            name="testField"
+            validators={{
+              onChange: () =>
+                ['Error from array 1', 'Error from array 2'] as never,
+            }}
+          >
+            {(field) => (
+              <field.AppFormField
+                label="Field"
+                placeholder="Enter value"
+              />
+            )}
+          </form.AppField>
+        </form>
+      );
+    };
+
+    render(<TestFormWithArrayError />);
+
+    const input = screen.getByLabelText('Field');
+    await user.type(input, 'a');
+    await user.clear(input);
+
+    await waitFor(() => {
+      expect(screen.getByText('Error from array 1')).toBeInTheDocument();
+      expect(screen.getByText('Error from array 2')).toBeInTheDocument();
+    });
+  });
+
+  it('should filter non-string elements from array errors in normalizeFieldErrors', async () => {
+    const user = userEvent.setup();
+
+    const TestFormWithMixedArrayError = () => {
+      const form = useAppForm({
+        defaultValues: { testField: '' },
+        onSubmit: async () => {
+          // Intentionally empty for testing
+        },
+      });
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <form.AppField
+            name="testField"
+            validators={{
+              onChange: () => [42, 'Valid error message', null] as never,
+            }}
+          >
+            {(field) => (
+              <field.AppFormField
+                label="Field"
+                placeholder="Enter value"
+              />
+            )}
+          </form.AppField>
+        </form>
+      );
+    };
+
+    render(<TestFormWithMixedArrayError />);
+
+    const input = screen.getByLabelText('Field');
+    await user.type(input, 'a');
+    await user.clear(input);
+
+    await waitFor(() => {
+      expect(screen.getByText('Valid error message')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle error object with message property in normalizeFieldErrors', async () => {
+    const user = userEvent.setup();
+
+    const TestFormWithMessageError = () => {
+      const form = useAppForm({
+        defaultValues: { testField: '' },
+        onSubmit: async () => {
+          // Intentionally empty for testing
+        },
+      });
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <form.AppField
+            name="testField"
+            validators={{
+              onChange: () =>
+                ({ message: 'Error from message property' }) as never,
+            }}
+          >
+            {(field) => (
+              <field.AppFormField
+                label="Field"
+                placeholder="Enter value"
+              />
+            )}
+          </form.AppField>
+        </form>
+      );
+    };
+
+    render(<TestFormWithMessageError />);
+
+    const input = screen.getByLabelText('Field');
+    await user.type(input, 'a');
+    await user.clear(input);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Error from message property'),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('should display helper text when provided', () => {
+    const TestFormWithHelperText = () => {
+      const form = useAppForm({
+        defaultValues: { testField: '' },
+        onSubmit: async () => {
+          // Intentionally empty for testing
+        },
+      });
+
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <form.AppField name="testField">
+            {(field) => (
+              <field.AppFormField
+                label="Slug"
+                helperText="Only lowercase letters and hyphens"
+              />
+            )}
+          </form.AppField>
+        </form>
+      );
+    };
+
+    render(<TestFormWithHelperText />);
+
+    expect(
+      screen.getByText('Only lowercase letters and hyphens'),
+    ).toBeInTheDocument();
+  });
 });

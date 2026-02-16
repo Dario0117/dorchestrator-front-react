@@ -1,7 +1,7 @@
 import { AddDeviceModal } from '@components/devices/add-device-modal';
 import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
@@ -304,5 +304,118 @@ describe('AddDeviceModal', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue(mockToken)).toBeInTheDocument();
     });
+  });
+
+  it('should copy token to clipboard when copy token button is clicked', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <AddDeviceModal
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        organizationId={organizationId}
+      />,
+    );
+
+    await user.click(screen.getByText('Generate Token'));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue(mockToken)).toBeInTheDocument();
+    });
+
+    // Spy on the clipboard after userEvent.setup has configured it
+    const writeTextSpy = vi.spyOn(navigator.clipboard, 'writeText');
+
+    const tokenInput = screen.getByLabelText('Registration Token');
+    const tokenCopyButton = tokenInput.parentElement?.querySelector(
+      'button[data-slot="button"]',
+    ) as HTMLButtonElement;
+    expect(tokenCopyButton).toBeInTheDocument();
+    fireEvent.click(tokenCopyButton);
+
+    await waitFor(() => {
+      expect(writeTextSpy).toHaveBeenCalledWith(mockToken);
+    });
+
+    // CheckCircle icon should appear (the copied state is true)
+    await waitFor(() => {
+      expect(
+        tokenCopyButton.querySelector('svg.lucide-circle-check-big'),
+      ).toBeInTheDocument();
+    });
+
+    writeTextSpy.mockRestore();
+  });
+
+  it('should copy CLI command to clipboard when copy CLI button is clicked', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <AddDeviceModal
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        organizationId={organizationId}
+      />,
+    );
+
+    await user.click(screen.getByText('Generate Token'));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('CLI Command')).toBeInTheDocument();
+    });
+
+    // Spy on the clipboard after userEvent.setup has configured it
+    const writeTextSpy = vi.spyOn(navigator.clipboard, 'writeText');
+
+    const cliInput = screen.getByLabelText('CLI Command');
+    const cliCopyButton = cliInput.parentElement?.querySelector(
+      'button[data-slot="button"]',
+    ) as HTMLButtonElement;
+    expect(cliCopyButton).toBeInTheDocument();
+    fireEvent.click(cliCopyButton);
+
+    const expectedCommand = `dorchestrator register --org-id "${organizationId}" --name "random name" --token "${mockToken}"`;
+    await waitFor(() => {
+      expect(writeTextSpy).toHaveBeenCalledWith(expectedCommand);
+    });
+
+    writeTextSpy.mockRestore();
+  });
+
+  it('should show empty expiration when expiresAt is not provided', async () => {
+    server.use(
+      http.post<never, never, GenerateTokenSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        () => {
+          return HttpResponse.json({
+            responseData: {
+              results: {
+                token: mockToken,
+                expiresAt: null as unknown as string,
+              },
+            },
+            responseErrors: null,
+          });
+        },
+      ),
+    );
+
+    const user = userEvent.setup();
+    renderWithProviders(
+      <AddDeviceModal
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        organizationId={organizationId}
+      />,
+    );
+
+    await user.click(screen.getByText('Generate Token'));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue(mockToken)).toBeInTheDocument();
+    });
+
+    // The expiration paragraph should be empty (formatExpiration returns '')
+    expect(screen.queryByText(/Token expires in/)).not.toBeInTheDocument();
   });
 });

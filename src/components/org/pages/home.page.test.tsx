@@ -1,10 +1,17 @@
 import { HomePage } from '@components/org/pages/home.page';
 import { queryClient } from '@context/query.provider';
+import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { setMobileViewport, setTabletViewport } from '@lib/viewport-test-utils';
 import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { screen, waitFor } from '@testing-library/react';
+import { HttpResponse, http } from 'msw';
 import { Suspense } from 'react';
+import { server } from '@/../testsSetup';
+import type { operations } from '@/types/api.generated.types';
+
+type GetOrganizationStatsSuccessResponse =
+  operations['getApiV1ByOrganizationIdOrganizationStats']['responses']['200']['content']['application/json'];
 
 vi.mock('@tanstack/react-router', async () => {
   const actual = await vi.importActual('@tanstack/react-router');
@@ -85,6 +92,129 @@ describe('HomePage', () => {
     await waitFor(() => {
       expect(screen.getByText('Recent Activity')).toBeInTheDocument();
     });
+  });
+
+  it('should render recent commands when stats contain command data', async () => {
+    server.use(
+      http.get<never, never, GetOrganizationStatsSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/organization/stats'),
+        () => {
+          return HttpResponse.json({
+            responseData: {
+              results: {
+                deviceCount: 7,
+                recentCommandCount: 12,
+                recentCommands: [
+                  {
+                    id: 1,
+                    command: 'echo "hello"',
+                    status: 'completed',
+                    createdAt: '2025-12-21T14:30:00.000Z',
+                  },
+                  {
+                    id: 2,
+                    command: 'uptime',
+                    status: 'pending',
+                    createdAt: '2025-12-21T14:00:00.000Z',
+                  },
+                ],
+              },
+            },
+            responseErrors: null,
+          });
+        },
+      ),
+    );
+
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <HomePage />
+      </Suspense>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('echo "hello"')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('uptime')).toBeInTheDocument();
+    expect(screen.getByText('completed')).toBeInTheDocument();
+    expect(screen.getByText('pending')).toBeInTheDocument();
+
+    // Verify stat card values reflect the data
+    expect(screen.getByText('7')).toBeInTheDocument();
+    expect(screen.getByText('12')).toBeInTheDocument();
+  });
+
+  it('should show fallback message when stats results is null', async () => {
+    server.use(
+      http.get<never, never, GetOrganizationStatsSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/organization/stats'),
+        () => {
+          return HttpResponse.json({
+            responseData: null,
+            responseErrors: null,
+          } as unknown as GetOrganizationStatsSuccessResponse);
+        },
+      ),
+    );
+
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <HomePage />
+      </Suspense>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Devices')).toBeInTheDocument();
+    });
+
+    // deviceCount and recentCommandCount should fallback to 0
+    const zeroValues = screen.getAllByText('0');
+    expect(zeroValues.length).toBeGreaterThanOrEqual(2);
+
+    // Should show fallback text for no recent commands
+    expect(
+      screen.getByText(
+        'No recent commands. Get started by executing your first command!',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('should show fallback message when recentCommands is empty array', async () => {
+    server.use(
+      http.get<never, never, GetOrganizationStatsSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/organization/stats'),
+        () => {
+          return HttpResponse.json({
+            responseData: {
+              results: {
+                deviceCount: 2,
+                recentCommandCount: 0,
+                recentCommands: [],
+              },
+            },
+            responseErrors: null,
+          });
+        },
+      ),
+    );
+
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <HomePage />
+      </Suspense>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Devices')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'No recent commands. Get started by executing your first command!',
+      ),
+    ).toBeInTheDocument();
   });
 
   describe('Mobile Responsive Layout (AC2, AC3)', () => {

@@ -1,6 +1,10 @@
 import { TeamSwitcher } from '@components/layout/team-switcher';
 import { SidebarProvider } from '@components/ui/sidebar';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
+import {
+  setDesktopViewport,
+  setMobileViewport,
+} from '@lib/viewport-test-utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react';
@@ -142,5 +146,19 @@ describe('TeamSwitcher', () => {
 
     expect(screen.getByText('Acme Corp.')).toBeInTheDocument();
     expect(screen.getByText('Startup')).toBeInTheDocument();
+  });
+
+  it('should render dropdown from bottom on mobile viewport', async () => {
+    setMobileViewport();
+    const user = userEvent.setup();
+    renderTeamSwitcher();
+
+    const trigger = screen.getByRole('button', { name: /dorchestrator/i });
+    await user.click(trigger);
+
+    const menuContent = screen.getByRole('menu');
+    expect(menuContent).toHaveAttribute('data-side', 'bottom');
+
+    setDesktopViewport();
   });
 });

@@ -32,7 +32,7 @@ run = "bun run coverage"
 
 [tasks.coverageForAgents]
 env = { "VITEST_IS_AGENT_TEST" = "true" }
-run = "bun run coverage"
+run = "bun run coverage > /dev/null 2>&1 && bun scripts/check-coverage-gaps.ts"
 
 [tasks.checkTs]
 run = "bun run check-ts"

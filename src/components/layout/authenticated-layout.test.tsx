@@ -27,6 +27,10 @@ const mockOrganization = {
   createdAt: new Date('2025-12-21T10:00:00.000Z'),
 };
 
+const mockUseParams = vi.fn<() => Record<string, string>>(() => ({
+  organizationSlug: 'test-org',
+}));
+
 vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual =
     await importOriginal<typeof import('@tanstack/react-router')>();
@@ -57,7 +61,7 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
     },
     useNavigate: () => vi.fn(),
     Outlet: () => <div data-testid="outlet">Outlet</div>,
-    useParams: () => ({ organizationSlug: 'test-org' }),
+    useParams: () => mockUseParams(),
     useRouterState: () => ({
       matches: [
         {
@@ -92,6 +96,10 @@ async function renderAuthenticatedLayout(children?: React.ReactNode) {
 }
 
 describe('AuthenticatedLayout', () => {
+  beforeEach(() => {
+    mockUseParams.mockReturnValue({ organizationSlug: 'test-org' });
+  });
+
   it('should render children', async () => {
     await renderAuthenticatedLayout();
 
@@ -196,5 +204,60 @@ describe('AuthenticatedLayout', () => {
       '[data-slot="sidebar-wrapper"]',
     );
     expect(sidebarWrapper).toBeInTheDocument();
+  });
+
+  it('should render without sidebar when no organizationSlug in params', async () => {
+    mockUseParams.mockReturnValue({});
+
+    const result = renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <AuthenticatedLayout>
+          <div data-testid="child-content">Child Content</div>
+        </AuthenticatedLayout>
+      </Suspense>,
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+
+    // Should render children
+    expect(screen.getByTestId('child-content')).toBeInTheDocument();
+
+    // Should NOT render sidebar
+    const sidebarWrapper = result.container.querySelector(
+      '[data-slot="sidebar-wrapper"]',
+    );
+    expect(sidebarWrapper).not.toBeInTheDocument();
+  });
+
+  it('should render Outlet when no children provided with organizationSlug', async () => {
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <AuthenticatedLayout>{undefined}</AuthenticatedLayout>
+      </Suspense>,
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('outlet')).toBeInTheDocument();
+  });
+
+  it('should render Outlet when no children provided without organizationSlug', async () => {
+    mockUseParams.mockReturnValue({});
+
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <AuthenticatedLayout>{undefined}</AuthenticatedLayout>
+      </Suspense>,
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('outlet')).toBeInTheDocument();
   });
 });

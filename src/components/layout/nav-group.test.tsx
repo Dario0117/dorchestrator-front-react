@@ -463,4 +463,160 @@ describe('NavGroup', () => {
       },
     );
   });
+
+  it('should handle sub-item link click in expanded collapsible', async () => {
+    const user = userEvent.setup();
+    renderNavGroup(mockCollapsibleItems);
+
+    // First expand the collapsible
+    const collapsibleButton = screen.getByRole('button', {
+      name: /getting started/i,
+    });
+    await user.click(collapsibleButton);
+
+    // Then click a sub-item link
+    const installationLink = screen.getByRole('link', {
+      name: /installation/i,
+    });
+    await user.click(installationLink);
+
+    expect(installationLink).toBeInTheDocument();
+  });
+
+  it('should render sub-items with badges and icons in expanded collapsible', async () => {
+    const user = userEvent.setup();
+    const collapsibleWithSubBadges: NavItem[] = [
+      {
+        title: 'Documentation',
+        icon: FolderKanban,
+        items: [
+          {
+            title: 'Installation',
+            url: '/docs/installation',
+            icon: FilePenLine,
+            badge: '3',
+          },
+          {
+            title: 'Configuration',
+            url: '/docs/configuration',
+          },
+        ],
+      },
+    ];
+
+    renderNavGroup(collapsibleWithSubBadges);
+
+    const collapsibleButton = screen.getByRole('button', {
+      name: /documentation/i,
+    });
+    await user.click(collapsibleButton);
+
+    expect(screen.getByText('Installation')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument();
+  });
+
+  it('should render badge on expanded collapsible parent item', () => {
+    const collapsibleWithParentBadge: NavItem[] = [
+      {
+        title: 'Resources',
+        icon: FolderKanban,
+        badge: '7',
+        items: [
+          {
+            title: 'Docs',
+            url: '/resources/docs',
+          },
+        ],
+      },
+    ];
+
+    renderNavGroup(collapsibleWithParentBadge);
+
+    expect(screen.getByText('7')).toBeInTheDocument();
+  });
+
+  it('should render collapsed dropdown without badge on parent', () => {
+    const collapsibleNoBadge: NavItem[] = [
+      {
+        title: 'Tools',
+        icon: FolderKanban,
+        items: [
+          {
+            title: 'Editor',
+            url: '/tools/editor',
+          },
+        ],
+      },
+    ];
+
+    renderWithProviders(
+      <SidebarProvider defaultOpen={false}>
+        <NavGroup
+          title="General"
+          items={collapsibleNoBadge}
+        />
+      </SidebarProvider>,
+    );
+
+    expect(screen.getByText('Tools')).toBeInTheDocument();
+  });
+
+  it('should highlight active sub-item in collapsed dropdown', async () => {
+    mockUseLocation.mockImplementation(
+      ({
+        select,
+      }: {
+        select?: (location: { href: string }) => string;
+      } = {}) => {
+        const location = { href: '/tools/editor' };
+        return select ? select(location) : location;
+      },
+    );
+
+    const user = userEvent.setup();
+    const collapsibleWithActiveChild: NavItem[] = [
+      {
+        title: 'Tools',
+        icon: FolderKanban,
+        items: [
+          {
+            title: 'Editor',
+            url: '/tools/editor',
+          },
+          {
+            title: 'Terminal',
+            url: '/tools/terminal',
+          },
+        ],
+      },
+    ];
+
+    renderWithProviders(
+      <SidebarProvider defaultOpen={false}>
+        <NavGroup
+          title="General"
+          items={collapsibleWithActiveChild}
+        />
+      </SidebarProvider>,
+    );
+
+    const dropdownTrigger = screen.getByRole('button', {
+      name: /tools/i,
+    });
+    await user.click(dropdownTrigger);
+
+    const editorItem = screen.getByRole('menuitem', { name: /editor/i });
+    expect(editorItem).toHaveClass('bg-secondary');
+
+    mockUseLocation.mockImplementation(
+      ({
+        select,
+      }: {
+        select?: (location: { href: string }) => string;
+      } = {}) => {
+        const location = { href: '/' };
+        return select ? select(location) : location;
+      },
+    );
+  });
 });

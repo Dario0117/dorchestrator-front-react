@@ -1,4 +1,5 @@
 import { useRegisterForm } from '@components/org/forms/hooks/use-register-form';
+import * as loggerUtils from '@lib/logger.utils';
 import { buildBackendUrl } from '@lib/test.utils';
 import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
 import { useRegisterMutation } from '@services/users/register.http-service';
@@ -6,11 +7,6 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { act } from 'react';
 import { server } from '@/../testsSetup';
-
-// Mock the logger utility
-vi.mock('@/lib/logger.utils', () => ({
-  logError: vi.fn(),
-}));
 
 describe('useRegisterForm', () => {
   const mockHandleSuccess = vi.fn();
@@ -122,6 +118,7 @@ describe('useRegisterForm', () => {
   });
 
   it('should handle unexpected errors and log them', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     // Return HTTP 500 error without message so better-auth wraps it
     server.use(
       http.post(buildBackendUrl('/api/v1/sign-up/email'), () => {
@@ -160,6 +157,7 @@ describe('useRegisterForm', () => {
   });
 
   it('should handle errors without message property', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
     // Return HTTP 500 error without message so better-auth wraps it
     server.use(
       http.post(buildBackendUrl('/api/v1/sign-up/email'), () => {
@@ -235,6 +233,42 @@ describe('useRegisterForm', () => {
         },
         error: null,
       });
+    });
+  });
+
+  it('should handle network error via onError callback', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
+
+    server.use(
+      http.post(buildBackendUrl('/api/v1/sign-up/email'), () => {
+        return HttpResponse.error();
+      }),
+    );
+
+    const { result } = renderHook(
+      () => {
+        const registerMutation = useRegisterMutation();
+        return useRegisterForm({
+          registerMutation,
+          handleSuccess: mockHandleSuccess,
+        });
+      },
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('name', 'Test User');
+      result.current.setFieldValue('email', 'test@example.com');
+      result.current.setFieldValue('password', 'password123');
+      result.current.setFieldValue('confirm', 'password123');
+    });
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
   });
 

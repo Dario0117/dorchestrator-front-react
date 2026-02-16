@@ -1,4 +1,10 @@
-import { logDebug, logError, logInfo, logWarning } from '@lib/logger.utils';
+import {
+  configureLogHandler,
+  logDebug,
+  logError,
+  logInfo,
+  logWarning,
+} from '@lib/logger.utils';
 
 describe('logger utils', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
@@ -193,6 +199,65 @@ describe('logger utils', () => {
       expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
       expect(consoleInfoSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('configureLogHandler', () => {
+    it('should use custom handler when configured', () => {
+      const customHandler = vi.fn();
+      configureLogHandler(customHandler);
+
+      logInfo({}, 'test message');
+
+      expect(customHandler).toHaveBeenCalledWith(
+        'info',
+        'test message',
+        expect.objectContaining({ msg: 'test message' }),
+      );
+      // Default console.info should NOT be called
+      expect(consoleInfoSpy).not.toHaveBeenCalled();
+    });
+
+    it('should pass level, message and structured data to custom handler', () => {
+      const customHandler = vi.fn();
+      configureLogHandler(customHandler);
+
+      logError({ userId: '123' }, 'error msg');
+
+      expect(customHandler).toHaveBeenCalledWith(
+        'error',
+        'error msg',
+        expect.objectContaining({
+          msg: 'error msg',
+          userId: '123',
+          timestamp: expect.any(String),
+        }),
+      );
+    });
+
+    afterEach(() => {
+      // Restore default handler so other tests aren't affected
+      configureLogHandler((level, message, data) => {
+        const methodMap = {
+          debug: 'log',
+          info: 'info',
+          warn: 'warn',
+          error: 'error',
+        } as const;
+        // biome-ignore lint/suspicious/noConsole: restoring default log handler in test teardown
+        console[methodMap[level]](message, data);
+      });
+    });
+  });
+
+  describe('structured log without error property', () => {
+    it('should not include error key when ctx has no error', () => {
+      logInfo({ action: 'test' }, 'no error');
+
+      expect(consoleInfoSpy).toHaveBeenCalledWith(
+        'no error',
+        expect.not.objectContaining({ error: expect.anything() }),
+      );
     });
   });
 });

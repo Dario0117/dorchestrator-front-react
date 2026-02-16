@@ -215,6 +215,42 @@ describe('useUpdatePasswordForm', () => {
     });
   });
 
+  it('should handle network error via onError callback', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
+
+    server.use(
+      http.post(buildBackendUrl('/api/v1/reset-password'), () => {
+        return HttpResponse.error();
+      }),
+    );
+
+    const mockHandleSuccess = vi.fn();
+    const { result } = renderHook(
+      () => {
+        const updatePasswordMutation =
+          useUpdatePasswordMutation('test-token-123');
+        return useUpdatePasswordForm({
+          updatePasswordMutation,
+          handleSuccess: mockHandleSuccess,
+        });
+      },
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('password', 'NewPassword123!');
+      result.current.setFieldValue('confirm', 'NewPassword123!');
+    });
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+  });
+
   it('should validate password field individually', () => {
     const mockHandleSuccess = vi.fn();
     const { result } = renderHook(

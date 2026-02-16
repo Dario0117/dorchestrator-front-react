@@ -1,6 +1,10 @@
 import { NavUser } from '@components/layout/nav-user';
 import { SidebarProvider } from '@components/ui/sidebar';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
+import {
+  setDesktopViewport,
+  setMobileViewport,
+} from '@lib/viewport-test-utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -148,5 +152,19 @@ describe('NavUser', () => {
     const trigger = screen.getByRole('button');
     const chevron = trigger.querySelector('svg.lucide-chevrons-up-down');
     expect(chevron).toBeInTheDocument();
+  });
+
+  it('should render dropdown from bottom on mobile viewport', async () => {
+    setMobileViewport();
+    const user = userEvent.setup();
+    renderNavUser();
+
+    const trigger = screen.getByRole('button');
+    await user.click(trigger);
+
+    const menuContent = screen.getByRole('menu');
+    expect(menuContent).toHaveAttribute('data-side', 'bottom');
+
+    setDesktopViewport();
   });
 });

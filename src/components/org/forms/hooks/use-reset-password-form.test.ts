@@ -192,6 +192,40 @@ describe('useResetPasswordForm', () => {
     });
   });
 
+  it('should handle network error via onError callback', async () => {
+    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
+
+    server.use(
+      http.post(buildBackendUrl('/api/v1/request-password-reset'), () => {
+        return HttpResponse.error();
+      }),
+    );
+
+    const mockHandleSuccess = vi.fn();
+    const { result } = renderHook(
+      () => {
+        const resetPasswordMutation = useResetPasswordMutation();
+        return useResetPasswordForm({
+          resetPasswordMutation,
+          handleSuccess: mockHandleSuccess,
+        });
+      },
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('email', 'test@example.com');
+    });
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+  });
+
   it('should validate email field individually', () => {
     const mockHandleSuccess = vi.fn();
     const { result } = renderHook(

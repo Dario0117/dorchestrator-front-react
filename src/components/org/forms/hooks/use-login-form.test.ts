@@ -1,4 +1,5 @@
 import { useLoginForm } from '@components/org/forms/hooks/use-login-form';
+import * as loggerUtils from '@lib/logger.utils';
 import { buildBackendUrl } from '@lib/test.utils';
 import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
 import { useLoginMutation } from '@services/users/login.http-service';
@@ -295,5 +296,84 @@ describe('useLoginForm', () => {
         error: null,
       });
     });
+  });
+
+  it('should log error when onSuccess error has no message', async () => {
+    const logErrorSpy = vi
+      .spyOn(loggerUtils, 'logError')
+      .mockImplementation(vi.fn());
+
+    // Return HTTP 500 with empty body - better-auth wraps as error without message
+    server.use(
+      http.post(buildBackendUrl('/api/v1/sign-in/email'), () => {
+        return HttpResponse.json({}, { status: 500 });
+      }),
+    );
+
+    const mockHandleSuccess = vi.fn();
+    const { result } = renderHook(
+      () => {
+        const loginMutation = useLoginMutation();
+        return useLoginForm({
+          loginMutation,
+          handleSuccess: mockHandleSuccess,
+        });
+      },
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('email', 'test@example.com');
+      result.current.setFieldValue('password', 'password123');
+    });
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    logErrorSpy.mockRestore();
+  });
+
+  it('should handle network error via onError callback', async () => {
+    const logErrorSpy = vi
+      .spyOn(loggerUtils, 'logError')
+      .mockImplementation(vi.fn());
+
+    server.use(
+      http.post(buildBackendUrl('/api/v1/sign-in/email'), () => {
+        return HttpResponse.error();
+      }),
+    );
+
+    const mockHandleSuccess = vi.fn();
+    const { result } = renderHook(
+      () => {
+        const loginMutation = useLoginMutation();
+        return useLoginForm({
+          loginMutation,
+          handleSuccess: mockHandleSuccess,
+        });
+      },
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('email', 'test@example.com');
+      result.current.setFieldValue('password', 'password123');
+    });
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    logErrorSpy.mockRestore();
   });
 });

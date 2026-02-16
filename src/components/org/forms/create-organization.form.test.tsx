@@ -244,4 +244,70 @@ describe('CreateOrganizationForm', () => {
       ),
     ).toBeInTheDocument();
   });
+
+  it('should submit the form when all fields are valid and slug is verified', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<TestWrapper handleSuccess={mockHandleSuccess} />);
+
+    const nameInput = screen.getByLabelText(/Organization Name/);
+    const slugInput = screen.getByLabelText(/Organization Slug/);
+
+    await user.type(nameInput, 'Test Organization');
+    await user.type(slugInput, 'valid-slug');
+
+    const checkButton = screen.getByRole('button', {
+      name: 'Check Availability',
+    });
+    await user.click(checkButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('✓ Slug is available')).toBeInTheDocument();
+    });
+
+    const submitButton = screen.getByRole('button', {
+      name: 'Create Organization',
+    });
+    expect(submitButton).toBeEnabled();
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('should not update slug when name is cleared', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<TestWrapper handleSuccess={mockHandleSuccess} />);
+
+    const nameInput = screen.getByLabelText(/Organization Name/);
+    const slugInput = screen.getByLabelText(
+      /Organization Slug/,
+    ) as HTMLInputElement;
+
+    // Type a name first to generate a slug
+    await user.type(nameInput, 'Acme Corporation');
+    await waitFor(() => {
+      expect(slugInput.value).toBe('acme-corporation');
+    });
+
+    // Clear the name field - should not clear the slug since slugSuggestion is empty
+    await user.clear(nameInput);
+
+    // Slug should remain since generateSlugSuggestion returns empty for empty input
+    await waitFor(() => {
+      expect(slugInput.value).toBe('acme-corporation');
+    });
+  });
+
+  it('should disable Check Availability button when slug is empty', () => {
+    renderWithProviders(<TestWrapper handleSuccess={mockHandleSuccess} />);
+
+    const checkButton = screen.getByRole('button', {
+      name: 'Check Availability',
+    });
+
+    expect(checkButton).toBeDisabled();
+  });
 });
