@@ -5,9 +5,10 @@ import { Monitor } from 'lucide-react';
 
 interface CommandCardProps {
   command: ListCommandsCommand;
+  onClick?: () => void;
 }
 
-export function CommandCard({ command }: CommandCardProps) {
+export function CommandCard({ command, onClick }: CommandCardProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString('en-US', {
@@ -19,7 +20,24 @@ export function CommandCard({ command }: CommandCardProps) {
   };
 
   return (
-    <Card>
+    <Card
+      className={
+        onClick ? 'cursor-pointer transition-shadow hover:shadow-md' : undefined
+      }
+      onClick={onClick}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+    >
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm text-muted-foreground">

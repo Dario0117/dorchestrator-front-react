@@ -80,6 +80,15 @@ export function CommandsListPage() {
                 <CommandCard
                   key={command.id}
                   command={command}
+                  onClick={() =>
+                    navigate({
+                      to: '/$organizationSlug/commands/$commandId',
+                      params: {
+                        organizationSlug: currentOrganization.slug,
+                        commandId: String(command.id),
+                      },
+                    })
+                  }
                 />
               ))}
             </div>
