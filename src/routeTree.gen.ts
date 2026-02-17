@@ -24,6 +24,7 @@ import { Route as authenticatedOrganizationSlugProjectsRouteImport } from './rou
 import { Route as authenticatedOrganizationSlugDraftsRouteImport } from './routes/(authenticated)/$organizationSlug/drafts'
 import { Route as authenticatedOrganizationSlugDevicesRouteImport } from './routes/(authenticated)/$organizationSlug/devices'
 import { Route as authenticatedOrganizationSlugApiRouteImport } from './routes/(authenticated)/$organizationSlug/api'
+import { Route as authenticatedOrganizationSlugCommandsIndexRouteImport } from './routes/(authenticated)/$organizationSlug/commands/index'
 
 const unauthenticatedRouteRoute = unauthenticatedRouteRouteImport.update({
   id: '/(unauthenticated)',
@@ -108,6 +109,12 @@ const authenticatedOrganizationSlugApiRoute =
     path: '/api',
     getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
   } as any)
+const authenticatedOrganizationSlugCommandsIndexRoute =
+  authenticatedOrganizationSlugCommandsIndexRouteImport.update({
+    id: '/commands/',
+    path: '/commands/',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof authenticatedIndexRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/$organizationSlug/queued-sessions': typeof authenticatedOrganizationSlugQueuedSessionsRoute
   '/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
   '/$organizationSlug/': typeof authenticatedOrganizationSlugIndexRoute
+  '/$organizationSlug/commands': typeof authenticatedOrganizationSlugCommandsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authenticatedIndexRoute
@@ -137,6 +145,7 @@ export interface FileRoutesByTo {
   '/$organizationSlug/queued-sessions': typeof authenticatedOrganizationSlugQueuedSessionsRoute
   '/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
   '/$organizationSlug': typeof authenticatedOrganizationSlugIndexRoute
+  '/$organizationSlug/commands': typeof authenticatedOrganizationSlugCommandsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -155,6 +164,7 @@ export interface FileRoutesById {
   '/(authenticated)/$organizationSlug/queued-sessions': typeof authenticatedOrganizationSlugQueuedSessionsRoute
   '/(authenticated)/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
   '/(authenticated)/$organizationSlug/': typeof authenticatedOrganizationSlugIndexRoute
+  '/(authenticated)/$organizationSlug/commands/': typeof authenticatedOrganizationSlugCommandsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug/queued-sessions'
     | '/$organizationSlug/settings'
     | '/$organizationSlug/'
+    | '/$organizationSlug/commands'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug/queued-sessions'
     | '/$organizationSlug/settings'
     | '/$organizationSlug'
+    | '/$organizationSlug/commands'
   id:
     | '__root__'
     | '/(authenticated)'
@@ -203,6 +215,7 @@ export interface FileRouteTypes {
     | '/(authenticated)/$organizationSlug/queued-sessions'
     | '/(authenticated)/$organizationSlug/settings'
     | '/(authenticated)/$organizationSlug/'
+    | '/(authenticated)/$organizationSlug/commands/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -317,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrganizationSlugApiRouteImport
       parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
+    '/(authenticated)/$organizationSlug/commands/': {
+      id: '/(authenticated)/$organizationSlug/commands/'
+      path: '/commands'
+      fullPath: '/$organizationSlug/commands'
+      preLoaderRoute: typeof authenticatedOrganizationSlugCommandsIndexRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
   }
 }
 
@@ -328,6 +348,7 @@ interface authenticatedOrganizationSlugRouteRouteChildren {
   authenticatedOrganizationSlugQueuedSessionsRoute: typeof authenticatedOrganizationSlugQueuedSessionsRoute
   authenticatedOrganizationSlugSettingsRoute: typeof authenticatedOrganizationSlugSettingsRoute
   authenticatedOrganizationSlugIndexRoute: typeof authenticatedOrganizationSlugIndexRoute
+  authenticatedOrganizationSlugCommandsIndexRoute: typeof authenticatedOrganizationSlugCommandsIndexRoute
 }
 
 const authenticatedOrganizationSlugRouteRouteChildren: authenticatedOrganizationSlugRouteRouteChildren =
@@ -346,6 +367,8 @@ const authenticatedOrganizationSlugRouteRouteChildren: authenticatedOrganization
       authenticatedOrganizationSlugSettingsRoute,
     authenticatedOrganizationSlugIndexRoute:
       authenticatedOrganizationSlugIndexRoute,
+    authenticatedOrganizationSlugCommandsIndexRoute:
+      authenticatedOrganizationSlugCommandsIndexRoute,
   }
 
 const authenticatedOrganizationSlugRouteRouteWithChildren =

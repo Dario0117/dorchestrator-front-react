@@ -1,29 +1,9 @@
 import type { FormFieldProps } from '@components/org/forms/components/app-form-field.types';
+import { normalizeFieldErrors } from '@components/org/forms/components/normalize-field-errors';
 import { useFieldContext } from '@components/org/forms/hooks/app-form';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { PasswordInput } from '@components/ui/password-input';
-
-function normalizeFieldErrors(errors: unknown[]) {
-  const messages: string[] = [];
-  for (const error of errors) {
-    if (typeof error === 'string') {
-      messages.push(error);
-    } else if (Array.isArray(error)) {
-      messages.push(...error.filter((e): e is string => typeof e === 'string'));
-    } else if (
-      error !== null &&
-      typeof error === 'object' &&
-      'message' in error &&
-      typeof (error as { message: unknown }).message === 'string'
-    ) {
-      messages.push((error as { message: string }).message);
-    } else {
-      messages.push('Invalid input');
-    }
-  }
-  return messages;
-}
 
 export function AppFormField({
   label,

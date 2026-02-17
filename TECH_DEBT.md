@@ -26,6 +26,7 @@
 - [ ] Configure mise and add parallel on dev https://mise.jdx.dev/tasks/running-tasks.html
 - [ ] Do this: https://www.aihero.dev/a-complete-guide-to-agents-md
 - [ ] Create scripts for claude code to do thinks (/fix-test-coverage, /update-storybook-stories /fix-ts-issues /fix-biome-issues, /create-missing-queries-and-mutations)
+- [ ] When doing blur on a form it marks everything as error, let's only do it when we interact with the form
 
 ## Organizations
 

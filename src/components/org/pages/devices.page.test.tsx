@@ -393,9 +393,7 @@ describe('DevicesPage', () => {
     expect(mockNavigate).toHaveBeenCalled();
   });
 
-  it('should call onExecuteCommand when Execute Command button is clicked', async () => {
-    // biome-ignore lint/suspicious/noEmptyBlockStatements: Suppressing console.log output during test
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+  it('should open execute command modal when Execute Command button is clicked', async () => {
     const user = userEvent.setup();
     renderWithProviders(<DevicesPage />);
 
@@ -411,8 +409,10 @@ describe('DevicesPage', () => {
     expect(firstExecuteButton).toBeDefined();
     await user.click(firstExecuteButton as HTMLElement);
 
-    expect(consoleSpy).toHaveBeenCalledWith('Execute command for device:', 1);
-
-    consoleSpy.mockRestore();
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Execute Command' }),
+      ).toBeInTheDocument();
+    });
   });
 });

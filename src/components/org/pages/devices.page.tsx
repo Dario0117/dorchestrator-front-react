@@ -1,3 +1,4 @@
+import { ExecuteCommandModal } from '@components/commands/execute-command-modal';
 import { ConfirmDialog } from '@components/confirm-dialog';
 import { AddDeviceModal } from '@components/devices/add-device-modal';
 import { DeviceCard } from '@components/devices/device-card';
@@ -23,6 +24,10 @@ export function DevicesPage() {
   const { page, size } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [executeCommandDevice, setExecuteCommandDevice] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{
     id: number;
     name: string;
@@ -74,9 +79,11 @@ export function DevicesPage() {
                   onRemove={(id) =>
                     setConfirmDelete({ id, name: device.deviceName })
                   }
-                  onExecuteCommand={(id) => {
-                    // TODO: Navigate to command submission page
-                    console.log('Execute command for device:', id);
+                  onExecuteCommand={() => {
+                    setExecuteCommandDevice({
+                      id: device.id,
+                      name: device.deviceName,
+                    });
                   }}
                 />
               ))}
@@ -126,6 +133,19 @@ export function DevicesPage() {
             open={addModalOpen}
             onOpenChange={setAddModalOpen}
             organizationId={organizationId}
+          />
+        )}
+
+        {executeCommandDevice && (
+          <ExecuteCommandModal
+            open={true}
+            onOpenChange={(open) => {
+              if (!open) {
+                setExecuteCommandDevice(null);
+              }
+            }}
+            organizationId={organizationId}
+            pinnedDevice={executeCommandDevice}
           />
         )}
 
