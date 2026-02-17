@@ -9,7 +9,7 @@ describe('tracePropagationMiddleware', () => {
       method: 'GET',
     });
 
-    await tracePropagationMiddleware.onRequest!({
+    await tracePropagationMiddleware.onRequest?.({
       request,
       schemaPath: '/api/test',
       params: {},
@@ -30,7 +30,7 @@ describe('tracePropagationMiddleware', () => {
       headers: { 'x-request-id': 'existing-id' },
     });
 
-    await tracePropagationMiddleware.onRequest!({
+    await tracePropagationMiddleware.onRequest?.({
       request,
       schemaPath: '/api/test',
       params: {},

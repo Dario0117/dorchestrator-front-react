@@ -217,7 +217,7 @@ describe('DeviceCard', () => {
       btn.querySelector('svg.lucide-trash-2'),
     );
     expect(removeButton).toBeInTheDocument();
-    await user.click(removeButton!);
+    await user.click(removeButton as HTMLElement);
 
     expect(mockOnRemove).toHaveBeenCalledWith(42);
   });

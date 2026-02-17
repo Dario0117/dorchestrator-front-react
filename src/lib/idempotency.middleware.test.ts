@@ -12,7 +12,7 @@ describe('idempotencyMiddleware', () => {
       method: 'POST',
     });
 
-    await idempotencyMiddleware.onRequest!({
+    await idempotencyMiddleware.onRequest?.({
       request,
       schemaPath: '/api/test',
       params: {},
@@ -31,7 +31,7 @@ describe('idempotencyMiddleware', () => {
       method: 'PUT',
     });
 
-    await idempotencyMiddleware.onRequest!({
+    await idempotencyMiddleware.onRequest?.({
       request,
       schemaPath: '/api/test',
       params: {},
@@ -47,7 +47,7 @@ describe('idempotencyMiddleware', () => {
       method: 'PATCH',
     });
 
-    await idempotencyMiddleware.onRequest!({
+    await idempotencyMiddleware.onRequest?.({
       request,
       schemaPath: '/api/test',
       params: {},
@@ -63,7 +63,7 @@ describe('idempotencyMiddleware', () => {
       method: 'GET',
     });
 
-    await idempotencyMiddleware.onRequest!({
+    await idempotencyMiddleware.onRequest?.({
       request,
       schemaPath: '/api/test',
       params: {},
@@ -79,7 +79,7 @@ describe('idempotencyMiddleware', () => {
       method: 'DELETE',
     });
 
-    await idempotencyMiddleware.onRequest!({
+    await idempotencyMiddleware.onRequest?.({
       request,
       schemaPath: '/api/test',
       params: {},

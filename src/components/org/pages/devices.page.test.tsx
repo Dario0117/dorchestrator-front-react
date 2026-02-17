@@ -145,7 +145,7 @@ describe('DevicesPage', () => {
       .getAllByRole('button')
       .filter((btn) => btn.querySelector('svg.lucide-trash-2'));
     expect(removeButtons[0]).toBeDefined();
-    await user.click(removeButtons[0]!);
+    await user.click(removeButtons[0] as HTMLElement);
 
     await waitFor(() => {
       expect(screen.getByText('Remove Device')).toBeInTheDocument();
