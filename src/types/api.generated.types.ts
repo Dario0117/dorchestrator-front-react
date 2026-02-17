@@ -36,6 +36,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/{organizationId}/agent/commands/{commandId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["patchApiV1ByOrganizationIdAgentCommandsByCommandIdStatus"];
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/agent/commands/{commandId}/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdAgentCommandsByCommandIdResults"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me": {
         parameters: {
             query?: never;
@@ -158,6 +190,22 @@ export interface paths {
         get: operations["getApiV1ByOrganizationIdCommands"];
         put?: never;
         post: operations["postApiV1ByOrganizationIdCommands"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/commands/{commandId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdCommandsByCommandId"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -3586,6 +3634,225 @@ export interface operations {
             };
         };
     };
+    patchApiV1ByOrganizationIdAgentCommandsByCommandIdStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commandId: number;
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @constant */
+                    status: "running";
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                commandId: number;
+                                status: string;
+                                startedAt: string | null;
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdAgentCommandsByCommandIdResults: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commandId: number;
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    stdout: string | null;
+                    stderr: string | null;
+                    exitCode: number | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 201 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                resultId: number;
+                                commandId: number;
+                                status: string;
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
     getApiV1Me: {
         parameters: {
             query?: never;
@@ -4689,6 +4956,120 @@ export interface operations {
                             nonFieldErrors?: string[];
                             deviceId?: string[];
                             command?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getApiV1ByOrganizationIdCommandsByCommandId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                commandId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: number;
+                                command: string;
+                                status: string;
+                                deviceName: string;
+                                submittedBy: string;
+                                createdAt: string;
+                                startedAt: string | null;
+                                completedAt: string | null;
+                                results: {
+                                    id: number;
+                                    stdout: string | null;
+                                    stderr: string | null;
+                                    exitCode: number | null;
+                                    createdAt: string;
+                                }[];
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
                         };
                     };
                 };

@@ -1,5 +1,6 @@
 import { env } from '@lib/env.utils';
 import type { paths } from '@myTypes/api.generated.types';
+import { getCommandHandler } from '@services/commands/get-command.http-service.handlers';
 import { listCommandsHandler } from '@services/commands/list-commands.http-service.handlers';
 import { submitCommandHandler } from '@services/commands/submit-command.http-service.handlers';
 import { generateDeviceTokenHandler } from '@services/devices/generate-device-token.http-service.handlers';
@@ -44,6 +45,7 @@ export function MSWSuccessHandlers() {
     generateDeviceTokenHandler,
     listDevicesHandler,
     removeDeviceHandler,
+    getCommandHandler,
     listCommandsHandler,
     submitCommandHandler,
   ];
