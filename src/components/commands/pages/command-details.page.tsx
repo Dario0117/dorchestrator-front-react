@@ -78,7 +78,12 @@ export function CommandDetailsPage() {
           </Alert>
         )}
 
-        {showResults && <CommandOutput results={command.results} />}
+        {showResults && (
+          <CommandOutput
+            results={command.results}
+            commandId={command.id}
+          />
+        )}
       </div>
     </section>
   );
