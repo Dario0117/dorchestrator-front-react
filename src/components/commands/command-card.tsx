@@ -35,6 +35,7 @@ export function CommandCard({ command, onClick }: CommandCardProps) {
       }
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? `View command #${command.id}` : undefined}
     >
       <CardHeader>
         <div className="flex items-center justify-between">
@@ -45,16 +46,16 @@ export function CommandCard({ command, onClick }: CommandCardProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
           <Monitor className="h-4 w-4 shrink-0" />
-          <span>{command.deviceName}</span>
+          <span className="truncate">{command.deviceName}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
           <User className="h-4 w-4 shrink-0" />
-          <span>Submitted by: {command.userEmail}</span>
+          <span className="truncate">Submitted by: {command.userEmail}</span>
         </div>
         <p
-          className="truncate font-mono text-sm"
+          className="break-words font-mono text-sm"
           title={command.command}
         >
           {displayCommand}

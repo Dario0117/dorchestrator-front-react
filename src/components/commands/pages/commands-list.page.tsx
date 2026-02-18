@@ -67,23 +67,27 @@ export function CommandsListPage() {
   return (
     <section className="p-6 md:p-10 space-y-6">
       <div className="py-6">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Commands</h1>
-          <Button onClick={() => setModalOpen(true)}>
+        <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <h1 className="text-2xl font-bold">Command History</h1>
+          <Button
+            className="w-full md:w-auto"
+            onClick={() => setModalOpen(true)}
+          >
             <Play className="mr-2 h-4 w-4" />
-            Execute Command
+            Execute New Command
           </Button>
         </div>
 
         {commands.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
             <p className="text-muted-foreground">
-              No commands submitted yet. Click "Execute Command" to get started.
+              No commands executed yet. Click &apos;Execute New Command&apos; to
+              get started.
             </p>
           </div>
         ) : (
           <>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {commands.map((command) => (
                 <CommandCard
                   key={command.id}

@@ -135,4 +135,19 @@ describe('CommandCard', () => {
     renderWithProviders(<CommandCard command={mockCommand} />);
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
+
+  it('should have accessible label when clickable', () => {
+    renderWithProviders(
+      <CommandCard
+        command={mockCommand}
+        onClick={vi.fn()}
+      />,
+    );
+    expect(screen.getByLabelText('View command #42')).toBeInTheDocument();
+  });
+
+  it('should not have accessible label when not clickable', () => {
+    renderWithProviders(<CommandCard command={mockCommand} />);
+    expect(screen.queryByLabelText(/View command/)).not.toBeInTheDocument();
+  });
 });
