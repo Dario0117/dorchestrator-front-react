@@ -5171,6 +5171,7 @@ export interface operations {
                                 id: string;
                                 organizationId: string;
                                 actorId: string | null;
+                                actorEmail: string | null;
                                 /** @enum {string} */
                                 action: "created" | "deleted" | "updated";
                                 /** @enum {string} */

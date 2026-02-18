@@ -1,11 +1,15 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { $api } from '@/http-service-setup';
+import type { operations } from '@/types/api.generated.types';
+
+type CommandsQuery =
+  operations['getApiV1ByOrganizationIdCommands']['parameters']['query'];
 
 export interface CommandsQueryParams {
   page?: number;
   size?: number;
   deviceId?: number;
-  status?: string;
+  status?: CommandsQuery['status'];
   startDate?: string;
   endDate?: string;
   search?: string;
@@ -34,12 +38,7 @@ export const useCommandsQueryOptions = (
         page,
         size,
         deviceId,
-        status: status as
-          | 'pending'
-          | 'running'
-          | 'completed'
-          | 'failed'
-          | undefined,
+        status,
         startDate,
         endDate,
         search,

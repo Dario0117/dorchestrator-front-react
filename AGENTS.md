@@ -47,6 +47,7 @@ React 19 + TypeScript frontend with TanStack Router, TanStack Query, Zustand, an
 - Run biome in unsafe mode
 - Create new types to fix TS issues if the type was intentionally deleted
 - Mock internal modules or functions in tests — only mock external HTTP requests via MSW
+- Hardcode types, unions, or values derived from the backend API — always reference `@/types/api.generated.types` (see [TypeScript & Imports](docs/typescript-and-imports.md#api-derived-types))
 - Analyze code from installed dependencies
 - When asked to fix or add tests, change the tested code — accommodate tests to match the code
 

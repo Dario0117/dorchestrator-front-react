@@ -1,4 +1,5 @@
 import { Badge } from '@components/ui/badge';
+import type { CommandStatus } from '@services/commands/list-commands.http-service.constants';
 
 const STATUS_CONFIG = {
   pending: { label: 'Pending', variant: 'secondary' },
@@ -11,7 +12,10 @@ const STATUS_CONFIG = {
     className: 'bg-green-600 text-white border-transparent',
   },
   failed: { label: 'Failed', variant: 'destructive' },
-} as const;
+} as const satisfies Record<
+  CommandStatus,
+  { label: string; variant?: string; className?: string }
+>;
 
 interface CommandStatusBadgeProps {
   status: string;

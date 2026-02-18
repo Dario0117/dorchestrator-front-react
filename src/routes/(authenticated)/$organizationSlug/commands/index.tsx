@@ -1,5 +1,6 @@
 import { CommandsListPage } from '@components/commands/pages/commands-list.page';
 import { useCommandsQueryOptions } from '@services/commands/list-commands.http-service';
+import { COMMAND_STATUSES } from '@services/commands/list-commands.http-service.constants';
 import { useDevicesQueryOptions } from '@services/devices/list-devices.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod/v4';
@@ -9,7 +10,7 @@ const searchParamsSchema = z.object({
   size: z.coerce.number().int().positive().max(100).default(25).catch(25),
   executeModal: z.string().optional().catch(undefined),
   deviceId: z.coerce.number().int().positive().optional().catch(undefined),
-  status: z.string().optional().catch(undefined),
+  status: z.enum(COMMAND_STATUSES).optional().catch(undefined),
   startDate: z.string().optional().catch(undefined),
   endDate: z.string().optional().catch(undefined),
   search: z.string().optional().catch(undefined),

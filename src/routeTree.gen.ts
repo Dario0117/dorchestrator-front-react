@@ -25,6 +25,7 @@ import { Route as authenticatedOrganizationSlugDraftsRouteImport } from './route
 import { Route as authenticatedOrganizationSlugDevicesRouteImport } from './routes/(authenticated)/$organizationSlug/devices'
 import { Route as authenticatedOrganizationSlugApiRouteImport } from './routes/(authenticated)/$organizationSlug/api'
 import { Route as authenticatedOrganizationSlugCommandsIndexRouteImport } from './routes/(authenticated)/$organizationSlug/commands/index'
+import { Route as authenticatedOrganizationSlugAuditLogsIndexRouteImport } from './routes/(authenticated)/$organizationSlug/audit-logs/index'
 import { Route as authenticatedOrganizationSlugCommandsCommandIdRouteImport } from './routes/(authenticated)/$organizationSlug/commands/$commandId'
 
 const unauthenticatedRouteRoute = unauthenticatedRouteRouteImport.update({
@@ -116,6 +117,12 @@ const authenticatedOrganizationSlugCommandsIndexRoute =
     path: '/commands/',
     getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
   } as any)
+const authenticatedOrganizationSlugAuditLogsIndexRoute =
+  authenticatedOrganizationSlugAuditLogsIndexRouteImport.update({
+    id: '/audit-logs/',
+    path: '/audit-logs/',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
 const authenticatedOrganizationSlugCommandsCommandIdRoute =
   authenticatedOrganizationSlugCommandsCommandIdRouteImport.update({
     id: '/commands/$commandId',
@@ -138,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
   '/$organizationSlug/': typeof authenticatedOrganizationSlugIndexRoute
   '/$organizationSlug/commands/$commandId': typeof authenticatedOrganizationSlugCommandsCommandIdRoute
+  '/$organizationSlug/audit-logs': typeof authenticatedOrganizationSlugAuditLogsIndexRoute
   '/$organizationSlug/commands': typeof authenticatedOrganizationSlugCommandsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -154,6 +162,7 @@ export interface FileRoutesByTo {
   '/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
   '/$organizationSlug': typeof authenticatedOrganizationSlugIndexRoute
   '/$organizationSlug/commands/$commandId': typeof authenticatedOrganizationSlugCommandsCommandIdRoute
+  '/$organizationSlug/audit-logs': typeof authenticatedOrganizationSlugAuditLogsIndexRoute
   '/$organizationSlug/commands': typeof authenticatedOrganizationSlugCommandsIndexRoute
 }
 export interface FileRoutesById {
@@ -174,6 +183,7 @@ export interface FileRoutesById {
   '/(authenticated)/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
   '/(authenticated)/$organizationSlug/': typeof authenticatedOrganizationSlugIndexRoute
   '/(authenticated)/$organizationSlug/commands/$commandId': typeof authenticatedOrganizationSlugCommandsCommandIdRoute
+  '/(authenticated)/$organizationSlug/audit-logs/': typeof authenticatedOrganizationSlugAuditLogsIndexRoute
   '/(authenticated)/$organizationSlug/commands/': typeof authenticatedOrganizationSlugCommandsIndexRoute
 }
 export interface FileRouteTypes {
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug/settings'
     | '/$organizationSlug/'
     | '/$organizationSlug/commands/$commandId'
+    | '/$organizationSlug/audit-logs'
     | '/$organizationSlug/commands'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug/settings'
     | '/$organizationSlug'
     | '/$organizationSlug/commands/$commandId'
+    | '/$organizationSlug/audit-logs'
     | '/$organizationSlug/commands'
   id:
     | '__root__'
@@ -228,6 +240,7 @@ export interface FileRouteTypes {
     | '/(authenticated)/$organizationSlug/settings'
     | '/(authenticated)/$organizationSlug/'
     | '/(authenticated)/$organizationSlug/commands/$commandId'
+    | '/(authenticated)/$organizationSlug/audit-logs/'
     | '/(authenticated)/$organizationSlug/commands/'
   fileRoutesById: FileRoutesById
 }
@@ -350,6 +363,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrganizationSlugCommandsIndexRouteImport
       parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
+    '/(authenticated)/$organizationSlug/audit-logs/': {
+      id: '/(authenticated)/$organizationSlug/audit-logs/'
+      path: '/audit-logs'
+      fullPath: '/$organizationSlug/audit-logs'
+      preLoaderRoute: typeof authenticatedOrganizationSlugAuditLogsIndexRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
     '/(authenticated)/$organizationSlug/commands/$commandId': {
       id: '/(authenticated)/$organizationSlug/commands/$commandId'
       path: '/commands/$commandId'
@@ -369,6 +389,7 @@ interface authenticatedOrganizationSlugRouteRouteChildren {
   authenticatedOrganizationSlugSettingsRoute: typeof authenticatedOrganizationSlugSettingsRoute
   authenticatedOrganizationSlugIndexRoute: typeof authenticatedOrganizationSlugIndexRoute
   authenticatedOrganizationSlugCommandsCommandIdRoute: typeof authenticatedOrganizationSlugCommandsCommandIdRoute
+  authenticatedOrganizationSlugAuditLogsIndexRoute: typeof authenticatedOrganizationSlugAuditLogsIndexRoute
   authenticatedOrganizationSlugCommandsIndexRoute: typeof authenticatedOrganizationSlugCommandsIndexRoute
 }
 
@@ -390,6 +411,8 @@ const authenticatedOrganizationSlugRouteRouteChildren: authenticatedOrganization
       authenticatedOrganizationSlugIndexRoute,
     authenticatedOrganizationSlugCommandsCommandIdRoute:
       authenticatedOrganizationSlugCommandsCommandIdRoute,
+    authenticatedOrganizationSlugAuditLogsIndexRoute:
+      authenticatedOrganizationSlugAuditLogsIndexRoute,
     authenticatedOrganizationSlugCommandsIndexRoute:
       authenticatedOrganizationSlugCommandsIndexRoute,
   }

@@ -27,6 +27,7 @@
 - [ ] Do this: https://www.aihero.dev/a-complete-guide-to-agents-md
 - [ ] Create scripts for claude code to do thinks (/fix-test-coverage, /update-storybook-stories /fix-ts-issues /fix-biome-issues, /create-missing-queries-and-mutations)
 - [ ] When doing blur on a form it marks everything as error, let's only do it when we interact with the form
+- [ ] Side nav loses track of the selected option, for example on commands if I'm in the index it's highlighted, but if I click on the command it's not highlighted
 
 ## Organizations
 

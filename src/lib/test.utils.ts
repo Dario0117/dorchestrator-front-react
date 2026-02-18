@@ -1,5 +1,6 @@
 import { env } from '@lib/env.utils';
 import type { paths } from '@myTypes/api.generated.types';
+import { listAuditLogsHandler } from '@services/audit-logs/list-audit-logs.http-service.handlers';
 import { getCommandHandler } from '@services/commands/get-command.http-service.handlers';
 import { listCommandsHandler } from '@services/commands/list-commands.http-service.handlers';
 import { submitCommandHandler } from '@services/commands/submit-command.http-service.handlers';
@@ -48,5 +49,6 @@ export function MSWSuccessHandlers() {
     getCommandHandler,
     listCommandsHandler,
     submitCommandHandler,
+    listAuditLogsHandler,
   ];
 }

@@ -5,6 +5,7 @@ import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { Route } from '@routes/(authenticated)/$organizationSlug/commands/index';
+import type { CommandStatus } from '@services/commands/list-commands.http-service.constants';
 import { useDevicesSuspenseQuery } from '@services/devices/list-devices.http-service';
 import { useNavigate } from '@tanstack/react-router';
 import { X } from 'lucide-react';
@@ -15,7 +16,7 @@ const STATUS_OPTIONS = [
   { value: 'running', label: 'Running' },
   { value: 'completed', label: 'Completed' },
   { value: 'failed', label: 'Failed' },
-] as const;
+] as const satisfies readonly { value: CommandStatus; label: string }[];
 
 function useActiveFilterCount() {
   const { deviceId, status, startDate, search } = Route.useSearch();
