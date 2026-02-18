@@ -5,7 +5,6 @@ import {
   Pagination,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from '@components/ui/pagination';
@@ -15,6 +14,8 @@ import { useCommandsSuspenseQuery } from '@services/commands/list-commands.http-
 import { useNavigate } from '@tanstack/react-router';
 import { Play } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 
 export function CommandsListPage() {
   const currentOrganization = useCurrentOrganization();
@@ -29,6 +30,7 @@ export function CommandsListPage() {
 
   const commands = data.responseData?.results || [];
   const totalPages = data.responseData?.totalPages || 0;
+  const totalResults = data.responseData?.totalResults || 0;
   const hasNext = data.responseData?.hasNext || false;
   const hasPrevious = data.responseData?.hasPrevious || false;
 
@@ -41,6 +43,12 @@ export function CommandsListPage() {
   const handlePageChange = (newPage: number) => {
     navigate({
       search: (prev) => ({ ...prev, page: newPage }),
+    });
+  };
+
+  const handleSizeChange = (newSize: number) => {
+    navigate({
+      search: (prev) => ({ ...prev, page: 1, size: newSize }),
     });
   };
 
@@ -93,8 +101,12 @@ export function CommandsListPage() {
               ))}
             </div>
 
-            {totalPages > 1 && (
-              <div className="mt-8">
+            <div className="mt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
+              <span className="text-sm text-muted-foreground">
+                {totalResults} total {totalResults === 1 ? 'result' : 'results'}
+              </span>
+
+              <div className="flex flex-col items-center gap-4 md:flex-row">
                 <Pagination>
                   <PaginationContent>
                     <PaginationItem>
@@ -105,18 +117,11 @@ export function CommandsListPage() {
                       />
                     </PaginationItem>
 
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (pageNum) => (
-                        <PaginationItem key={pageNum}>
-                          <PaginationLink
-                            onClick={() => handlePageChange(pageNum)}
-                            isActive={pageNum === page}
-                          >
-                            {pageNum}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ),
-                    )}
+                    <PaginationItem>
+                      <output className="px-2 text-sm">
+                        Page {page} of {totalPages}
+                      </output>
+                    </PaginationItem>
 
                     <PaginationItem>
                       <PaginationNext
@@ -127,8 +132,24 @@ export function CommandsListPage() {
                     </PaginationItem>
                   </PaginationContent>
                 </Pagination>
+
+                <select
+                  value={size}
+                  onChange={(e) => handleSizeChange(Number(e.target.value))}
+                  aria-label="Page size"
+                  className="h-11 rounded-md border bg-background px-3 text-base md:text-sm"
+                >
+                  {PAGE_SIZE_OPTIONS.map((option) => (
+                    <option
+                      key={option}
+                      value={option}
+                    >
+                      {option} per page
+                    </option>
+                  ))}
+                </select>
               </div>
-            )}
+            </div>
           </>
         )}
 

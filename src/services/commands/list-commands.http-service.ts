@@ -4,7 +4,7 @@ import { $api } from '@/http-service-setup';
 export const useCommandsQueryOptions = (
   organizationId: string,
   page = 1,
-  size = 10,
+  size = 25,
 ) =>
   $api.queryOptions('get', '/api/v1/{organizationId}/commands', {
     params: {
@@ -21,7 +21,7 @@ export const useCommandsQueryOptions = (
 export function useCommandsSuspenseQuery(
   organizationId: string,
   page = 1,
-  size = 10,
+  size = 25,
 ) {
   return useSuspenseQuery(useCommandsQueryOptions(organizationId, page, size));
 }

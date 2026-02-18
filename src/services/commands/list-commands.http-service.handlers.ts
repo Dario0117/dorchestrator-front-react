@@ -60,7 +60,7 @@ export const listCommandsHandler = http.get<
 >(buildBackendUrl('/api/v1/{organizationId}/commands'), ({ request }) => {
   const url = new URL(request.url);
   const page = Number.parseInt(url.searchParams.get('page') ?? '1', 10);
-  const size = Number.parseInt(url.searchParams.get('size') ?? '10', 10);
+  const size = Number.parseInt(url.searchParams.get('size') ?? '25', 10);
 
   const totalResults = mockCommands.length;
   const totalPages = Math.ceil(totalResults / size);
