@@ -1,4 +1,5 @@
 import { CommandCard } from '@components/commands/command-card';
+import { CommandFilters } from '@components/commands/command-filters';
 import { ExecuteCommandModal } from '@components/commands/execute-command-modal';
 import { Button } from '@components/ui/button';
 import {
@@ -8,6 +9,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@components/ui/pagination';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ui/select';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { Route } from '@routes/(authenticated)/$organizationSlug/commands/index';
 import { useCommandsSuspenseQuery } from '@services/commands/list-commands.http-service';
@@ -19,20 +27,43 @@ const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 
 export function CommandsListPage() {
   const currentOrganization = useCurrentOrganization();
-  const { page, size, executeModal } = Route.useSearch();
+  const {
+    page,
+    size,
+    executeModal,
+    deviceId,
+    status,
+    startDate,
+    endDate,
+    search,
+  } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
   const [modalOpen, setModalOpen] = useState(false);
 
   const organizationId = currentOrganization.id;
 
-  const { data } = useCommandsSuspenseQuery(organizationId, page, size);
+  const { data } = useCommandsSuspenseQuery(organizationId, {
+    page,
+    size,
+    deviceId,
+    status,
+    startDate,
+    endDate,
+    search,
+  });
 
   const commands = data.responseData?.results || [];
   const totalPages = data.responseData?.totalPages || 0;
   const totalResults = data.responseData?.totalResults || 0;
   const hasNext = data.responseData?.hasNext || false;
   const hasPrevious = data.responseData?.hasPrevious || false;
+  const hasActiveFilters =
+    deviceId !== undefined ||
+    status !== undefined ||
+    startDate !== undefined ||
+    endDate !== undefined ||
+    search !== undefined;
 
   useEffect(() => {
     if (executeModal === 'open') {
@@ -78,13 +109,34 @@ export function CommandsListPage() {
           </Button>
         </div>
 
+        <CommandFilters />
+
         {commands.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-            <p className="text-muted-foreground">
-              No commands executed yet. Click &apos;Execute New Command&apos; to
-              get started.
-            </p>
-          </div>
+          hasActiveFilters ? (
+            <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12 text-center">
+              <p className="text-muted-foreground">
+                No commands match your filters. Try adjusting your search
+                criteria.
+              </p>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({ page: 1, size: prev.size }),
+                  })
+                }
+              >
+                Clear Filters
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+              <p className="text-muted-foreground">
+                No commands executed yet. Click &apos;Execute New Command&apos;
+                to get started.
+              </p>
+            </div>
+          )
         ) : (
           <>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -137,21 +189,27 @@ export function CommandsListPage() {
                   </PaginationContent>
                 </Pagination>
 
-                <select
-                  value={size}
-                  onChange={(e) => handleSizeChange(Number(e.target.value))}
-                  aria-label="Page size"
-                  className="h-11 rounded-md border bg-background px-3 text-base md:text-sm"
+                <Select
+                  value={String(size)}
+                  onValueChange={(value) => handleSizeChange(Number(value))}
                 >
-                  {PAGE_SIZE_OPTIONS.map((option) => (
-                    <option
-                      key={option}
-                      value={option}
-                    >
-                      {option} per page
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger
+                    aria-label="Page size"
+                    className="h-11 w-auto text-base md:text-sm"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PAGE_SIZE_OPTIONS.map((option) => (
+                      <SelectItem
+                        key={option}
+                        value={String(option)}
+                      >
+                        {option} per page
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </>

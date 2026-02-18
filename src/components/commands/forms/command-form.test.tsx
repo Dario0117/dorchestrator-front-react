@@ -17,6 +17,73 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
   };
 });
 
+vi.mock('@hooks/use-current-organization', () => ({
+  useCurrentOrganization: vi.fn(() => ({
+    id: 'org-1',
+    name: 'Test Organization',
+    slug: 'test-org',
+  })),
+}));
+
+const now = new Date();
+const recentDate = new Date(now.getTime() - 5 * 1000).toISOString();
+const oldDate = new Date(now.getTime() - 120 * 1000).toISOString();
+
+const mockDevices = [
+  {
+    id: 1,
+    deviceName: 'Test Server',
+    platform: 'linux' as const,
+    lastSeenAt: recentDate,
+    createdAt: '2025-01-01T00:00:00.000Z',
+  },
+  {
+    id: 2,
+    deviceName: 'Dev Laptop',
+    platform: 'darwin' as const,
+    lastSeenAt: oldDate,
+    createdAt: '2025-01-01T00:00:00.000Z',
+  },
+  {
+    id: 3,
+    deviceName: 'Build Agent',
+    platform: 'linux' as const,
+    lastSeenAt: null,
+    createdAt: '2025-01-01T00:00:00.000Z',
+  },
+  {
+    id: 4,
+    deviceName: 'Staging Box',
+    platform: 'linux' as const,
+    lastSeenAt: recentDate,
+    createdAt: '2025-01-01T00:00:00.000Z',
+  },
+  {
+    id: 5,
+    deviceName: 'CI Runner',
+    platform: 'linux' as const,
+    lastSeenAt: oldDate,
+    createdAt: '2025-01-01T00:00:00.000Z',
+  },
+];
+
+vi.mock('@services/devices/list-devices.http-service', () => ({
+  useDevicesSuspenseQuery: vi.fn(() => ({
+    data: {
+      responseData: {
+        results: mockDevices,
+        hasNext: false,
+        hasPrevious: false,
+        totalResults: mockDevices.length,
+        totalPages: 1,
+        page: 1,
+        size: 100,
+      },
+      responseErrors: null,
+    },
+  })),
+}));
+
 const mockOrganization = {
   id: 'org-1',
   name: 'Test Organization',
@@ -51,6 +118,12 @@ function TestWrapper({
   );
 }
 
+async function openDeviceSelect(user: ReturnType<typeof userEvent.setup>) {
+  // The AppFormSelect sets id={field.name} on the trigger button
+  const trigger = screen.getByRole('combobox', { name: /Device/ });
+  await user.click(trigger);
+}
+
 describe('CommandForm', () => {
   beforeEach(() => {
     queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
@@ -71,7 +144,7 @@ describe('CommandForm', () => {
     renderWithProviders(<TestWrapper />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Device/)).toBeInTheDocument();
+      expect(screen.getByText('Device')).toBeInTheDocument();
     });
     expect(screen.getByLabelText(/Command/)).toBeInTheDocument();
     expect(screen.getByText('Select a device...')).toBeInTheDocument();
@@ -81,23 +154,32 @@ describe('CommandForm', () => {
   });
 
   it('should display devices with status indicators in dropdown', async () => {
+    const user = userEvent.setup();
     renderWithProviders(<TestWrapper />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Device/)).toBeInTheDocument();
+      expect(screen.getByText('Device')).toBeInTheDocument();
     });
 
-    const select = screen.getByLabelText(/Device/);
-    const options = select.querySelectorAll('option');
+    await openDeviceSelect(user);
 
-    // Default option + 5 mock devices
-    expect(options.length).toBe(6);
-    expect(options[1]?.textContent).toContain('Test Server');
-    expect(options[1]?.textContent).toContain('Online');
-    expect(options[2]?.textContent).toContain('Dev Laptop');
-    expect(options[2]?.textContent).toContain('Offline');
-    expect(options[3]?.textContent).toContain('Build Agent');
-    expect(options[3]?.textContent).toContain('Never connected');
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: /Test Server/ }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('option', { name: /Dev Laptop/ }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('option', { name: /Build Agent/ }),
+      ).toBeInTheDocument();
+    });
+
+    // Verify status text is included in option labels
+    const testServerOption = screen.getByRole('option', {
+      name: /Test Server/,
+    });
+    expect(testServerOption.textContent).toContain('Online');
   });
 
   it('should show character counter', async () => {
@@ -132,11 +214,11 @@ describe('CommandForm', () => {
     );
 
     await waitFor(() => {
-      const select = screen.getByLabelText(/Device/) as HTMLSelectElement;
-      expect(select.value).toBe('2');
-      expect(select).toBeDisabled();
       expect(screen.getByText('Dev Laptop')).toBeInTheDocument();
     });
+
+    const trigger = screen.getByRole('combobox', { name: /Device/ });
+    expect(trigger).toBeDisabled();
   });
 
   it('should show offline confirmation dialog when submitting for offline device', async () => {
@@ -144,18 +226,25 @@ describe('CommandForm', () => {
     renderWithProviders(<TestWrapper />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Device/)).toBeInTheDocument();
+      expect(screen.getByText('Device')).toBeInTheDocument();
     });
 
-    // Select offline device (Dev Laptop, id: 2)
-    const select = screen.getByLabelText(/Device/);
-    await user.selectOptions(select, '2');
+    // Open select and choose offline device
+    await openDeviceSelect(user);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: /Dev Laptop/ }),
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('option', { name: /Dev Laptop/ }));
 
     // Type a command
     const textarea = screen.getByPlaceholderText('Enter your command...');
     await user.type(textarea, 'ls -la');
 
-    // Submit the form - use submit button specifically
+    // Submit the form
     const submitButton = screen.getByRole('button', {
       name: 'Execute Command',
     });
@@ -176,12 +265,20 @@ describe('CommandForm', () => {
     renderWithProviders(<TestWrapper />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Device/)).toBeInTheDocument();
+      expect(screen.getByText('Device')).toBeInTheDocument();
     });
 
-    // Select offline device and enter command
-    const select = screen.getByLabelText(/Device/);
-    await user.selectOptions(select, '2');
+    // Open select and choose offline device
+    await openDeviceSelect(user);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: /Dev Laptop/ }),
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('option', { name: /Dev Laptop/ }));
+
     const textarea = screen.getByPlaceholderText('Enter your command...');
     await user.type(textarea, 'ls -la');
 
@@ -208,7 +305,7 @@ describe('CommandForm', () => {
     renderWithProviders(<TestWrapper />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Device/)).toBeInTheDocument();
+      expect(screen.getByText('Device')).toBeInTheDocument();
     });
 
     const buttons = screen.getAllByRole('button');

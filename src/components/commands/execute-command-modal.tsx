@@ -32,6 +32,7 @@ export function ExecuteCommandModal({
   const form = useCommandForm({
     submitCommandMutation,
     organizationId,
+    initialDeviceId: pinnedDevice?.id,
     handleSuccess() {
       form.reset();
       onOpenChange(false);

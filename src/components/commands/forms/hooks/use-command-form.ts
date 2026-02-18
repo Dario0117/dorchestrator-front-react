@@ -11,16 +11,18 @@ interface UseCommandFormProps {
     data: NonNullable<useSubmitCommandMutationType['data']>,
   ) => void;
   organizationId: string;
+  initialDeviceId?: number;
 }
 
 export function useCommandForm({
   submitCommandMutation,
   handleSuccess,
   organizationId,
+  initialDeviceId,
 }: UseCommandFormProps) {
   const form = useAppForm({
     defaultValues: {
-      deviceId: 0,
+      deviceId: initialDeviceId ?? 0,
       command: '',
     },
     validators: {

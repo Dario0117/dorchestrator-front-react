@@ -1,11 +1,12 @@
 import type { PinnedDevice } from '@components/commands/execute-command-modal';
 import type { CommandFormType } from '@components/commands/forms/hooks/use-command-form';
 import { ConfirmDialog } from '@components/confirm-dialog';
+import type { SelectOption } from '@components/org/forms/components/app-form-select';
 import { Button } from '@components/ui/button';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import type { ListDevicesDevice } from '@services/devices/list-devices.http-service';
 import { useDevicesSuspenseQuery } from '@services/devices/list-devices.http-service';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const MAX_COMMAND_LENGTH = 10000;
 const OFFLINE_THRESHOLD_SECONDS = 30;
@@ -30,6 +31,16 @@ function getDeviceStatus(device: ListDevicesDevice) {
   }
 
   return { color: 'bg-gray-500', text: 'Offline', isOnline: false };
+}
+
+function buildDeviceOptions(devices: ListDevicesDevice[]): SelectOption[] {
+  return devices.map((device) => {
+    const status = getDeviceStatus(device);
+    return {
+      value: String(device.id),
+      label: `${device.deviceName} (${status.text})`,
+    };
+  });
 }
 
 /**
@@ -68,11 +79,12 @@ function CommandFormInner({
 }: CommandFormInnerProps) {
   const [showOfflineDialog, setShowOfflineDialog] = useState(false);
 
-  useEffect(() => {
+  const deviceOptions = useMemo(() => {
     if (pinnedDevice) {
-      form.setFieldValue('deviceId', pinnedDevice.id);
+      return [{ value: String(pinnedDevice.id), label: pinnedDevice.name }];
     }
-  }, [pinnedDevice, form]);
+    return buildDeviceOptions(devices);
+  }, [pinnedDevice, devices]);
 
   const handleFormSubmit = () => {
     if (pinnedDevice) {
@@ -121,28 +133,11 @@ function CommandFormInner({
             {(field) => (
               <field.AppFormSelect
                 label="Device"
+                placeholder="Select a device..."
+                options={deviceOptions}
                 required
                 disabled={isDeviceDisabled}
-              >
-                {pinnedDevice ? (
-                  <option value={pinnedDevice.id}>{pinnedDevice.name}</option>
-                ) : (
-                  <>
-                    <option value={0}>Select a device...</option>
-                    {devices.map((device) => {
-                      const status = getDeviceStatus(device);
-                      return (
-                        <option
-                          key={device.id}
-                          value={device.id}
-                        >
-                          {device.deviceName} ({status.text})
-                        </option>
-                      );
-                    })}
-                  </>
-                )}
-              </field.AppFormSelect>
+              />
             )}
           </form.AppField>
 

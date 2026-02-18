@@ -3,6 +3,33 @@
 // @ts-expect-error - Setting React act environment flag
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
+// Polyfill pointer capture methods for Radix UI components in jsdom
+if (typeof Element.prototype.hasPointerCapture === 'undefined') {
+  Element.prototype.hasPointerCapture = () => false;
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: noop polyfill for jsdom
+  Element.prototype.setPointerCapture = () => {};
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: noop polyfill for jsdom
+  Element.prototype.releasePointerCapture = () => {};
+}
+
+// Polyfill scrollIntoView for jsdom (used by Radix Select)
+if (typeof Element.prototype.scrollIntoView === 'undefined') {
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: noop polyfill for jsdom
+  Element.prototype.scrollIntoView = () => {};
+}
+
+// Polyfill ResizeObserver for Radix UI components
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  globalThis.ResizeObserver = class ResizeObserver {
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: noop polyfill
+    observe() {}
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: noop polyfill
+    unobserve() {}
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: noop polyfill
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+}
+
 import { cleanup } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll } from 'vitest';
 import '@testing-library/jest-dom/vitest';

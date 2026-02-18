@@ -8,6 +8,11 @@ const searchParamsSchema = z.object({
   page: z.coerce.number().int().positive().default(1).catch(1),
   size: z.coerce.number().int().positive().max(100).default(25).catch(25),
   executeModal: z.string().optional().catch(undefined),
+  deviceId: z.coerce.number().int().positive().optional().catch(undefined),
+  status: z.string().optional().catch(undefined),
+  startDate: z.string().optional().catch(undefined),
+  endDate: z.string().optional().catch(undefined),
+  search: z.string().optional().catch(undefined),
 });
 
 export const Route = createFileRoute(
@@ -15,18 +20,24 @@ export const Route = createFileRoute(
 )({
   validateSearch: searchParamsSchema,
   component: CommandsListPage,
-  loaderDeps: ({ search: { page, size } }) => ({ page, size }),
+  loaderDeps: ({
+    search: { page, size, deviceId, status, startDate, endDate, search },
+  }) => ({ page, size, deviceId, status, startDate, endDate, search }),
   loader: async (ctx) => {
     const currentOrganization = ctx.context.getCurrentOrganizationFromSlug(
       ctx.params.organizationSlug,
     );
     await Promise.all([
       ctx.context.queryClient.ensureQueryData(
-        useCommandsQueryOptions(
-          currentOrganization.id,
-          ctx.deps.page,
-          ctx.deps.size,
-        ),
+        useCommandsQueryOptions(currentOrganization.id, {
+          page: ctx.deps.page,
+          size: ctx.deps.size,
+          deviceId: ctx.deps.deviceId,
+          status: ctx.deps.status,
+          startDate: ctx.deps.startDate,
+          endDate: ctx.deps.endDate,
+          search: ctx.deps.search,
+        }),
       ),
       ctx.context.queryClient.ensureQueryData(
         useDevicesQueryOptions(currentOrganization.id, 1, 100),

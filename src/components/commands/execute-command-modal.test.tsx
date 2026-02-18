@@ -127,8 +127,14 @@ describe('ExecuteCommandModal', () => {
     });
 
     // Select device and enter command
-    const select = screen.getByLabelText(/Device/);
-    await user.selectOptions(select, '1');
+    await user.click(screen.getByLabelText(/Device/));
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: /Test Server/ }),
+      ).toBeInTheDocument();
+    });
+    await user.click(screen.getByRole('option', { name: /Test Server/ }));
+
     const textarea = screen.getByPlaceholderText('Enter your command...');
     await user.type(textarea, 'echo hello');
 

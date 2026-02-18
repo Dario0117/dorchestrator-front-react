@@ -4801,6 +4801,11 @@ export interface operations {
             query: {
                 page: number;
                 size: number;
+                deviceId?: number;
+                status?: "pending" | "running" | "completed" | "failed";
+                startDate?: string;
+                endDate?: string;
+                search?: string;
             };
             header?: never;
             path: {

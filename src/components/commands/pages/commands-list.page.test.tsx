@@ -8,7 +8,7 @@ import {
   setTabletViewport,
 } from '@lib/viewport-test-utils';
 import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
@@ -30,6 +30,11 @@ let mockSearchParams: {
   page: number;
   size: number;
   executeModal?: string;
+  deviceId?: number;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+  search?: string;
 } = { page: 1, size: 25 };
 
 vi.mock(
@@ -294,18 +299,28 @@ describe('CommandsListPage', () => {
 
   describe('Page Size Selector', () => {
     it('should render page size selector with correct options', async () => {
+      const user = userEvent.setup();
       renderWithProviders(<CommandsListPage />);
 
       await waitFor(() => {
-        const select = screen.getByLabelText('Page size');
-        expect(select).toBeInTheDocument();
+        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
+      });
 
-        const options = within(select).getAllByRole('option');
-        expect(options).toHaveLength(4);
-        expect(options[0]).toHaveTextContent('10 per page');
-        expect(options[1]).toHaveTextContent('25 per page');
-        expect(options[2]).toHaveTextContent('50 per page');
-        expect(options[3]).toHaveTextContent('100 per page');
+      await user.click(screen.getByLabelText('Page size'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('option', { name: '10 per page' }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole('option', { name: '25 per page' }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole('option', { name: '50 per page' }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole('option', { name: '100 per page' }),
+        ).toBeInTheDocument();
       });
     });
 
@@ -313,8 +328,8 @@ describe('CommandsListPage', () => {
       renderWithProviders(<CommandsListPage />);
 
       await waitFor(() => {
-        const select = screen.getByLabelText('Page size');
-        expect(select).toHaveValue('25');
+        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
+        expect(screen.getByLabelText('Page size')).toHaveTextContent('25');
       });
     });
 
@@ -329,7 +344,15 @@ describe('CommandsListPage', () => {
         expect(screen.getByLabelText('Page size')).toBeInTheDocument();
       });
 
-      await user.selectOptions(screen.getByLabelText('Page size'), '50');
+      await user.click(screen.getByLabelText('Page size'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('option', { name: '50 per page' }),
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('option', { name: '50 per page' }));
 
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
