@@ -4,6 +4,7 @@ import {
   GalleryVerticalEnd,
   HardDrive,
   Home,
+  ScrollText,
   Settings,
   Terminal,
 } from 'lucide-react';
@@ -43,6 +44,11 @@ export function getSidebarData(organization: OrganizationItem) {
       {
         title: 'Settings',
         items: [
+          {
+            title: 'Audit Logs',
+            url: `${baseUrl}/audit-logs`,
+            icon: ScrollText,
+          },
           {
             title: 'Organization Settings',
             url: `${baseUrl}/settings`,

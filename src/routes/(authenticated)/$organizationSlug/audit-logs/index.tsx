@@ -1,9 +1,11 @@
+import { AuditLogsListPage } from '@components/audit-logs/pages/audit-logs-list.page';
 import { useAuditLogsQueryOptions } from '@services/audit-logs/list-audit-logs.http-service';
 import {
   AUDIT_LOG_ACTIONS,
   AUDIT_LOG_RESOURCE_TYPES,
 } from '@services/audit-logs/list-audit-logs.http-service.constants';
 import { createFileRoute } from '@tanstack/react-router';
+import { Suspense } from 'react';
 import { z } from 'zod/v4';
 
 const searchParamsSchema = z.object({
@@ -19,7 +21,7 @@ export const Route = createFileRoute(
   '/(authenticated)/$organizationSlug/audit-logs/',
 )({
   validateSearch: searchParamsSchema,
-  component: AuditLogsPlaceholder,
+  component: AuditLogsRoute,
   loaderDeps: ({
     search: { page, size, action, resourceType, fromDate, toDate },
   }) => ({ page, size, action, resourceType, fromDate, toDate }),
@@ -40,6 +42,12 @@ export const Route = createFileRoute(
   },
 });
 
-function AuditLogsPlaceholder() {
-  return <div>Audit Logs (coming in 4-4-3)</div>;
+function AuditLogsRoute() {
+  return (
+    <Suspense
+      fallback={<div className="p-6 md:p-10">Loading audit logs...</div>}
+    >
+      <AuditLogsListPage />
+    </Suspense>
+  );
 }

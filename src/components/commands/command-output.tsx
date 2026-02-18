@@ -6,6 +6,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@components/ui/collapsible';
+import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
 import type { GetCommandDetail } from '@services/commands/get-command.http-service';
 import { Check, ChevronDown, Copy, Download } from 'lucide-react';
 import { useState } from 'react';
@@ -29,21 +30,13 @@ function OutputSection({
   defaultOpen?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
-  const [copied, setCopied] = useState(false);
+  const { hasCopied: copied, copy } = useCopyToClipboard();
 
   if (!content) {
     return null;
   }
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(content);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Clipboard API unavailable (non-HTTPS or permission denied)
-    }
-  };
+  const handleCopy = () => copy(content);
 
   const handleDownload = () => {
     const blob = new Blob([content], { type: 'text/plain' });

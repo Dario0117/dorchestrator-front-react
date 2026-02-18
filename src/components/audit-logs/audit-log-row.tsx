@@ -1,0 +1,200 @@
+import { Badge } from '@components/ui/badge';
+import { Button } from '@components/ui/button';
+import { TableCell, TableRow } from '@components/ui/table';
+import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
+import { formatRelativeTime } from '@lib/format-relative-time';
+import { cn } from '@lib/utils';
+import type { AuditLogEntry } from '@services/audit-logs/list-audit-logs.http-service';
+import {
+  AUDIT_LOG_RESOURCE_TYPE_LABELS,
+  type AuditLogAction,
+} from '@services/audit-logs/list-audit-logs.http-service.constants';
+import { Check, ChevronDown, ChevronUp, Copy } from 'lucide-react';
+import { useState } from 'react';
+
+const ACTION_BADGE_CONFIG = {
+  created: {
+    label: 'Created',
+    className:
+      'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  },
+  updated: {
+    label: 'Updated',
+    className: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+  },
+  deleted: {
+    label: 'Deleted',
+    className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  },
+} as const satisfies Record<
+  AuditLogAction,
+  { label: string; className: string }
+>;
+
+interface AuditLogRowProps {
+  entry: AuditLogEntry;
+}
+
+export function AuditLogRow({ entry }: AuditLogRowProps) {
+  const [expanded, setExpanded] = useState(false);
+  const { copiedKey, copy } = useCopyToClipboard();
+
+  const actionConfig = ACTION_BADGE_CONFIG[entry.action];
+  const resourceTypeLabel =
+    AUDIT_LOG_RESOURCE_TYPE_LABELS[entry.resourceType] || entry.resourceType;
+  const actorDisplay = entry.actorEmail ?? 'System';
+
+  const handleToggle = () => setExpanded((prev) => !prev);
+
+  const handleCopy = (e: React.MouseEvent, text: string, key: string) => {
+    e.stopPropagation();
+    copy(text, key);
+  };
+
+  return (
+    <>
+      <TableRow
+        className="cursor-pointer"
+        onClick={entry.metadata ? handleToggle : undefined}
+        onKeyDown={
+          entry.metadata
+            ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleToggle();
+                }
+              }
+            : undefined
+        }
+        tabIndex={entry.metadata ? 0 : undefined}
+        role={entry.metadata ? 'button' : undefined}
+        aria-expanded={entry.metadata ? expanded : undefined}
+      >
+        <TableCell>
+          <span className="text-xs text-muted-foreground whitespace-nowrap">
+            {formatRelativeTime(entry.createdAt)}
+          </span>
+        </TableCell>
+        <TableCell>
+          <Badge className={cn('border-0', actionConfig.className)}>
+            {actionConfig.label}
+          </Badge>
+        </TableCell>
+        <TableCell>
+          <Badge variant="outline">{resourceTypeLabel}</Badge>
+        </TableCell>
+        <TableCell>
+          <span className="inline-flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={(e) => handleCopy(e, actorDisplay, 'actor')}
+              aria-label="Copy actor"
+            >
+              {copiedKey === 'actor' ? (
+                <Check className="h-3 w-3 text-green-600" />
+              ) : (
+                <Copy className="h-3 w-3" />
+              )}
+            </Button>
+            <span className="text-sm">{actorDisplay}</span>
+          </span>
+        </TableCell>
+        <TableCell>
+          <span className="inline-flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={(e) => handleCopy(e, entry.resourceId, 'resourceId')}
+              aria-label="Copy resource ID"
+            >
+              {copiedKey === 'resourceId' ? (
+                <Check className="h-3 w-3 text-green-600" />
+              ) : (
+                <Copy className="h-3 w-3" />
+              )}
+            </Button>
+            <code className="text-xs text-muted-foreground">
+              {entry.resourceId}
+            </code>
+          </span>
+        </TableCell>
+        <TableCell>
+          {entry.requestId ? (
+            <span className="inline-flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                onClick={(e) =>
+                  handleCopy(e, entry.requestId as string, 'requestId')
+                }
+                aria-label="Copy request ID"
+              >
+                {copiedKey === 'requestId' ? (
+                  <Check className="h-3 w-3 text-green-600" />
+                ) : (
+                  <Copy className="h-3 w-3" />
+                )}
+              </Button>
+              <code className="text-xs text-muted-foreground">
+                {entry.requestId}
+              </code>
+            </span>
+          ) : (
+            <span className="text-xs text-muted-foreground">—</span>
+          )}
+        </TableCell>
+        <TableCell>
+          {entry.metadata && (
+            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              {expanded ? (
+                <ChevronUp className="h-3 w-3" />
+              ) : (
+                <ChevronDown className="h-3 w-3" />
+              )}
+            </span>
+          )}
+        </TableCell>
+      </TableRow>
+      {expanded && entry.metadata && (
+        <TableRow>
+          <TableCell
+            colSpan={7}
+            className="bg-muted/50 p-0"
+          >
+            <div className="p-4 text-xs font-mono overflow-auto max-h-64">
+              {entry.metadata.before && (
+                <div className="mb-2">
+                  <span className="font-semibold text-muted-foreground">
+                    Before:
+                  </span>
+                  <pre className="mt-1 whitespace-pre-wrap">
+                    {JSON.stringify(entry.metadata.before, null, 2)}
+                  </pre>
+                </div>
+              )}
+              {entry.metadata.after && (
+                <div>
+                  <span className="font-semibold text-muted-foreground">
+                    After:
+                  </span>
+                  <pre className="mt-1 whitespace-pre-wrap">
+                    {JSON.stringify(entry.metadata.after, null, 2)}
+                  </pre>
+                </div>
+              )}
+              {!entry.metadata.before && !entry.metadata.after && (
+                <pre className="whitespace-pre-wrap">
+                  {JSON.stringify(entry.metadata, null, 2)}
+                </pre>
+              )}
+            </div>
+          </TableCell>
+        </TableRow>
+      )}
+    </>
+  );
+}

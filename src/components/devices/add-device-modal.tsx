@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from '@components/ui/dialog';
 import { Input } from '@components/ui/input';
+import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
 import { useGenerateTokenMutation } from '@services/devices/generate-device-token.http-service';
 import { CheckCircle, Copy } from 'lucide-react';
 import { useState } from 'react';
@@ -24,7 +25,7 @@ export function AddDeviceModal({
 }: AddDeviceModalProps) {
   const [token, setToken] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const { hasCopied: copied, copy: copyToClipboard } = useCopyToClipboard();
   const [errors, setError] = useState<string[] | null>(null);
 
   const generateTokenMutation = useGenerateTokenMutation();
@@ -55,12 +56,6 @@ export function AddDeviceModal({
         },
       },
     );
-  };
-
-  const copyToClipboard = async (text: string) => {
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   const formatExpiration = () => {

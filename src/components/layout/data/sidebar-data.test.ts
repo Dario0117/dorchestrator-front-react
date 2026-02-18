@@ -118,10 +118,21 @@ describe('Sidebar Data', () => {
       return;
     }
 
-    expect(settingsGroup.items).toHaveLength(1);
+    expect(settingsGroup.items).toHaveLength(2);
+
+    // Test Audit Logs item
+    const auditLogsItem = settingsGroup.items[0];
+    if (!auditLogsItem) {
+      return;
+    }
+    expect(auditLogsItem.title).toBe('Audit Logs');
+    expect('url' in auditLogsItem && auditLogsItem.url).toBe(
+      `/${testSlug}/audit-logs`,
+    );
+    expect(auditLogsItem.icon).toBeDefined();
 
     // Test Organization Settings item
-    const orgSettingsItem = settingsGroup.items[0];
+    const orgSettingsItem = settingsGroup.items[1];
     if (!orgSettingsItem) {
       return;
     }
