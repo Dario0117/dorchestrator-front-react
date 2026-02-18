@@ -16,6 +16,9 @@ const mockCommands: ListCommandsCommand[] = [
     command: 'echo "hello world"',
     status: 'completed',
     deviceName: 'Test Server',
+    userEmail: 'admin@example.com',
+    platform: 'linux',
+    duration: '17s',
     createdAt: new Date(Date.now() - 3600000).toISOString(),
   },
   {
@@ -23,6 +26,9 @@ const mockCommands: ListCommandsCommand[] = [
     command: 'systemctl restart nginx',
     status: 'running',
     deviceName: 'Dev Laptop',
+    userEmail: 'dev@example.com',
+    platform: 'linux',
+    duration: null,
     createdAt: new Date(Date.now() - 1800000).toISOString(),
   },
   {
@@ -30,6 +36,9 @@ const mockCommands: ListCommandsCommand[] = [
     command: 'apt update && apt upgrade -y',
     status: 'pending',
     deviceName: 'Build Agent',
+    userEmail: 'ci@example.com',
+    platform: 'linux',
+    duration: null,
     createdAt: new Date(Date.now() - 900000).toISOString(),
   },
   {
@@ -37,6 +46,9 @@ const mockCommands: ListCommandsCommand[] = [
     command: 'docker compose down --volumes',
     status: 'failed',
     deviceName: 'Test Server',
+    userEmail: 'admin@example.com',
+    platform: 'darwin',
+    duration: '2m 30s',
     createdAt: new Date(Date.now() - 300000).toISOString(),
   },
 ];

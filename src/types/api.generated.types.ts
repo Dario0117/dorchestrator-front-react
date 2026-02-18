@@ -4823,6 +4823,9 @@ export interface operations {
                                 command: string;
                                 status: string;
                                 deviceName: string;
+                                userEmail: string;
+                                platform: string;
+                                duration: string | null;
                                 createdAt: string;
                             }[];
                             hasNext: boolean;
@@ -5138,7 +5141,7 @@ export interface operations {
                 page: number;
                 size: number;
                 action?: "created" | "deleted" | "updated";
-                resourceType?: "device" | "registration_token" | "device_api_key" | "organization" | "member";
+                resourceType?: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command";
                 actorId?: string;
                 fromDate?: string;
                 toDate?: string;
@@ -5166,7 +5169,7 @@ export interface operations {
                                 /** @enum {string} */
                                 action: "created" | "deleted" | "updated";
                                 /** @enum {string} */
-                                resourceType: "device" | "registration_token" | "device_api_key" | "organization" | "member";
+                                resourceType: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command";
                                 resourceId: string;
                                 metadata: {
                                     before?: {
