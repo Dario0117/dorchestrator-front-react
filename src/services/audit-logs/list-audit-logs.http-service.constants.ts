@@ -18,6 +18,9 @@ export const AUDIT_LOG_RESOURCE_TYPES = [
   'organization',
   'member',
   'command',
+  'session',
+  'user_account',
+  'auth_failure',
 ] as const satisfies readonly AuditLogResourceType[];
 
 export const AUDIT_LOG_RESOURCE_TYPE_LABELS = {
@@ -27,4 +30,7 @@ export const AUDIT_LOG_RESOURCE_TYPE_LABELS = {
   member: 'Member',
   registration_token: 'Registration Token',
   device_api_key: 'API Key',
+  session: 'Session',
+  user_account: 'User Account',
+  auth_failure: 'Auth Failure',
 } as const satisfies Record<AuditLogResourceType, string>;

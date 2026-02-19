@@ -5194,7 +5194,7 @@ export interface operations {
                 page: number;
                 size: number;
                 action?: "created" | "deleted" | "updated";
-                resourceType?: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command";
+                resourceType?: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command" | "session" | "user_account" | "auth_failure";
                 actorId?: string;
                 fromDate?: string;
                 toDate?: string;
@@ -5223,7 +5223,7 @@ export interface operations {
                                 /** @enum {string} */
                                 action: "created" | "deleted" | "updated";
                                 /** @enum {string} */
-                                resourceType: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command";
+                                resourceType: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command" | "session" | "user_account" | "auth_failure";
                                 resourceId: string;
                                 metadata: {
                                     before?: {
