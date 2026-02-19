@@ -29,6 +29,7 @@
 - [ ] When doing blur on a form it marks everything as error, let's only do it when we interact with the form
 - [ ] Side nav loses track of the selected option, for example on commands if I'm in the index it's highlighted, but if I click on the command it's not highlighted
 - [ ] Abstract the pagination logic, we are duplicating it in some components
+- [ ] Consider adding this as a check: https://github.com/millionco/react-doctor
 
 ## Organizations
 

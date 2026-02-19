@@ -7,6 +7,12 @@ import { submitCommandHandler } from '@services/commands/submit-command.http-ser
 import { generateDeviceTokenHandler } from '@services/devices/generate-device-token.http-service.handlers';
 import { listDevicesHandler } from '@services/devices/list-devices.http-service.handlers';
 import { removeDeviceHandler } from '@services/devices/remove-device.http-service.handlers';
+import { getUnreadCountHandler } from '@services/notifications/get-unread-count.http-service.handlers';
+import { listNotificationsHandler } from '@services/notifications/list-notifications.http-service.handlers';
+import {
+  markAllNotificationsReadHandler,
+  markNotificationReadHandler,
+} from '@services/notifications/mark-notification-read.http-service.handlers';
 import { checkSlugAvailabilityHandler } from '@services/organizations/check-slug-availability.http-service.handlers';
 import { createOrganizationHandler } from '@services/organizations/create-organization.http-service.handlers';
 import { getOrganizationDetailsHandler } from '@services/organizations/get-organization-details.http-service.handlers';
@@ -50,5 +56,9 @@ export function MSWSuccessHandlers() {
     listCommandsHandler,
     submitCommandHandler,
     listAuditLogsHandler,
+    listNotificationsHandler,
+    getUnreadCountHandler,
+    markNotificationReadHandler,
+    markAllNotificationsReadHandler,
   ];
 }

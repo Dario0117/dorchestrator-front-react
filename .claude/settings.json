@@ -23,6 +23,9 @@
     ],
     "deny": []
   },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
+  },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": ["shadcn"]
 }

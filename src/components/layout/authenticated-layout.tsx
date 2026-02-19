@@ -1,6 +1,7 @@
 import { AppSidebar } from '@components/layout/app-sidebar';
 import type { AuthenticatedLayoutProps } from '@components/layout/authenticated-layout.types';
 import { Header } from '@components/layout/header';
+import { NotificationPanel } from '@components/layout/notification-panel';
 import { OrganizationCheckWrapper } from '@components/layout/organization-check-wrapper';
 import { ProfileDropdown } from '@components/profile-dropdown';
 import { SkipToMain } from '@components/skip-to-main';
@@ -49,6 +50,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
               <Header fixed>
                 <div className="ms-auto flex items-center space-x-4">
                   <ThemeSwitch />
+                  <NotificationPanel />
                   <ProfileDropdown />
                 </div>
               </Header>
