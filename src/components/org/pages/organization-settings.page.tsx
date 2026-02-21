@@ -97,15 +97,6 @@ export function OrganizationSettingsPage() {
                   {details?.deviceLimit ?? 'Unlimited'}
                 </dd>
               </div>
-
-              <div>
-                <dt className="text-sm font-medium text-muted-foreground">
-                  Devices Registered
-                </dt>
-                <dd className="text-base tabular-nums">
-                  {details?.deviceCount ?? 0}
-                </dd>
-              </div>
             </dl>
 
             <Alert>

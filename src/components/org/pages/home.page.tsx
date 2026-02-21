@@ -8,13 +8,6 @@ import { useOrganizationStatsSuspenseQuery } from '@services/organizations/get-o
 import { Link } from '@tanstack/react-router';
 import { Building2, HardDrive, Terminal } from 'lucide-react';
 
-type RecentCommand = {
-  id: number;
-  command: string;
-  status: string;
-  createdAt: string;
-};
-
 export function HomePage() {
   const currentOrganization = useCurrentOrganization();
   const organizationId = currentOrganization.id;
@@ -37,7 +30,7 @@ export function HomePage() {
       <div className="grid gap-4 md:grid-cols-3">
         <StatCard
           title="Devices"
-          value={orgDetails.responseData?.results?.deviceCount ?? 0}
+          value={stats.responseData?.results?.deviceCount ?? 0}
           icon={HardDrive}
           iconClassName="text-teal-600 dark:text-teal-400"
         />
@@ -90,9 +83,7 @@ export function HomePage() {
           {stats.responseData?.results?.recentCommands &&
           stats.responseData.results.recentCommands.length > 0 ? (
             <div className="space-y-2">
-              {(
-                stats.responseData.results.recentCommands as RecentCommand[]
-              ).map((command) => (
+              {stats.responseData.results.recentCommands.map((command) => (
                 <Link
                   key={command.id}
                   to="/$organizationSlug/commands/$commandId"
@@ -111,6 +102,9 @@ export function HomePage() {
                     </span>
                   </div>
                   <div className="flex gap-2 items-center shrink-0">
+                    <span className="text-xs text-muted-foreground">
+                      {command.deviceName}
+                    </span>
                     <span className="text-xs text-muted-foreground">
                       {new Date(command.createdAt).toLocaleTimeString()}
                     </span>

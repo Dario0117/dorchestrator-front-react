@@ -21,7 +21,6 @@ export const getOrganizationDetailsHandler = http.get<
         name: 'Test Organization',
         createdAt: '2025-12-21T10:00:00.000Z',
         memberCount: 1,
-        deviceCount: 3,
         tier: 'free',
         deviceLimit: null,
       },

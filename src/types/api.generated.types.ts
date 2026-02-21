@@ -4350,7 +4350,6 @@ export interface operations {
                                 name: string;
                                 createdAt: string;
                                 memberCount: number;
-                                deviceCount: number;
                                 /** @constant */
                                 tier: "free";
                                 deviceLimit: null;
@@ -4454,7 +4453,13 @@ export interface operations {
                             results: {
                                 deviceCount: number;
                                 recentCommandCount: number;
-                                recentCommands: unknown[];
+                                recentCommands: {
+                                    id: number;
+                                    command: string;
+                                    status: string;
+                                    deviceName: string;
+                                    createdAt: string;
+                                }[];
                             };
                         };
                         responseErrors: null;
