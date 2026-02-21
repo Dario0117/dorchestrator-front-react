@@ -3,17 +3,19 @@ import { Logo } from '@components/logo';
 import type { OrganizationItem } from '@services/organizations/list-user-organizations.http-service';
 import { HardDrive, Home, ScrollText, Settings, Terminal } from 'lucide-react';
 
-export function getSidebarData(organization: OrganizationItem) {
+export function getSidebarData(
+  organization: OrganizationItem,
+  allOrganizations: OrganizationItem[],
+) {
   const baseUrl = `/${organization.slug}`;
 
   const data: SidebarData = {
-    teams: [
-      {
-        name: organization.name,
-        logo: Logo,
-        plan: 'Free Tier',
-      },
-    ],
+    teams: allOrganizations.map((org) => ({
+      name: org.name,
+      slug: org.slug,
+      logo: Logo,
+      plan: 'Free Tier',
+    })),
     navGroups: [
       {
         title: 'General',

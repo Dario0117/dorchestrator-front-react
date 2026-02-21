@@ -1,4 +1,5 @@
 import { TeamSwitcher } from '@components/layout/team-switcher';
+import type { TeamSwitcherProps } from '@components/layout/team-switcher.types';
 import { SidebarProvider } from '@components/ui/sidebar';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Building2, Rocket, Shield, Zap } from 'lucide-react';
@@ -7,21 +8,25 @@ import { Building2, Rocket, Shield, Zap } from 'lucide-react';
 const mockTeams = [
   {
     name: 'Acme Corp',
+    slug: 'acme-corp',
     logo: Building2,
     plan: 'Enterprise',
   },
   {
     name: 'Startup Inc',
+    slug: 'startup-inc',
     logo: Rocket,
     plan: 'Pro',
   },
   {
     name: 'Tech Solutions',
+    slug: 'tech-solutions',
     logo: Zap,
     plan: 'Business',
   },
   {
     name: 'Security First',
+    slug: 'security-first',
     logo: Shield,
     plan: 'Enterprise',
   },
@@ -30,17 +35,21 @@ const mockTeams = [
 const mockSingleTeam = [
   {
     name: 'My Company',
+    slug: 'my-company',
     logo: Building2,
     plan: 'Free',
   },
 ];
 
 // Mock component with sidebar context
-function MockTeamSwitcher({ teams }: { teams: typeof mockTeams }) {
+function MockTeamSwitcher({ teams, activeSlug }: TeamSwitcherProps) {
   return (
     <SidebarProvider>
       <div className="border rounded-lg p-4 bg-sidebar min-w-64">
-        <TeamSwitcher teams={teams} />
+        <TeamSwitcher
+          teams={teams}
+          activeSlug={activeSlug}
+        />
       </div>
     </SidebarProvider>
   );
@@ -60,7 +69,10 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {
     teams: {
-      description: 'Array of team objects with name, logo, and plan',
+      description: 'Array of team objects with name, slug, logo, and plan',
+    },
+    activeSlug: {
+      description: 'Slug of the currently active team',
     },
   },
 } satisfies Meta<typeof MockTeamSwitcher>;
@@ -72,12 +84,14 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     teams: mockTeams,
+    activeSlug: 'acme-corp',
   },
 };
 
 export const SingleTeam: Story = {
   args: {
     teams: mockSingleTeam,
+    activeSlug: 'my-company',
   },
   parameters: {
     docs: {
@@ -94,20 +108,24 @@ export const ManyTeams: Story = {
       ...mockTeams,
       {
         name: 'Global Enterprise Solutions Ltd',
+        slug: 'global-enterprise',
         logo: Building2,
         plan: 'Enterprise Plus',
       },
       {
         name: 'Innovation Hub',
+        slug: 'innovation-hub',
         logo: Zap,
         plan: 'Startup',
       },
       {
         name: 'DevOps Masters',
+        slug: 'devops-masters',
         logo: Rocket,
         plan: 'Pro',
       },
     ],
+    activeSlug: 'acme-corp',
   },
   parameters: {
     docs: {
@@ -122,6 +140,7 @@ export const ManyTeams: Story = {
 export const Mobile: Story = {
   args: {
     teams: mockTeams,
+    activeSlug: 'acme-corp',
   },
   parameters: {
     viewport: {

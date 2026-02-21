@@ -43,7 +43,9 @@ export function CommandMenu() {
           className="h-72 pe-1"
         >
           <CommandEmpty>No results found.</CommandEmpty>
-          {getSidebarData(currentOrganization).navGroups.map((group) => (
+          {getSidebarData(currentOrganization, [
+            currentOrganization,
+          ]).navGroups.map((group) => (
             <CommandGroup
               key={group.title}
               heading={group.title}

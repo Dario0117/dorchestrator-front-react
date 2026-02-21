@@ -13,10 +13,20 @@ describe('Sidebar Data', () => {
     createdAt: '2025-12-21T10:00:00.000Z',
     isDefault: true,
   };
+  const secondOrganization = {
+    id: 'org-456',
+    name: 'Second Organization',
+    slug: 'second-org',
+    role: 'member',
+    memberCount: 3,
+    createdAt: '2025-12-22T10:00:00.000Z',
+    isDefault: false,
+  };
+  const allOrganizations = [testOrganization, secondOrganization];
   let sidebarData: SidebarData;
 
   beforeEach(() => {
-    sidebarData = getSidebarData(testOrganization);
+    sidebarData = getSidebarData(testOrganization, allOrganizations);
   });
 
   it('should have valid structure', () => {
@@ -33,10 +43,12 @@ describe('Sidebar Data', () => {
 
     teams.forEach((team) => {
       expect(team).toHaveProperty('name');
+      expect(team).toHaveProperty('slug');
       expect(team).toHaveProperty('logo');
       expect(team).toHaveProperty('plan');
 
       expect(typeof team.name).toBe('string');
+      expect(typeof team.slug).toBe('string');
       expect(team.logo).toBeDefined();
       expect(typeof team.plan).toBe('string');
     });
@@ -45,9 +57,13 @@ describe('Sidebar Data', () => {
   it('should have expected teams', () => {
     const { teams } = sidebarData;
 
-    expect(teams).toHaveLength(1);
+    expect(teams).toHaveLength(2);
     expect(teams[0]?.name).toBe('Test Organization');
+    expect(teams[0]?.slug).toBe('test-org');
     expect(teams[0]?.plan).toBe('Free Tier');
+    expect(teams[1]?.name).toBe('Second Organization');
+    expect(teams[1]?.slug).toBe('second-org');
+    expect(teams[1]?.plan).toBe('Free Tier');
   });
 
   it('should have valid nav groups structure', () => {

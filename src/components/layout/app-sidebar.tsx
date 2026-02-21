@@ -1,6 +1,6 @@
 import { getSidebarData } from '@components/layout/data/sidebar-data';
 import { NavGroup } from '@components/layout/nav-group';
-import { TeamSwitcher } from '@components/layout/team-switcher';
+import { OrganizationSwitcher } from '@components/layout/organization-switcher';
 import {
   Sidebar,
   SidebarContent,
@@ -9,12 +9,15 @@ import {
 } from '@components/ui/sidebar';
 import { useLayout } from '@context/layout.provider';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { useUserOrganizationsSuspendedQuery } from '@services/organizations/list-user-organizations.http-service';
 
 export function AppSidebar() {
   const { collapsible, variant } = useLayout();
   const currentOrganization = useCurrentOrganization();
+  const { data } = useUserOrganizationsSuspendedQuery();
+  const allOrganizations = data.responseData?.results ?? [];
 
-  const sidebarData = getSidebarData(currentOrganization);
+  const sidebarData = getSidebarData(currentOrganization, allOrganizations);
 
   return (
     <Sidebar
@@ -22,7 +25,10 @@ export function AppSidebar() {
       variant={variant}
     >
       <SidebarHeader>
-        <TeamSwitcher teams={sidebarData.teams} />
+        <OrganizationSwitcher
+          teams={sidebarData.teams}
+          activeSlug={currentOrganization.slug}
+        />
       </SidebarHeader>
       <SidebarContent>
         {sidebarData.navGroups.map((props) => (

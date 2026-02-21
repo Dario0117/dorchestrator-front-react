@@ -14,12 +14,19 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@components/ui/sidebar';
+import { useNavigate } from '@tanstack/react-router';
 import { ChevronsUpDown, Plus } from 'lucide-react';
-import * as React from 'react';
 
-export function TeamSwitcher({ teams }: TeamSwitcherProps) {
+export function TeamSwitcher({
+  teams,
+  activeSlug,
+  label = 'Teams',
+  addButtonLabel = 'Add team',
+  onAdd,
+}: TeamSwitcherProps) {
   const { isMobile } = useSidebar();
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  const navigate = useNavigate();
+  const activeTeam = teams.find((team) => team.slug === activeSlug) ?? teams[0];
 
   if (!activeTeam) {
     return null;
@@ -53,12 +60,17 @@ export function TeamSwitcher({ teams }: TeamSwitcherProps) {
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              {label}
             </DropdownMenuLabel>
             {teams.map((team, index) => (
               <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
+                key={team.slug}
+                onClick={() =>
+                  navigate({
+                    to: '/$organizationSlug',
+                    params: { organizationSlug: team.slug },
+                  })
+                }
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
@@ -69,11 +81,16 @@ export function TeamSwitcher({ teams }: TeamSwitcherProps) {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              onClick={onAdd}
+            >
               <div className="bg-background flex size-6 items-center justify-center rounded-md border">
                 <Plus className="size-4" />
               </div>
-              <div className="text-muted-foreground font-medium">Add team</div>
+              <div className="text-muted-foreground font-medium">
+                {addButtonLabel}
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

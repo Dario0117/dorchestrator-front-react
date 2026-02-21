@@ -1,10 +1,11 @@
 import { AppSidebar } from '@components/layout/app-sidebar';
 import { SidebarProvider } from '@components/ui/sidebar';
 import { LayoutProvider } from '@context/layout.provider';
-import { queryClient } from '@context/query.provider';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import { Suspense } from 'react';
+
+const mockNavigate = vi.fn();
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual =
@@ -34,6 +35,7 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
       const location = { href: '/' };
       return select ? select(location) : location;
     },
+    useNavigate: () => mockNavigate,
     useParams: () => ({ organizationSlug: 'test-org' }),
   };
 });
@@ -47,81 +49,95 @@ const mockOrganization = {
   createdAt: '2025-12-21T10:00:00.000Z',
   isDefault: true,
 };
+
+vi.mock('@/app', () => ({
+  _getNullableCurrentOrganizationFromSlug: () => mockOrganization,
+}));
+
 function renderAppSidebar() {
   return renderWithProviders(
-    <LayoutProvider>
-      <SidebarProvider>
-        <AppSidebar />
-      </SidebarProvider>
-    </LayoutProvider>,
+    <Suspense fallback={<div>Loading...</div>}>
+      <LayoutProvider>
+        <SidebarProvider>
+          <AppSidebar />
+        </SidebarProvider>
+      </LayoutProvider>
+    </Suspense>,
   );
 }
 
 describe('AppSidebar', () => {
-  beforeEach(() => {
-    // Seed query cache with organization data (new API response shape)
-    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
-      responseData: {
-        results: [mockOrganization],
-        hasNext: false,
-        hasPrevious: false,
-        totalResults: 1,
-        totalPages: 1,
-        page: 1,
-        size: 100,
-      },
-      responseErrors: null,
-    });
-  });
-  it('should render sidebar', () => {
+  it('should render sidebar', async () => {
     const { container } = renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
 
     const sidebar = container.querySelector('[data-slot="sidebar"]');
     expect(sidebar).toBeInTheDocument();
   });
 
-  it('should render team switcher', () => {
+  it('should render team switcher', async () => {
     renderAppSidebar();
 
-    expect(screen.getByText('Test Organization')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Test Organization')).toBeInTheDocument();
+    });
   });
 
-  it('should render navigation groups', () => {
+  it('should render navigation groups', async () => {
     renderAppSidebar();
 
-    expect(screen.getByText('General')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('General')).toBeInTheDocument();
+    });
     expect(screen.getByText('Settings')).toBeInTheDocument();
   });
 
-  it('should render navigation items from General group', () => {
+  it('should render navigation items from General group', async () => {
     renderAppSidebar();
 
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    });
     expect(screen.getByText('Devices')).toBeInTheDocument();
     expect(screen.getByText('Commands')).toBeInTheDocument();
   });
 
-  it('should render navigation items from Settings group', () => {
+  it('should render navigation items from Settings group', async () => {
     renderAppSidebar();
 
-    expect(screen.getByText('Organization Settings')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Organization Settings')).toBeInTheDocument();
+    });
   });
 
-  it('should render sidebar rail', () => {
+  it('should render sidebar rail', async () => {
     const { container } = renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
 
     const rail = container.querySelector('[data-slot="sidebar-rail"]');
     expect(rail).toBeInTheDocument();
   });
 
-  it('should render all team options', () => {
+  it('should render all team options', async () => {
     renderAppSidebar();
 
-    expect(screen.getByText('Test Organization')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Test Organization')).toBeInTheDocument();
+    });
   });
 
-  it('should have correct sidebar structure', () => {
+  it('should have correct sidebar structure', async () => {
     const { container } = renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
 
     const sidebar = container.querySelector('[data-slot="sidebar"]');
     const header = sidebar?.querySelector('[data-slot="sidebar-header"]');
@@ -131,12 +147,14 @@ describe('AppSidebar', () => {
     expect(content).toBeInTheDocument();
   });
 
-  it('should render navigation group icons', () => {
+  it('should render navigation group icons', async () => {
     renderAppSidebar();
 
-    const links = screen.getAllByRole('link');
-    expect(links.length).toBeGreaterThan(0);
+    await waitFor(() => {
+      expect(screen.getAllByRole('link').length).toBeGreaterThan(0);
+    });
 
+    const links = screen.getAllByRole('link');
     links.forEach((link) => {
       const icon = link.querySelector('svg');
       expect(icon).toBeInTheDocument();

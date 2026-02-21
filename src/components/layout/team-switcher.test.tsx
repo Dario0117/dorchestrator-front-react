@@ -9,34 +9,55 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react';
 
+const mockNavigate = vi.fn();
+
+vi.mock('@tanstack/react-router', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('@tanstack/react-router')>();
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
 const mockTeams = [
   {
     name: 'Dorchestrator',
+    slug: 'dorchestrator',
     logo: Command,
     plan: 'Vite + ShadcnUI',
   },
   {
     name: 'Acme Inc',
+    slug: 'acme-inc',
     logo: GalleryVerticalEnd,
     plan: 'Enterprise',
   },
   {
     name: 'Acme Corp.',
+    slug: 'acme-corp',
     logo: AudioWaveform,
     plan: 'Startup',
   },
 ];
 
-function renderTeamSwitcher(teams = mockTeams) {
+function renderTeamSwitcher(teams = mockTeams, activeSlug = 'dorchestrator') {
   return renderWithProviders(
     <SidebarProvider>
-      <TeamSwitcher teams={teams} />
+      <TeamSwitcher
+        teams={teams}
+        activeSlug={activeSlug}
+      />
     </SidebarProvider>,
   );
 }
 
 describe('TeamSwitcher', () => {
-  it('should render the first team as active by default', () => {
+  beforeEach(() => {
+    mockNavigate.mockClear();
+  });
+
+  it('should render the active team based on activeSlug', () => {
     renderTeamSwitcher();
 
     expect(screen.getByText('Dorchestrator')).toBeInTheDocument();
@@ -80,7 +101,7 @@ describe('TeamSwitcher', () => {
     expect(screen.getByText('Acme Corp.')).toBeInTheDocument();
   });
 
-  it('should switch active team when a team is clicked', async () => {
+  it('should navigate to the selected team when clicked', async () => {
     const user = userEvent.setup();
     renderTeamSwitcher();
 
@@ -90,8 +111,10 @@ describe('TeamSwitcher', () => {
     const acmeInc = screen.getByRole('menuitem', { name: /acme inc/i });
     await user.click(acmeInc);
 
-    expect(screen.getByText('Acme Inc')).toBeInTheDocument();
-    expect(screen.getByText('Enterprise')).toBeInTheDocument();
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: '/$organizationSlug',
+      params: { organizationSlug: 'acme-inc' },
+    });
   });
 
   it('should display keyboard shortcuts for teams', async () => {
@@ -134,7 +157,7 @@ describe('TeamSwitcher', () => {
     });
   });
 
-  it('should update active team state correctly', async () => {
+  it('should navigate to the correct team on click', async () => {
     const user = userEvent.setup();
     renderTeamSwitcher();
 
@@ -144,8 +167,10 @@ describe('TeamSwitcher', () => {
     const acmeCorp = screen.getByRole('menuitem', { name: /acme corp/i });
     await user.click(acmeCorp);
 
-    expect(screen.getByText('Acme Corp.')).toBeInTheDocument();
-    expect(screen.getByText('Startup')).toBeInTheDocument();
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: '/$organizationSlug',
+      params: { organizationSlug: 'acme-corp' },
+    });
   });
 
   it('should render dropdown from bottom on mobile viewport', async () => {
@@ -160,5 +185,12 @@ describe('TeamSwitcher', () => {
     expect(menuContent).toHaveAttribute('data-side', 'bottom');
 
     setDesktopViewport();
+  });
+
+  it('should show correct active team when activeSlug changes', () => {
+    renderTeamSwitcher(mockTeams, 'acme-inc');
+
+    expect(screen.getByText('Acme Inc')).toBeInTheDocument();
+    expect(screen.getByText('Enterprise')).toBeInTheDocument();
   });
 });

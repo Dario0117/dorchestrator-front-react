@@ -72,7 +72,7 @@ vi.mock('@context/theme.provider', async (importOriginal) => {
 });
 
 const mockSidebarDataWithSubItems: SidebarData = {
-  teams: [{ name: 'Test Org', logo: Home, plan: 'Free' }],
+  teams: [{ name: 'Test Org', slug: 'test-org', logo: Home, plan: 'Free' }],
   navGroups: [
     {
       title: 'Main',
@@ -101,7 +101,14 @@ vi.mock('@components/layout/data/sidebar-data', () => ({
 }));
 
 const defaultSidebarData: SidebarData = {
-  teams: [{ name: 'Test Organization', logo: Home, plan: 'Free Tier' }],
+  teams: [
+    {
+      name: 'Test Organization',
+      slug: 'test-org',
+      logo: Home,
+      plan: 'Free Tier',
+    },
+  ],
   navGroups: [
     {
       title: 'General',
