@@ -30,6 +30,8 @@
 - [ ] Side nav loses track of the selected option, for example on commands if I'm in the index it's highlighted, but if I click on the command it's not highlighted
 - [ ] Abstract the pagination logic, we are duplicating it in some components
 - [ ] Consider adding this as a check: https://github.com/millionco/react-doctor
+- [ ] Adding a new device, when copying the command it changes the status of the token and not the command
+- [ ] Add the device id and user id on the command card
 
 ## Organizations
 
