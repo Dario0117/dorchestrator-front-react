@@ -16,6 +16,16 @@ interface CommandOutputProps {
   commandId: number;
 }
 
+function TerminalHeader() {
+  return (
+    <div className="flex items-center gap-1.5 rounded-t-md bg-gray-800 px-3 py-2">
+      <div className="h-3 w-3 rounded-full bg-red-500" />
+      <div className="h-3 w-3 rounded-full bg-yellow-500" />
+      <div className="h-3 w-3 rounded-full bg-green-500" />
+    </div>
+  );
+}
+
 function OutputSection({
   title,
   content,
@@ -47,6 +57,8 @@ function OutputSection({
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const textColor = outputType === 'stderr' ? 'text-red-400' : 'text-green-400';
 
   return (
     <Collapsible
@@ -86,9 +98,14 @@ function OutputSection({
         </div>
       </div>
       <CollapsibleContent>
-        <pre className="max-h-[500px] overflow-auto rounded-md bg-muted p-4 font-mono text-sm whitespace-pre-wrap">
-          {content}
-        </pre>
+        <div className="overflow-hidden rounded-md">
+          <TerminalHeader />
+          <pre
+            className={`max-h-[500px] overflow-auto bg-gray-950 p-4 font-mono text-sm whitespace-pre-wrap ${textColor}`}
+          >
+            {content}
+          </pre>
+        </div>
       </CollapsibleContent>
     </Collapsible>
   );
@@ -107,11 +124,11 @@ export function CommandOutput({ results, commandId }: CommandOutputProps) {
           <CardTitle>Execution Results</CardTitle>
           {result.exitCode !== null && (
             <Badge
-              className={
+              className={`text-sm px-3 py-1 ${
                 result.exitCode === 0
                   ? 'bg-green-600 text-white border-transparent'
                   : 'bg-red-600 text-white border-transparent'
-              }
+              }`}
             >
               Exit code: {result.exitCode}
             </Badge>

@@ -22,7 +22,7 @@ import {
 import { NOTIFICATION_POLLING_INTERVAL_MS } from '@services/notifications/notification.constants';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
-import { Bell, CheckCheck } from 'lucide-react';
+import { Bell, BellOff, CheckCheck } from 'lucide-react';
 import { useState } from 'react';
 
 type NotificationSeverity = NotificationEntry['severity'];
@@ -124,7 +124,9 @@ export function NotificationPanel() {
           className="relative"
           aria-label="Notifications"
         >
-          <Bell className="h-5 w-5" />
+          <Bell
+            className={cn('h-5 w-5', unreadCount > 0 && 'animate-bell-shake')}
+          />
           {unreadCount > 0 && (
             <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
               {unreadCount > 99 ? '99+' : unreadCount}
@@ -153,8 +155,14 @@ export function NotificationPanel() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {notifications.length === 0 ? (
-          <div className="p-4 text-center text-sm text-muted-foreground">
-            No notifications
+          <div className="flex flex-col items-center gap-2 p-6 text-center">
+            <BellOff className="h-8 w-8 text-muted-foreground/50" />
+            <p className="text-sm font-medium text-muted-foreground">
+              All caught up
+            </p>
+            <p className="text-xs text-muted-foreground/70">
+              No notifications to show
+            </p>
           </div>
         ) : (
           <ScrollArea className="max-h-80">
@@ -168,10 +176,17 @@ export function NotificationPanel() {
                   )}
                   onClick={() => handleNotificationClick(notification)}
                 >
-                  <span className="w-full text-sm font-medium text-wrap">
-                    {notification.message}
-                  </span>
-                  <div className="flex w-full items-center gap-2">
+                  <div className="flex w-full items-start gap-2">
+                    <div className="mt-1.5 flex h-2 w-2 shrink-0 items-center justify-center">
+                      {!notification.read && (
+                        <div className="h-2 w-2 rounded-full bg-green-500" />
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-wrap">
+                      {notification.message}
+                    </span>
+                  </div>
+                  <div className="flex w-full items-center gap-2 ml-4">
                     <span className="text-xs text-muted-foreground">
                       {formatRelativeTime(notification.createdAt)}
                     </span>

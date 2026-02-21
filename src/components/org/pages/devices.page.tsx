@@ -3,6 +3,7 @@ import { ConfirmDialog } from '@components/confirm-dialog';
 import { AddDeviceModal } from '@components/devices/add-device-modal';
 import { DeviceCard } from '@components/devices/device-card';
 import { Button } from '@components/ui/button';
+import { EmptyState } from '@components/ui/empty-state';
 import {
   Pagination,
   PaginationContent,
@@ -16,7 +17,7 @@ import { Route } from '@routes/(authenticated)/$organizationSlug/devices';
 import { useDevicesSuspenseQuery } from '@services/devices/list-devices.http-service';
 import { useRemoveDeviceMutation } from '@services/devices/remove-device.http-service';
 import { useNavigate } from '@tanstack/react-router';
-import { Plus } from 'lucide-react';
+import { HardDrive, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 export function DevicesPage() {
@@ -56,7 +57,7 @@ export function DevicesPage() {
     <section className="p-6 md:p-10 space-y-6">
       <div className="py-6">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Devices</h1>
+          <h1 className="text-3xl font-bold font-serif">Devices</h1>
           <Button onClick={() => setAddModalOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Device
@@ -64,11 +65,17 @@ export function DevicesPage() {
         </div>
 
         {devices.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-            <p className="text-muted-foreground">
-              No devices registered yet. Click "Add Device" to get started.
-            </p>
-          </div>
+          <EmptyState
+            icon={HardDrive}
+            title="No devices registered"
+            description='No devices registered yet. Click "Add Device" to get started.'
+            action={
+              <Button onClick={() => setAddModalOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Device
+              </Button>
+            }
+          />
         ) : (
           <>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

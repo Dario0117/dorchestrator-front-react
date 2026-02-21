@@ -1,5 +1,7 @@
 import { AuditLogFilters } from '@components/audit-logs/audit-log-filters';
 import { AuditLogRow } from '@components/audit-logs/audit-log-row';
+import { Button } from '@components/ui/button';
+import { EmptyState } from '@components/ui/empty-state';
 import {
   Pagination,
   PaginationContent,
@@ -25,6 +27,7 @@ import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { Route } from '@routes/(authenticated)/$organizationSlug/audit-logs/index';
 import { useAuditLogsSuspenseQuery } from '@services/audit-logs/list-audit-logs.http-service';
 import { useNavigate } from '@tanstack/react-router';
+import { ScrollText, Search } from 'lucide-react';
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 
@@ -72,26 +75,36 @@ export function AuditLogsListPage() {
     <section className="p-6 md:p-10 space-y-6">
       <div className="py-6">
         <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h1 className="text-2xl font-bold">Audit Logs</h1>
+          <h1 className="text-2xl font-bold font-serif">Audit Logs</h1>
         </div>
 
         <AuditLogFilters />
 
         {entries.length === 0 ? (
           hasActiveFilters ? (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-              <p className="text-muted-foreground">
-                No audit logs match your filters. Use the filters above to
-                adjust your search.
-              </p>
-            </div>
+            <EmptyState
+              icon={Search}
+              title="No audit logs match your filters"
+              description="Use the filters above to adjust your search."
+              action={
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    navigate({
+                      search: (prev) => ({ page: 1, size: prev.size }),
+                    })
+                  }
+                >
+                  Clear Filters
+                </Button>
+              }
+            />
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-              <p className="text-muted-foreground">
-                No audit logs yet. Activity will appear here as actions are
-                performed in your organization.
-              </p>
-            </div>
+            <EmptyState
+              icon={ScrollText}
+              title="No audit logs yet"
+              description="Activity will appear here as actions are performed in your organization."
+            />
           )
         ) : (
           <>

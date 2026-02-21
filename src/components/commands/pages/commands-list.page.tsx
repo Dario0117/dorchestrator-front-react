@@ -2,6 +2,7 @@ import { CommandCard } from '@components/commands/command-card';
 import { CommandFilters } from '@components/commands/command-filters';
 import { ExecuteCommandModal } from '@components/commands/execute-command-modal';
 import { Button } from '@components/ui/button';
+import { EmptyState } from '@components/ui/empty-state';
 import {
   Pagination,
   PaginationContent,
@@ -20,7 +21,7 @@ import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { Route } from '@routes/(authenticated)/$organizationSlug/commands/index';
 import { useCommandsSuspenseQuery } from '@services/commands/list-commands.http-service';
 import { useNavigate } from '@tanstack/react-router';
-import { Play } from 'lucide-react';
+import { Play, Search, Terminal } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
@@ -99,7 +100,7 @@ export function CommandsListPage() {
     <section className="p-6 md:p-10 space-y-6">
       <div className="py-6">
         <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h1 className="text-2xl font-bold">Command History</h1>
+          <h1 className="text-2xl font-bold font-serif">Command History</h1>
           <Button
             className="w-full md:w-auto"
             onClick={() => setModalOpen(true)}
@@ -113,29 +114,35 @@ export function CommandsListPage() {
 
         {commands.length === 0 ? (
           hasActiveFilters ? (
-            <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12 text-center">
-              <p className="text-muted-foreground">
-                No commands match your filters. Try adjusting your search
-                criteria.
-              </p>
-              <Button
-                variant="outline"
-                onClick={() =>
-                  navigate({
-                    search: (prev) => ({ page: 1, size: prev.size }),
-                  })
-                }
-              >
-                Clear Filters
-              </Button>
-            </div>
+            <EmptyState
+              icon={Search}
+              title="No commands match your filters"
+              description="Try adjusting your search criteria."
+              action={
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    navigate({
+                      search: (prev) => ({ page: 1, size: prev.size }),
+                    })
+                  }
+                >
+                  Clear Filters
+                </Button>
+              }
+            />
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-              <p className="text-muted-foreground">
-                No commands executed yet. Click &apos;Execute New Command&apos;
-                to get started.
-              </p>
-            </div>
+            <EmptyState
+              icon={Terminal}
+              title="No commands executed yet"
+              description="Click 'Execute New Command' to get started."
+              action={
+                <Button onClick={() => setModalOpen(true)}>
+                  <Play className="mr-2 h-4 w-4" />
+                  Execute New Command
+                </Button>
+              }
+            />
           )
         ) : (
           <>

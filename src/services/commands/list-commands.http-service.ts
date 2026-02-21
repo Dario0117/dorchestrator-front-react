@@ -21,7 +21,7 @@ export const useCommandsQueryOptions = (
 ) => {
   const {
     page = 1,
-    size = 25,
+    size = 26,
     deviceId,
     status,
     startDate,

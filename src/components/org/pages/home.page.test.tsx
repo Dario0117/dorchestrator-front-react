@@ -18,6 +18,20 @@ vi.mock('@tanstack/react-router', async () => {
   return {
     ...actual,
     useParams: () => ({ organizationSlug: 'test-org' }),
+    Link: ({
+      children,
+      ...props
+    }: {
+      children: React.ReactNode;
+      [key: string]: unknown;
+    }) => (
+      <a
+        href={typeof props.to === 'string' ? props.to : '#'}
+        data-testid="mock-link"
+      >
+        {children}
+      </a>
+    ),
   };
 });
 
@@ -79,7 +93,7 @@ describe('HomePage', () => {
 
     expect(screen.getByText('Commands (24h)')).toBeInTheDocument();
     expect(screen.getByText('Tier')).toBeInTheDocument();
-    expect(screen.getByText('Free Tier')).toBeInTheDocument();
+    expect(screen.getByText('free')).toBeInTheDocument();
   });
 
   it('should render recent activity section', async () => {
@@ -137,11 +151,12 @@ describe('HomePage', () => {
     });
 
     expect(screen.getByText('uptime')).toBeInTheDocument();
-    expect(screen.getByText('completed')).toBeInTheDocument();
-    expect(screen.getByText('pending')).toBeInTheDocument();
+    expect(screen.getByText('Completed')).toBeInTheDocument();
+    expect(screen.getByText('Pending')).toBeInTheDocument();
 
     // Verify stat card values reflect the data
-    expect(screen.getByText('7')).toBeInTheDocument();
+    // deviceCount comes from org details (default handler: 3), not stats
+    expect(screen.getByText('3')).toBeInTheDocument();
     expect(screen.getByText('12')).toBeInTheDocument();
   });
 
@@ -168,16 +183,12 @@ describe('HomePage', () => {
       expect(screen.getByText('Devices')).toBeInTheDocument();
     });
 
-    // deviceCount and recentCommandCount should fallback to 0
-    const zeroValues = screen.getAllByText('0');
-    expect(zeroValues.length).toBeGreaterThanOrEqual(2);
+    // recentCommandCount should fallback to 0, deviceCount comes from org details (3)
+    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getAllByText('0').length).toBeGreaterThanOrEqual(1);
 
     // Should show fallback text for no recent commands
-    expect(
-      screen.getByText(
-        'No recent commands. Get started by executing your first command!',
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText('No recent commands')).toBeInTheDocument();
   });
 
   it('should show fallback message when recentCommands is empty array', async () => {
@@ -209,12 +220,9 @@ describe('HomePage', () => {
       expect(screen.getByText('Devices')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('2')).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'No recent commands. Get started by executing your first command!',
-      ),
-    ).toBeInTheDocument();
+    // deviceCount comes from org details (3), recentCommandCount from stats (0)
+    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getByText('No recent commands')).toBeInTheDocument();
   });
 
   describe('Mobile Responsive Layout (AC2, AC3)', () => {

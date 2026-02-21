@@ -26,6 +26,11 @@ const ACTION_BADGE_CONFIG = {
     label: 'Deleted',
     className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
   },
+  deactivated: {
+    label: 'Deactivated',
+    className:
+      'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
+  },
 } as const satisfies Record<
   AuditLogAction,
   { label: string; className: string }
@@ -54,7 +59,7 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
   return (
     <>
       <TableRow
-        className="cursor-pointer"
+        className="cursor-pointer hover:bg-muted/50 transition-colors"
         onClick={entry.metadata ? handleToggle : undefined}
         onKeyDown={
           entry.metadata
@@ -171,7 +176,7 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
                   <span className="font-semibold text-muted-foreground">
                     Before:
                   </span>
-                  <pre className="mt-1 whitespace-pre-wrap">
+                  <pre className="mt-1 whitespace-pre-wrap rounded-md border bg-muted p-3">
                     {JSON.stringify(entry.metadata.before, null, 2)}
                   </pre>
                 </div>
@@ -181,13 +186,13 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
                   <span className="font-semibold text-muted-foreground">
                     After:
                   </span>
-                  <pre className="mt-1 whitespace-pre-wrap">
+                  <pre className="mt-1 whitespace-pre-wrap rounded-md border bg-muted p-3">
                     {JSON.stringify(entry.metadata.after, null, 2)}
                   </pre>
                 </div>
               )}
               {!entry.metadata.before && !entry.metadata.after && (
-                <pre className="whitespace-pre-wrap">
+                <pre className="whitespace-pre-wrap rounded-md border bg-muted p-3">
                   {JSON.stringify(entry.metadata, null, 2)}
                 </pre>
               )}

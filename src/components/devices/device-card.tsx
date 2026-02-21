@@ -7,8 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ui/card';
+import { cn } from '@lib/utils';
 import type { ListDevicesDevice } from '@services/devices/list-devices.http-service';
-import { Play, Trash2 } from 'lucide-react';
+import { Laptop, Monitor, Play, Trash2 } from 'lucide-react';
 
 interface DeviceCardProps {
   device: ListDevicesDevice;
@@ -23,7 +24,11 @@ export function DeviceCard({
 }: DeviceCardProps) {
   const getStatusIndicator = () => {
     if (!device.lastSeenAt) {
-      return { color: 'bg-red-500', text: 'Never connected' };
+      return {
+        color: 'bg-red-500',
+        borderColor: 'border-l-red-500',
+        text: 'Never connected',
+      };
     }
 
     const lastSeen = new Date(device.lastSeenAt);
@@ -31,10 +36,18 @@ export function DeviceCard({
     const diffSeconds = (now.getTime() - lastSeen.getTime()) / 1000;
 
     if (diffSeconds < 30) {
-      return { color: 'bg-green-500', text: 'Online' };
+      return {
+        color: 'bg-green-500',
+        borderColor: 'border-l-green-500',
+        text: 'Online',
+      };
     }
 
-    return { color: 'bg-gray-500', text: 'Offline' };
+    return {
+      color: 'bg-gray-500',
+      borderColor: 'border-l-gray-400',
+      text: 'Offline',
+    };
   };
 
   const formatLastSeen = () => {
@@ -64,6 +77,15 @@ export function DeviceCard({
     });
   };
 
+  const getPlatformIcon = () => {
+    switch (device.platform) {
+      case 'macos':
+        return Laptop;
+      default:
+        return Monitor;
+    }
+  };
+
   const getPlatformLabel = () => {
     switch (device.platform) {
       case 'linux':
@@ -78,13 +100,22 @@ export function DeviceCard({
   };
 
   const status = getStatusIndicator();
+  const PlatformIcon = getPlatformIcon();
 
   return (
-    <Card>
+    <Card className={cn('border-l-4 hover:shadow-md', status.borderColor)}>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">{device.deviceName}</CardTitle>
-          <Badge>{getPlatformLabel()}</Badge>
+          <div>
+            <CardTitle className="text-lg">{device.deviceName}</CardTitle>
+            <p className="text-xs text-muted-foreground font-mono mt-0.5">
+              ID: {device.id}
+            </p>
+          </div>
+          <Badge>
+            <PlatformIcon className="mr-1 h-3 w-3" />
+            {getPlatformLabel()}
+          </Badge>
         </div>
       </CardHeader>
       <CardContent>

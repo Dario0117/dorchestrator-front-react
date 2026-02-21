@@ -1,13 +1,7 @@
 import type { SidebarData } from '@components/layout/data/sidebar-data.types';
+import { Logo } from '@components/logo';
 import type { OrganizationItem } from '@services/organizations/list-user-organizations.http-service';
-import {
-  GalleryVerticalEnd,
-  HardDrive,
-  Home,
-  ScrollText,
-  Settings,
-  Terminal,
-} from 'lucide-react';
+import { HardDrive, Home, ScrollText, Settings, Terminal } from 'lucide-react';
 
 export function getSidebarData(organization: OrganizationItem) {
   const baseUrl = `/${organization.slug}`;
@@ -16,7 +10,7 @@ export function getSidebarData(organization: OrganizationItem) {
     teams: [
       {
         name: organization.name,
-        logo: GalleryVerticalEnd,
+        logo: Logo,
         plan: 'Free Tier',
       },
     ],

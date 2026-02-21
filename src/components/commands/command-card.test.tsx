@@ -38,9 +38,7 @@ describe('CommandCard', () => {
 
   it('should render the user email', () => {
     renderWithProviders(<CommandCard command={mockCommand} />);
-    expect(
-      screen.getByText('Submitted by: admin@example.com'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('admin@example.com')).toBeInTheDocument();
   });
 
   it('should render duration when present', () => {

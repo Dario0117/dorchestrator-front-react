@@ -60,7 +60,7 @@ export function CommandMetadata({ command }: CommandMetadataProps) {
           <div className="flex items-center gap-2 text-sm">
             <Monitor className="h-4 w-4 shrink-0 text-muted-foreground" />
             <span className="text-muted-foreground">Device:</span>
-            <span>{command.deviceName}</span>
+            <span className="font-mono">{command.deviceName}</span>
           </div>
 
           <div className="flex items-center gap-2 text-sm">

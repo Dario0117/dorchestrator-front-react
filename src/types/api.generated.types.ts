@@ -5193,7 +5193,7 @@ export interface operations {
             query: {
                 page: number;
                 size: number;
-                action?: "created" | "deleted" | "updated";
+                action?: "created" | "deactivated" | "deleted" | "updated";
                 resourceType?: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command" | "session" | "user_account" | "auth_failure";
                 actorId?: string;
                 fromDate?: string;
@@ -5221,7 +5221,7 @@ export interface operations {
                                 actorId: string | null;
                                 actorEmail: string | null;
                                 /** @enum {string} */
-                                action: "created" | "deleted" | "updated";
+                                action: "created" | "deactivated" | "deleted" | "updated";
                                 /** @enum {string} */
                                 resourceType: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command" | "session" | "user_account" | "auth_failure";
                                 resourceId: string;

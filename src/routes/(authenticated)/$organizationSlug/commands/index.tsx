@@ -7,7 +7,7 @@ import { z } from 'zod/v4';
 
 const searchParamsSchema = z.object({
   page: z.coerce.number().int().positive().default(1).catch(1),
-  size: z.coerce.number().int().positive().max(100).default(25).catch(25),
+  size: z.coerce.number().int().positive().max(100).default(26).catch(26),
   executeModal: z.string().optional().catch(undefined),
   deviceId: z.coerce.number().int().positive().optional().catch(undefined),
   status: z.enum(COMMAND_STATUSES).optional().catch(undefined),

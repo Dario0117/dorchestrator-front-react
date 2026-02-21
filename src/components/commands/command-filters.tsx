@@ -81,42 +81,45 @@ export function CommandFilters() {
           placeholder="Search commands..."
           ariaLabel="Search commands"
         />
-        <SelectFilter
-          value={status}
-          onChange={(value) => navigateFilter({ status: value })}
-          options={[...STATUS_OPTIONS]}
-          allLabel="All Statuses"
-          ariaLabel="Filter by status"
-        />
-        <SelectFilter
-          value={deviceId !== undefined ? String(deviceId) : undefined}
-          onChange={(value) =>
-            navigateFilter({
-              deviceId: value !== undefined ? Number(value) : undefined,
-            })
-          }
-          options={deviceOptions}
-          allLabel="All Devices"
-          ariaLabel="Filter by device"
-        />
-        <DateRangeFilter
-          startDate={startDate}
-          onChange={({ startDate: s, endDate: e }) =>
-            navigateFilter({ startDate: s, endDate: e })
-          }
-        />
-        {activeFilterCount > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleClearFilters}
-            className="h-11 gap-2 text-base md:text-sm"
-          >
-            <X className="h-4 w-4" />
-            Clear Filters
-            <Badge variant="secondary">{activeFilterCount}</Badge>
-          </Button>
-        )}
+        <div className="hidden h-6 w-px bg-border md:block" />
+        <div className="flex flex-col gap-3 md:flex-row md:items-center">
+          <SelectFilter
+            value={status}
+            onChange={(value) => navigateFilter({ status: value })}
+            options={[...STATUS_OPTIONS]}
+            allLabel="All Statuses"
+            ariaLabel="Filter by status"
+          />
+          <SelectFilter
+            value={deviceId !== undefined ? String(deviceId) : undefined}
+            onChange={(value) =>
+              navigateFilter({
+                deviceId: value !== undefined ? Number(value) : undefined,
+              })
+            }
+            options={deviceOptions}
+            allLabel="All Devices"
+            ariaLabel="Filter by device"
+          />
+          <DateRangeFilter
+            startDate={startDate}
+            onChange={({ startDate: s, endDate: e }) =>
+              navigateFilter({ startDate: s, endDate: e })
+            }
+          />
+          {activeFilterCount > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClearFilters}
+              className="h-11 gap-2 text-base md:text-sm"
+            >
+              <X className="h-4 w-4" />
+              Clear Filters
+              <Badge variant="secondary">{activeFilterCount}</Badge>
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,9 +1,16 @@
 import { Alert, AlertDescription } from '@components/ui/alert';
+import { Button } from '@components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useOrganizationDetailsSuspenseQuery } from '@services/organizations/get-organization-details.http-service';
 import { useProfileSuspendedQuery } from '@services/users/get-profile.http-service';
-import { Info } from 'lucide-react';
+import {
+  AlertTriangle,
+  Building2,
+  CreditCard,
+  Info,
+  Users,
+} from 'lucide-react';
 
 export function OrganizationSettingsPage() {
   const { data: profile } = useProfileSuspendedQuery();
@@ -18,7 +25,7 @@ export function OrganizationSettingsPage() {
   return (
     <section className="p-6 md:p-10 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="text-3xl font-bold tracking-tight font-serif">
           Organization Settings
         </h1>
         <p className="text-muted-foreground">
@@ -27,10 +34,12 @@ export function OrganizationSettingsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-1">
-        {/* Organization Details */}
         <Card>
           <CardHeader>
-            <CardTitle>Organization Details</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Building2 className="h-5 w-5 text-muted-foreground" />
+              Organization Details
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <dl className="space-y-4">
@@ -64,10 +73,12 @@ export function OrganizationSettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Subscription & Billing */}
         <Card>
           <CardHeader>
-            <CardTitle>Subscription & Billing</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-muted-foreground" />
+              Subscription & Billing
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <dl className="space-y-4">
@@ -91,7 +102,9 @@ export function OrganizationSettingsPage() {
                 <dt className="text-sm font-medium text-muted-foreground">
                   Devices Registered
                 </dt>
-                <dd className="text-base">{details?.deviceCount ?? 0}</dd>
+                <dd className="text-base tabular-nums">
+                  {details?.deviceCount ?? 0}
+                </dd>
               </div>
             </dl>
 
@@ -105,10 +118,12 @@ export function OrganizationSettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Members */}
         <Card>
           <CardHeader>
-            <CardTitle>Members</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-muted-foreground" />
+              Members
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <dl className="space-y-4">
@@ -116,7 +131,9 @@ export function OrganizationSettingsPage() {
                 <dt className="text-sm font-medium text-muted-foreground">
                   Member Count
                 </dt>
-                <dd className="text-base">{details?.memberCount ?? 1}</dd>
+                <dd className="text-base tabular-nums">
+                  {details?.memberCount ?? 1}
+                </dd>
               </div>
 
               <div>
@@ -133,6 +150,27 @@ export function OrganizationSettingsPage() {
                 Member invitations will be available in a future release.
               </AlertDescription>
             </Alert>
+          </CardContent>
+        </Card>
+
+        <Card className="border-destructive">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" />
+              Danger Zone
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Deleting this organization will permanently remove all devices,
+              commands, and associated data. This action cannot be undone.
+            </p>
+            <Button
+              variant="destructive"
+              disabled
+            >
+              Delete Organization
+            </Button>
           </CardContent>
         </Card>
       </div>

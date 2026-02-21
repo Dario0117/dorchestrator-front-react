@@ -1,5 +1,5 @@
 import { Input } from '@components/ui/input';
-import { X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 const DEBOUNCE_MS = 300;
@@ -59,12 +59,13 @@ export function SearchInput({
 
   return (
     <div className="relative min-w-0 flex-1">
+      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <Input
         value={localValue}
         onChange={handleChange}
         placeholder={placeholder}
         aria-label={ariaLabel}
-        className="h-11 pr-9 text-base md:text-sm"
+        className="h-11 pl-9 pr-9 text-base md:text-sm"
       />
       {localValue && (
         <button
