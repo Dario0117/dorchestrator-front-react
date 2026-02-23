@@ -304,7 +304,7 @@ export function OrganizationSettingsPage() {
                   </TableHeader>
                   <TableBody>
                     {members.map((member) => (
-                      <TableRow key={member.id}>
+                      <TableRow key={member.id} className="h-14">
                         <TableCell className="font-medium">
                           {member.name}
                         </TableCell>
