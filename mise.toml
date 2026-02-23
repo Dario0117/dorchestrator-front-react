@@ -49,6 +49,10 @@ run = "bun format-and-lint:check"
 run = "bun run open-api"
 description = "Generate OpenAPI types from backend"
 
+[tasks.openApiForAgents]
+run = "bunx openapi-typescript http://localhost:9001/openapi/json --output ./src/types/api.generated.types.ts"
+description = "Generate OpenAPI types from backend running on agent port (9001)"
+
 [tasks.storybook]
 run = "bun run storybook"
 description = "Start Storybook development server"
@@ -64,3 +68,19 @@ run = "bun run build"
 [tasks.preview]
 run = "bun run preview"
 description = "Preview production build"
+
+[tasks."scaffold:service"]
+run = "bun scripts/scaffold/service.ts"
+description = "Scaffold a new HTTP service + MSW handler"
+
+[tasks."scaffold:form"]
+run = "bun scripts/scaffold/form.ts"
+description = "Scaffold a new form (5 files)"
+
+[tasks."scaffold:service-constants"]
+run = "bun scripts/scaffold/service-constants.ts"
+description = "Scaffold service constants file for API-derived types"
+
+[tasks."scaffold:component"]
+run = "bun scripts/scaffold/component.ts"
+description = "Scaffold a new component with types, test, and stories"

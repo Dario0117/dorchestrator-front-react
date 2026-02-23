@@ -15,27 +15,19 @@
 
 ## Project Structure
 
-- `/src/components/` — Reusable components organized by domain
-  - `/ui/` — Base UI components from shadcn (Button, Input, Card, etc.)
-  - `/layout/` — Layout components (sidebar, header, nav)
-    - `/data/` — Navigation and layout configuration data
-  - `/org/` — Organization-specific components
-    - `/forms/` — Form components with hooks and validation
-      - `/components/` — Form-specific reusable components (AppFormField, etc.)
-      - `/hooks/` — Form-specific custom hooks
-      - `/validation/` — Zod validation schemas
-    - `/pages/` — Page-level components
-  - Root-level: command-menu, confirm-dialog, profile-dropdown, sign-out-dialog, skip-to-main, theme-switch
+- `/src/components/` — Organized by domain (e.g., `org/`, `commands/`, `devices/`)
+  - `/ui/` — Base UI components from shadcn
+  - `/layout/` — Layout components (sidebar, header, nav) with `/data/` for config
+  - `/{domain}/forms/` — Form components following the form pattern (see Forms below)
+  - `/{domain}/pages/` — Page-level components (`*.page.tsx`)
+  - Root-level shared components (dialogs, dropdowns, menus, etc.)
 - `/src/routes/` — File-based routing (TanStack Router)
   - `__root.tsx` — Root layout
-  - `(authenticated)/` — Protected routes with route.tsx layout
-    - Routes: index, projects, drafts, queued-sessions, devices, api
-  - `(unauthenticated)/` — Public routes with route.tsx layout
-    - Routes: login, register, reset-password, update-password.$token
-- `/src/context/` — React context providers (theme, layout, search, query)
-- `/src/stores/` — Zustand stores (authentication)
+  - `(authenticated)/` — Protected routes, nested under `$organizationSlug` for org-scoped pages
+  - `(unauthenticated)/` — Public routes (login, register, password flows)
+- `/src/context/` — React context providers following `[name].provider.tsx` + `.types.ts` convention
 - `/src/hooks/` — Custom React hooks
-- `/src/services/` — API service layers with MSW handlers
+- `/src/services/` — API service layers with MSW handlers, organized by domain
 - `/src/types/` — Global TypeScript types
   - `api.generated.types.ts` (auto-generated, never edit)
   - `router.types.ts`
@@ -46,7 +38,7 @@
 
 ### Authentication
 
-Zustand store (`authentication.store.ts`) + SessionCheckMiddleware in route groups. HTTP middleware in `http-service-setup.ts` handles 401 redirects. Cookie-based sessions.
+better-auth client (`better-auth.client.ts`) + cookie-based sessions. HTTP middleware in `http-service-setup.ts` handles 401 redirects to `/login`. Route groups enforce auth via `route.tsx` wrappers.
 
 ### Routing
 
@@ -63,15 +55,11 @@ TanStack Form + Zod validation. Each form has:
 
 ### Context Providers
 
-Four providers, each exporting a custom hook that throws outside the provider:
-- `theme.provider.tsx` — Dark/light/system theme (localStorage)
-- `layout.provider.tsx` — Sidebar state (cookie persistence)
-- `search.provider.tsx` — Global search (Cmd+K) with CommandMenu
-- `query.provider.tsx` — TanStack Query wrapper
+Providers follow the `[name].provider.tsx` + `[name].provider.types.ts` convention, each exporting a custom hook that throws outside the provider. Located in `/src/context/`.
 
 ### State Management
 
-- Zustand with Immer for global state. Pattern: `[name].store.ts` + `.types.ts` + `.test.ts`
+- Zustand with Immer for global state when needed. Pattern: `[name].store.ts` + `.types.ts` + `.test.ts`
 - `useState` for component-local state
 - URL query parameters for filters/search (shareability over local state)
 - TanStack Query for server state

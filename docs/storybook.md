@@ -6,10 +6,7 @@
 
 ## Exempt Components (no stories required)
 
-- AuthenticatedLayout
-- AppSidebar
-- NavGroup
-- AppFormField
-- AppSubscribeErrorButton
-- AppSubscribeSubmitButton
-- All `*.page.tsx` files
+Stories are not required for:
+- All `*.page.tsx` files — page-level components that compose other components
+- Layout wrappers that only compose children (e.g., authenticated layout, sidebar shells)
+- Form system internals — field primitives and action buttons used only inside the form system (`/forms/components/`)
