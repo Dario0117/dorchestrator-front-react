@@ -30,6 +30,7 @@ import {
 import { queryClient } from '@context/query.provider';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { Route } from '@routes/(authenticated)/$organizationSlug/settings';
+import { useDeleteOrganizationMutation } from '@services/organizations/delete-organization.http-service';
 import { useOrganizationDetailsSuspenseQuery } from '@services/organizations/get-organization-details.http-service';
 import { useLeaveOrganizationMutation } from '@services/organizations/leave-organization.http-service';
 import {
@@ -74,6 +75,7 @@ export function OrganizationSettingsPage() {
   const setDefaultMutation = useSetDefaultOrganizationMutation();
   const removeMemberMutation = useRemoveMemberMutation();
   const leaveOrganizationMutation = useLeaveOrganizationMutation();
+  const deleteOrganizationMutation = useDeleteOrganizationMutation();
   const transferOwnershipMutation = useTransferOwnershipMutation();
   const [confirmRemove, setConfirmRemove] = useState<ListMembersMember | null>(
     null,
@@ -81,6 +83,7 @@ export function OrganizationSettingsPage() {
   const [confirmTransfer, setConfirmTransfer] =
     useState<ListMembersMember | null>(null);
   const [confirmLeave, setConfirmLeave] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const { page, size, search, role } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -488,16 +491,40 @@ export function OrganizationSettingsPage() {
 
             <div className="space-y-4">
               <h3 className="text-sm font-medium">Delete Organization</h3>
-              <p className="text-sm text-muted-foreground">
-                Deleting this organization will permanently remove all devices,
-                commands, and associated data. This action cannot be undone.
-              </p>
-              <Button
-                variant="destructive"
-                disabled
-              >
-                Delete Organization
-              </Button>
+              {currentOrganization.role === 'owner' ? (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    Deleting this organization will permanently remove all
+                    devices, commands, and associated data. This action cannot
+                    be undone.
+                  </p>
+                  <Button
+                    variant="destructive"
+                    disabled={deleteOrganizationMutation.isPending}
+                    onClick={() => setConfirmDelete(true)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {deleteOrganizationMutation.isPending
+                      ? 'Deleting...'
+                      : 'Delete Organization'}
+                  </Button>
+                </>
+              ) : (
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    Only the organization owner can delete this organization.
+                  </AlertDescription>
+                </Alert>
+              )}
+              {deleteOrganizationMutation.isError && (
+                <Alert variant="destructive">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    Failed to delete organization. Please try again.
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -575,6 +602,32 @@ export function OrganizationSettingsPage() {
           setConfirmLeave(false);
         }}
         confirmText="Leave"
+        destructive
+      />
+
+      <ConfirmDialog
+        open={confirmDelete}
+        onOpenChange={setConfirmDelete}
+        title="Delete Organization"
+        desc={`Are you sure you want to permanently delete ${currentOrganization.name}? All members, devices, commands, notifications, and audit logs will be permanently removed. This action cannot be undone.`}
+        handleConfirm={() => {
+          deleteOrganizationMutation.mutate(
+            {
+              params: {
+                path: {
+                  organizationId: currentOrganization.id,
+                },
+              },
+            },
+            {
+              onSuccess: async () => {
+                await navigate({ to: '/' });
+              },
+            },
+          );
+          setConfirmDelete(false);
+        }}
+        confirmText="Delete"
         destructive
       />
     </section>

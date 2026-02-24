@@ -15,6 +15,7 @@ import {
 } from '@services/notifications/mark-notification-read.http-service.handlers';
 import { checkSlugAvailabilityHandler } from '@services/organizations/check-slug-availability.http-service.handlers';
 import { createOrganizationHandler } from '@services/organizations/create-organization.http-service.handlers';
+import { deleteOrganizationHandler } from '@services/organizations/delete-organization.http-service.handlers';
 import { getOrganizationDetailsHandler } from '@services/organizations/get-organization-details.http-service.handlers';
 import { getOrganizationStatsHandler } from '@services/organizations/get-organization-stats.http-service.handlers';
 import { leaveOrganizationHandler } from '@services/organizations/leave-organization.http-service.handlers';
@@ -58,6 +59,7 @@ export function MSWSuccessHandlers() {
     listMembersHandler,
     removeMemberHandler,
     leaveOrganizationHandler,
+    deleteOrganizationHandler,
     transferOwnershipHandler,
     generateDeviceTokenHandler,
     listDevicesHandler,

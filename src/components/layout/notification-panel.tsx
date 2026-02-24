@@ -48,20 +48,22 @@ export function NotificationPanel() {
   const organizationSlug =
     'organizationSlug' in params ? (params.organizationSlug as string) : '';
   const currentOrganization = useCurrentOrganization();
-  const organizationId = currentOrganization.id;
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+
+  const organizationId = currentOrganization?.id ?? '';
 
   const { data: countData } = useQuery({
     ...getUnreadCountQueryOptions(organizationId),
     refetchInterval: NOTIFICATION_POLLING_INTERVAL_MS,
+    enabled: !!currentOrganization,
   });
 
   const notificationsQueryOptions =
     getNotificationsQueryOptions(organizationId);
   const { data: notificationsData } = useQuery({
     ...notificationsQueryOptions,
-    enabled: isOpen,
+    enabled: isOpen && !!currentOrganization,
   });
 
   const markReadMutation = useMarkNotificationReadMutation();
@@ -69,6 +71,10 @@ export function NotificationPanel() {
 
   const notifications = notificationsData?.responseData?.results ?? [];
   const unreadCount = countData?.responseData?.results?.count ?? 0;
+
+  if (!currentOrganization) {
+    return null;
+  }
 
   function handleNotificationClick(notification: NotificationEntry) {
     if (!notification.read) {

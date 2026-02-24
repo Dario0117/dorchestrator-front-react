@@ -17,6 +17,10 @@ export function AppSidebar() {
   const { data } = useUserOrganizationsSuspendedQuery();
   const allOrganizations = data.responseData?.results ?? [];
 
+  if (!currentOrganization) {
+    return null;
+  }
+
   const sidebarData = getSidebarData(currentOrganization, allOrganizations);
 
   return (
