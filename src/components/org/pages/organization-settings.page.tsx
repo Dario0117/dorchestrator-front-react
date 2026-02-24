@@ -27,25 +27,33 @@ import {
   TableHeader,
   TableRow,
 } from '@components/ui/table';
+import { queryClient } from '@context/query.provider';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { Route } from '@routes/(authenticated)/$organizationSlug/settings';
 import { useOrganizationDetailsSuspenseQuery } from '@services/organizations/get-organization-details.http-service';
+import { useLeaveOrganizationMutation } from '@services/organizations/leave-organization.http-service';
 import {
   type ListMembersMember,
   useListMembersSuspenseQuery,
 } from '@services/organizations/list-members.http-service';
 import type { MemberRole } from '@services/organizations/list-members.http-service.constants';
-import { useUserOrganizationsSuspendedQuery } from '@services/organizations/list-user-organizations.http-service';
+import {
+  useUserOrganizationsQueryOptions,
+  useUserOrganizationsSuspendedQuery,
+} from '@services/organizations/list-user-organizations.http-service';
 import { useRemoveMemberMutation } from '@services/organizations/remove-member.http-service';
 import { useSetDefaultOrganizationMutation } from '@services/organizations/set-default-organization.http-service';
+import { useTransferOwnershipMutation } from '@services/organizations/transfer-ownership.http-service';
 import { useProfileSuspendedQuery } from '@services/users/get-profile.http-service';
 import { useNavigate } from '@tanstack/react-router';
 import {
   AlertTriangle,
+  ArrowRightLeft,
   Building2,
   CheckCircle2,
   CreditCard,
   Info,
+  LogOut,
   Star,
   Trash2,
   Users,
@@ -65,9 +73,14 @@ export function OrganizationSettingsPage() {
   const currentOrganization = useCurrentOrganization();
   const setDefaultMutation = useSetDefaultOrganizationMutation();
   const removeMemberMutation = useRemoveMemberMutation();
+  const leaveOrganizationMutation = useLeaveOrganizationMutation();
+  const transferOwnershipMutation = useTransferOwnershipMutation();
   const [confirmRemove, setConfirmRemove] = useState<ListMembersMember | null>(
     null,
   );
+  const [confirmTransfer, setConfirmTransfer] =
+    useState<ListMembersMember | null>(null);
+  const [confirmLeave, setConfirmLeave] = useState(false);
 
   const { page, size, search, role } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -304,7 +317,10 @@ export function OrganizationSettingsPage() {
                   </TableHeader>
                   <TableBody>
                     {members.map((member) => (
-                      <TableRow key={member.id} className="h-14">
+                      <TableRow
+                        key={member.id}
+                        className="h-14"
+                      >
                         <TableCell className="font-medium">
                           {member.name}
                         </TableCell>
@@ -319,7 +335,18 @@ export function OrganizationSettingsPage() {
                           </Badge>
                         </TableCell>
                         {canManageMembers && (
-                          <TableCell>
+                          <TableCell className="flex gap-1">
+                            {currentOrganization.role === 'owner' &&
+                              member.role !== 'owner' && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title="Transfer ownership"
+                                  onClick={() => setConfirmTransfer(member)}
+                                >
+                                  <ArrowRightLeft className="h-4 w-4" />
+                                </Button>
+                              )}
                             {member.role !== 'owner' &&
                               member.userId !== profile.id && (
                                 <Button
@@ -412,17 +439,66 @@ export function OrganizationSettingsPage() {
               Danger Zone
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Deleting this organization will permanently remove all devices,
-              commands, and associated data. This action cannot be undone.
-            </p>
-            <Button
-              variant="destructive"
-              disabled
-            >
-              Delete Organization
-            </Button>
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium">Leave Organization</h3>
+              {currentOrganization.role === 'owner' ? (
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    You must transfer ownership before you can leave this
+                    organization.
+                  </AlertDescription>
+                </Alert>
+              ) : currentOrganization.role === 'admin' ? (
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    Admins cannot leave an organization. Ask the owner to remove
+                    you.
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    You will lose access to all devices, commands, and data in
+                    this organization.
+                  </p>
+                  <Button
+                    variant="destructive"
+                    disabled={leaveOrganizationMutation.isPending}
+                    onClick={() => setConfirmLeave(true)}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    {leaveOrganizationMutation.isPending
+                      ? 'Leaving...'
+                      : 'Leave Organization'}
+                  </Button>
+                </>
+              )}
+              {leaveOrganizationMutation.isError && (
+                <Alert variant="destructive">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    Failed to leave organization. Please try again.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium">Delete Organization</h3>
+              <p className="text-sm text-muted-foreground">
+                Deleting this organization will permanently remove all devices,
+                commands, and associated data. This action cannot be undone.
+              </p>
+              <Button
+                variant="destructive"
+                disabled
+              >
+                Delete Organization
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -448,6 +524,59 @@ export function OrganizationSettingsPage() {
           destructive
         />
       )}
+
+      {confirmTransfer && (
+        <ConfirmDialog
+          open={!!confirmTransfer}
+          onOpenChange={(open) => !open && setConfirmTransfer(null)}
+          title="Transfer Ownership"
+          desc={`Transfer ownership to ${confirmTransfer.name}? You will be demoted to member.`}
+          handleConfirm={() => {
+            transferOwnershipMutation.mutate({
+              params: {
+                path: {
+                  organizationId: currentOrganization.id,
+                },
+              },
+              body: {
+                newOwnerMemberId: confirmTransfer.id,
+              },
+            });
+            setConfirmTransfer(null);
+          }}
+          confirmText="Transfer"
+          destructive
+        />
+      )}
+
+      <ConfirmDialog
+        open={confirmLeave}
+        onOpenChange={setConfirmLeave}
+        title="Leave Organization"
+        desc={`Are you sure you want to leave ${currentOrganization.name}? You will lose access to all resources in this organization.`}
+        handleConfirm={() => {
+          leaveOrganizationMutation.mutate(
+            {
+              params: {
+                path: {
+                  organizationId: currentOrganization.id,
+                },
+              },
+            },
+            {
+              onSuccess: async () => {
+                await navigate({ to: '/' });
+                queryClient.invalidateQueries({
+                  queryKey: useUserOrganizationsQueryOptions.queryKey,
+                });
+              },
+            },
+          );
+          setConfirmLeave(false);
+        }}
+        confirmText="Leave"
+        destructive
+      />
     </section>
   );
 }

@@ -17,10 +17,12 @@ import { checkSlugAvailabilityHandler } from '@services/organizations/check-slug
 import { createOrganizationHandler } from '@services/organizations/create-organization.http-service.handlers';
 import { getOrganizationDetailsHandler } from '@services/organizations/get-organization-details.http-service.handlers';
 import { getOrganizationStatsHandler } from '@services/organizations/get-organization-stats.http-service.handlers';
+import { leaveOrganizationHandler } from '@services/organizations/leave-organization.http-service.handlers';
 import { listMembersHandler } from '@services/organizations/list-members.http-service.handlers';
 import { listUserOrganizationsHandler } from '@services/organizations/list-user-organizations.http-service.handlers';
 import { removeMemberHandler } from '@services/organizations/remove-member.http-service.handlers';
 import { setDefaultOrganizationHandler } from '@services/organizations/set-default-organization.http-service.handlers';
+import { transferOwnershipHandler } from '@services/organizations/transfer-ownership.http-service.handlers';
 import { getProfileHandler } from '@services/users/get-profile.http-service.handlers';
 import { loginHandler } from '@services/users/login.http-service.handlers';
 import { logoutHandler } from '@services/users/logout.http-service.handlers';
@@ -55,6 +57,8 @@ export function MSWSuccessHandlers() {
     setDefaultOrganizationHandler,
     listMembersHandler,
     removeMemberHandler,
+    leaveOrganizationHandler,
+    transferOwnershipHandler,
     generateDeviceTokenHandler,
     listDevicesHandler,
     removeDeviceHandler,
