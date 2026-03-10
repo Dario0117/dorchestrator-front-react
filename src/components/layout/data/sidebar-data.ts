@@ -1,7 +1,15 @@
 import type { SidebarData } from '@components/layout/data/sidebar-data.types';
 import { Logo } from '@components/logo';
 import type { OrganizationItem } from '@services/organizations/list-user-organizations.http-service';
-import { HardDrive, Home, ScrollText, Settings, Terminal } from 'lucide-react';
+import {
+  Bookmark,
+  HardDrive,
+  History,
+  Home,
+  ScrollText,
+  Settings,
+  Terminal,
+} from 'lucide-react';
 
 export function getSidebarData(
   organization: OrganizationItem,
@@ -34,6 +42,21 @@ export function getSidebarData(
             title: 'Commands',
             url: `${baseUrl}/commands`,
             icon: Terminal,
+          },
+          {
+            title: 'Sessions',
+            url: `${baseUrl}/terminal`,
+            icon: Terminal,
+          },
+          {
+            title: 'Session History',
+            url: `${baseUrl}/terminal/history`,
+            icon: History,
+          },
+          {
+            title: 'Bookmarks',
+            url: `${baseUrl}/terminal/bookmarks`,
+            icon: Bookmark,
           },
         ],
       },

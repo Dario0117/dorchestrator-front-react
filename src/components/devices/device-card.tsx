@@ -9,18 +9,29 @@ import {
 } from '@components/ui/card';
 import { cn } from '@lib/utils';
 import type { ListDevicesDevice } from '@services/devices/list-devices.http-service';
-import { Laptop, Monitor, Play, Trash2 } from 'lucide-react';
+import {
+  Laptop,
+  Monitor,
+  Play,
+  Settings,
+  Terminal,
+  Trash2,
+} from 'lucide-react';
 
 interface DeviceCardProps {
   device: ListDevicesDevice;
   onRemove: (deviceId: number) => void;
   onExecuteCommand: (deviceId: number) => void;
+  onOpenTerminal: (deviceId: number) => void;
+  onConfigure?: (deviceId: number) => void;
 }
 
 export function DeviceCard({
   device,
   onRemove,
   onExecuteCommand,
+  onOpenTerminal,
+  onConfigure,
 }: DeviceCardProps) {
   const getStatusIndicator = () => {
     if (!device.lastSeenAt) {
@@ -131,11 +142,28 @@ export function DeviceCard({
         <Button
           variant="outline"
           size="sm"
+          onClick={() => onOpenTerminal(device.id)}
+        >
+          <Terminal className="mr-2 h-4 w-4" />
+          Open Terminal
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => onExecuteCommand(device.id)}
         >
           <Play className="mr-2 h-4 w-4" />
           Execute Command
         </Button>
+        {onConfigure && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onConfigure(device.id)}
+          >
+            <Settings className="h-4 w-4" />
+          </Button>
+        )}
         <Button
           variant="outline"
           size="sm"

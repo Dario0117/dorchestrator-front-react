@@ -1,4 +1,5 @@
 import { Badge } from '@components/ui/badge';
+import { badgeStyles } from '@lib/badge-styles';
 import type { CommandStatus } from '@services/commands/list-commands.http-service.constants';
 import { CheckCircle2, Clock, Loader2, XCircle } from 'lucide-react';
 
@@ -6,8 +7,7 @@ const STATUS_CONFIG = {
   pending: {
     label: 'Pending',
     icon: Clock,
-    className:
-      'bg-amber-100 text-amber-800 border-transparent dark:bg-amber-900/30 dark:text-amber-400',
+    className: `${badgeStyles.amber} border-transparent`,
   },
   running: {
     label: 'Running',

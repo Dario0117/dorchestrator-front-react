@@ -10,6 +10,7 @@ import {
 } from '@components/ui/dropdown-menu';
 import { ScrollArea } from '@components/ui/scroll-area';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { badgeStyles } from '@lib/badge-styles';
 import { formatRelativeTime } from '@lib/format-relative-time';
 import { cn } from '@lib/utils';
 import { getUnreadCountQueryOptions } from '@services/notifications/get-unread-count.http-service';
@@ -28,12 +29,10 @@ import { useState } from 'react';
 type NotificationSeverity = NotificationEntry['severity'];
 
 const SEVERITY_STYLES: Record<NotificationSeverity, string> = {
-  success:
-    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-  error: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-  warning:
-    'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-  info: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  success: badgeStyles.green,
+  error: badgeStyles.red,
+  warning: badgeStyles.amber,
+  info: badgeStyles.blue,
 };
 
 const SEVERITY_LABELS: Record<NotificationSeverity, string> = {
@@ -98,6 +97,12 @@ export function NotificationPanel() {
         navigate({
           to: '/$organizationSlug',
           params: { organizationSlug },
+        });
+        break;
+      case 'terminal_session':
+        navigate({
+          to: '/$organizationSlug/terminal/$sessionId',
+          params: { organizationSlug, sessionId: notification.resourceId },
         });
         break;
       default: {

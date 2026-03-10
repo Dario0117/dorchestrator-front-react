@@ -94,7 +94,7 @@ describe('Sidebar Data', () => {
       return;
     }
 
-    expect(generalGroup.items).toHaveLength(3);
+    expect(generalGroup.items).toHaveLength(6);
 
     // Test Dashboard item
     const dashboardItem = generalGroup.items[0];
@@ -126,6 +126,39 @@ describe('Sidebar Data', () => {
       `/${testSlug}/commands`,
     );
     expect(commandsItem.icon).toBeDefined();
+
+    // Test Sessions item
+    const sessionsItem = generalGroup.items[3];
+    if (!sessionsItem) {
+      return;
+    }
+    expect(sessionsItem.title).toBe('Sessions');
+    expect('url' in sessionsItem && sessionsItem.url).toBe(
+      `/${testSlug}/terminal`,
+    );
+    expect(sessionsItem.icon).toBeDefined();
+
+    // Test Session History item
+    const sessionHistoryItem = generalGroup.items[4];
+    if (!sessionHistoryItem) {
+      return;
+    }
+    expect(sessionHistoryItem.title).toBe('Session History');
+    expect('url' in sessionHistoryItem && sessionHistoryItem.url).toBe(
+      `/${testSlug}/terminal/history`,
+    );
+    expect(sessionHistoryItem.icon).toBeDefined();
+
+    // Test Bookmarks item
+    const bookmarksItem = generalGroup.items[5];
+    if (!bookmarksItem) {
+      return;
+    }
+    expect(bookmarksItem.title).toBe('Bookmarks');
+    expect('url' in bookmarksItem && bookmarksItem.url).toBe(
+      `/${testSlug}/terminal/bookmarks`,
+    );
+    expect(bookmarksItem.icon).toBeDefined();
   });
 
   it('should have valid nav items in Settings group', () => {

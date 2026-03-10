@@ -24,12 +24,11 @@ import {
   TableRow,
 } from '@components/ui/table';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
 import { Route } from '@routes/(authenticated)/$organizationSlug/audit-logs/index';
 import { useAuditLogsSuspenseQuery } from '@services/audit-logs/list-audit-logs.http-service';
 import { useNavigate } from '@tanstack/react-router';
 import { ScrollText, Search } from 'lucide-react';
-
-const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 
 export function AuditLogsListPage() {
   const currentOrganization = useCurrentOrganization();

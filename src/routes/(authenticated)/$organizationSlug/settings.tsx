@@ -2,6 +2,7 @@ import { OrganizationSettingsPage } from '@components/org/pages/organization-set
 import { useOrganizationDetailsQueryOptions } from '@services/organizations/get-organization-details.http-service';
 import { useListMembersQueryOptions } from '@services/organizations/list-members.http-service';
 import { MEMBER_ROLES } from '@services/organizations/list-members.http-service.constants';
+import { useGetTerminalConfigQueryOptions } from '@services/terminal/get-terminal-config.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod/v4';
 
@@ -27,6 +28,13 @@ export const Route = createFileRoute(
     const currentOrganization = ctx.context.getCurrentOrganizationFromSlug(
       ctx.params.organizationSlug,
     );
+    const isAdmin =
+      currentOrganization.role === 'admin' ||
+      currentOrganization.role === 'owner';
+    const terminalConfigOptions = useGetTerminalConfigQueryOptions(
+      currentOrganization.id,
+    );
+
     await Promise.all([
       ctx.context.queryClient.ensureQueryData(
         useOrganizationDetailsQueryOptions(currentOrganization.id),
@@ -39,6 +47,9 @@ export const Route = createFileRoute(
           role: ctx.deps.role,
         }),
       ),
+      ...(isAdmin
+        ? [ctx.context.queryClient.ensureQueryData(terminalConfigOptions)]
+        : []),
     ]);
   },
 });

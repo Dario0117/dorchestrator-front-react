@@ -44,6 +44,8 @@ better-auth client (`better-auth.client.ts`) + cookie-based sessions. HTTP middl
 
 TanStack Router with file-based routing. Route groups use parentheses `(authenticated)` / `(unauthenticated)` without affecting URLs. Each group has a `route.tsx` wrapper for layout and middleware. Dynamic routes use `$param` syntax (e.g., `update-password.$token.tsx`). Router context in `/types/router.types.ts`.
 
+**Route files must stay lean.** Route files in `/src/routes/` should only contain route configuration: `createFileRoute` call, `validateSearch`, `loader`, `errorComponent` (using `RouteErrorFallback`), and a thin component that wraps a page component in `<Suspense>`. All meaningful logic — data fetching, conditional rendering, state management — must live in a dedicated page component under `/src/components/{domain}/pages/`. Route files should not contain business logic or UI beyond a Suspense fallback skeleton.
+
 ### Forms
 
 TanStack Form + Zod validation. Each form has:
@@ -56,6 +58,10 @@ TanStack Form + Zod validation. Each form has:
 ### Context Providers
 
 Providers follow the `[name].provider.tsx` + `[name].provider.types.ts` convention, each exporting a custom hook that throws outside the provider. Located in `/src/context/`.
+
+### Data Fetching & Pre-fetching
+
+When a route loader pre-fetches data via `ensureQueryData`, the corresponding page component **must** use `useSuspenseQuery` (not `useQuery`) to read from the cache. This avoids duplicate network requests — the loader fills the cache, and `useSuspenseQuery` reads from it synchronously (or suspends if not ready). Never pair `ensureQueryData` in a loader with `useQuery` in the page component, as `useQuery` will trigger a second fetch.
 
 ### State Management
 

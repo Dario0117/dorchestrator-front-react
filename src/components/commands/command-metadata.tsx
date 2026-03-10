@@ -1,5 +1,6 @@
 import { CommandStatusBadge } from '@components/commands/command-status-badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+import { formatDurationBetween } from '@lib/format-duration';
 import type { GetCommandDetail } from '@services/commands/get-command.http-service';
 import { Clock, Monitor, Timer, User } from 'lucide-react';
 
@@ -22,26 +23,11 @@ function formatTimestamp(dateString: string | null) {
   });
 }
 
-function formatDuration(startedAt: string | null, completedAt: string | null) {
-  if (!startedAt || !completedAt) {
-    return null;
-  }
-  const durationMs =
-    new Date(completedAt).getTime() - new Date(startedAt).getTime();
-  if (durationMs < 1000) {
-    return `${durationMs}ms`;
-  }
-  const seconds = Math.floor(durationMs / 1000);
-  if (seconds < 60) {
-    return `${seconds}s`;
-  }
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes}m ${remainingSeconds}s`;
-}
-
 export function CommandMetadata({ command }: CommandMetadataProps) {
-  const duration = formatDuration(command.startedAt, command.completedAt);
+  const duration = formatDurationBetween(
+    command.startedAt,
+    command.completedAt,
+  );
 
   return (
     <Card>

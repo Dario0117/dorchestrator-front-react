@@ -64,4 +64,5 @@ fetchClient.use(tracePropagationMiddleware);
 fetchClient.use(idempotencyMiddleware);
 fetchClient.use(authMiddleware);
 
+export { fetchClient };
 export const $api = createClient(fetchClient);

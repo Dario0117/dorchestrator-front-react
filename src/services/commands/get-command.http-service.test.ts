@@ -12,13 +12,13 @@ const makeQueryState = (status?: string) => ({
 
 describe('useGetCommandQueryOptions', () => {
   describe('refetchInterval', () => {
-    it('should return 5000ms for pending status', () => {
+    it('should return fallback interval for pending status', () => {
       const options = useGetCommandQueryOptions('org-1', 1);
       const result = options.refetchInterval(makeQueryState('pending'));
       expect(result).toBe(PENDING_REFETCH_INTERVAL_MS);
     });
 
-    it('should return 3000ms for running status', () => {
+    it('should return fallback interval for running status', () => {
       const options = useGetCommandQueryOptions('org-1', 1);
       const result = options.refetchInterval(makeQueryState('running'));
       expect(result).toBe(RUNNING_REFETCH_INTERVAL_MS);

@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 
 const mockOnRemove = vi.fn();
 const mockOnExecuteCommand = vi.fn();
+const mockOnOpenTerminal = vi.fn();
 
 function renderDeviceCard(device: ListDevicesDevice) {
   return renderWithProviders(
@@ -13,6 +14,7 @@ function renderDeviceCard(device: ListDevicesDevice) {
       device={device}
       onRemove={mockOnRemove}
       onExecuteCommand={mockOnExecuteCommand}
+      onOpenTerminal={mockOnOpenTerminal}
     />,
   );
 }
@@ -21,6 +23,7 @@ describe('DeviceCard', () => {
   beforeEach(() => {
     mockOnRemove.mockClear();
     mockOnExecuteCommand.mockClear();
+    mockOnOpenTerminal.mockClear();
   });
 
   it('should render device name', () => {

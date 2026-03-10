@@ -24,6 +24,17 @@ import { listUserOrganizationsHandler } from '@services/organizations/list-user-
 import { removeMemberHandler } from '@services/organizations/remove-member.http-service.handlers';
 import { setDefaultOrganizationHandler } from '@services/organizations/set-default-organization.http-service.handlers';
 import { transferOwnershipHandler } from '@services/organizations/transfer-ownership.http-service.handlers';
+import { createTerminalSessionHandler } from '@services/terminal/create-terminal-session.http-service.handlers';
+import { getDeviceConfigHandler } from '@services/terminal/get-device-config.http-service.handlers';
+import { getEffectiveCeilingHandler } from '@services/terminal/get-effective-ceiling.http-service.handlers';
+import { getTerminalConfigHandler } from '@services/terminal/get-terminal-config.http-service.handlers';
+import { getTerminalSessionHandler } from '@services/terminal/get-terminal-session.http-service.handlers';
+import { listSessionHistoryHandler } from '@services/terminal/list-session-history.http-service.handlers';
+import { listTerminalSessionsHandler } from '@services/terminal/list-terminal-sessions.http-service.handlers';
+import { terminalAuthHandler } from '@services/terminal/terminal-auth.http-service.handlers';
+import { unlockTerminalSessionHandler } from '@services/terminal/unlock-terminal-session.http-service.handlers';
+import { updateDeviceConfigHandler } from '@services/terminal/update-device-config.http-service.handlers';
+import { updateTerminalConfigHandler } from '@services/terminal/update-terminal-config.http-service.handlers';
 import { getProfileHandler } from '@services/users/get-profile.http-service.handlers';
 import { loginHandler } from '@services/users/login.http-service.handlers';
 import { logoutHandler } from '@services/users/logout.http-service.handlers';
@@ -72,5 +83,16 @@ export function MSWSuccessHandlers() {
     getUnreadCountHandler,
     markNotificationReadHandler,
     markAllNotificationsReadHandler,
+    terminalAuthHandler,
+    unlockTerminalSessionHandler,
+    createTerminalSessionHandler,
+    getTerminalSessionHandler,
+    listTerminalSessionsHandler,
+    listSessionHistoryHandler,
+    getTerminalConfigHandler,
+    updateTerminalConfigHandler,
+    getDeviceConfigHandler,
+    updateDeviceConfigHandler,
+    getEffectiveCeilingHandler,
   ];
 }

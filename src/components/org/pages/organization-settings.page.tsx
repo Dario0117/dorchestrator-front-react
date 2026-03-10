@@ -1,6 +1,7 @@
 import { SearchInput } from '@components/commands/filters/search-input';
 import { SelectFilter } from '@components/commands/filters/status-filter';
 import { ConfirmDialog } from '@components/confirm-dialog';
+import { TerminalConfigSection } from '@components/terminal/terminal-config-section';
 import { Alert, AlertDescription } from '@components/ui/alert';
 import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
@@ -29,6 +30,7 @@ import {
 } from '@components/ui/table';
 import { queryClient } from '@context/query.provider';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
 import { Route } from '@routes/(authenticated)/$organizationSlug/settings';
 import { useDeleteOrganizationMutation } from '@services/organizations/delete-organization.http-service';
 import { useOrganizationDetailsSuspenseQuery } from '@services/organizations/get-organization-details.http-service';
@@ -60,8 +62,6 @@ import {
   Users,
 } from 'lucide-react';
 import { useState } from 'react';
-
-const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 
 const ROLE_OPTIONS: { value: MemberRole; label: string }[] = [
   { value: 'member', label: 'Member' },
@@ -271,6 +271,8 @@ export function OrganizationSettingsPage() {
             </Alert>
           </CardContent>
         </Card>
+
+        {canManageMembers && <TerminalConfigSection />}
 
         <Card>
           <CardHeader>

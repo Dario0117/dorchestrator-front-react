@@ -9,11 +9,13 @@ import { ThemeSwitch } from '@components/theme-switch';
 import { SidebarInset, SidebarProvider } from '@components/ui/sidebar';
 import { LayoutProvider } from '@context/layout.provider';
 import { SearchProvider } from '@context/search.provider';
+import { useWebSocketEvents } from '@hooks/use-websocket-events';
 import { getCookie } from '@lib/cookies.utils';
 import { cn } from '@lib/utils';
 import { Outlet, useParams } from '@tanstack/react-router';
 
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
+  useWebSocketEvents();
   const defaultOpen = getCookie('sidebar_state') !== 'false';
   const params = useParams({ strict: false });
   const hasOrganizationSlug = 'organizationSlug' in params;

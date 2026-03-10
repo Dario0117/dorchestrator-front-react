@@ -5,6 +5,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 const meta = {
   title: 'Devices/DeviceCard',
   component: DeviceCard,
+  args: {
+    onOpenTerminal: (deviceId) => {
+      console.log('Open terminal on device:', deviceId);
+    },
+  },
   parameters: {
     layout: 'centered',
     docs: {
@@ -204,6 +209,7 @@ export const Interactive: Story = {
     device: onlineDevice,
     onRemove: (deviceId) => console.log('Remove device:', deviceId),
     onExecuteCommand: (deviceId) => console.log('Execute command:', deviceId),
+    onOpenTerminal: (deviceId) => console.log('Open terminal:', deviceId),
   },
   render: () => {
     const devices: ListDevicesDevice[] = [
@@ -223,6 +229,9 @@ export const Interactive: Story = {
             }}
             onExecuteCommand={(deviceId) => {
               console.log('Execute command on device:', deviceId);
+            }}
+            onOpenTerminal={(deviceId) => {
+              console.log('Open terminal on device:', deviceId);
             }}
           />
         ))}

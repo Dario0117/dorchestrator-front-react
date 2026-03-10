@@ -2,6 +2,9 @@ import { ExecuteCommandModal } from '@components/commands/execute-command-modal'
 import { ConfirmDialog } from '@components/confirm-dialog';
 import { AddDeviceModal } from '@components/devices/add-device-modal';
 import { DeviceCard } from '@components/devices/device-card';
+import { DeviceConfigDialog } from '@components/devices/device-config-dialog';
+import { CreateTerminalSessionDialog } from '@components/terminal/create-terminal-session-dialog';
+import { TerminalReauthModal } from '@components/terminal/terminal-reauth-modal';
 import { Button } from '@components/ui/button';
 import { EmptyState } from '@components/ui/empty-state';
 import {
@@ -33,6 +36,23 @@ export function DevicesPage() {
     id: number;
     name: string;
   } | null>(null);
+  const [terminalDevice, setTerminalDevice] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [sessionConfigDevice, setSessionConfigDevice] = useState<{
+    id: number;
+    name: string;
+    terminalAuthToken: string;
+  } | null>(null);
+  const [configDevice, setConfigDevice] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+
+  const isAdmin =
+    currentOrganization.role === 'admin' ||
+    currentOrganization.role === 'owner';
 
   const organizationId = currentOrganization.id;
 
@@ -92,6 +112,21 @@ export function DevicesPage() {
                       name: device.deviceName,
                     });
                   }}
+                  onOpenTerminal={() => {
+                    setTerminalDevice({
+                      id: device.id,
+                      name: device.deviceName,
+                    });
+                  }}
+                  onConfigure={
+                    isAdmin
+                      ? () =>
+                          setConfigDevice({
+                            id: device.id,
+                            name: device.deviceName,
+                          })
+                      : undefined
+                  }
                 />
               ))}
             </div>
@@ -153,6 +188,65 @@ export function DevicesPage() {
             }}
             organizationId={organizationId}
             pinnedDevice={executeCommandDevice}
+          />
+        )}
+
+        {terminalDevice && (
+          <TerminalReauthModal
+            open={true}
+            onOpenChange={(open) => {
+              if (!open) {
+                setTerminalDevice(null);
+              }
+            }}
+            organizationId={organizationId}
+            onSuccess={(terminalAuthToken) => {
+              setSessionConfigDevice({
+                id: terminalDevice.id,
+                name: terminalDevice.name,
+                terminalAuthToken,
+              });
+              setTerminalDevice(null);
+            }}
+          />
+        )}
+
+        {sessionConfigDevice && (
+          <CreateTerminalSessionDialog
+            open={true}
+            onOpenChange={(open) => {
+              if (!open) {
+                setSessionConfigDevice(null);
+              }
+            }}
+            organizationId={organizationId}
+            deviceId={sessionConfigDevice.id}
+            deviceName={sessionConfigDevice.name}
+            terminalAuthToken={sessionConfigDevice.terminalAuthToken}
+            onSessionCreated={(sessionId) => {
+              setSessionConfigDevice(null);
+              navigate({
+                to: '/$organizationSlug/terminal/$sessionId',
+                params: {
+                  organizationSlug: currentOrganization.slug,
+                  sessionId: String(sessionId),
+                },
+              });
+            }}
+          />
+        )}
+
+        {configDevice && (
+          <DeviceConfigDialog
+            open={true}
+            onOpenChange={(open) => {
+              if (!open) {
+                setConfigDevice(null);
+              }
+            }}
+            organizationId={organizationId}
+            deviceId={configDevice.id}
+            deviceName={configDevice.name}
           />
         )}
 

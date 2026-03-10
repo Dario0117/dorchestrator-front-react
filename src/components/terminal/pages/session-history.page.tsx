@@ -1,0 +1,495 @@
+import { SessionHistoryExportDialog } from '@components/terminal/session-history-export-dialog';
+import { Badge } from '@components/ui/badge';
+import { Button } from '@components/ui/button';
+import { EmptyState } from '@components/ui/empty-state';
+import { Input } from '@components/ui/input';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@components/ui/pagination';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ui/select';
+import { Skeleton } from '@components/ui/skeleton';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@components/ui/table';
+import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { badgeStyles } from '@lib/badge-styles';
+import { formatBytes } from '@lib/format-bytes';
+import { formatDurationCompact } from '@lib/format-duration';
+import { formatRelativeTime } from '@lib/format-relative-time';
+import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
+import { Route } from '@routes/(authenticated)/$organizationSlug/terminal/history';
+import { useDevicesQueryOptions } from '@services/devices/list-devices.http-service';
+import { useListMembersQueryOptions } from '@services/organizations/list-members.http-service';
+import type { SessionHistoryItem } from '@services/terminal/list-session-history.http-service';
+import { useSessionHistorySuspenseQuery } from '@services/terminal/list-session-history.http-service';
+import type { SessionHistoryStatus } from '@services/terminal/list-session-history.http-service.constants';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { Download, History } from 'lucide-react';
+import { useState } from 'react';
+
+const STATUS_BADGE_STYLES = {
+  active: badgeStyles.green,
+  created: badgeStyles.blue,
+  locked: badgeStyles.yellow,
+  terminated: badgeStyles.gray,
+} as const satisfies Record<SessionHistoryStatus, string>;
+
+function StatusBadge({ status }: { status: SessionHistoryItem['status'] }) {
+  return (
+    <Badge
+      variant="outline"
+      className={STATUS_BADGE_STYLES[status]}
+    >
+      {status}
+    </Badge>
+  );
+}
+
+function SessionHistoryTableSkeleton() {
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>User</TableHead>
+            <TableHead>Device</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Created</TableHead>
+            <TableHead>Terminated</TableHead>
+            <TableHead>Duration</TableHead>
+            <TableHead>Recording</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5'].map((id) => (
+            <TableRow key={id}>
+              <TableCell>
+                <Skeleton className="h-4 w-24" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-28" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-5 w-16" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-20" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-20" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-14" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-14" />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+function SessionHistoryPage() {
+  const currentOrganization = useCurrentOrganization();
+  const { page, size, status, deviceId, userId, dateFrom, dateTo } =
+    Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+
+  const organizationId = currentOrganization.id;
+
+  const { data } = useSessionHistorySuspenseQuery(organizationId, {
+    page,
+    size,
+    status,
+    deviceId,
+    userId,
+    dateFrom,
+    dateTo,
+  });
+
+  const { data: devicesData } = useQuery(
+    useDevicesQueryOptions(organizationId, 1, 100),
+  );
+  const { data: membersData } = useQuery(
+    useListMembersQueryOptions(organizationId, { page: 1, size: 100 }),
+  );
+
+  const devices = devicesData?.responseData?.results ?? [];
+  const members = membersData?.responseData?.results ?? [];
+
+  const sessions = data.responseData?.results || [];
+  const totalPages = data.responseData?.totalPages || 0;
+  const totalResults = data.responseData?.totalResults || 0;
+  const hasNext = data.responseData?.hasNext || false;
+  const hasPrevious = data.responseData?.hasPrevious || false;
+
+  const handlePageChange = (newPage: number) => {
+    navigate({ search: (prev) => ({ ...prev, page: newPage }) });
+  };
+
+  const handleSizeChange = (newSize: number) => {
+    navigate({ search: (prev) => ({ ...prev, page: 1, size: newSize }) });
+  };
+
+  const handleStatusFilter = (newStatus: string) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: 1,
+        status: newStatus === 'all' ? undefined : newStatus,
+      }),
+    });
+  };
+
+  const handleDeviceFilter = (value: string) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: 1,
+        deviceId: value === 'all' ? undefined : Number(value),
+      }),
+    });
+  };
+
+  const handleUserFilter = (value: string) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: 1,
+        userId: value === 'all' ? undefined : value,
+      }),
+    });
+  };
+
+  const handleDateFromFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: 1,
+        dateFrom: value ? `${value}T00:00:00.000Z` : undefined,
+      }),
+    });
+  };
+
+  const handleDateToFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: 1,
+        dateTo: value ? `${value}T23:59:59.999Z` : undefined,
+      }),
+    });
+  };
+
+  const handleClearFilters = () => {
+    navigate({
+      search: { page: 1, size },
+    });
+  };
+
+  const handleRowClick = (sessionId: number) => {
+    navigate({
+      to: '/$organizationSlug/terminal/$sessionId',
+      params: {
+        organizationSlug: currentOrganization.slug,
+        sessionId: String(sessionId),
+      },
+    });
+  };
+
+  const hasActiveFilters =
+    status !== undefined ||
+    deviceId !== undefined ||
+    userId !== undefined ||
+    dateFrom !== undefined ||
+    dateTo !== undefined;
+
+  return (
+    <section className="p-6 md:p-10 space-y-6">
+      <div className="py-6">
+        <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <h1 className="text-2xl font-bold font-serif">Session History</h1>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setExportDialogOpen(true)}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+        </div>
+
+        <SessionHistoryExportDialog
+          open={exportDialogOpen}
+          onOpenChange={setExportDialogOpen}
+          organizationId={organizationId}
+          filters={{ status, deviceId, userId, dateFrom, dateTo }}
+        />
+
+        <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:flex-wrap">
+          <Select
+            value={status ?? 'all'}
+            onValueChange={handleStatusFilter}
+          >
+            <SelectTrigger
+              aria-label="Filter by status"
+              className="h-11 w-auto text-base md:text-sm"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All statuses</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="created">Created</SelectItem>
+              <SelectItem value="locked">Locked</SelectItem>
+              <SelectItem value="terminated">Terminated</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={deviceId !== undefined ? String(deviceId) : 'all'}
+            onValueChange={handleDeviceFilter}
+          >
+            <SelectTrigger
+              aria-label="Filter by device"
+              className="h-11 w-auto text-base md:text-sm"
+            >
+              <SelectValue placeholder="All devices" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All devices</SelectItem>
+              {devices.map((device) => (
+                <SelectItem
+                  key={device.id}
+                  value={String(device.id)}
+                >
+                  {device.deviceName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={userId ?? 'all'}
+            onValueChange={handleUserFilter}
+          >
+            <SelectTrigger
+              aria-label="Filter by user"
+              className="h-11 w-auto text-base md:text-sm"
+            >
+              <SelectValue placeholder="All users" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All users</SelectItem>
+              {members.map((member) => (
+                <SelectItem
+                  key={member.userId}
+                  value={member.userId}
+                >
+                  {member.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Input
+            type="date"
+            aria-label="From date"
+            value={dateFrom?.slice(0, 10) ?? ''}
+            onChange={handleDateFromFilter}
+            className="h-11 w-auto text-base md:text-sm"
+            placeholder="From"
+          />
+
+          <Input
+            type="date"
+            aria-label="To date"
+            value={dateTo?.slice(0, 10) ?? ''}
+            onChange={handleDateToFilter}
+            className="h-11 w-auto text-base md:text-sm"
+            placeholder="To"
+          />
+
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-11 text-base md:text-sm"
+              onClick={handleClearFilters}
+            >
+              Clear filters
+            </Button>
+          )}
+        </div>
+
+        {sessions.length === 0 ? (
+          hasActiveFilters ? (
+            <EmptyState
+              icon={History}
+              title="No sessions match your filters"
+              description="Try adjusting your filters to find sessions."
+              action={
+                <Button
+                  variant="outline"
+                  onClick={handleClearFilters}
+                >
+                  Clear Filters
+                </Button>
+              }
+            />
+          ) : (
+            <EmptyState
+              icon={History}
+              title="No session history"
+              description="Session history will appear here as terminal sessions are created."
+            />
+          )
+        ) : (
+          <>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>Device</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead>Terminated</TableHead>
+                    <TableHead>Duration</TableHead>
+                    <TableHead>Recording</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sessions.map((session) => (
+                    <TableRow
+                      key={session.id}
+                      className="cursor-pointer"
+                      onClick={() => handleRowClick(session.id)}
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleRowClick(session.id);
+                        }
+                      }}
+                    >
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{session.userName}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {session.userEmail}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {session.deviceName}
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={session.status} />
+                      </TableCell>
+                      <TableCell>
+                        {formatRelativeTime(session.createdAt)}
+                      </TableCell>
+                      <TableCell>
+                        {session.terminatedAt
+                          ? formatRelativeTime(session.terminatedAt)
+                          : '—'}
+                      </TableCell>
+                      <TableCell>
+                        {formatDurationCompact(session.durationSeconds * 1000)}
+                      </TableCell>
+                      <TableCell>
+                        {formatBytes(session.recordingSizeBytes)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="mt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
+              <span className="text-sm text-muted-foreground">
+                {totalResults} total{' '}
+                {totalResults === 1 ? 'session' : 'sessions'}
+              </span>
+
+              <div className="flex flex-col items-center gap-4 md:flex-row">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => handlePageChange(page - 1)}
+                        aria-disabled={!hasPrevious}
+                        disabled={!hasPrevious}
+                      />
+                    </PaginationItem>
+
+                    <PaginationItem>
+                      <output className="px-2 text-sm">
+                        Page {page} of {totalPages}
+                      </output>
+                    </PaginationItem>
+
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() => handlePageChange(page + 1)}
+                        aria-disabled={!hasNext}
+                        disabled={!hasNext}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+
+                <Select
+                  value={String(size)}
+                  onValueChange={(value) => handleSizeChange(Number(value))}
+                >
+                  <SelectTrigger
+                    aria-label="Page size"
+                    className="h-11 w-auto text-base md:text-sm"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PAGE_SIZE_OPTIONS.map((option) => (
+                      <SelectItem
+                        key={option}
+                        value={String(option)}
+                      >
+                        {option} per page
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+  );
+}
+
+export { SessionHistoryPage, SessionHistoryTableSkeleton };

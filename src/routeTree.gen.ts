@@ -24,9 +24,15 @@ import { Route as authenticatedOrganizationSlugProjectsRouteImport } from './rou
 import { Route as authenticatedOrganizationSlugDraftsRouteImport } from './routes/(authenticated)/$organizationSlug/drafts'
 import { Route as authenticatedOrganizationSlugDevicesRouteImport } from './routes/(authenticated)/$organizationSlug/devices'
 import { Route as authenticatedOrganizationSlugApiRouteImport } from './routes/(authenticated)/$organizationSlug/api'
+import { Route as authenticatedOrganizationSlugTerminalIndexRouteImport } from './routes/(authenticated)/$organizationSlug/terminal/index'
 import { Route as authenticatedOrganizationSlugCommandsIndexRouteImport } from './routes/(authenticated)/$organizationSlug/commands/index'
 import { Route as authenticatedOrganizationSlugAuditLogsIndexRouteImport } from './routes/(authenticated)/$organizationSlug/audit-logs/index'
+import { Route as authenticatedOrganizationSlugTerminalHistoryRouteImport } from './routes/(authenticated)/$organizationSlug/terminal/history'
+import { Route as authenticatedOrganizationSlugTerminalBookmarksRouteImport } from './routes/(authenticated)/$organizationSlug/terminal/bookmarks'
+import { Route as authenticatedOrganizationSlugTerminalSessionIdRouteImport } from './routes/(authenticated)/$organizationSlug/terminal/$sessionId'
 import { Route as authenticatedOrganizationSlugCommandsCommandIdRouteImport } from './routes/(authenticated)/$organizationSlug/commands/$commandId'
+import { Route as authenticatedOrganizationSlugTerminalSharedShareTokenRouteImport } from './routes/(authenticated)/$organizationSlug/terminal/shared/$shareToken'
+import { Route as authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRouteImport } from './routes/(authenticated)/$organizationSlug/terminal/sessions/$sessionId/recording'
 
 const unauthenticatedRouteRoute = unauthenticatedRouteRouteImport.update({
   id: '/(unauthenticated)',
@@ -111,6 +117,12 @@ const authenticatedOrganizationSlugApiRoute =
     path: '/api',
     getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
   } as any)
+const authenticatedOrganizationSlugTerminalIndexRoute =
+  authenticatedOrganizationSlugTerminalIndexRouteImport.update({
+    id: '/terminal/',
+    path: '/terminal/',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
 const authenticatedOrganizationSlugCommandsIndexRoute =
   authenticatedOrganizationSlugCommandsIndexRouteImport.update({
     id: '/commands/',
@@ -123,12 +135,44 @@ const authenticatedOrganizationSlugAuditLogsIndexRoute =
     path: '/audit-logs/',
     getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
   } as any)
+const authenticatedOrganizationSlugTerminalHistoryRoute =
+  authenticatedOrganizationSlugTerminalHistoryRouteImport.update({
+    id: '/terminal/history',
+    path: '/terminal/history',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
+const authenticatedOrganizationSlugTerminalBookmarksRoute =
+  authenticatedOrganizationSlugTerminalBookmarksRouteImport.update({
+    id: '/terminal/bookmarks',
+    path: '/terminal/bookmarks',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
+const authenticatedOrganizationSlugTerminalSessionIdRoute =
+  authenticatedOrganizationSlugTerminalSessionIdRouteImport.update({
+    id: '/terminal/$sessionId',
+    path: '/terminal/$sessionId',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
 const authenticatedOrganizationSlugCommandsCommandIdRoute =
   authenticatedOrganizationSlugCommandsCommandIdRouteImport.update({
     id: '/commands/$commandId',
     path: '/commands/$commandId',
     getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
   } as any)
+const authenticatedOrganizationSlugTerminalSharedShareTokenRoute =
+  authenticatedOrganizationSlugTerminalSharedShareTokenRouteImport.update({
+    id: '/terminal/shared/$shareToken',
+    path: '/terminal/shared/$shareToken',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
+const authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRoute =
+  authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRouteImport.update(
+    {
+      id: '/terminal/sessions/$sessionId/recording',
+      path: '/terminal/sessions/$sessionId/recording',
+      getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof authenticatedIndexRoute
@@ -145,8 +189,14 @@ export interface FileRoutesByFullPath {
   '/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
   '/$organizationSlug/': typeof authenticatedOrganizationSlugIndexRoute
   '/$organizationSlug/commands/$commandId': typeof authenticatedOrganizationSlugCommandsCommandIdRoute
+  '/$organizationSlug/terminal/$sessionId': typeof authenticatedOrganizationSlugTerminalSessionIdRoute
+  '/$organizationSlug/terminal/bookmarks': typeof authenticatedOrganizationSlugTerminalBookmarksRoute
+  '/$organizationSlug/terminal/history': typeof authenticatedOrganizationSlugTerminalHistoryRoute
   '/$organizationSlug/audit-logs': typeof authenticatedOrganizationSlugAuditLogsIndexRoute
   '/$organizationSlug/commands': typeof authenticatedOrganizationSlugCommandsIndexRoute
+  '/$organizationSlug/terminal': typeof authenticatedOrganizationSlugTerminalIndexRoute
+  '/$organizationSlug/terminal/shared/$shareToken': typeof authenticatedOrganizationSlugTerminalSharedShareTokenRoute
+  '/$organizationSlug/terminal/sessions/$sessionId/recording': typeof authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authenticatedIndexRoute
@@ -162,8 +212,14 @@ export interface FileRoutesByTo {
   '/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
   '/$organizationSlug': typeof authenticatedOrganizationSlugIndexRoute
   '/$organizationSlug/commands/$commandId': typeof authenticatedOrganizationSlugCommandsCommandIdRoute
+  '/$organizationSlug/terminal/$sessionId': typeof authenticatedOrganizationSlugTerminalSessionIdRoute
+  '/$organizationSlug/terminal/bookmarks': typeof authenticatedOrganizationSlugTerminalBookmarksRoute
+  '/$organizationSlug/terminal/history': typeof authenticatedOrganizationSlugTerminalHistoryRoute
   '/$organizationSlug/audit-logs': typeof authenticatedOrganizationSlugAuditLogsIndexRoute
   '/$organizationSlug/commands': typeof authenticatedOrganizationSlugCommandsIndexRoute
+  '/$organizationSlug/terminal': typeof authenticatedOrganizationSlugTerminalIndexRoute
+  '/$organizationSlug/terminal/shared/$shareToken': typeof authenticatedOrganizationSlugTerminalSharedShareTokenRoute
+  '/$organizationSlug/terminal/sessions/$sessionId/recording': typeof authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -183,8 +239,14 @@ export interface FileRoutesById {
   '/(authenticated)/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
   '/(authenticated)/$organizationSlug/': typeof authenticatedOrganizationSlugIndexRoute
   '/(authenticated)/$organizationSlug/commands/$commandId': typeof authenticatedOrganizationSlugCommandsCommandIdRoute
+  '/(authenticated)/$organizationSlug/terminal/$sessionId': typeof authenticatedOrganizationSlugTerminalSessionIdRoute
+  '/(authenticated)/$organizationSlug/terminal/bookmarks': typeof authenticatedOrganizationSlugTerminalBookmarksRoute
+  '/(authenticated)/$organizationSlug/terminal/history': typeof authenticatedOrganizationSlugTerminalHistoryRoute
   '/(authenticated)/$organizationSlug/audit-logs/': typeof authenticatedOrganizationSlugAuditLogsIndexRoute
   '/(authenticated)/$organizationSlug/commands/': typeof authenticatedOrganizationSlugCommandsIndexRoute
+  '/(authenticated)/$organizationSlug/terminal/': typeof authenticatedOrganizationSlugTerminalIndexRoute
+  '/(authenticated)/$organizationSlug/terminal/shared/$shareToken': typeof authenticatedOrganizationSlugTerminalSharedShareTokenRoute
+  '/(authenticated)/$organizationSlug/terminal/sessions/$sessionId/recording': typeof authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -203,8 +265,14 @@ export interface FileRouteTypes {
     | '/$organizationSlug/settings'
     | '/$organizationSlug/'
     | '/$organizationSlug/commands/$commandId'
+    | '/$organizationSlug/terminal/$sessionId'
+    | '/$organizationSlug/terminal/bookmarks'
+    | '/$organizationSlug/terminal/history'
     | '/$organizationSlug/audit-logs'
     | '/$organizationSlug/commands'
+    | '/$organizationSlug/terminal'
+    | '/$organizationSlug/terminal/shared/$shareToken'
+    | '/$organizationSlug/terminal/sessions/$sessionId/recording'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -220,8 +288,14 @@ export interface FileRouteTypes {
     | '/$organizationSlug/settings'
     | '/$organizationSlug'
     | '/$organizationSlug/commands/$commandId'
+    | '/$organizationSlug/terminal/$sessionId'
+    | '/$organizationSlug/terminal/bookmarks'
+    | '/$organizationSlug/terminal/history'
     | '/$organizationSlug/audit-logs'
     | '/$organizationSlug/commands'
+    | '/$organizationSlug/terminal'
+    | '/$organizationSlug/terminal/shared/$shareToken'
+    | '/$organizationSlug/terminal/sessions/$sessionId/recording'
   id:
     | '__root__'
     | '/(authenticated)'
@@ -240,8 +314,14 @@ export interface FileRouteTypes {
     | '/(authenticated)/$organizationSlug/settings'
     | '/(authenticated)/$organizationSlug/'
     | '/(authenticated)/$organizationSlug/commands/$commandId'
+    | '/(authenticated)/$organizationSlug/terminal/$sessionId'
+    | '/(authenticated)/$organizationSlug/terminal/bookmarks'
+    | '/(authenticated)/$organizationSlug/terminal/history'
     | '/(authenticated)/$organizationSlug/audit-logs/'
     | '/(authenticated)/$organizationSlug/commands/'
+    | '/(authenticated)/$organizationSlug/terminal/'
+    | '/(authenticated)/$organizationSlug/terminal/shared/$shareToken'
+    | '/(authenticated)/$organizationSlug/terminal/sessions/$sessionId/recording'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -356,6 +436,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrganizationSlugApiRouteImport
       parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
+    '/(authenticated)/$organizationSlug/terminal/': {
+      id: '/(authenticated)/$organizationSlug/terminal/'
+      path: '/terminal'
+      fullPath: '/$organizationSlug/terminal'
+      preLoaderRoute: typeof authenticatedOrganizationSlugTerminalIndexRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
     '/(authenticated)/$organizationSlug/commands/': {
       id: '/(authenticated)/$organizationSlug/commands/'
       path: '/commands'
@@ -370,11 +457,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrganizationSlugAuditLogsIndexRouteImport
       parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
+    '/(authenticated)/$organizationSlug/terminal/history': {
+      id: '/(authenticated)/$organizationSlug/terminal/history'
+      path: '/terminal/history'
+      fullPath: '/$organizationSlug/terminal/history'
+      preLoaderRoute: typeof authenticatedOrganizationSlugTerminalHistoryRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
+    '/(authenticated)/$organizationSlug/terminal/bookmarks': {
+      id: '/(authenticated)/$organizationSlug/terminal/bookmarks'
+      path: '/terminal/bookmarks'
+      fullPath: '/$organizationSlug/terminal/bookmarks'
+      preLoaderRoute: typeof authenticatedOrganizationSlugTerminalBookmarksRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
+    '/(authenticated)/$organizationSlug/terminal/$sessionId': {
+      id: '/(authenticated)/$organizationSlug/terminal/$sessionId'
+      path: '/terminal/$sessionId'
+      fullPath: '/$organizationSlug/terminal/$sessionId'
+      preLoaderRoute: typeof authenticatedOrganizationSlugTerminalSessionIdRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
     '/(authenticated)/$organizationSlug/commands/$commandId': {
       id: '/(authenticated)/$organizationSlug/commands/$commandId'
       path: '/commands/$commandId'
       fullPath: '/$organizationSlug/commands/$commandId'
       preLoaderRoute: typeof authenticatedOrganizationSlugCommandsCommandIdRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
+    '/(authenticated)/$organizationSlug/terminal/shared/$shareToken': {
+      id: '/(authenticated)/$organizationSlug/terminal/shared/$shareToken'
+      path: '/terminal/shared/$shareToken'
+      fullPath: '/$organizationSlug/terminal/shared/$shareToken'
+      preLoaderRoute: typeof authenticatedOrganizationSlugTerminalSharedShareTokenRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
+    '/(authenticated)/$organizationSlug/terminal/sessions/$sessionId/recording': {
+      id: '/(authenticated)/$organizationSlug/terminal/sessions/$sessionId/recording'
+      path: '/terminal/sessions/$sessionId/recording'
+      fullPath: '/$organizationSlug/terminal/sessions/$sessionId/recording'
+      preLoaderRoute: typeof authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRouteImport
       parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
   }
@@ -389,8 +511,14 @@ interface authenticatedOrganizationSlugRouteRouteChildren {
   authenticatedOrganizationSlugSettingsRoute: typeof authenticatedOrganizationSlugSettingsRoute
   authenticatedOrganizationSlugIndexRoute: typeof authenticatedOrganizationSlugIndexRoute
   authenticatedOrganizationSlugCommandsCommandIdRoute: typeof authenticatedOrganizationSlugCommandsCommandIdRoute
+  authenticatedOrganizationSlugTerminalSessionIdRoute: typeof authenticatedOrganizationSlugTerminalSessionIdRoute
+  authenticatedOrganizationSlugTerminalBookmarksRoute: typeof authenticatedOrganizationSlugTerminalBookmarksRoute
+  authenticatedOrganizationSlugTerminalHistoryRoute: typeof authenticatedOrganizationSlugTerminalHistoryRoute
   authenticatedOrganizationSlugAuditLogsIndexRoute: typeof authenticatedOrganizationSlugAuditLogsIndexRoute
   authenticatedOrganizationSlugCommandsIndexRoute: typeof authenticatedOrganizationSlugCommandsIndexRoute
+  authenticatedOrganizationSlugTerminalIndexRoute: typeof authenticatedOrganizationSlugTerminalIndexRoute
+  authenticatedOrganizationSlugTerminalSharedShareTokenRoute: typeof authenticatedOrganizationSlugTerminalSharedShareTokenRoute
+  authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRoute: typeof authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRoute
 }
 
 const authenticatedOrganizationSlugRouteRouteChildren: authenticatedOrganizationSlugRouteRouteChildren =
@@ -411,10 +539,22 @@ const authenticatedOrganizationSlugRouteRouteChildren: authenticatedOrganization
       authenticatedOrganizationSlugIndexRoute,
     authenticatedOrganizationSlugCommandsCommandIdRoute:
       authenticatedOrganizationSlugCommandsCommandIdRoute,
+    authenticatedOrganizationSlugTerminalSessionIdRoute:
+      authenticatedOrganizationSlugTerminalSessionIdRoute,
+    authenticatedOrganizationSlugTerminalBookmarksRoute:
+      authenticatedOrganizationSlugTerminalBookmarksRoute,
+    authenticatedOrganizationSlugTerminalHistoryRoute:
+      authenticatedOrganizationSlugTerminalHistoryRoute,
     authenticatedOrganizationSlugAuditLogsIndexRoute:
       authenticatedOrganizationSlugAuditLogsIndexRoute,
     authenticatedOrganizationSlugCommandsIndexRoute:
       authenticatedOrganizationSlugCommandsIndexRoute,
+    authenticatedOrganizationSlugTerminalIndexRoute:
+      authenticatedOrganizationSlugTerminalIndexRoute,
+    authenticatedOrganizationSlugTerminalSharedShareTokenRoute:
+      authenticatedOrganizationSlugTerminalSharedShareTokenRoute,
+    authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRoute:
+      authenticatedOrganizationSlugTerminalSessionsSessionIdRecordingRoute,
   }
 
 const authenticatedOrganizationSlugRouteRouteWithChildren =

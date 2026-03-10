@@ -2,6 +2,7 @@ import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
 import { TableCell, TableRow } from '@components/ui/table';
 import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
+import { badgeStyles } from '@lib/badge-styles';
 import { formatRelativeTime } from '@lib/format-relative-time';
 import { cn } from '@lib/utils';
 import type { AuditLogEntry } from '@services/audit-logs/list-audit-logs.http-service';
@@ -13,24 +14,10 @@ import { Check, ChevronDown, ChevronUp, Copy } from 'lucide-react';
 import { useState } from 'react';
 
 const ACTION_BADGE_CONFIG = {
-  created: {
-    label: 'Created',
-    className:
-      'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  },
-  updated: {
-    label: 'Updated',
-    className: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  },
-  deleted: {
-    label: 'Deleted',
-    className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-  },
-  deactivated: {
-    label: 'Deactivated',
-    className:
-      'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
-  },
+  created: { label: 'Created', className: badgeStyles.green },
+  updated: { label: 'Updated', className: badgeStyles.blue },
+  deleted: { label: 'Deleted', className: badgeStyles.red },
+  deactivated: { label: 'Deactivated', className: badgeStyles.amber },
 } as const satisfies Record<
   AuditLogAction,
   { label: string; className: string }
