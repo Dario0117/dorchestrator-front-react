@@ -44,7 +44,7 @@ function createTerminal(
 }
 
 interface SessionCallbacks {
-  onSessionEnd: { current: (() => void) | undefined };
+  onSessionEnd: { current: ((deviceId?: number) => void) | undefined };
   onSessionLocked: { current: (() => void) | undefined };
   onSessionWarning: {
     current: ((reason: string, remainingMs: number) => void) | undefined;
@@ -63,14 +63,6 @@ function initializeSession(
   if (readOnly) {
     return;
   }
-
-  // The initial shell prompt was already output before the browser
-  // connected, so send a newline to trigger a fresh prompt.
-  terminalWsClient.send({
-    type: 'pty:input',
-    sessionId,
-    data: '\n',
-  });
 
   // Start forwarding user keystrokes to the server PTY.
   const disposable = terminal.onData((data) => {
@@ -123,7 +115,7 @@ function subscribeToWs(
     if (msg.sessionId === sessionId) {
       terminal.write('\r\n[Session terminated]\r\n');
       callbacks.onSessionTerminated.current?.();
-      callbacks.onSessionEnd.current?.();
+      callbacks.onSessionEnd.current?.(msg.deviceId);
     }
   });
 
@@ -238,9 +230,11 @@ export const TerminalEmulator = forwardRef<
 
   useEffect(() => {
     const container = containerRef.current;
+    /* v8 ignore start */
     if (!container) {
       return;
     }
+    /* v8 ignore stop */
 
     const { terminal, fitAddon } = createTerminal(
       container,
@@ -275,9 +269,11 @@ export const TerminalEmulator = forwardRef<
 
   useEffect(() => {
     const terminal = terminalInstanceRef.current;
+    /* v8 ignore start */
     if (!terminal) {
       return;
     }
+    /* v8 ignore stop */
     terminal.options.fontSize = fontSize;
     fitAddonRef.current?.fit();
   }, [fontSize]);

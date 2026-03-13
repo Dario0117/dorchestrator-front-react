@@ -1,37 +1,14 @@
-import type {
-  NavCollapsible,
-  NavGroup as NavGroupProps,
-  NavItem,
-  NavLink,
-} from '@components/layout/nav-group.types';
-import { Badge } from '@components/ui/badge';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@components/ui/collapsible';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu';
+import type { NavGroup as NavGroupProps } from '@components/layout/nav-group.types';
+import { SidebarMenuCollapsedDropdown } from '@components/layout/sidebar-menu-collapsed-dropdown';
+import { SidebarMenuCollapsible } from '@components/layout/sidebar-menu-collapsible';
+import { SidebarMenuLink } from '@components/layout/sidebar-menu-link';
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   useSidebar,
 } from '@components/ui/sidebar';
-import { Link, useLocation } from '@tanstack/react-router';
-import { ChevronRight } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useLocation } from '@tanstack/react-router';
 
 export function NavGroup({ title, items }: NavGroupProps) {
   const { state, isMobile } = useSidebar();
@@ -73,154 +50,5 @@ export function NavGroup({ title, items }: NavGroupProps) {
         })}
       </SidebarMenu>
     </SidebarGroup>
-  );
-}
-
-function NavBadge({ children }: { children: ReactNode }) {
-  return <Badge className="rounded-full px-1 py-0 text-xs">{children}</Badge>;
-}
-
-function SidebarMenuLink({ item, href }: { item: NavLink; href: string }) {
-  const { setOpenMobile } = useSidebar();
-  return (
-    <SidebarMenuItem>
-      <SidebarMenuButton
-        asChild
-        isActive={checkIsActive(href, item)}
-        tooltip={item.title}
-      >
-        <Link
-          to={item.url}
-          onClick={() => setOpenMobile(false)}
-        >
-          {item.icon && <item.icon />}
-          <span>{item.title}</span>
-          {item.badge && <NavBadge>{item.badge}</NavBadge>}
-        </Link>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
-  );
-}
-
-function SidebarMenuCollapsible({
-  item,
-  href,
-}: {
-  item: NavCollapsible;
-  href: string;
-}) {
-  const { setOpenMobile } = useSidebar();
-  return (
-    <Collapsible
-      asChild
-      defaultOpen={checkIsActive(href, item, true)}
-      className="group/collapsible"
-    >
-      <SidebarMenuItem>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton tooltip={item.title}>
-            {item.icon && <item.icon />}
-            <span>{item.title}</span>
-            {item.badge && <NavBadge>{item.badge}</NavBadge>}
-            <ChevronRight className="ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
-        <CollapsibleContent className="CollapsibleContent">
-          <SidebarMenuSub>
-            {item.items.map((subItem) => (
-              <SidebarMenuSubItem key={subItem.title}>
-                <SidebarMenuSubButton
-                  asChild
-                  isActive={checkIsActive(href, subItem)}
-                >
-                  <Link
-                    to={subItem.url}
-                    onClick={() => setOpenMobile(false)}
-                  >
-                    {subItem.icon && <subItem.icon />}
-                    <span>{subItem.title}</span>
-                    {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </SidebarMenuItem>
-    </Collapsible>
-  );
-}
-
-function SidebarMenuCollapsedDropdown({
-  item,
-  href,
-}: {
-  item: NavCollapsible;
-  href: string;
-}) {
-  return (
-    <SidebarMenuItem>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuButton
-            tooltip={item.title}
-            isActive={checkIsActive(href, item)}
-          >
-            {item.icon && <item.icon />}
-            <span>{item.title}</span>
-            {item.badge && <NavBadge>{item.badge}</NavBadge>}
-            <ChevronRight className="ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-          </SidebarMenuButton>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          side="right"
-          align="start"
-          sideOffset={4}
-        >
-          <DropdownMenuLabel>
-            {item.title} {item.badge ? `(${item.badge})` : ''}
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {item.items.map((sub) => (
-            <DropdownMenuItem
-              key={`${sub.title}-${sub.url}`}
-              asChild
-            >
-              <Link
-                to={sub.url}
-                className={`${checkIsActive(href, sub) ? 'bg-secondary' : ''}`}
-              >
-                {sub.icon && <sub.icon />}
-                <span className="max-w-52 text-wrap">{sub.title}</span>
-                {sub.badge && (
-                  <span className="ms-auto text-xs">{sub.badge}</span>
-                )}
-              </Link>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </SidebarMenuItem>
-  );
-}
-
-function checkIsActive(href: string, item: NavItem, mainNav = false) {
-  const normalizeUrl = (url: string) => {
-    const withoutQuery = url.split('?')[0] ?? url;
-    return withoutQuery.endsWith('/') && withoutQuery.length > 1
-      ? withoutQuery.slice(0, -1)
-      : withoutQuery;
-  };
-
-  const normalizedHref = normalizeUrl(href);
-  const normalizedItemUrl = normalizeUrl(item.url ?? '');
-
-  return (
-    normalizedHref === normalizedItemUrl ||
-    !!item?.items?.filter((i) => normalizeUrl(i.url ?? '') === normalizedHref)
-      .length ||
-    (mainNav &&
-      href.split('/')[1] !== '' &&
-      href.split('/')[1] === item?.url?.split('/')[1])
   );
 }

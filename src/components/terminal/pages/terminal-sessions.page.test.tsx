@@ -1,4 +1,7 @@
-import { TerminalSessionsPage } from '@components/terminal/pages/terminal-sessions.page';
+import {
+  SessionTableSkeleton,
+  TerminalSessionsPage,
+} from '@components/terminal/pages/terminal-sessions.page';
 import { queryClient } from '@context/query.provider';
 import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
@@ -563,6 +566,476 @@ describe('TerminalSessionsPage', () => {
       await waitFor(() => {
         expect(screen.getByText(/No terminal sessions/)).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('Status filter', () => {
+    it('should call navigate with status filter when selecting a status', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Filter by status')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByLabelText('Filter by status'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('option', { name: 'Active' }),
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('option', { name: 'Active' }));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          search: expect.any(Function),
+        }),
+      );
+
+      const call = mockNavigate.mock.calls[0] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = call[0].search({ page: 2, size: 25 });
+      expect(result).toEqual({ page: 1, status: 'active', size: 25 });
+    });
+
+    it('should clear status filter when selecting "All statuses"', async () => {
+      const user = userEvent.setup();
+      mockSearchParams = { page: 1, size: 25, status: 'active' };
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Filter by status')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByLabelText('Filter by status'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('option', { name: 'All statuses' }),
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('option', { name: 'All statuses' }));
+
+      const call = mockNavigate.mock.calls[0] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = call[0].search({ page: 2, size: 25, status: 'active' });
+      expect(result.status).toBeUndefined();
+      expect(result.page).toBe(1);
+    });
+  });
+
+  describe('Clear filter button', () => {
+    it('should clear status filter when clicking "Clear Filter"', async () => {
+      const user = userEvent.setup();
+      useEmptyHandler();
+      mockSearchParams = { page: 1, size: 25, status: 'active' };
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/No sessions match your filter/),
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Clear Filter' }));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          search: expect.any(Function),
+        }),
+      );
+
+      const call = mockNavigate.mock.calls[0] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = call[0].search({ page: 2, size: 25, status: 'active' });
+      expect(result.page).toBe(1);
+      expect(result.size).toBe(25);
+      expect(result).not.toHaveProperty('status');
+    });
+  });
+
+  describe('Terminate session', () => {
+    it('should show terminate button for non-terminated sessions', async () => {
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Production Server')).toBeInTheDocument();
+      });
+
+      const closeButtons = screen.getAllByRole('button', {
+        name: 'Close session',
+      });
+      expect(closeButtons.length).toBeGreaterThan(0);
+    });
+
+    it('should open confirmation dialog when clicking terminate button', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Production Server')).toBeInTheDocument();
+      });
+
+      const closeButtons = screen.getAllByRole('button', {
+        name: 'Close session',
+      });
+      await user.click(closeButtons[0] as HTMLElement);
+
+      await waitFor(() => {
+        expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
+      });
+    });
+
+    it('should terminate session when confirming dialog', async () => {
+      const user = userEvent.setup();
+
+      server.use(
+        http.delete(
+          buildBackendUrl(
+            '/api/v1/{organizationId}/terminal/sessions/{sessionId}',
+          ),
+          () => {
+            return HttpResponse.json({
+              responseData: { results: ['Session terminated'] },
+              responseErrors: null,
+            });
+          },
+        ),
+      );
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Production Server')).toBeInTheDocument();
+      });
+
+      const closeButtons = screen.getAllByRole('button', {
+        name: 'Close session',
+      });
+      await user.click(closeButtons[0] as HTMLElement);
+
+      await waitFor(() => {
+        expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Close Session' }));
+
+      // Dialog should close
+      await waitFor(() => {
+        expect(
+          screen.queryByText('Close terminal session?'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it('should not navigate when clicking inside the confirmation dialog', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Production Server')).toBeInTheDocument();
+      });
+
+      const closeButtons = screen.getAllByRole('button', {
+        name: 'Close session',
+      });
+      await user.click(closeButtons[0] as HTMLElement);
+
+      await waitFor(() => {
+        expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
+      });
+
+      mockNavigate.mockClear();
+
+      await user.click(screen.getByText(/This will terminate the session on/));
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('should cancel termination when clicking Cancel', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Production Server')).toBeInTheDocument();
+      });
+
+      const closeButtons = screen.getAllByRole('button', {
+        name: 'Close session',
+      });
+      await user.click(closeButtons[0] as HTMLElement);
+
+      await waitFor(() => {
+        expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText('Close terminal session?'),
+        ).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Keyboard navigation', () => {
+    it('should navigate to session on Enter key', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Dev Laptop')).toBeInTheDocument();
+      });
+
+      const row = screen.getByText('Dev Laptop').closest('tr') as HTMLElement;
+      row.focus();
+      await user.keyboard('{Enter}');
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: '/$organizationSlug/terminal/$sessionId',
+        }),
+      );
+    });
+
+    it('should navigate to session on Space key', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Dev Laptop')).toBeInTheDocument();
+      });
+
+      const row = screen.getByText('Dev Laptop').closest('tr') as HTMLElement;
+      row.focus();
+      await user.keyboard(' ');
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: '/$organizationSlug/terminal/$sessionId',
+        }),
+      );
+    });
+  });
+
+  describe('SessionTableSkeleton', () => {
+    it('should render skeleton rows', () => {
+      renderWithProviders(<SessionTableSkeleton />);
+
+      expect(screen.getByText('Device')).toBeInTheDocument();
+      expect(screen.getByText('Owner')).toBeInTheDocument();
+      expect(screen.getByText('Status')).toBeInTheDocument();
+    });
+  });
+
+  describe('Keyboard navigation edge cases', () => {
+    it('should not navigate when pressing a non-interactive key on a row', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Dev Laptop')).toBeInTheDocument();
+      });
+
+      const row = screen.getByText('Dev Laptop').closest('tr') as HTMLElement;
+      row.focus();
+      await user.keyboard('a');
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Session data edge cases', () => {
+    it('should display "Never" when createdAt or lastActivityAt is null', async () => {
+      server.use(
+        http.get<never, never, ListTerminalSessionsSuccessResponse>(
+          buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+          () => {
+            return HttpResponse.json({
+              responseData: {
+                results: [
+                  {
+                    id: 10,
+                    deviceId: 1,
+                    deviceName: 'Null Dates Device',
+                    userId: 'user-1',
+                    userName: 'Charlie',
+                    status: 'created',
+                    shell: '/bin/bash',
+                    createdAt: '',
+                    lastActivityAt: '',
+                  },
+                ],
+                hasNext: false,
+                hasPrevious: false,
+                totalResults: 1,
+                totalPages: 1,
+                page: 1,
+                size: 25,
+              },
+              responseErrors: null,
+            });
+          },
+        ),
+      );
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Null Dates Device')).toBeInTheDocument();
+      });
+
+      const neverCells = screen.getAllByText('Never');
+      expect(neverCells.length).toBe(2);
+    });
+
+    it('should not show terminate button for terminated sessions', async () => {
+      server.use(
+        http.get<never, never, ListTerminalSessionsSuccessResponse>(
+          buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+          () => {
+            return HttpResponse.json({
+              responseData: {
+                results: [
+                  {
+                    id: 3,
+                    deviceId: 1,
+                    deviceName: 'Terminated Device',
+                    userId: 'user-1',
+                    userName: 'Eve',
+                    status: 'terminated',
+                    shell: '/bin/bash',
+                    createdAt: new Date().toISOString(),
+                    lastActivityAt: new Date().toISOString(),
+                  },
+                ],
+                hasNext: false,
+                hasPrevious: false,
+                totalResults: 1,
+                totalPages: 1,
+                page: 1,
+                size: 25,
+              },
+              responseErrors: null,
+            });
+          },
+        ),
+      );
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Terminated Device')).toBeInTheDocument();
+      });
+
+      expect(
+        screen.queryByRole('button', { name: 'Close session' }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should handle responseData being null gracefully', async () => {
+      server.use(
+        http.get<never, never, ListTerminalSessionsSuccessResponse>(
+          buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+          () => {
+            return HttpResponse.json({
+              responseData: null,
+              responseErrors: null,
+            } as unknown as ListTerminalSessionsSuccessResponse);
+          },
+        ),
+      );
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/No terminal sessions/)).toBeInTheDocument();
+      });
+    });
+
+    it('should stop propagation on keydown on terminate button', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Production Server')).toBeInTheDocument();
+      });
+
+      const closeButtons = screen.getAllByRole('button', {
+        name: 'Close session',
+      });
+      const closeButton = closeButtons[0] as HTMLElement;
+      closeButton.focus();
+      await user.keyboard('{Enter}');
+
+      // The keydown handler calls stopPropagation, so the row click handler should not fire
+      // The dialog should open because Enter on the button activates it
+      await waitFor(() => {
+        expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
+      });
+    });
+
+    it('should show disabled terminate button when mutation is pending', async () => {
+      const user = userEvent.setup();
+
+      let resolveTerminate!: () => void;
+      const terminatePromise = new Promise<void>((resolve) => {
+        resolveTerminate = resolve;
+      });
+
+      server.use(
+        http.delete(
+          buildBackendUrl(
+            '/api/v1/{organizationId}/terminal/sessions/{sessionId}',
+          ),
+          async () => {
+            await terminatePromise;
+            return HttpResponse.json({
+              responseData: { results: ['Session terminated'] },
+              responseErrors: null,
+            });
+          },
+        ),
+      );
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Production Server')).toBeInTheDocument();
+      });
+
+      // Open dialog and confirm termination
+      const closeButtons = screen.getAllByRole('button', {
+        name: 'Close session',
+      });
+      await user.click(closeButtons[0] as HTMLElement);
+
+      await waitFor(() => {
+        expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Close Session' }));
+
+      // While mutation is pending, the button should be disabled
+      await waitFor(() => {
+        const updatedCloseButtons = screen.getAllByRole('button', {
+          name: 'Close session',
+        });
+        const activeSessionButton = updatedCloseButtons[0] as HTMLButtonElement;
+        expect(activeSessionButton).toBeDisabled();
+      });
+
+      // Resolve the mutation
+      resolveTerminate();
     });
   });
 });

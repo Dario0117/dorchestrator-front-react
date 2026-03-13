@@ -148,4 +148,52 @@ describe('CommandCard', () => {
     renderWithProviders(<CommandCard command={mockCommand} />);
     expect(screen.queryByLabelText(/View command/)).not.toBeInTheDocument();
   });
+
+  it('should call onClick on Space key', async () => {
+    const user = userEvent.setup();
+    const handleClick = vi.fn();
+    renderWithProviders(
+      <CommandCard
+        command={mockCommand}
+        onClick={handleClick}
+      />,
+    );
+
+    const card = screen.getByRole('button');
+    card.focus();
+    await user.keyboard(' ');
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not call onClick on unrelated key press', async () => {
+    const user = userEvent.setup();
+    const handleClick = vi.fn();
+    renderWithProviders(
+      <CommandCard
+        command={mockCommand}
+        onClick={handleClick}
+      />,
+    );
+
+    const card = screen.getByRole('button');
+    card.focus();
+    await user.keyboard('{Tab}');
+    expect(handleClick).not.toHaveBeenCalled();
+  });
+
+  it('should apply status border for failed status', () => {
+    const failedCommand: ListCommandsCommand = {
+      ...mockCommand,
+      status: 'failed',
+    };
+    const { container } = renderWithProviders(
+      <CommandCard
+        command={failedCommand}
+        onClick={vi.fn()}
+      />,
+    );
+
+    const card = container.querySelector('[role="button"]');
+    expect(card).toHaveClass('border-l-red-500');
+  });
 });

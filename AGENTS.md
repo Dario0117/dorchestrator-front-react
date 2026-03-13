@@ -54,6 +54,7 @@ React 19 + TypeScript frontend with TanStack Router, TanStack Query, Zustand, an
 - Hardcode types, unions, or values derived from the backend API — always reference `@/types/api.generated.types` (see [TypeScript & Imports](docs/typescript-and-imports.md#api-derived-types))
 - Analyze code from installed dependencies
 - When asked to fix or add tests, change the tested code — accommodate tests to match the code
+- Define multiple React components in the same file — extract each component into its own file so it can be tested in isolation
 
 ## Detailed Conventions
 

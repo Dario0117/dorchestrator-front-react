@@ -280,6 +280,107 @@ describe('useUpdatePasswordForm', () => {
     expect(result.current.state.values.password).toBe('');
   });
 
+  it('should handle onError with an error that has a message property', async () => {
+    const logErrorSpy = vi
+      .spyOn(loggerUtils, 'logError')
+      .mockImplementation(vi.fn());
+    const mockHandleSuccess = vi.fn();
+    const fakeMutation = {
+      mutate: (
+        _variables: unknown,
+        options?: { onError?(error: unknown): void },
+      ) => {
+        queueMicrotask(() => {
+          options?.onError?.({ message: 'Connection refused' });
+        });
+      },
+    } as unknown as ReturnType<typeof useUpdatePasswordMutation>;
+
+    const { result } = renderHook(
+      () =>
+        useUpdatePasswordForm({
+          updatePasswordMutation: fakeMutation,
+          handleSuccess: mockHandleSuccess,
+        }),
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('password', 'NewPassword123!');
+      result.current.setFieldValue('confirm', 'NewPassword123!');
+    });
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+      expect(JSON.stringify(result.current.state.errorMap)).toContain(
+        'Connection refused',
+      );
+    });
+
+    // logError should not have been called with our specific error object
+    // (since our error has a message, the !errorMessage branch is skipped)
+    expect(logErrorSpy).not.toHaveBeenCalledWith(
+      { error: { message: 'Connection refused' } },
+      'Password update failed',
+    );
+
+    logErrorSpy.mockRestore();
+  });
+
+  it('should log error and use fallback message when onError receives error without message', async () => {
+    const logErrorSpy = vi
+      .spyOn(loggerUtils, 'logError')
+      .mockImplementation(vi.fn());
+    const mockHandleSuccess = vi.fn();
+    const errorObj = { code: 'UNKNOWN' };
+    const fakeMutation = {
+      mutate: (
+        _variables: unknown,
+        options?: { onError?(error: unknown): void },
+      ) => {
+        queueMicrotask(() => {
+          options?.onError?.(errorObj);
+        });
+      },
+    } as unknown as ReturnType<typeof useUpdatePasswordMutation>;
+
+    const { result } = renderHook(
+      () =>
+        useUpdatePasswordForm({
+          updatePasswordMutation: fakeMutation,
+          handleSuccess: mockHandleSuccess,
+        }),
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('password', 'NewPassword123!');
+      result.current.setFieldValue('confirm', 'NewPassword123!');
+    });
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+      expect(JSON.stringify(result.current.state.errorMap)).toContain(
+        'Something went wrong, please try again later.',
+      );
+    });
+
+    expect(logErrorSpy).toHaveBeenCalledWith(
+      { error: errorObj },
+      'Password update failed',
+    );
+
+    logErrorSpy.mockRestore();
+  });
+
   it('should validate confirm field individually', () => {
     const mockHandleSuccess = vi.fn();
     const { result } = renderHook(

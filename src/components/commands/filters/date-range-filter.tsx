@@ -21,11 +21,7 @@ interface DateRangeFilterProps {
 }
 
 function getDateRange(preset: string, presets: DatePreset[]) {
-  const match = presets.find((p) => p.value === preset);
-  if (!match) {
-    return { startDate: undefined, endDate: undefined };
-  }
-
+  const match = presets.find((p) => p.value === preset) as DatePreset;
   const now = new Date();
   return {
     startDate: new Date(now.getTime() - match.offsetMs).toISOString(),

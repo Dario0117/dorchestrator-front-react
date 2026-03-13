@@ -105,4 +105,39 @@ describe('TerminalReauthModal', () => {
 
     expect(mockOnOpenChange).toHaveBeenCalledWith(false);
   });
+
+  it('should reset authMutation when closing (onOpenChange with false)', async () => {
+    const user = userEvent.setup();
+    renderModal();
+
+    // First trigger an error to put mutation in error state
+    const { server } = await import('@/../testsSetup');
+    const { HttpResponse, http } = await import('msw');
+    server.use(
+      http.post(
+        buildBackendUrl('/api/v1/{organizationId}/terminal/auth'),
+        () => {
+          return HttpResponse.json(
+            {
+              responseData: null,
+              responseErrors: { nonFieldErrors: ['Invalid password'] },
+            },
+            { status: 422 },
+          );
+        },
+      ),
+    );
+
+    await user.type(screen.getByLabelText(/Password/), 'wrong');
+    await user.click(screen.getByRole('button', { name: 'Authenticate' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Invalid password')).toBeInTheDocument();
+    });
+
+    // Close the modal - this should reset the mutation
+    await user.click(screen.getByRole('button', { name: 'Close' }));
+
+    expect(mockOnOpenChange).toHaveBeenCalledWith(false);
+  });
 });

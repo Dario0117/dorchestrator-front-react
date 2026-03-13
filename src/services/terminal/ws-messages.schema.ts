@@ -46,6 +46,7 @@ const sessionCreateSchema = z.object({
 const sessionCloseSchema = z.object({
   type: z.literal('session:close'),
   sessionId: z.string(),
+  deviceId: z.number().int().positive().optional(),
 });
 
 const sessionLockSchema = z.object({

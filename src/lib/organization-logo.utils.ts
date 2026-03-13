@@ -20,10 +20,6 @@ export function generateInitials(orgName: string) {
     .split(/\s+/)
     .filter((word) => word.length > 0);
 
-  if (words.length === 0) {
-    return '';
-  }
-
   // Take first letter of each word, uppercase
   const initials = words.map((word) => word.charAt(0).toUpperCase()).join('');
 

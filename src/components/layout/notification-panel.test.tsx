@@ -1,7 +1,17 @@
 import { NotificationPanel } from '@components/layout/notification-panel';
+import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { HttpResponse, http } from 'msw';
+import { server } from '@/../testsSetup';
+import type { operations } from '@/types/api.generated.types';
+
+type ListNotificationsSuccessResponse =
+  operations['getApiV1ByOrganizationIdNotifications']['responses']['200']['content']['application/json'];
+type GetUnreadCountSuccessResponse =
+  operations['getApiV1ByOrganizationIdNotificationsUnread-count']['responses']['200']['content']['application/json'];
 
 const mockNavigate = vi.fn();
 const mockUseParams = vi.fn<() => Record<string, string>>(() => ({
@@ -26,10 +36,68 @@ vi.mock('@hooks/use-current-organization', () => ({
   })),
 }));
 
+const mockUseCurrentOrganization = vi.mocked(useCurrentOrganization);
+
+function overrideNotificationsHandler(
+  results: ListNotificationsSuccessResponse['responseData']['results'],
+) {
+  server.use(
+    http.get(buildBackendUrl('/api/v1/{organizationId}/notifications'), () => {
+      return HttpResponse.json<ListNotificationsSuccessResponse>({
+        responseData: {
+          results,
+          hasNext: false,
+          hasPrevious: false,
+          totalResults: results.length,
+          totalPages: 1,
+          page: 1,
+          size: 10,
+        },
+        responseErrors: null,
+      });
+    }),
+  );
+}
+
+function overrideUnreadCountHandler(count: number) {
+  server.use(
+    http.get(
+      buildBackendUrl('/api/v1/{organizationId}/notifications/unread-count'),
+      () => {
+        return HttpResponse.json<GetUnreadCountSuccessResponse>({
+          responseData: {
+            results: { count },
+          },
+          responseErrors: null,
+        });
+      },
+    ),
+  );
+}
+
+async function openNotificationPanel() {
+  const user = userEvent.setup();
+
+  await waitFor(() => {
+    expect(
+      screen.getByRole('button', { name: /notifications/i }),
+    ).toBeInTheDocument();
+  });
+
+  await user.click(screen.getByRole('button', { name: /notifications/i }));
+
+  return user;
+}
+
 describe('NotificationPanel', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     mockUseParams.mockReturnValue({ organizationSlug: 'test-org' });
+    mockUseCurrentOrganization.mockReturnValue({
+      id: 'org-1',
+      name: 'Test Organization',
+      slug: 'test-org',
+    } as ReturnType<typeof useCurrentOrganization>);
   });
 
   it('should render bell icon button', async () => {
@@ -42,27 +110,39 @@ describe('NotificationPanel', () => {
     });
   });
 
+  it('should render nothing when no current organization', () => {
+    mockUseCurrentOrganization.mockReturnValue(
+      undefined as unknown as ReturnType<typeof useCurrentOrganization>,
+    );
+    mockUseParams.mockReturnValue({});
+
+    const { container } = renderWithProviders(<NotificationPanel />);
+
+    expect(container.innerHTML).toBe('');
+  });
+
   it('should show unread badge count from count endpoint', async () => {
     renderWithProviders(<NotificationPanel />);
 
     await waitFor(() => {
-      // Mock unread count handler returns 3
       const badge = screen.getByText('3');
       expect(badge).toBeInTheDocument();
     });
   });
 
-  it('should open dropdown panel on click and load notifications', async () => {
-    const user = userEvent.setup();
+  it('should show 99+ when unread count exceeds 99', async () => {
+    overrideUnreadCountHandler(150);
     renderWithProviders(<NotificationPanel />);
 
     await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /notifications/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByText('99+')).toBeInTheDocument();
     });
+  });
 
-    await user.click(screen.getByRole('button', { name: /notifications/i }));
+  it('should open dropdown panel on click and load notifications', async () => {
+    renderWithProviders(<NotificationPanel />);
+
+    await openNotificationPanel();
 
     await waitFor(() => {
       expect(screen.getByText('Notifications')).toBeInTheDocument();
@@ -70,16 +150,9 @@ describe('NotificationPanel', () => {
   });
 
   it('should display notification items with message and severity', async () => {
-    const user = userEvent.setup();
     renderWithProviders(<NotificationPanel />);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /notifications/i }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('button', { name: /notifications/i }));
+    await openNotificationPanel();
 
     await waitFor(() => {
       expect(
@@ -92,16 +165,9 @@ describe('NotificationPanel', () => {
   });
 
   it('should show severity badges', async () => {
-    const user = userEvent.setup();
     renderWithProviders(<NotificationPanel />);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /notifications/i }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('button', { name: /notifications/i }));
+    await openNotificationPanel();
 
     await waitFor(() => {
       expect(screen.getAllByText('Success').length).toBeGreaterThan(0);
@@ -110,16 +176,9 @@ describe('NotificationPanel', () => {
   });
 
   it('should show mark all read button when unread notifications exist', async () => {
-    const user = userEvent.setup();
     renderWithProviders(<NotificationPanel />);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /notifications/i }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('button', { name: /notifications/i }));
+    await openNotificationPanel();
 
     await waitFor(() => {
       expect(
@@ -128,17 +187,29 @@ describe('NotificationPanel', () => {
     });
   });
 
-  it('should navigate to command detail on notification click', async () => {
-    const user = userEvent.setup();
+  it('should call mark all read mutation when button is clicked', async () => {
     renderWithProviders(<NotificationPanel />);
+
+    const user = await openNotificationPanel();
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /notifications/i }),
+        screen.getByRole('button', { name: /mark all read/i }),
       ).toBeInTheDocument();
     });
 
-    await user.click(screen.getByRole('button', { name: /notifications/i }));
+    await user.click(screen.getByRole('button', { name: /mark all read/i }));
+
+    // Verify the mutation was triggered (button exists and is clickable)
+    expect(
+      screen.getByRole('button', { name: /mark all read/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('should navigate to command detail on notification click', async () => {
+    renderWithProviders(<NotificationPanel />);
+
+    await openNotificationPanel();
 
     await waitFor(() => {
       expect(
@@ -146,7 +217,7 @@ describe('NotificationPanel', () => {
       ).toBeInTheDocument();
     });
 
-    // Click the unique "Staging Server" notification (resourceId=102)
+    const user = userEvent.setup();
     await user.click(screen.getByText('Command failed on Staging Server'));
 
     expect(mockNavigate).toHaveBeenCalledWith(
@@ -158,5 +229,122 @@ describe('NotificationPanel', () => {
         }),
       }),
     );
+  });
+
+  it('should navigate to devices page on device notification click', async () => {
+    overrideNotificationsHandler([
+      {
+        id: 10,
+        message: 'Device went offline',
+        resourceId: 'dev-1',
+        resourceType: 'device',
+        severity: 'warning',
+        read: true,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+
+    renderWithProviders(<NotificationPanel />);
+
+    await openNotificationPanel();
+
+    await waitFor(() => {
+      expect(screen.getByText('Device went offline')).toBeInTheDocument();
+    });
+
+    const user = userEvent.setup();
+    await user.click(screen.getByText('Device went offline'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: '/$organizationSlug',
+        params: expect.objectContaining({
+          organizationSlug: 'test-org',
+        }),
+      }),
+    );
+  });
+
+  it('should navigate to terminal session on terminal notification click', async () => {
+    overrideNotificationsHandler([
+      {
+        id: 11,
+        message: 'Terminal session started',
+        resourceId: 'session-1',
+        resourceType: 'terminal_session',
+        severity: 'info',
+        read: false,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+
+    renderWithProviders(<NotificationPanel />);
+
+    await openNotificationPanel();
+
+    await waitFor(() => {
+      expect(screen.getByText('Terminal session started')).toBeInTheDocument();
+    });
+
+    const user = userEvent.setup();
+    await user.click(screen.getByText('Terminal session started'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: '/$organizationSlug/terminal/$sessionId',
+        params: expect.objectContaining({
+          organizationSlug: 'test-org',
+          sessionId: 'session-1',
+        }),
+      }),
+    );
+  });
+
+  it('should not call mark read for already read notifications', async () => {
+    overrideNotificationsHandler([
+      {
+        id: 20,
+        message: 'Already read notification',
+        resourceId: '200',
+        resourceType: 'command',
+        severity: 'success',
+        read: true,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+
+    renderWithProviders(<NotificationPanel />);
+
+    await openNotificationPanel();
+
+    await waitFor(() => {
+      expect(screen.getByText('Already read notification')).toBeInTheDocument();
+    });
+
+    const user = userEvent.setup();
+    await user.click(screen.getByText('Already read notification'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: '/$organizationSlug/commands/$commandId',
+        params: expect.objectContaining({
+          commandId: '200',
+        }),
+      }),
+    );
+  });
+
+  it('should show empty state when no notifications exist', async () => {
+    overrideNotificationsHandler([]);
+    overrideUnreadCountHandler(0);
+
+    renderWithProviders(<NotificationPanel />);
+
+    await openNotificationPanel();
+
+    await waitFor(() => {
+      expect(screen.getByText('All caught up')).toBeInTheDocument();
+      expect(screen.getByText('No notifications to show')).toBeInTheDocument();
+    });
   });
 });

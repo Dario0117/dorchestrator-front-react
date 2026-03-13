@@ -3,7 +3,7 @@ export interface TerminalEmulatorProps {
   fontSize?: number;
   readOnly?: boolean;
   shareToken?: string;
-  onSessionEnd?: () => void;
+  onSessionEnd?: (deviceId?: number) => void;
   onSessionLocked?: () => void;
   onSessionWarning?: (reason: string, remainingMs: number) => void;
   onSessionTerminated?: () => void;

@@ -40,11 +40,8 @@ function computeEventDelays(events: RecordingEvent[]): number[] {
   }
   const delays = [0];
   for (let i = 1; i < events.length; i++) {
-    const prevEvent = events[i - 1];
-    const currEvent = events[i];
-    if (!prevEvent || !currEvent) {
-      continue;
-    }
+    const prevEvent = events[i - 1] as RecordingEvent;
+    const currEvent = events[i] as RecordingEvent;
     const prev = new Date(prevEvent.timestamp).getTime();
     const curr = new Date(currEvent.timestamp).getTime();
     delays.push(Math.max(0, curr - prev));
@@ -128,7 +125,7 @@ export function useRecordingPlayback({
         return;
       }
 
-      const eventDelay = Math.min(delays[fromIndex] ?? 0, MAX_DELAY_MS);
+      const eventDelay = Math.min(delays[fromIndex] as number, MAX_DELAY_MS);
       const delay = eventDelay / state.speed;
 
       playbackTimerRef.current = setTimeout(() => {
@@ -209,9 +206,7 @@ export function useRecordingPlayback({
       setPlaybackState((prev) => ({ ...prev, speed: newSpeed }));
 
       if (stateRef.current.status === 'playing') {
-        if (playbackTimerRef.current) {
-          clearTimeout(playbackTimerRef.current);
-        }
+        clearTimeout(playbackTimerRef.current as ReturnType<typeof setTimeout>);
         scheduleNextEvent(stateRef.current.currentEventIndex + 1);
       }
     },

@@ -114,4 +114,15 @@ describe('CommandMetadata', () => {
 
     expect(screen.getByText('500ms')).toBeInTheDocument();
   });
+
+  it('should display dash when createdAt is null', () => {
+    const noCreatedAt: GetCommandDetail = {
+      ...baseCommand,
+      createdAt: null as unknown as string,
+    };
+
+    renderWithProviders(<CommandMetadata command={noCreatedAt} />);
+
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
 });

@@ -1,43 +1,52 @@
 import { tracePropagationMiddleware } from '@lib/observability/trace-propagation.middleware';
-import type { MergedOptions } from 'openapi-fetch';
 
-const mockOptions = {} as MergedOptions;
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+function createMockRequest(headers?: Record<string, string>) {
+  return new Request('https://example.com/api/test', {
+    method: 'GET',
+    headers,
+  });
+}
+
+async function callOnRequest(request: Request) {
+  const onRequest = tracePropagationMiddleware.onRequest;
+  expect(onRequest).toBeDefined();
+
+  await onRequest?.({
+    request,
+    schemaPath: '/api/test',
+    params: {},
+  } as Parameters<NonNullable<typeof onRequest>>[0]);
+}
 
 describe('tracePropagationMiddleware', () => {
-  it('should add x-request-id header when not present', async () => {
-    const request = new Request('https://example.com/api/test', {
-      method: 'GET',
+  describe('onRequest', () => {
+    it('sets x-request-id header when not present', async () => {
+      const request = createMockRequest();
+
+      await callOnRequest(request);
+
+      expect(request.headers.has('x-request-id')).toBe(true);
     });
 
-    await tracePropagationMiddleware.onRequest?.({
-      request,
-      schemaPath: '/api/test',
-      params: {},
-      id: 'test',
-      options: mockOptions,
+    it('preserves existing x-request-id header', async () => {
+      const existingId = 'existing-request-id';
+      const request = createMockRequest({ 'x-request-id': existingId });
+
+      await callOnRequest(request);
+
+      expect(request.headers.get('x-request-id')).toBe(existingId);
     });
 
-    expect(request.headers.has('x-request-id')).toBe(true);
-    // UUID format check
-    expect(request.headers.get('x-request-id')).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
-    );
-  });
+    it('generates a valid UUID for x-request-id', async () => {
+      const request = createMockRequest();
 
-  it('should not overwrite existing x-request-id header', async () => {
-    const request = new Request('https://example.com/api/test', {
-      method: 'GET',
-      headers: { 'x-request-id': 'existing-id' },
+      await callOnRequest(request);
+
+      const requestId = request.headers.get('x-request-id');
+      expect(requestId).toMatch(UUID_REGEX);
     });
-
-    await tracePropagationMiddleware.onRequest?.({
-      request,
-      schemaPath: '/api/test',
-      params: {},
-      id: 'test',
-      options: mockOptions,
-    });
-
-    expect(request.headers.get('x-request-id')).toBe('existing-id');
   });
 });

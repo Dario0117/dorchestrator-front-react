@@ -18,11 +18,14 @@ import {
 import { logError } from '@lib/logger.utils';
 import {
   downloadExportFile,
+  useCancelExportMutation,
   useExportStatusQueryOptions,
   useInitiateExportMutation,
+  usePauseExportMutation,
+  useResumeExportMutation,
 } from '@services/terminal/export-session-history.http-service';
 import { useQuery } from '@tanstack/react-query';
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2, Pause, Play, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { operations } from '@/types/api.generated.types';
 
@@ -56,17 +59,25 @@ export function SessionHistoryExportDialog({
   const downloadTriggeredRef = useRef(false);
 
   const initiateMutation = useInitiateExportMutation();
+  const pauseMutation = usePauseExportMutation();
+  const resumeMutation = useResumeExportMutation();
+  const cancelMutation = useCancelExportMutation();
 
   const statusQueryOptions = useExportStatusQueryOptions(
     organizationId,
     exportId,
   );
-  const { data: statusData } = useQuery({
+  const { data: statusData, refetch: refetchStatus } = useQuery({
     ...statusQueryOptions,
     enabled: exportId !== null,
     refetchInterval: (query) => {
       const status = query.state.data?.responseData?.results?.status;
-      if (status === 'completed' || status === 'failed') {
+      if (
+        status === 'completed' ||
+        status === 'failed' ||
+        status === 'paused' ||
+        status === 'cancelled'
+      ) {
         return false;
       }
       return POLL_INTERVAL_MS;
@@ -74,8 +85,14 @@ export function SessionHistoryExportDialog({
   });
 
   const exportStatus = statusData?.responseData?.results;
+  const currentStatus = exportStatus?.status;
   const isExporting =
-    exportStatus?.status === 'pending' || exportStatus?.status === 'processing';
+    currentStatus === 'pending' ||
+    currentStatus === 'processing' ||
+    currentStatus === 'pause_requested' ||
+    currentStatus === 'cancel_requested';
+  const isPaused = currentStatus === 'paused';
+  const isCancelled = currentStatus === 'cancelled';
   const totalRows = exportStatus?.totalRows ?? 0;
   const rowsProcessed = exportStatus?.rowsProcessed ?? 0;
   const progress =
@@ -102,15 +119,27 @@ export function SessionHistoryExportDialog({
     }
   }, [exportStatus, exportId, organizationId, onOpenChange]);
 
-  const { reset: resetMutation } = initiateMutation;
+  const { reset: resetInitiateMutation } = initiateMutation;
+  const { reset: resetPauseMutation } = pauseMutation;
+  const { reset: resetResumeMutation } = resumeMutation;
+  const { reset: resetCancelMutation } = cancelMutation;
   useEffect(() => {
     if (!open) {
       setExportId(null);
       setError(null);
       downloadTriggeredRef.current = false;
-      resetMutation();
+      resetInitiateMutation();
+      resetPauseMutation();
+      resetResumeMutation();
+      resetCancelMutation();
     }
-  }, [open, resetMutation]);
+  }, [
+    open,
+    resetInitiateMutation,
+    resetPauseMutation,
+    resetResumeMutation,
+    resetCancelMutation,
+  ]);
 
   const handleExport = () => {
     setError(null);
@@ -142,6 +171,45 @@ export function SessionHistoryExportDialog({
     initiateMutation.reset();
   };
 
+  const handlePause = () => {
+    pauseMutation.mutate(
+      { params: { path: { organizationId, exportId: exportId as string } } },
+      {
+        onSuccess: () => refetchStatus(),
+        onError: (err) => {
+          logError({ error: err }, 'Failed to pause export');
+          setError('Failed to pause export.');
+        },
+      },
+    );
+  };
+
+  const handleResume = () => {
+    resumeMutation.mutate(
+      { params: { path: { organizationId, exportId: exportId as string } } },
+      {
+        onSuccess: () => refetchStatus(),
+        onError: (err) => {
+          logError({ error: err }, 'Failed to resume export');
+          setError('Failed to resume export.');
+        },
+      },
+    );
+  };
+
+  const handleCancel = () => {
+    cancelMutation.mutate(
+      { params: { path: { organizationId, exportId: exportId as string } } },
+      {
+        onSuccess: () => refetchStatus(),
+        onError: (err) => {
+          logError({ error: err }, 'Failed to cancel export');
+          setError('Failed to cancel export.');
+        },
+      },
+    );
+  };
+
   const hasFilters =
     filters.status ||
     filters.deviceId !== undefined ||
@@ -149,7 +217,11 @@ export function SessionHistoryExportDialog({
     filters.dateFrom ||
     filters.dateTo;
 
-  const isFailed = exportStatus?.status === 'failed';
+  const isFailed = currentStatus === 'failed';
+  const isActionPending =
+    pauseMutation.isPending ||
+    resumeMutation.isPending ||
+    cancelMutation.isPending;
 
   return (
     <Dialog
@@ -191,14 +263,24 @@ export function SessionHistoryExportDialog({
             </div>
           )}
 
-          {isExporting && (
+          {(isExporting || isPaused) && (
             <div className="grid gap-2">
               <div className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
+                {isPaused ? (
+                  <Pause className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                )}
                 <span className="text-sm">
-                  {exportStatus?.status === 'pending'
+                  {currentStatus === 'pending'
                     ? 'Starting export...'
-                    : `Exporting... ${progress}%`}
+                    : currentStatus === 'pause_requested'
+                      ? 'Pausing...'
+                      : currentStatus === 'cancel_requested'
+                        ? 'Cancelling...'
+                        : isPaused
+                          ? `Paused at ${progress}%`
+                          : `Exporting... ${progress}%`}
                 </span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -213,6 +295,13 @@ export function SessionHistoryExportDialog({
             </div>
           )}
 
+          {isCancelled && (
+            <p className="text-sm text-muted-foreground">
+              Export was cancelled. {rowsProcessed} of {totalRows} rows were
+              processed.
+            </p>
+          )}
+
           {error && (
             <p
               className="text-sm text-destructive"
@@ -224,27 +313,76 @@ export function SessionHistoryExportDialog({
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={initiateMutation.isPending}
-          >
-            Cancel
-          </Button>
-          {isFailed ? (
+          {isExporting && (
+            <>
+              <Button
+                variant="outline"
+                onClick={handlePause}
+                disabled={
+                  isActionPending ||
+                  currentStatus === 'pause_requested' ||
+                  currentStatus === 'cancel_requested'
+                }
+              >
+                <Pause className="mr-2 h-4 w-4" />
+                Pause
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleCancel}
+                disabled={
+                  isActionPending || currentStatus === 'cancel_requested'
+                }
+              >
+                <X className="mr-2 h-4 w-4" />
+                Cancel export
+              </Button>
+            </>
+          )}
+          {isPaused && (
+            <>
+              <Button
+                variant="outline"
+                onClick={handleResume}
+                disabled={isActionPending}
+              >
+                <Play className="mr-2 h-4 w-4" />
+                Resume
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleCancel}
+                disabled={isActionPending}
+              >
+                <X className="mr-2 h-4 w-4" />
+                Cancel export
+              </Button>
+            </>
+          )}
+          {(isFailed || isCancelled) && (
             <Button onClick={handleRetry}>Retry</Button>
-          ) : (
-            <Button
-              onClick={handleExport}
-              disabled={initiateMutation.isPending || isExporting}
-            >
-              {initiateMutation.isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Download className="mr-2 h-4 w-4" />
-              )}
-              Export
-            </Button>
+          )}
+          {!exportId && (
+            <>
+              <Button
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={initiateMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleExport}
+                disabled={initiateMutation.isPending}
+              >
+                {initiateMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="mr-2 h-4 w-4" />
+                )}
+                Export
+              </Button>
+            </>
           )}
         </DialogFooter>
       </DialogContent>

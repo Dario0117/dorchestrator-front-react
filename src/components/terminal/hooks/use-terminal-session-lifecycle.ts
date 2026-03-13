@@ -7,9 +7,11 @@ const CLOSE_TIMEOUT_MS = 10_000;
 
 export function useTerminalSessionLifecycle({
   organizationId,
+  organizationSlug,
   sessionId,
 }: {
   organizationId: string;
+  organizationSlug: string;
   sessionId: string;
 }) {
   const navigate = useNavigate();
@@ -18,9 +20,21 @@ export function useTerminalSessionLifecycle({
   const [showExtendReauth, setShowExtendReauth] = useState(false);
   const extendMutation = useExtendTerminalSessionMutation();
 
-  const handleSessionEnd = useCallback(() => {
-    navigate({ to: '..', replace: true });
-  }, [navigate]);
+  const handleSessionEnd = useCallback(
+    (deviceId?: number) => {
+      if (deviceId) {
+        navigate({
+          to: '/$organizationSlug/devices',
+          params: { organizationSlug },
+          search: { page: 1, size: 10 },
+          replace: true,
+        });
+      } else {
+        navigate({ to: '..', replace: true });
+      }
+    },
+    [navigate, organizationSlug],
+  );
 
   const handleSessionWarning = useCallback(
     (reason: string, remainingMs: number) => {

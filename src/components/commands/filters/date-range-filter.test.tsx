@@ -122,4 +122,17 @@ describe('DateRangeFilter', () => {
 
     expect(screen.getByText('Last 30 days')).toBeInTheDocument();
   });
+
+  it('should show "Any Time" when startDate does not match any preset', () => {
+    const onChange = vi.fn();
+    // A date 3 days ago — doesn't match 24h, 7d, or 30d presets (outside 1h tolerance)
+    renderWithProviders(
+      <DateRangeFilter
+        startDate={new Date('2026-01-12T12:00:00.000Z').toISOString()}
+        onChange={onChange}
+      />,
+    );
+
+    expect(screen.getByText('Any Time')).toBeInTheDocument();
+  });
 });

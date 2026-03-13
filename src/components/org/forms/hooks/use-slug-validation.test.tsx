@@ -116,6 +116,27 @@ describe('useSlugValidation', () => {
     });
   });
 
+  it('should set status to unchecked on network error (onError callback)', async () => {
+    // Use HttpResponse.error() to trigger the mutation's onError callback
+    server.use(
+      http.post(buildBackendUrl('/api/v1/organization/check-slug'), () => {
+        return HttpResponse.error();
+      }),
+    );
+
+    const { result } = renderHook(() => useSlugValidation(), {
+      wrapper: createQueryThemeWrapper(),
+    });
+
+    await act(async () => {
+      await result.current.checkSlugAvailability('test-slug');
+    });
+
+    await waitFor(() => {
+      expect(result.current.status).toBe(SlugStatus.UNCHECKED);
+    });
+  });
+
   it('should not check if slug is empty', async () => {
     const { result } = renderHook(() => useSlugValidation(), {
       wrapper: createQueryThemeWrapper(),

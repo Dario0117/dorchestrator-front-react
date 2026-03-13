@@ -13,6 +13,9 @@ import type { operations } from '@/types/api.generated.types';
 type GetOrganizationStatsSuccessResponse =
   operations['getApiV1ByOrganizationIdOrganizationStats']['responses']['200']['content']['application/json'];
 
+type GetOrganizationDetailsSuccessResponse =
+  operations['getApiV1ByOrganizationIdOrganization']['responses']['200']['content']['application/json'];
+
 vi.mock('@tanstack/react-router', async () => {
   const actual = await vi.importActual('@tanstack/react-router');
   return {
@@ -223,6 +226,41 @@ describe('HomePage', () => {
 
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('No recent commands')).toBeInTheDocument();
+  });
+
+  it('should fallback tier to free when org details tier is undefined', async () => {
+    server.use(
+      http.get<never, never, GetOrganizationDetailsSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/organization'),
+        () => {
+          return HttpResponse.json({
+            responseData: {
+              results: {
+                id: 'org-1',
+                name: 'Test Organization',
+                createdAt: '2025-12-21T10:00:00.000Z',
+                memberCount: 1,
+                tier: undefined,
+                deviceLimit: null,
+              },
+            },
+            responseErrors: null,
+          } as unknown as GetOrganizationDetailsSuccessResponse);
+        },
+      ),
+    );
+
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <HomePage />
+      </Suspense>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Tier')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('free')).toBeInTheDocument();
   });
 
   describe('Mobile Responsive Layout (AC2, AC3)', () => {

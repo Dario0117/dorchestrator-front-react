@@ -120,4 +120,33 @@ describe('SearchInput', () => {
 
     expect(screen.queryByLabelText('Clear search')).not.toBeInTheDocument();
   });
+
+  it('should cancel pending debounce when clear is clicked while typing', async () => {
+    const onSearch = vi.fn();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderWithProviders(
+      <SearchInput
+        onSearch={onSearch}
+        ariaLabel="Search commands"
+      />,
+    );
+
+    // Type some text (starts a debounce)
+    await user.type(screen.getByLabelText('Search commands'), 'docker');
+
+    // Click clear before debounce fires
+    await user.click(screen.getByLabelText('Clear search'));
+
+    // The clear should have called onSearch(undefined) immediately
+    expect(onSearch).toHaveBeenCalledWith(undefined);
+
+    // Advance past debounce - should not get a second call with "docker"
+    vi.advanceTimersByTime(300);
+
+    // Only the clear call should have fired
+    const definedCalls = onSearch.mock.calls.filter(
+      (c: unknown[]) => c[0] !== undefined,
+    );
+    expect(definedCalls).toHaveLength(0);
+  });
 });

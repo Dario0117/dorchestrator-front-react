@@ -1,8 +1,6 @@
 import { TerminalPage } from '@components/terminal/pages/terminal.page';
-import {
-  SessionLocked,
-  SessionTerminated,
-} from '@components/terminal/session-state-views';
+import { SessionLocked } from '@components/terminal/session-locked';
+import { SessionTerminated } from '@components/terminal/session-terminated';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useTerminalSessionSuspenseQuery } from '@services/terminal/get-terminal-session.http-service';
 import { useParams } from '@tanstack/react-router';

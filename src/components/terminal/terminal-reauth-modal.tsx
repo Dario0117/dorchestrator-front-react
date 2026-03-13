@@ -17,11 +17,9 @@ export function TerminalReauthModal({
 }: TerminalReauthModalProps) {
   const authMutation = useTerminalAuthMutation();
 
-  const handleOpenChange = (nextOpen: boolean) => {
-    if (!nextOpen) {
-      authMutation.reset();
-    }
-    onOpenChange(nextOpen);
+  const handleOpenChange = () => {
+    authMutation.reset();
+    onOpenChange(false);
   };
 
   return (

@@ -190,6 +190,93 @@ describe('CommandsListPage', () => {
     });
   });
 
+  it('should show filtered empty state with "Clear Filters" when filters are active', async () => {
+    const user = userEvent.setup();
+    mockSearchParams = { page: 1, size: 25, status: 'completed' };
+
+    server.use(
+      http.get<never, never, ListCommandsSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/commands'),
+        () => {
+          return HttpResponse.json({
+            responseData: {
+              results: [],
+              hasNext: false,
+              hasPrevious: false,
+              totalResults: 0,
+              totalPages: 0,
+              page: 1,
+              size: 25,
+            },
+            responseErrors: null,
+          });
+        },
+      ),
+    );
+
+    renderWithProviders(<CommandsListPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No commands match your filters/),
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Clear Filters' }));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: expect.any(Function),
+      }),
+    );
+
+    const call = mockNavigate.mock.calls[0] as [
+      { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+    ];
+    const result = call[0].search({ page: 2, size: 25, status: 'completed' });
+    expect(result).toEqual({ page: 1, size: 25 });
+  });
+
+  it('should open modal from empty state Execute button', async () => {
+    const user = userEvent.setup();
+
+    server.use(
+      http.get<never, never, ListCommandsSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/commands'),
+        () => {
+          return HttpResponse.json({
+            responseData: {
+              results: [],
+              hasNext: false,
+              hasPrevious: false,
+              totalResults: 0,
+              totalPages: 0,
+              page: 1,
+              size: 25,
+            },
+            responseErrors: null,
+          });
+        },
+      ),
+    );
+
+    renderWithProviders(<CommandsListPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/No commands executed yet/)).toBeInTheDocument();
+    });
+
+    const executeButtons = screen.getAllByText('Execute New Command');
+    // Click the one in the empty state (second button)
+    await user.click(executeButtons[executeButtons.length - 1] as HTMLElement);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Select a device and enter the command to execute.'),
+      ).toBeInTheDocument();
+    });
+  });
+
   it('should open execute command modal when button is clicked', async () => {
     const user = userEvent.setup();
     renderWithProviders(<CommandsListPage />);
@@ -239,6 +326,57 @@ describe('CommandsListPage', () => {
       expect(
         screen.getByText('Select a device and enter the command to execute.'),
       ).toBeInTheDocument();
+    });
+  });
+
+  it('should not navigate when modal is closed without executeModal search param', async () => {
+    const user = userEvent.setup();
+    mockSearchParams = { page: 1, size: 25 };
+
+    renderWithProviders(<CommandsListPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Execute New Command')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText('Execute New Command'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Select a device and enter the command to execute.'),
+      ).toBeInTheDocument();
+    });
+
+    mockNavigate.mockClear();
+
+    await user.keyboard('{Escape}');
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText('Select a device and enter the command to execute.'),
+      ).not.toBeInTheDocument();
+    });
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('should handle null responseData gracefully', async () => {
+    server.use(
+      http.get<never, never, ListCommandsSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/commands'),
+        () => {
+          return HttpResponse.json({
+            responseData: null,
+            responseErrors: null,
+          } as unknown as ListCommandsSuccessResponse);
+        },
+      ),
+    );
+
+    renderWithProviders(<CommandsListPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/No commands executed yet/)).toBeInTheDocument();
     });
   });
 

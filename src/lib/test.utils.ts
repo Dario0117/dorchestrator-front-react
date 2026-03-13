@@ -24,15 +24,29 @@ import { listUserOrganizationsHandler } from '@services/organizations/list-user-
 import { removeMemberHandler } from '@services/organizations/remove-member.http-service.handlers';
 import { setDefaultOrganizationHandler } from '@services/organizations/set-default-organization.http-service.handlers';
 import { transferOwnershipHandler } from '@services/organizations/transfer-ownership.http-service.handlers';
+import { createBookmarkHandler } from '@services/terminal/create-bookmark.http-service.handlers';
 import { createTerminalSessionHandler } from '@services/terminal/create-terminal-session.http-service.handlers';
+import { deleteBookmarkHandler } from '@services/terminal/delete-bookmark.http-service.handlers';
+import {
+  cancelExportHandler,
+  downloadExportHandler,
+  getExportStatusHandler,
+  initiateExportHandler,
+  pauseExportHandler,
+  resumeExportHandler,
+} from '@services/terminal/export-session-history.http-service.handlers';
+import { extendTerminalSessionHandler } from '@services/terminal/extend-terminal-session.http-service.handlers';
 import { getDeviceConfigHandler } from '@services/terminal/get-device-config.http-service.handlers';
 import { getEffectiveCeilingHandler } from '@services/terminal/get-effective-ceiling.http-service.handlers';
 import { getTerminalConfigHandler } from '@services/terminal/get-terminal-config.http-service.handlers';
 import { getTerminalSessionHandler } from '@services/terminal/get-terminal-session.http-service.handlers';
 import { listSessionHistoryHandler } from '@services/terminal/list-session-history.http-service.handlers';
 import { listTerminalSessionsHandler } from '@services/terminal/list-terminal-sessions.http-service.handlers';
+import { shareTerminalSessionHandler } from '@services/terminal/share-terminal-session.http-service.handlers';
 import { terminalAuthHandler } from '@services/terminal/terminal-auth.http-service.handlers';
+import { terminateTerminalSessionHandler } from '@services/terminal/terminate-terminal-session.http-service.handlers';
 import { unlockTerminalSessionHandler } from '@services/terminal/unlock-terminal-session.http-service.handlers';
+import { unshareTerminalSessionHandler } from '@services/terminal/unshare-terminal-session.http-service.handlers';
 import { updateDeviceConfigHandler } from '@services/terminal/update-device-config.http-service.handlers';
 import { updateTerminalConfigHandler } from '@services/terminal/update-terminal-config.http-service.handlers';
 import { getProfileHandler } from '@services/users/get-profile.http-service.handlers';
@@ -94,5 +108,17 @@ export function MSWSuccessHandlers() {
     getDeviceConfigHandler,
     updateDeviceConfigHandler,
     getEffectiveCeilingHandler,
+    terminateTerminalSessionHandler,
+    initiateExportHandler,
+    getExportStatusHandler,
+    downloadExportHandler,
+    pauseExportHandler,
+    resumeExportHandler,
+    cancelExportHandler,
+    createBookmarkHandler,
+    deleteBookmarkHandler,
+    shareTerminalSessionHandler,
+    unshareTerminalSessionHandler,
+    extendTerminalSessionHandler,
   ];
 }

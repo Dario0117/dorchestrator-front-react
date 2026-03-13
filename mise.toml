@@ -69,6 +69,10 @@ run = "bun run build"
 run = "bun run preview"
 description = "Preview production build"
 
+[tasks.deadCode]
+run = "bun run dead-code"
+description = "Find unused files, exports, types, and dependencies (knip)"
+
 [tasks."scaffold:service"]
 run = "bun scripts/scaffold/service.ts"
 description = "Scaffold a new HTTP service + MSW handler"

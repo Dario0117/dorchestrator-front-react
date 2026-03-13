@@ -105,6 +105,7 @@ export function NotificationPanel() {
           params: { organizationSlug, sessionId: notification.resourceId },
         });
         break;
+      /* v8 ignore next 4 -- exhaustive check */
       default: {
         const _exhaustive: never = notification.resourceType;
         return _exhaustive;

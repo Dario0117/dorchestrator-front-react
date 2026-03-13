@@ -35,11 +35,8 @@ function getStore() {
   return useTerminalConnectionStore.getState();
 }
 
-type ConnectionMode = 'terminal' | 'events';
-
 export class TerminalWsClient {
   private ws: WebSocket | null = null;
-  private connectionMode: ConnectionMode | null = null;
   private currentShareToken: string | undefined;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private intentionalDisconnect = false;
@@ -54,10 +51,6 @@ export class TerminalWsClient {
   }
 
   private scheduleReconnect() {
-    if (this.intentionalDisconnect || !this.connectionMode) {
-      return;
-    }
-
     const store = getStore();
     const delay = calculateBackoff(store.reconnectAttempt);
 
@@ -71,9 +64,7 @@ export class TerminalWsClient {
 
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
-      if (this.connectionMode && !this.intentionalDisconnect) {
-        this.connectInternal();
-      }
+      this.connectInternal();
     }, delay);
   }
 
@@ -151,7 +142,6 @@ export class TerminalWsClient {
       const store = getStore();
       store.setConnectionState('disconnected');
       store.setError(`Authentication failed (code: ${event.code})`);
-      this.connectionMode = null;
       logError(
         { code: event.code, reason: event.reason },
         'WebSocket auth failure — not reconnecting',
@@ -208,7 +198,6 @@ export class TerminalWsClient {
     }
     this.clearReconnectTimer();
     this.intentionalDisconnect = false;
-    this.connectionMode = 'terminal';
     this.currentShareToken = shareToken;
     getStore().resetReconnectAttempt();
     this.connectInternal();
@@ -216,7 +205,6 @@ export class TerminalWsClient {
 
   connectForEvents() {
     this.intentionalDisconnect = false;
-    this.connectionMode = 'events';
     this.currentShareToken = undefined;
     getStore().resetReconnectAttempt();
     this.connectInternal();
@@ -224,7 +212,6 @@ export class TerminalWsClient {
 
   disconnect() {
     this.intentionalDisconnect = true;
-    this.connectionMode = null;
     this.currentShareToken = undefined;
     this.clearReconnectTimer();
 

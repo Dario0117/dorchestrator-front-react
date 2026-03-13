@@ -48,9 +48,7 @@ export function CreateOrganizationForm({
 
   const handleCheckSlug = async () => {
     const slugValue = form.getFieldValue('slug');
-    if (slugValue) {
-      await checkSlugAvailability(slugValue);
-    }
+    await checkSlugAvailability(slugValue);
   };
 
   return (

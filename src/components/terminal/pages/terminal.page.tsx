@@ -1,4 +1,4 @@
-import { useFontSize } from '@components/terminal/font-size-controls';
+import { useFontSize } from '@components/terminal/hooks/use-font-size';
 import { useTerminalBookmark } from '@components/terminal/hooks/use-terminal-bookmark';
 import { useTerminalSessionLifecycle } from '@components/terminal/hooks/use-terminal-session-lifecycle';
 import { useTerminalShare } from '@components/terminal/hooks/use-terminal-share';
@@ -39,6 +39,7 @@ export function TerminalPage({
 
   const lifecycle = useTerminalSessionLifecycle({
     organizationId,
+    organizationSlug,
     sessionId,
   });
 

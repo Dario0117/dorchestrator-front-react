@@ -260,4 +260,33 @@ describe('logger utils', () => {
       );
     });
   });
+
+  describe('trace context', () => {
+    it('should include traceId and spanId when an active span exists', async () => {
+      const { trace } = await import('@opentelemetry/api');
+      const mockSpan = {
+        spanContext: () => ({
+          traceId: 'abc123trace',
+          spanId: 'def456span',
+          traceFlags: 1,
+        }),
+      };
+      const getActiveSpanSpy = vi
+        .spyOn(trace, 'getActiveSpan')
+        .mockReturnValue(mockSpan as ReturnType<typeof trace.getActiveSpan>);
+
+      logInfo({}, 'traced message');
+
+      expect(consoleInfoSpy).toHaveBeenCalledWith(
+        'traced message',
+        expect.objectContaining({
+          msg: 'traced message',
+          traceId: 'abc123trace',
+          spanId: 'def456span',
+        }),
+      );
+
+      getActiveSpanSpy.mockRestore();
+    });
+  });
 });

@@ -224,4 +224,65 @@ describe('DeviceCard', () => {
 
     expect(mockOnRemove).toHaveBeenCalledWith(42);
   });
+
+  it('should call onOpenTerminal when Open Terminal button is clicked', async () => {
+    const user = userEvent.setup();
+    renderDeviceCard({
+      id: 42,
+      deviceName: 'Server',
+      platform: 'linux',
+      lastSeenAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+    });
+
+    await user.click(screen.getByText('Open Terminal'));
+
+    expect(mockOnOpenTerminal).toHaveBeenCalledWith(42);
+  });
+
+  it('should render configure button when onConfigure is provided', async () => {
+    const mockOnConfigure = vi.fn();
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <DeviceCard
+        device={{
+          id: 42,
+          deviceName: 'Server',
+          platform: 'linux',
+          lastSeenAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+        }}
+        onRemove={mockOnRemove}
+        onExecuteCommand={mockOnExecuteCommand}
+        onOpenTerminal={mockOnOpenTerminal}
+        onConfigure={mockOnConfigure}
+      />,
+    );
+
+    const buttons = screen.getAllByRole('button');
+    const configButton = buttons.find((btn) =>
+      btn.querySelector('svg.lucide-settings'),
+    );
+    expect(configButton).toBeInTheDocument();
+    await user.click(configButton as HTMLElement);
+
+    expect(mockOnConfigure).toHaveBeenCalledWith(42);
+  });
+
+  it('should not render configure button when onConfigure is not provided', () => {
+    renderDeviceCard({
+      id: 42,
+      deviceName: 'Server',
+      platform: 'linux',
+      lastSeenAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+    });
+
+    const buttons = screen.getAllByRole('button');
+    const configButton = buttons.find((btn) =>
+      btn.querySelector('svg.lucide-settings'),
+    );
+    expect(configButton).toBeUndefined();
+  });
 });

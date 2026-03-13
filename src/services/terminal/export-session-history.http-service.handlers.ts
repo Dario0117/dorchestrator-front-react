@@ -55,3 +55,31 @@ export const downloadExportHandler = http.get(
     );
   },
 );
+
+const actionResponse = {
+  responseData: {
+    results: ['OK'],
+  },
+  responseErrors: null,
+};
+
+export const pauseExportHandler = http.post(
+  buildBackendUrl(
+    '/api/v1/{organizationId}/terminal/sessions/export/{exportId}/pause',
+  ),
+  () => HttpResponse.json(actionResponse),
+);
+
+export const resumeExportHandler = http.post(
+  buildBackendUrl(
+    '/api/v1/{organizationId}/terminal/sessions/export/{exportId}/resume',
+  ),
+  () => HttpResponse.json(actionResponse),
+);
+
+export const cancelExportHandler = http.post(
+  buildBackendUrl(
+    '/api/v1/{organizationId}/terminal/sessions/export/{exportId}/cancel',
+  ),
+  () => HttpResponse.json(actionResponse),
+);

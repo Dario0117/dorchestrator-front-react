@@ -564,6 +564,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/{organizationId}/terminal/sessions/export/{exportId}/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdTerminalSessionsExportByExportIdPause"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/terminal/sessions/export/{exportId}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdTerminalSessionsExportByExportIdResume"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/terminal/sessions/export/{exportId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdTerminalSessionsExportByExportIdCancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/{organizationId}/terminal/sessions/export/{exportId}/download": {
         parameters: {
             query?: never;
@@ -8900,7 +8948,7 @@ export interface operations {
                             results: {
                                 exportId: string;
                                 /** @enum {string} */
-                                status: "pending" | "processing" | "completed" | "failed";
+                                status: "pending" | "processing" | "pause_requested" | "paused" | "cancel_requested" | "cancelled" | "completed" | "failed";
                                 totalRows: number;
                                 rowsProcessed: number;
                                 filename: string;
@@ -8908,6 +8956,300 @@ export interface operations {
                                 createdAt: string;
                                 completedAt: string | null;
                             };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdTerminalSessionsExportByExportIdPause: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                exportId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdTerminalSessionsExportByExportIdResume: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                exportId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdTerminalSessionsExportByExportIdCancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                exportId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
                         };
                         responseErrors: null;
                     };

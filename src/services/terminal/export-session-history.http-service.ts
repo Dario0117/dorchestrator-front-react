@@ -13,6 +13,27 @@ export function useInitiateExportMutation() {
   );
 }
 
+export function usePauseExportMutation() {
+  return $api.useMutation(
+    'post',
+    '/api/v1/{organizationId}/terminal/sessions/export/{exportId}/pause',
+  );
+}
+
+export function useResumeExportMutation() {
+  return $api.useMutation(
+    'post',
+    '/api/v1/{organizationId}/terminal/sessions/export/{exportId}/resume',
+  );
+}
+
+export function useCancelExportMutation() {
+  return $api.useMutation(
+    'post',
+    '/api/v1/{organizationId}/terminal/sessions/export/{exportId}/cancel',
+  );
+}
+
 export const useExportStatusQueryOptions = (
   organizationId: string,
   exportId: string | null,

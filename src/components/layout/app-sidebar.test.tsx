@@ -1,9 +1,12 @@
 import { AppSidebar } from '@components/layout/app-sidebar';
 import { SidebarProvider } from '@components/ui/sidebar';
 import { LayoutProvider } from '@context/layout.provider';
+import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
+import { HttpResponse, http } from 'msw';
 import { Suspense } from 'react';
+import { server } from '@/../testsSetup';
 
 const mockNavigate = vi.fn();
 
@@ -50,8 +53,10 @@ const mockOrganization = {
   isDefault: true,
 };
 
+let mockCurrentOrganization: typeof mockOrganization | null = mockOrganization;
+
 vi.mock('@/app', () => ({
-  _getNullableCurrentOrganizationFromSlug: () => mockOrganization,
+  _getNullableCurrentOrganizationFromSlug: () => mockCurrentOrganization,
 }));
 
 function renderAppSidebar() {
@@ -67,6 +72,10 @@ function renderAppSidebar() {
 }
 
 describe('AppSidebar', () => {
+  beforeEach(() => {
+    mockCurrentOrganization = mockOrganization;
+  });
+
   it('should render sidebar', async () => {
     const { container } = renderAppSidebar();
 
@@ -159,5 +168,38 @@ describe('AppSidebar', () => {
       const icon = link.querySelector('svg');
       expect(icon).toBeInTheDocument();
     });
+  });
+
+  it('should render nothing when currentOrganization is null', async () => {
+    mockCurrentOrganization = null;
+
+    const { container } = renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+
+    const sidebar = container.querySelector('[data-slot="sidebar"]');
+    expect(sidebar).not.toBeInTheDocument();
+  });
+
+  it('should render sidebar when responseData results is nullish', async () => {
+    server.use(
+      http.get(buildBackendUrl('/api/v1/organizations'), () => {
+        return HttpResponse.json({
+          responseData: null,
+          responseErrors: null,
+        });
+      }),
+    );
+
+    const { container } = renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+
+    const sidebar = container.querySelector('[data-slot="sidebar"]');
+    expect(sidebar).toBeInTheDocument();
   });
 });

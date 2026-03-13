@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema-jsonc.json",
+
+  // Scripts are CLI entry points invoked via mise tasks, not imported
+  "entry": ["src/main.tsx", "scripts/**/*.ts", "testsSetup.ts"],
+  "project": ["src/**/*.{ts,tsx}", "scripts/**/*.ts"],
+
+  "ignoreDependencies": [
+    // Used via PostCSS/Vite config, not imported directly
+    "tailwindcss",
+    "tw-animate-css"
+  ]
+}

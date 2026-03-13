@@ -28,6 +28,7 @@ Never use `mise run dev`.
 
 - `mise run checkTs` — TypeScript type checking (no emit)
 - `mise run formatAndLint` — Format + lint with Biome (applies fixes)
+- `mise run deadCode` — Find unused files, exports, types, and dependencies (knip)
 - `mise run build` — Production build
 
 ## Code Generation

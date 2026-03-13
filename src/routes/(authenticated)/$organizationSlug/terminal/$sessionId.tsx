@@ -1,5 +1,5 @@
 import { TerminalSessionPage } from '@components/terminal/pages/terminal-session.page';
-import { SessionLoadingSkeleton } from '@components/terminal/session-state-views';
+import { SessionLoadingSkeleton } from '@components/terminal/session-loading-skeleton';
 import { RouteErrorFallback } from '@components/ui/route-error-fallback';
 import { useTerminalSessionQueryOptions } from '@services/terminal/get-terminal-session.http-service';
 import { createFileRoute } from '@tanstack/react-router';

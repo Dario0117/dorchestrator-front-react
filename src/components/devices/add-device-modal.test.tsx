@@ -382,6 +382,41 @@ describe('AddDeviceModal', () => {
     writeTextSpy.mockRestore();
   });
 
+  it('should not display token when onSuccess result has no responseData.results', async () => {
+    server.use(
+      http.post(buildBackendUrl('/api/v1/{organizationId}/devices'), () => {
+        return HttpResponse.json({
+          responseData: null,
+          responseErrors: null,
+        } as unknown as GenerateTokenSuccessResponse);
+      }),
+    );
+
+    const user = userEvent.setup();
+    renderWithProviders(
+      <AddDeviceModal
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        organizationId={organizationId}
+      />,
+    );
+
+    await user.click(screen.getByText('Generate Token'));
+
+    // Wait for the mutation to settle
+    await waitFor(() => {
+      expect(screen.queryByText('Generating...')).not.toBeInTheDocument();
+    });
+
+    // Token should not be displayed since responseData.results is falsy
+    expect(
+      screen.queryByLabelText('Registration Token'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('CLI Command')).not.toBeInTheDocument();
+    // Generate Token button should still be visible
+    expect(screen.getByText('Generate Token')).toBeInTheDocument();
+  });
+
   it('should show empty expiration when expiresAt is not provided', async () => {
     server.use(
       http.post<never, never, GenerateTokenSuccessResponse>(

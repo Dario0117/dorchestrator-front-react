@@ -1,5 +1,6 @@
 import { CommandFilters } from '@components/commands/command-filters';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { useDevicesSuspenseQuery } from '@services/devices/list-devices.http-service';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -199,5 +200,98 @@ describe('CommandFilters', () => {
     ];
     const result = call[0].search({ page: 1, size: 25 });
     expect(result.search).toBe('docker');
+  });
+
+  it('should allow selecting a device filter', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderWithProviders(<CommandFilters />);
+
+    await user.click(screen.getByLabelText('Filter by device'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: 'Server Alpha' }),
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('option', { name: 'Server Alpha' }));
+
+    const call = mockNavigate.mock.calls[0] as [
+      { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+    ];
+    const result = call[0].search({ page: 3, size: 25 });
+    expect(result.deviceId).toBe(1);
+    expect(result.page).toBe(1);
+  });
+
+  it('should allow clearing device filter by selecting "All Devices"', async () => {
+    mockSearchParams = { page: 1, size: 25, deviceId: 1 };
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderWithProviders(<CommandFilters />);
+
+    await user.click(screen.getByLabelText('Filter by device'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: 'All Devices' }),
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('option', { name: 'All Devices' }));
+
+    const call = mockNavigate.mock.calls[0] as [
+      { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+    ];
+    const result = call[0].search({ page: 3, size: 25, deviceId: 1 });
+    expect(result.deviceId).toBeUndefined();
+    expect(result.page).toBe(1);
+  });
+
+  it('should navigate with date range when selecting a date preset', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderWithProviders(<CommandFilters />);
+
+    await user.click(screen.getByLabelText('Filter by date range'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: 'Last 24 hours' }),
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('option', { name: 'Last 24 hours' }));
+
+    const call = mockNavigate.mock.calls[0] as [
+      { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+    ];
+    const result = call[0].search({ page: 3, size: 25 });
+    expect(result.startDate).toBeDefined();
+    expect(result.endDate).toBeDefined();
+    expect(result.page).toBe(1);
+  });
+
+  it('should handle devices query returning no responseData', () => {
+    vi.mocked(useDevicesSuspenseQuery).mockReturnValueOnce({
+      data: {
+        responseData: null,
+        responseErrors: null,
+      },
+    } as unknown as ReturnType<typeof useDevicesSuspenseQuery>);
+
+    renderWithProviders(<CommandFilters />);
+
+    expect(screen.getByLabelText('Filter by device')).toBeInTheDocument();
+  });
+
+  it('should count startDate as an active filter', () => {
+    mockSearchParams = {
+      page: 1,
+      size: 25,
+      startDate: '2026-01-01T00:00:00.000Z',
+    };
+    renderWithProviders(<CommandFilters />);
+
+    expect(screen.getByText('Clear Filters')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument();
   });
 });

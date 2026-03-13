@@ -1,7 +1,5 @@
-import {
-  FontSizeControls,
-  useFontSize,
-} from '@components/terminal/font-size-controls';
+import { FontSizeControls } from '@components/terminal/font-size-controls';
+import { useFontSize } from '@components/terminal/hooks/use-font-size';
 import { SuggestionSidebar } from '@components/terminal/suggestion-sidebar';
 import { TerminalConnectionStatus } from '@components/terminal/terminal-connection-status';
 import { TerminalEmulator } from '@components/terminal/terminal-emulator';

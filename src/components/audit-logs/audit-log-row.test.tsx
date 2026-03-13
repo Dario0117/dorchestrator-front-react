@@ -270,4 +270,62 @@ describe('AuditLogRow', () => {
       screen.queryByRole('button', { expanded: false }),
     ).not.toBeInTheDocument();
   });
+
+  it('should copy actor email to clipboard when copy actor button is clicked', async () => {
+    const user = userEvent.setup();
+    const writeTextSpy = vi
+      .spyOn(navigator.clipboard, 'writeText')
+      .mockResolvedValue(undefined);
+
+    renderRow();
+    await user.click(screen.getByLabelText('Copy actor'));
+
+    expect(writeTextSpy).toHaveBeenCalledWith('admin@org.com');
+    writeTextSpy.mockRestore();
+  });
+
+  it('should fall back to raw resourceType when no label is defined', () => {
+    const unknownResourceEntry: AuditLogEntry = {
+      ...mockEntry,
+      resourceType: 'unknown_type' as AuditLogEntry['resourceType'],
+    };
+    renderRow(unknownResourceEntry);
+    expect(screen.getByText('unknown_type')).toBeInTheDocument();
+  });
+
+  it('should render raw metadata when neither before nor after exist', async () => {
+    const user = userEvent.setup();
+    const rawMetadataEntry: AuditLogEntry = {
+      ...mockEntry,
+      metadata: {} as AuditLogEntry['metadata'],
+    };
+    renderRow(rawMetadataEntry);
+
+    const row = screen.getByRole('button', { expanded: false });
+    await user.click(row);
+
+    expect(screen.queryByText('Before:')).not.toBeInTheDocument();
+    expect(screen.queryByText('After:')).not.toBeInTheDocument();
+  });
+
+  it('should not toggle when a non-interactive key is pressed', async () => {
+    const user = userEvent.setup();
+    renderRow();
+
+    const row = screen.getByRole('button', { expanded: false });
+    row.focus();
+    await user.keyboard('{Tab}');
+
+    expect(row).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('should render deactivated badge with amber styling', () => {
+    const deactivatedEntry: AuditLogEntry = {
+      ...mockEntry,
+      action: 'deactivated',
+    };
+    renderRow(deactivatedEntry);
+    const badge = screen.getByText('Deactivated');
+    expect(badge.className).toContain('bg-amber-100');
+  });
 });

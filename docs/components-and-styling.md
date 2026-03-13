@@ -2,7 +2,7 @@
 
 ## Component Conventions
 
-- One component per file
+- **One component per file** — each `.tsx` file must export exactly one React component. Extract internal/helper components into their own files so they can be tested in isolation. Utility functions (non-components) can stay in the same file or be extracted to a `*.utils.ts` file. Hooks must live in their own file under `hooks/`.
 - Naming: kebab-case.tsx (e.g., `login-form.tsx`, `command-menu.tsx`)
 - Keyboard navigation support
 - Proper ARIA attributes when needed

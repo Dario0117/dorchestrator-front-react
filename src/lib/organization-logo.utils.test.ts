@@ -3,7 +3,6 @@ import {
   generateSlugSuggestion,
   isValidSlug,
 } from '@lib/organization-logo.utils';
-import { describe, expect, it } from 'vitest';
 
 describe('generateInitials', () => {
   it('should generate initials from organization name', () => {
@@ -39,6 +38,12 @@ describe('generateInitials', () => {
   it('should handle special characters in words', () => {
     expect(generateInitials('Acme & Co.')).toBe('A&C');
     expect(generateInitials('Tech-Innovations')).toBe('T');
+  });
+
+  it('should handle tab and newline characters', () => {
+    expect(generateInitials('\tAcme\tCorp\t')).toBe('AC');
+    expect(generateInitials('\nTech\nLab\n')).toBe('TL');
+    expect(generateInitials('Acme\t\n Corp')).toBe('AC');
   });
 });
 
@@ -87,6 +92,12 @@ describe('isValidSlug', () => {
     expect(isValidSlug('acme')).toBe(true);
     expect(isValidSlug('company')).toBe(true);
   });
+
+  it('should accept single character slugs', () => {
+    expect(isValidSlug('a')).toBe(true);
+    expect(isValidSlug('z')).toBe(true);
+    expect(isValidSlug('5')).toBe(true);
+  });
 });
 
 describe('generateSlugSuggestion', () => {
@@ -132,5 +143,10 @@ describe('generateSlugSuggestion', () => {
   it('should handle special characters only', () => {
     expect(generateSlugSuggestion('!@#$%')).toBe('');
     expect(generateSlugSuggestion('& & &')).toBe('');
+  });
+
+  it('should handle numbers only', () => {
+    expect(generateSlugSuggestion('123')).toBe('123');
+    expect(generateSlugSuggestion('456789')).toBe('456789');
   });
 });

@@ -108,6 +108,7 @@ function TestWrapper({
     submitCommandMutation: mockMutation,
     handleSuccess: mockHandleSuccess,
     organizationId: 'org-1',
+    initialDeviceId: pinnedDevice?.id,
   });
 
   return (
@@ -213,12 +214,9 @@ describe('CommandForm', () => {
       <TestWrapper pinnedDevice={{ id: 2, name: 'Dev Laptop' }} />,
     );
 
-    await waitFor(() => {
-      expect(screen.getByText('Dev Laptop')).toBeInTheDocument();
-    });
-
-    const trigger = screen.getByRole('combobox', { name: /Device/ });
+    const trigger = await screen.findByRole('combobox', { name: /Device/ });
     expect(trigger).toBeDisabled();
+    expect(trigger).toHaveTextContent('Dev Laptop');
   });
 
   it('should show offline confirmation dialog when submitting for offline device', async () => {
@@ -311,5 +309,86 @@ describe('CommandForm', () => {
     const buttons = screen.getAllByRole('button');
     const cancelButton = buttons.find((btn) => btn.textContent === 'Cancel');
     expect(cancelButton).toBeDefined();
+  });
+
+  it('should call window.history.back when cancel is clicked without onCancel prop', async () => {
+    const historyBackSpy = vi
+      .spyOn(window.history, 'back')
+      .mockImplementation(() => undefined);
+    const user = userEvent.setup();
+    renderWithProviders(<TestWrapper />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Device')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    expect(historyBackSpy).toHaveBeenCalledOnce();
+    historyBackSpy.mockRestore();
+  });
+
+  it('should submit form when Continue is clicked on offline confirmation dialog', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<TestWrapper />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Device')).toBeInTheDocument();
+    });
+
+    // Select offline device
+    await openDeviceSelect(user);
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: /Dev Laptop/ }),
+      ).toBeInTheDocument();
+    });
+    await user.click(screen.getByRole('option', { name: /Dev Laptop/ }));
+
+    // Type a command
+    const textarea = screen.getByPlaceholderText('Enter your command...');
+    await user.type(textarea, 'ls -la');
+
+    // Submit
+    await user.click(screen.getByRole('button', { name: 'Execute Command' }));
+
+    // Wait for offline dialog
+    await waitFor(() => {
+      expect(screen.getByText('Device Offline')).toBeInTheDocument();
+    });
+
+    // Click Continue
+    await user.click(screen.getByRole('button', { name: 'Continue' }));
+
+    // Dialog should close
+    await waitFor(() => {
+      expect(screen.queryByText('Device Offline')).not.toBeInTheDocument();
+    });
+  });
+
+  it('should submit directly for pinned device without offline check', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <TestWrapper pinnedDevice={{ id: 2, name: 'Dev Laptop' }} />,
+    );
+
+    const trigger = await screen.findByRole('combobox', { name: /Device/ });
+    expect(trigger).toHaveTextContent('Dev Laptop');
+
+    // Type a command
+    const textarea = screen.getByPlaceholderText('Enter your command...');
+    await user.type(textarea, 'ls -la');
+
+    // Submit — button should be enabled after typing
+    const submitButton = await screen.findByRole('button', {
+      name: 'Execute Command',
+    });
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
+    await user.click(submitButton);
+
+    // Should NOT show offline dialog (pinnedDevice skips offline check)
+    expect(screen.queryByText('Device Offline')).not.toBeInTheDocument();
   });
 });

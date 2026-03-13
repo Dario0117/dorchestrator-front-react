@@ -132,6 +132,20 @@ function useMultiPageHandler(options?: {
   );
 }
 
+function useNullResponseDataHandler() {
+  server.use(
+    http.get<never, never, ListAuditLogsSuccessResponse>(
+      buildBackendUrl('/api/v1/{organizationId}/audit-logs'),
+      () => {
+        return HttpResponse.json({
+          responseData: null,
+          responseErrors: null,
+        } as unknown as ListAuditLogsSuccessResponse);
+      },
+    ),
+  );
+}
+
 function useEmptyHandler() {
   server.use(
     http.get<never, never, ListAuditLogsSuccessResponse>(
@@ -224,6 +238,16 @@ describe('AuditLogsListPage', () => {
     });
   });
 
+  it('should show empty state when responseData is null', async () => {
+    useNullResponseDataHandler();
+
+    renderWithProviders(<AuditLogsListPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/No audit logs yet/)).toBeInTheDocument();
+    });
+  });
+
   it('should show empty state when no audit logs exist', async () => {
     useEmptyHandler();
 
@@ -258,6 +282,38 @@ describe('AuditLogsListPage', () => {
         screen.getByText(/Use the filters above to adjust your search/),
       ).toBeInTheDocument();
     });
+  });
+
+  it('should clear filters when clicking "Clear Filters" in filtered empty state', async () => {
+    const user = userEvent.setup();
+    useEmptyHandler();
+    mockSearchParams = { page: 1, size: 25, action: 'created' };
+
+    renderWithProviders(<AuditLogsListPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No audit logs match your filters/),
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Clear Filters' }));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: expect.any(Function),
+      }),
+    );
+
+    const call = mockNavigate.mock.calls[0] as [
+      { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+    ];
+    const result = call[0].search({
+      page: 2,
+      size: 25,
+      action: 'created',
+    });
+    expect(result).toEqual({ page: 1, size: 25 });
   });
 
   it('should display singular "entry" when totalResults is 1', async () => {

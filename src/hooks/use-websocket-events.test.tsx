@@ -231,4 +231,106 @@ describe('useWebSocketEvents', () => {
       queryKey: ['get', '/api/v1/{organizationId}/notifications/unread-count'],
     });
   });
+
+  test('session:status event invalidates session queries', () => {
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+    renderHook(() => useWebSocketEvents(), {
+      wrapper: createWrapper(queryClient),
+    });
+
+    FakeWebSocket.latest().simulateOpen();
+    FakeWebSocket.latest().simulateMessage({
+      type: 'session:status',
+      sessionId: 'session-1',
+      payload: {
+        status: 'active',
+        previousStatus: 'created',
+      },
+    });
+
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: ['get', '/api/v1/{organizationId}/terminal/sessions'],
+    });
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: [
+        'get',
+        '/api/v1/{organizationId}/terminal/sessions/{sessionId}',
+      ],
+    });
+    // Should NOT invalidate notifications for non-created status
+    expect(invalidateSpy).not.toHaveBeenCalledWith({
+      queryKey: ['get', '/api/v1/{organizationId}/notifications'],
+    });
+  });
+
+  test('session:status with created status invalidates notification queries', () => {
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+    renderHook(() => useWebSocketEvents(), {
+      wrapper: createWrapper(queryClient),
+    });
+
+    FakeWebSocket.latest().simulateOpen();
+    FakeWebSocket.latest().simulateMessage({
+      type: 'session:status',
+      sessionId: 'session-2',
+      payload: {
+        status: 'created',
+        previousStatus: 'terminated',
+      },
+    });
+
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: ['get', '/api/v1/{organizationId}/notifications'],
+    });
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: ['get', '/api/v1/{organizationId}/notifications/unread-count'],
+    });
+  });
+
+  test('cleanup guards against redundant disconnect calls', () => {
+    const disconnectSpy = vi.spyOn(terminalWsClient, 'disconnect');
+    disconnectSpy.mockClear();
+
+    const { unmount } = renderHook(() => useWebSocketEvents(), {
+      wrapper: createWrapper(queryClient),
+    });
+
+    FakeWebSocket.latest().simulateOpen();
+    disconnectSpy.mockClear();
+
+    unmount();
+
+    // Cleanup calls disconnect exactly once due to the connectedRef guard
+    expect(disconnectSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('reconnection invalidates session queries', async () => {
+    const { useTerminalConnectionStore } = await import(
+      '@stores/terminal-connection.store'
+    );
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+    renderHook(() => useWebSocketEvents(), {
+      wrapper: createWrapper(queryClient),
+    });
+
+    FakeWebSocket.latest().simulateOpen();
+    invalidateSpy.mockClear();
+
+    // Simulate reconnecting → connected transition
+    useTerminalConnectionStore.setState({ connectionState: 'reconnecting' });
+    useTerminalConnectionStore.setState({ connectionState: 'connected' });
+
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: ['get', '/api/v1/{organizationId}/terminal/sessions'],
+    });
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: [
+        'get',
+        '/api/v1/{organizationId}/terminal/sessions/{sessionId}',
+      ],
+    });
+  });
 });

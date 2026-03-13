@@ -158,4 +158,27 @@ describe('AuditLogFilters', () => {
     expect(result.resourceType).toBe('device');
     expect(result.page).toBe(1);
   });
+
+  it('should allow selecting a date range filter', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<AuditLogFilters />);
+
+    await user.click(screen.getByLabelText('Filter by date range'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: 'Last 24 hours' }),
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('option', { name: 'Last 24 hours' }));
+
+    const call = mockNavigate.mock.calls[0] as [
+      { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+    ];
+    const result = call[0].search({ page: 5, size: 25 });
+    expect(result.fromDate).toBeDefined();
+    expect(result.toDate).toBeDefined();
+    expect(result.page).toBe(1);
+  });
 });

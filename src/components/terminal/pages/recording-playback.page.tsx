@@ -1,7 +1,5 @@
-import {
-  FontSizeControls,
-  useFontSize,
-} from '@components/terminal/font-size-controls';
+import { FontSizeControls } from '@components/terminal/font-size-controls';
+import { useFontSize } from '@components/terminal/hooks/use-font-size';
 import { RecordingPlayer } from '@components/terminal/recording-player';
 import type { ImageMapping } from '@components/terminal/recording-player.types';
 import { Badge } from '@components/ui/badge';

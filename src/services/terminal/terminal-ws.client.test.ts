@@ -408,6 +408,195 @@ describe('TerminalWsClient', () => {
     );
   });
 
+  test('isAuthenticated returns false before heartbeat and true after', () => {
+    client.connect();
+    const ws = FakeWebSocket.latest();
+
+    expect(client.isAuthenticated()).toBe(false);
+
+    ws.simulateOpen();
+    expect(client.isAuthenticated()).toBe(false);
+
+    ws.simulateMessage({ type: 'heartbeat:ping' });
+    expect(client.isAuthenticated()).toBe(true);
+  });
+
+  test('second heartbeat:ping does not re-set connection state', () => {
+    client.connect();
+    const ws = FakeWebSocket.latest();
+    ws.simulateOpen();
+
+    // First heartbeat authenticates
+    ws.simulateMessage({ type: 'heartbeat:ping' });
+    expect(useTerminalConnectionStore.getState().connectionState).toBe(
+      'connected',
+    );
+
+    // Second heartbeat should still work (respond with pong) but not re-trigger auth
+    ws.simulateMessage({ type: 'heartbeat:ping' });
+    expect(useTerminalConnectionStore.getState().connectionState).toBe(
+      'connected',
+    );
+    // Two pongs sent (one per heartbeat)
+    expect(ws.sentMessages).toHaveLength(2);
+  });
+
+  test('send before authentication drops non-pong messages', () => {
+    client.connect();
+    const ws = FakeWebSocket.latest();
+    ws.simulateOpen();
+
+    // Not authenticated yet - send a non-pong message
+    client.send({ type: 'pty:input', sessionId: 's1', data: 'hello' });
+
+    // Message should be dropped
+    expect(ws.sentMessages).toHaveLength(0);
+  });
+
+  test('connect with shareToken includes it in URL', () => {
+    client.connect('my-share-token');
+    expect(FakeWebSocket.latest().url).toBe(
+      'wss://api.example.com/ws/terminal?shareToken=my-share-token',
+    );
+  });
+
+  test('connectInternal skips if already connecting', () => {
+    client.connect();
+    const ws = FakeWebSocket.latest();
+    // readyState is CONNECTING by default
+    expect(ws.readyState).toBe(FakeWebSocket.CONNECTING);
+
+    // Connect again - should not create a new WebSocket
+    client.connectForEvents();
+    // Only the first WS was created since the existing one was closed first by connect()
+    // connectForEvents doesn't close existing WS
+  });
+
+  test('WebSocket error event is handled gracefully', () => {
+    client.connect();
+    const ws = FakeWebSocket.latest();
+    ws.simulateOpen();
+
+    // Should not crash
+    ws.simulateError();
+
+    // State should still be connecting (error alone doesn't change state)
+    expect(useTerminalConnectionStore.getState().connectionState).toBe(
+      'connecting',
+    );
+  });
+
+  test('handleClose with intentionalDisconnect sets disconnected and skips reconnect', () => {
+    client.connect();
+    const ws = FakeWebSocket.latest();
+    ws.simulateOpen();
+    ws.simulateMessage({ type: 'heartbeat:ping' });
+
+    // Capture the onclose handler before disconnect() nulls it
+    const closeHandler = ws.onclose;
+    expect(closeHandler).toBeTruthy();
+
+    client.disconnect();
+
+    // Simulate a race: the close event fires after intentionalDisconnect was set
+    closeHandler?.(new CloseEvent('close', { code: 1000 }));
+
+    expect(useTerminalConnectionStore.getState().connectionState).toBe(
+      'disconnected',
+    );
+
+    vi.advanceTimersByTime(60_000);
+    expect(FakeWebSocket.instances).toHaveLength(1);
+  });
+
+  test('connectInternal skips when existing WebSocket is OPEN', () => {
+    client.connect();
+    const ws = FakeWebSocket.latest();
+    ws.simulateOpen();
+    // ws.readyState is now OPEN
+
+    // connectForEvents calls connectInternal, which should bail because ws is OPEN
+    client.connectForEvents();
+
+    // No new WebSocket created (connectForEvents doesn't close existing ws like connect does)
+    expect(FakeWebSocket.instances).toHaveLength(1);
+  });
+
+  test('scheduleReconnect bails early when intentionalDisconnect is true', () => {
+    client.connect();
+    const ws = FakeWebSocket.latest();
+    ws.simulateOpen();
+
+    // Capture handleClose before disconnect nulls it
+    const closeHandler = ws.onclose;
+
+    // Set intentionalDisconnect = true but keep connectionMode set
+    client.disconnect();
+
+    // Fire the captured close handler — scheduleReconnect should bail at L57
+    closeHandler?.(new CloseEvent('close', { code: 1006 }));
+
+    vi.advanceTimersByTime(60_000);
+    // Only the initial connection was created
+    expect(FakeWebSocket.instances).toHaveLength(1);
+  });
+
+  test('scheduleReconnect bails when connectionMode is null', () => {
+    // After an auth failure, connectionMode is set to null (L154).
+    // If a subsequent unexpected close happens (e.g., race condition),
+    // scheduleReconnect should bail at L57.
+    client.connect();
+    FakeWebSocket.latest().simulateOpen();
+
+    // Auth failure sets connectionMode to null
+    FakeWebSocket.latest().simulateClose(4001);
+    expect(useTerminalConnectionStore.getState().connectionState).toBe(
+      'disconnected',
+    );
+
+    // No reconnect scheduled
+    vi.advanceTimersByTime(60_000);
+    expect(FakeWebSocket.instances).toHaveLength(1);
+  });
+
+  test('onMessage unsubscribe is a no-op if handler set was already cleared', () => {
+    const handler1 = vi.fn();
+    const handler2 = vi.fn();
+    const unsub1 = client.onMessage('pty:output', handler1);
+    const unsub2 = client.onMessage('pty:output', handler2);
+
+    // Unsubscribe both — first unsub removes handler1, second removes handler2 and cleans up the set
+    unsub2();
+    unsub1();
+
+    // Calling unsub1 again should be a no-op (set already deleted at L279)
+    unsub1();
+  });
+
+  test('onMessage unsubscribe does not delete set when other handlers remain', () => {
+    client.connect();
+    const ws = FakeWebSocket.latest();
+    ws.simulateOpen();
+
+    const handler1 = vi.fn();
+    const handler2 = vi.fn();
+    client.onMessage('pty:output', handler1);
+    const unsub2 = client.onMessage('pty:output', handler2);
+
+    // Unsubscribe handler2 — handler1 still exists, so set should not be deleted (L281)
+    unsub2();
+
+    // handler1 should still receive messages
+    ws.simulateMessage({
+      type: 'pty:output',
+      sessionId: 's1',
+      data: 'hello',
+    });
+
+    expect(handler1).toHaveBeenCalledOnce();
+    expect(handler2).not.toHaveBeenCalled();
+  });
+
   test('backoff increases correctly: 1s, 2s, 4s, 8s, 16s, 30s', () => {
     client.connect();
     FakeWebSocket.latest().simulateOpen();

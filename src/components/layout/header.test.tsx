@@ -180,6 +180,34 @@ describe('Header', () => {
     });
   });
 
+  it('should fall back to documentElement.scrollTop when body.scrollTop is 0', async () => {
+    const { container } = renderHeader({ fixed: true });
+
+    const header = container.querySelector('header');
+    expect(header).toHaveClass('shadow-none');
+
+    // Set body.scrollTop to 0 (falsy) so the || falls through to documentElement.scrollTop
+    Object.defineProperty(document.body, 'scrollTop', {
+      writable: true,
+      configurable: true,
+      value: 0,
+    });
+    Object.defineProperty(document.documentElement, 'scrollTop', {
+      writable: true,
+      configurable: true,
+      value: 20,
+    });
+
+    act(() => {
+      const scrollEvent = new Event('scroll');
+      document.dispatchEvent(scrollEvent);
+    });
+
+    await waitFor(() => {
+      expect(header).toHaveClass('shadow');
+    });
+  });
+
   it('should not apply shadow when scrolled without fixed prop', () => {
     const { container } = renderHeader({ fixed: false });
 

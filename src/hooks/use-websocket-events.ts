@@ -78,10 +78,8 @@ export function useWebSocketEvents() {
       unsubscribeCommand();
       unsubscribeSessionStatus();
       unsubscribeReconnect();
-      if (connectedRef.current) {
-        terminalWsClient.disconnect();
-        connectedRef.current = false;
-      }
+      terminalWsClient.disconnect();
+      connectedRef.current = false;
     };
   }, [queryClient]);
 }

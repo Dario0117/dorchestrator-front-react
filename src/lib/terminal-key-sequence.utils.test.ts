@@ -173,6 +173,47 @@ describe('buildKeySequence', () => {
       expect(buildKeySequence('Space', CTRL)).toBe('\\x00');
     });
   });
+
+  describe('Ctrl+Alt+Shift+letter', () => {
+    test('Ctrl+Alt+Shift+A = \\x1b\\x01', () => {
+      const CTRL_ALT_SHIFT: Modifiers = {
+        ctrl: true,
+        shift: true,
+        alt: true,
+      };
+      expect(buildKeySequence('A', CTRL_ALT_SHIFT)).toBe('\\x1b\\x01');
+    });
+  });
+
+  describe('Tab with Ctrl modifier', () => {
+    test('Ctrl+Tab = \\x1b[27;5;9~', () => {
+      expect(buildKeySequence('Tab', CTRL)).toBe('\\x1b[27;5;9~');
+    });
+
+    test('Ctrl+Alt+Tab = \\x1b[27;7;9~', () => {
+      expect(buildKeySequence('Tab', CTRL_ALT)).toBe('\\x1b[27;7;9~');
+    });
+  });
+
+  describe('fallback for unknown keys', () => {
+    test('unknown key without modifiers returns key as-is', () => {
+      expect(buildKeySequence('Unknown', NONE)).toBe('Unknown');
+    });
+
+    test('unknown key with modifiers returns key as-is', () => {
+      expect(buildKeySequence('Unknown', CTRL)).toBe('Unknown');
+    });
+  });
+
+  describe('plain key fallback for special keys with no matching modified form', () => {
+    test('Enter with modifiers falls back to plain sequence', () => {
+      expect(buildKeySequence('Enter', CTRL)).toBe('\\n');
+    });
+
+    test('Backspace with modifiers falls back to plain sequence', () => {
+      expect(buildKeySequence('Backspace', ALT)).toBe('\\x7f');
+    });
+  });
 });
 
 describe('buildKeyLabel', () => {

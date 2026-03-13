@@ -1,7 +1,5 @@
-import {
-  FontSizeControls,
-  type useFontSize,
-} from '@components/terminal/font-size-controls';
+import { FontSizeControls } from '@components/terminal/font-size-controls';
+import type { useFontSize } from '@components/terminal/hooks/use-font-size';
 import { SessionViewerList } from '@components/terminal/session-viewer-list';
 import { TerminalConnectionStatus } from '@components/terminal/terminal-connection-status';
 import {

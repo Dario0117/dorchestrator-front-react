@@ -1,13 +1,11 @@
-import {
-  SessionLoadingSkeleton,
-  SessionLocked,
-  SessionNotFound,
-  SessionTerminated,
-} from '@components/terminal/session-state-views';
+import { SessionLocked } from '@components/terminal/session-locked';
+import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import type { TerminalSessionDetail } from '@services/terminal/get-terminal-session.http-service';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { HttpResponse, http } from 'msw';
+import { server } from '@/../testsSetup';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual =
@@ -33,159 +31,22 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
   };
 });
 
-const activeSession: TerminalSessionDetail = {
+const lockedSession: TerminalSessionDetail = {
   id: 1,
   deviceId: 1,
   deviceName: 'Production Server',
   userId: 'user-1',
   userName: 'Alice',
-  status: 'active',
+  status: 'locked',
   shell: '/bin/bash',
   workingDirectory: '/home/user',
-  sessionToken: 'mock-token',
+  sessionToken: undefined,
   createdAt: '2026-01-15T10:00:00.000Z',
   lastActivityAt: '2026-01-15T12:00:00.000Z',
   inactivityTimeoutMs: 300000,
   terminatedAt: null,
   isShared: false,
 };
-
-const terminatedSession: TerminalSessionDetail = {
-  ...activeSession,
-  status: 'terminated',
-  sessionToken: undefined,
-  terminatedAt: '2026-01-15T14:00:00.000Z',
-};
-
-const lockedSession: TerminalSessionDetail = {
-  ...activeSession,
-  status: 'locked',
-  sessionToken: undefined,
-};
-
-describe('SessionLoadingSkeleton', () => {
-  it('should render loading skeleton elements', () => {
-    const { container } = renderWithProviders(<SessionLoadingSkeleton />);
-
-    const skeletons = container.querySelectorAll('[data-slot="skeleton"]');
-    expect(skeletons.length).toBeGreaterThanOrEqual(2);
-  });
-});
-
-describe('SessionNotFound', () => {
-  it('should render "Session not found" heading', () => {
-    renderWithProviders(<SessionNotFound organizationSlug="test-org" />);
-
-    expect(
-      screen.getByRole('heading', { name: 'Session not found' }),
-    ).toBeInTheDocument();
-  });
-
-  it('should render description text', () => {
-    renderWithProviders(<SessionNotFound organizationSlug="test-org" />);
-
-    expect(
-      screen.getByText(/does not exist or you don't have access/),
-    ).toBeInTheDocument();
-  });
-
-  it('should render link back to sessions list', () => {
-    renderWithProviders(<SessionNotFound organizationSlug="test-org" />);
-
-    expect(screen.getByText('Back to sessions')).toBeInTheDocument();
-  });
-});
-
-describe('SessionTerminated', () => {
-  it('should render "Session terminated" heading', () => {
-    renderWithProviders(
-      <SessionTerminated
-        session={terminatedSession}
-        organizationSlug="test-org"
-      />,
-    );
-
-    expect(
-      screen.getByRole('heading', { name: 'Session terminated' }),
-    ).toBeInTheDocument();
-  });
-
-  it('should display device name and shell', () => {
-    renderWithProviders(
-      <SessionTerminated
-        session={terminatedSession}
-        organizationSlug="test-org"
-      />,
-    );
-
-    expect(screen.getByText('Production Server')).toBeInTheDocument();
-    expect(screen.getByText('/bin/bash')).toBeInTheDocument();
-  });
-
-  it('should display terminated badge', () => {
-    renderWithProviders(
-      <SessionTerminated
-        session={terminatedSession}
-        organizationSlug="test-org"
-      />,
-    );
-
-    expect(screen.getByText('terminated')).toBeInTheDocument();
-  });
-
-  it('should display terminated timestamp', () => {
-    renderWithProviders(
-      <SessionTerminated
-        session={terminatedSession}
-        organizationSlug="test-org"
-      />,
-    );
-
-    expect(screen.getByText(/Terminated at/)).toBeInTheDocument();
-  });
-
-  it('should not display timestamp when terminatedAt is null', () => {
-    const sessionWithoutTerminatedAt = {
-      ...terminatedSession,
-      terminatedAt: null,
-    };
-
-    renderWithProviders(
-      <SessionTerminated
-        session={sessionWithoutTerminatedAt}
-        organizationSlug="test-org"
-      />,
-    );
-
-    expect(screen.queryByText(/Terminated at/)).not.toBeInTheDocument();
-  });
-
-  it('should render link back to sessions list', () => {
-    renderWithProviders(
-      <SessionTerminated
-        session={terminatedSession}
-        organizationSlug="test-org"
-      />,
-    );
-
-    expect(screen.getByText('Back to sessions')).toBeInTheDocument();
-  });
-
-  it('should render view recording link with correct href', () => {
-    renderWithProviders(
-      <SessionTerminated
-        session={terminatedSession}
-        organizationSlug="test-org"
-      />,
-    );
-
-    const recordingLink = screen.getByText('View Recording').closest('a');
-    expect(recordingLink).toHaveAttribute(
-      'href',
-      '/$organizationSlug/terminal/sessions/$sessionId/recording',
-    );
-  });
-});
 
 describe('SessionLocked', () => {
   const mockOnUnlocked = vi.fn();
@@ -267,6 +128,40 @@ describe('SessionLocked', () => {
     expect(screen.getByText('Back to sessions')).toBeInTheDocument();
   });
 
+  it('should re-open reauth modal when Re-authenticate button is clicked', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <SessionLocked
+        session={lockedSession}
+        organizationId="org-1"
+        organizationSlug="test-org"
+        onUnlocked={mockOnUnlocked}
+      />,
+    );
+
+    // Modal opens on mount
+    await waitFor(() => {
+      expect(screen.getByText('Terminal Authentication')).toBeInTheDocument();
+    });
+
+    // Close the modal by clicking the close button
+    await user.click(screen.getByRole('button', { name: 'Close' }));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText('Terminal Authentication'),
+      ).not.toBeInTheDocument();
+    });
+
+    // Click Re-authenticate to re-open
+    await user.click(screen.getByText('Re-authenticate'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Terminal Authentication')).toBeInTheDocument();
+    });
+  });
+
   it('should call onUnlocked after successful re-authentication', async () => {
     const user = userEvent.setup();
 
@@ -289,5 +184,47 @@ describe('SessionLocked', () => {
     await waitFor(() => {
       expect(mockOnUnlocked).toHaveBeenCalledOnce();
     });
+  });
+
+  it('should display error message when unlock mutation fails', async () => {
+    server.use(
+      http.post(
+        buildBackendUrl(
+          '/api/v1/{organizationId}/terminal/sessions/{sessionId}/unlock',
+        ),
+        () => {
+          return HttpResponse.json(
+            { message: 'Unlock failed' },
+            { status: 500 },
+          );
+        },
+      ),
+    );
+
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <SessionLocked
+        session={lockedSession}
+        organizationId="org-1"
+        organizationSlug="test-org"
+        onUnlocked={mockOnUnlocked}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Password/)).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByLabelText(/Password/), 'correct-password');
+    await user.click(screen.getByRole('button', { name: 'Authenticate' }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Failed to unlock session. Please try again.'),
+      ).toBeInTheDocument();
+    });
+
+    expect(mockOnUnlocked).not.toHaveBeenCalled();
   });
 });

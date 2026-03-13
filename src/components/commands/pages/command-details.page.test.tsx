@@ -4,16 +4,19 @@ import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
 import type { operations } from '@/types/api.generated.types';
+
+const mockNavigate = vi.fn();
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual =
     await importOriginal<typeof import('@tanstack/react-router')>();
   return {
     ...actual,
-    useNavigate: vi.fn(() => vi.fn()),
+    useNavigate: vi.fn(() => mockNavigate),
     useParams: () => ({ organizationSlug: 'test-org', commandId: '1' }),
   };
 });
@@ -265,6 +268,50 @@ describe('CommandDetailsPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Completed')).toBeInTheDocument();
+    });
+  });
+
+  it('should navigate back when clicking back button', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<CommandDetailsPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Back to commands' }),
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Back to commands' }));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: '/$organizationSlug/commands',
+        params: { organizationSlug: 'test-org' },
+      }),
+    );
+  });
+
+  it('should render nothing when command data is null', async () => {
+    server.use(
+      http.get<
+        { organizationId: string; commandId: string },
+        never,
+        GetCommandSuccessResponse
+      >(buildBackendUrl('/api/v1/{organizationId}/commands/{commandId}'), () =>
+        HttpResponse.json({
+          responseData: {
+            results:
+              null as unknown as GetCommandSuccessResponse['responseData']['results'],
+          },
+          responseErrors: null,
+        }),
+      ),
+    );
+
+    const { container } = renderWithProviders(<CommandDetailsPage />);
+
+    await waitFor(() => {
+      expect(container.querySelector('section')).not.toBeInTheDocument();
     });
   });
 });

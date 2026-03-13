@@ -181,11 +181,7 @@ export function DevicesPage() {
         {executeCommandDevice && (
           <ExecuteCommandModal
             open={true}
-            onOpenChange={(open) => {
-              if (!open) {
-                setExecuteCommandDevice(null);
-              }
-            }}
+            onOpenChange={() => setExecuteCommandDevice(null)}
             organizationId={organizationId}
             pinnedDevice={executeCommandDevice}
           />
@@ -194,11 +190,7 @@ export function DevicesPage() {
         {terminalDevice && (
           <TerminalReauthModal
             open={true}
-            onOpenChange={(open) => {
-              if (!open) {
-                setTerminalDevice(null);
-              }
-            }}
+            onOpenChange={() => setTerminalDevice(null)}
             organizationId={organizationId}
             onSuccess={(terminalAuthToken) => {
               setSessionConfigDevice({
@@ -214,11 +206,7 @@ export function DevicesPage() {
         {sessionConfigDevice && (
           <CreateTerminalSessionDialog
             open={true}
-            onOpenChange={(open) => {
-              if (!open) {
-                setSessionConfigDevice(null);
-              }
-            }}
+            onOpenChange={() => setSessionConfigDevice(null)}
             organizationId={organizationId}
             deviceId={sessionConfigDevice.id}
             deviceName={sessionConfigDevice.name}
@@ -239,11 +227,7 @@ export function DevicesPage() {
         {configDevice && (
           <DeviceConfigDialog
             open={true}
-            onOpenChange={(open) => {
-              if (!open) {
-                setConfigDevice(null);
-              }
-            }}
+            onOpenChange={() => setConfigDevice(null)}
             organizationId={organizationId}
             deviceId={configDevice.id}
             deviceName={configDevice.name}

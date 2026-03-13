@@ -3,6 +3,7 @@ import * as loggerUtils from '@lib/logger.utils';
 import { buildBackendUrl } from '@lib/test.utils';
 import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
 import { useResetPasswordMutation } from '@services/users/reset-password.http-service';
+import { useMutation } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
@@ -224,6 +225,98 @@ describe('useResetPasswordForm', () => {
     await waitFor(() => {
       expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
+  });
+
+  it('should use error message in onError when error has a message property', async () => {
+    const logErrorSpy = vi
+      .spyOn(loggerUtils, 'logError')
+      .mockImplementation(vi.fn());
+
+    // Use a custom mutation that rejects with an Error containing a message,
+    // to test the onError path where errorMessage is truthy
+    const mockHandleSuccess = vi.fn();
+    const { result } = renderHook(
+      () => {
+        const resetPasswordMutation = useMutation({
+          mutationFn: () => Promise.reject(new Error('Connection refused')),
+        }) as ReturnType<typeof useResetPasswordMutation>;
+        return useResetPasswordForm({
+          resetPasswordMutation,
+          handleSuccess: mockHandleSuccess,
+        });
+      },
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('email', 'test@example.com');
+    });
+
+    // Clear any prior logError calls from previous tests that may resolve async
+    logErrorSpy.mockClear();
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    // The error has a message ('Connection refused'), so logError should NOT be called
+    // because the if(!errorMessage) branch is skipped when errorMessage is truthy
+    expect(logErrorSpy).not.toHaveBeenCalledWith(
+      expect.anything(),
+      'Password reset failed',
+    );
+
+    logErrorSpy.mockRestore();
+  });
+
+  it('should log error and use fallback message when onError receives error without message', async () => {
+    const logErrorSpy = vi
+      .spyOn(loggerUtils, 'logError')
+      .mockImplementation(vi.fn());
+
+    // Use a custom mutation that rejects with a plain object (no message property),
+    // to test the onError path where errorMessage is empty and logError is called
+    const mockHandleSuccess = vi.fn();
+    const { result } = renderHook(
+      () => {
+        const resetPasswordMutation = useMutation({
+          mutationFn: () =>
+            Promise.reject({
+              status: 500,
+              statusText: 'Internal Server Error',
+            }),
+        }) as ReturnType<typeof useResetPasswordMutation>;
+        return useResetPasswordForm({
+          resetPasswordMutation,
+          handleSuccess: mockHandleSuccess,
+        });
+      },
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('email', 'test@example.com');
+    });
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    // The error has no message, so logError SHOULD be called
+    expect(logErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ error: expect.anything() }),
+      'Password reset failed',
+    );
+
+    logErrorSpy.mockRestore();
   });
 
   it('should validate email field individually', () => {

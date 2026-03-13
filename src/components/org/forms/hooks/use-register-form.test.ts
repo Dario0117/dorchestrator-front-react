@@ -3,6 +3,7 @@ import * as loggerUtils from '@lib/logger.utils';
 import { buildBackendUrl } from '@lib/test.utils';
 import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
 import { useRegisterMutation } from '@services/users/register.http-service';
+import { useMutation } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { act } from 'react';
@@ -236,42 +237,6 @@ describe('useRegisterForm', () => {
     });
   });
 
-  it('should handle network error via onError callback', async () => {
-    vi.spyOn(loggerUtils, 'logError').mockImplementation(vi.fn());
-
-    server.use(
-      http.post(buildBackendUrl('/api/v1/sign-up/email'), () => {
-        return HttpResponse.error();
-      }),
-    );
-
-    const { result } = renderHook(
-      () => {
-        const registerMutation = useRegisterMutation();
-        return useRegisterForm({
-          registerMutation,
-          handleSuccess: mockHandleSuccess,
-        });
-      },
-      { wrapper: createQueryThemeWrapper() },
-    );
-
-    act(() => {
-      result.current.setFieldValue('name', 'Test User');
-      result.current.setFieldValue('email', 'test@example.com');
-      result.current.setFieldValue('password', 'password123');
-      result.current.setFieldValue('confirm', 'password123');
-    });
-
-    await act(async () => {
-      await result.current.handleSubmit();
-    });
-
-    await waitFor(() => {
-      expect(mockHandleSuccess).not.toHaveBeenCalled();
-    });
-  });
-
   it('should only include username, email, and password in request body', async () => {
     const { result } = renderHook(
       () => {
@@ -311,5 +276,100 @@ describe('useRegisterForm', () => {
         error: null,
       });
     });
+  });
+
+  it('should use error message in onError when error has a message property', async () => {
+    const logErrorSpy = vi
+      .spyOn(loggerUtils, 'logError')
+      .mockImplementation(vi.fn());
+
+    // Use a custom mutation that rejects with an Error containing a message,
+    // to directly trigger the onError callback
+    const { result } = renderHook(
+      () => {
+        const registerMutation = useMutation({
+          mutationFn: () => Promise.reject(new Error('Connection refused')),
+        }) as ReturnType<typeof useRegisterMutation>;
+        return useRegisterForm({
+          registerMutation,
+          handleSuccess: mockHandleSuccess,
+        });
+      },
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('name', 'Test User');
+      result.current.setFieldValue('email', 'test@example.com');
+      result.current.setFieldValue('password', 'password123');
+      result.current.setFieldValue('confirm', 'password123');
+    });
+
+    logErrorSpy.mockClear();
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    // The error has a message ('Connection refused'), so logError should NOT be called
+    // because the if(!errorMessage) branch is skipped when errorMessage is truthy
+    expect(logErrorSpy).not.toHaveBeenCalledWith(
+      expect.anything(),
+      'Registration failed',
+    );
+
+    logErrorSpy.mockRestore();
+  });
+
+  it('should log error and use fallback message when onError receives error without message', async () => {
+    const logErrorSpy = vi
+      .spyOn(loggerUtils, 'logError')
+      .mockImplementation(vi.fn());
+
+    // Use a custom mutation that rejects with a plain object (no message property),
+    // to trigger the onError path where errorMessage is empty and logError is called
+    const { result } = renderHook(
+      () => {
+        const registerMutation = useMutation({
+          mutationFn: () =>
+            Promise.reject({
+              status: 500,
+              statusText: 'Internal Server Error',
+            }),
+        }) as ReturnType<typeof useRegisterMutation>;
+        return useRegisterForm({
+          registerMutation,
+          handleSuccess: mockHandleSuccess,
+        });
+      },
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    act(() => {
+      result.current.setFieldValue('name', 'Test User');
+      result.current.setFieldValue('email', 'test@example.com');
+      result.current.setFieldValue('password', 'password123');
+      result.current.setFieldValue('confirm', 'password123');
+    });
+
+    await act(async () => {
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    // The error has no message, so logError SHOULD be called
+    expect(logErrorSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ error: expect.anything() }),
+      'Registration failed',
+    );
+
+    logErrorSpy.mockRestore();
   });
 });
