@@ -21,6 +21,9 @@ export const AUDIT_LOG_RESOURCE_TYPES = [
   'session',
   'user_account',
   'auth_failure',
+  'terminal_session',
+  'terminal_config',
+  'batch_job',
 ] as const satisfies readonly AuditLogResourceType[];
 
 export const AUDIT_LOG_RESOURCE_TYPE_LABELS = {
@@ -33,4 +36,7 @@ export const AUDIT_LOG_RESOURCE_TYPE_LABELS = {
   session: 'Session',
   user_account: 'User Account',
   auth_failure: 'Auth Failure',
+  terminal_session: 'Terminal Session',
+  terminal_config: 'Terminal Config',
+  batch_job: 'Batch Job',
 } as const satisfies Record<AuditLogResourceType, string>;

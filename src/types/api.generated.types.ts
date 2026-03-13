@@ -6350,7 +6350,7 @@ export interface operations {
                 page: number;
                 size: number;
                 action?: "created" | "deactivated" | "deleted" | "updated";
-                resourceType?: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command" | "session" | "user_account" | "auth_failure";
+                resourceType?: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command" | "session" | "user_account" | "auth_failure" | "terminal_session" | "terminal_config" | "batch_job";
                 actorId?: string;
                 fromDate?: string;
                 toDate?: string;
@@ -6379,7 +6379,7 @@ export interface operations {
                                 /** @enum {string} */
                                 action: "created" | "deactivated" | "deleted" | "updated";
                                 /** @enum {string} */
-                                resourceType: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command" | "session" | "user_account" | "auth_failure";
+                                resourceType: "device" | "registration_token" | "device_api_key" | "organization" | "member" | "command" | "session" | "user_account" | "auth_failure" | "terminal_session" | "terminal_config" | "batch_job";
                                 resourceId: string;
                                 metadata: {
                                     before?: {
