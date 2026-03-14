@@ -1,7 +1,7 @@
-import { Badge } from '@components/ui/badge';
+import { BookmarkStatusBadge } from '@components/terminal/pages/bookmark-status-badge';
+import { InlineNoteEditor } from '@components/terminal/pages/inline-note-editor';
 import { Button } from '@components/ui/button';
 import { EmptyState } from '@components/ui/empty-state';
-import { Input } from '@components/ui/input';
 import {
   Pagination,
   PaginationContent,
@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@components/ui/select';
-import { Skeleton } from '@components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -26,172 +25,14 @@ import {
   TableRow,
 } from '@components/ui/table';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
-import { badgeStyles } from '@lib/badge-styles';
 import { formatBytes } from '@lib/format-bytes';
 import { formatRelativeTime } from '@lib/format-relative-time';
 import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
 import { Route } from '@routes/(authenticated)/$organizationSlug/terminal/bookmarks';
 import { useDeleteBookmarkMutation } from '@services/terminal/delete-bookmark.http-service';
-import type { BookmarkItem } from '@services/terminal/list-bookmarks.http-service';
 import { useBookmarksSuspenseQuery } from '@services/terminal/list-bookmarks.http-service';
-import { useUpdateBookmarkNoteMutation } from '@services/terminal/update-bookmark-note.http-service';
 import { useNavigate } from '@tanstack/react-router';
-import { Bookmark, Pencil, Trash2, X } from 'lucide-react';
-import { useState } from 'react';
-
-const STATUS_BADGE_STYLES: Record<string, string> = {
-  active: badgeStyles.green,
-  created: badgeStyles.blue,
-  locked: badgeStyles.yellow,
-  terminated: badgeStyles.gray,
-};
-
-function StatusBadge({ status }: { status: string }) {
-  return (
-    <Badge
-      variant="outline"
-      className={STATUS_BADGE_STYLES[status] ?? badgeStyles.gray}
-    >
-      {status}
-    </Badge>
-  );
-}
-
-function BookmarksTableSkeleton() {
-  return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Device</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Session Created</TableHead>
-            <TableHead>Bookmarked</TableHead>
-            <TableHead>Note</TableHead>
-            <TableHead>Recording</TableHead>
-            <TableHead className="w-[80px]" />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5'].map((id) => (
-            <TableRow key={id}>
-              <TableCell>
-                <Skeleton className="h-4 w-28" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-5 w-16" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-20" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-20" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-32" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-14" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-14" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  );
-}
-
-function InlineNoteEditor({
-  bookmark,
-  organizationId,
-}: {
-  bookmark: BookmarkItem;
-  organizationId: string;
-}) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [noteValue, setNoteValue] = useState(bookmark.note ?? '');
-  const updateMutation = useUpdateBookmarkNoteMutation();
-
-  const handleSave = () => {
-    updateMutation.mutate(
-      {
-        params: {
-          path: { organizationId, bookmarkId: bookmark.id },
-        },
-        body: { note: noteValue || null },
-      },
-      {
-        onSuccess: () => {
-          setIsEditing(false);
-        },
-      },
-    );
-  };
-
-  if (isEditing) {
-    return (
-      <div className="flex items-center gap-1">
-        <Input
-          value={noteValue}
-          onChange={(e) => setNoteValue(e.target.value)}
-          className="h-7 w-48 text-xs"
-          maxLength={500}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSave();
-            }
-            if (e.key === 'Escape') {
-              setIsEditing(false);
-              setNoteValue(bookmark.note ?? '');
-            }
-          }}
-          autoFocus
-        />
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-7 px-1"
-          onClick={handleSave}
-          disabled={updateMutation.isPending}
-        >
-          Save
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-7 px-1"
-          onClick={() => {
-            setIsEditing(false);
-            setNoteValue(bookmark.note ?? '');
-          }}
-        >
-          <X className="h-3 w-3" />
-        </Button>
-      </div>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      className="flex items-center gap-1 text-left text-xs text-muted-foreground hover:text-foreground"
-      onClick={(e) => {
-        e.stopPropagation();
-        setIsEditing(true);
-      }}
-    >
-      {bookmark.note ? (
-        <span className="max-w-[200px] truncate">{bookmark.note}</span>
-      ) : (
-        <span className="italic">Add note...</span>
-      )}
-      <Pencil className="h-3 w-3 shrink-0" />
-    </button>
-  );
-}
+import { Bookmark, Trash2 } from 'lucide-react';
 
 function BookmarksPage() {
   const currentOrganization = useCurrentOrganization();
@@ -283,7 +124,7 @@ function BookmarksPage() {
                         {bookmark.deviceName}
                       </TableCell>
                       <TableCell>
-                        <StatusBadge status={bookmark.sessionStatus} />
+                        <BookmarkStatusBadge status={bookmark.sessionStatus} />
                       </TableCell>
                       <TableCell>
                         {formatRelativeTime(bookmark.sessionCreatedAt)}
@@ -383,4 +224,4 @@ function BookmarksPage() {
   );
 }
 
-export { BookmarksPage, BookmarksTableSkeleton };
+export { BookmarksPage };

@@ -1,7 +1,5 @@
-import {
-  BookmarksPage,
-  BookmarksTableSkeleton,
-} from '@components/terminal/pages/bookmarks.page';
+import { BookmarksPage } from '@components/terminal/pages/bookmarks.page';
+import { BookmarksTableSkeleton } from '@components/terminal/pages/bookmarks-table-skeleton';
 import { RouteErrorFallback } from '@components/ui/route-error-fallback';
 import { useBookmarksQueryOptions } from '@services/terminal/list-bookmarks.http-service';
 import { createFileRoute } from '@tanstack/react-router';

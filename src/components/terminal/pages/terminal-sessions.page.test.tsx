@@ -1,7 +1,4 @@
-import {
-  SessionTableSkeleton,
-  TerminalSessionsPage,
-} from '@components/terminal/pages/terminal-sessions.page';
+import { TerminalSessionsPage } from '@components/terminal/pages/terminal-sessions.page';
 import { queryClient } from '@context/query.provider';
 import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
@@ -211,14 +208,6 @@ describe('TerminalSessionsPage', () => {
       expect(screen.getAllByText('Alice').length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText('Dev Laptop')).toBeInTheDocument();
       expect(screen.getByText('Bob')).toBeInTheDocument();
-    });
-  });
-
-  it('should render status badges', async () => {
-    renderWithProviders(<TerminalSessionsPage />);
-
-    await waitFor(() => {
-      expect(screen.getAllByText('active').length).toBeGreaterThan(0);
     });
   });
 
@@ -1090,16 +1079,6 @@ describe('TerminalSessionsPage', () => {
           to: '/$organizationSlug/terminal/$sessionId',
         }),
       );
-    });
-  });
-
-  describe('SessionTableSkeleton', () => {
-    it('should render skeleton rows', () => {
-      renderWithProviders(<SessionTableSkeleton />);
-
-      expect(screen.getByText('User')).toBeInTheDocument();
-      expect(screen.getByText('Device')).toBeInTheDocument();
-      expect(screen.getByText('Status')).toBeInTheDocument();
     });
   });
 

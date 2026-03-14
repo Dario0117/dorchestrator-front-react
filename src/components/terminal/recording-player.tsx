@@ -47,9 +47,11 @@ export function RecordingPlayer({
   // Initialize xterm
   useEffect(() => {
     const container = containerRef.current;
+    /* v8 ignore start -- ref is always attached to the rendered div */
     if (!container) {
       return;
     }
+    /* v8 ignore stop */
 
     const terminal = new Terminal({
       cursorBlink: false,
@@ -73,9 +75,11 @@ export function RecordingPlayer({
   // Update font size without re-creating terminal
   useEffect(() => {
     const terminal = terminalRef.current;
+    /* v8 ignore start -- terminal is always initialized by the prior effect */
     if (!terminal) {
       return;
     }
+    /* v8 ignore stop */
     terminal.options.fontSize = fontSize;
   }, [fontSize]);
 

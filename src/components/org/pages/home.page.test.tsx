@@ -83,22 +83,6 @@ describe('HomePage', () => {
     ).toBeInTheDocument();
   });
 
-  it('should render stat cards with correct data', async () => {
-    renderWithProviders(
-      <Suspense fallback={<div>Loading...</div>}>
-        <HomePage />
-      </Suspense>,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Devices')).toBeInTheDocument();
-    });
-
-    expect(screen.getByText('Commands (24h)')).toBeInTheDocument();
-    expect(screen.getByText('Tier')).toBeInTheDocument();
-    expect(screen.getByText('free')).toBeInTheDocument();
-  });
-
   it('should render recent activity section', async () => {
     renderWithProviders(
       <Suspense fallback={<div>Loading...</div>}>

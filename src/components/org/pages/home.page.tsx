@@ -1,4 +1,5 @@
 import { CommandStatusBadge } from '@components/commands/command-status-badge';
+import { StatCard } from '@components/org/pages/stat-card';
 import { Button } from '@components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import { EmptyState } from '@components/ui/empty-state';
@@ -137,29 +138,5 @@ export function HomePage() {
         </CardContent>
       </Card>
     </section>
-  );
-}
-
-function StatCard({
-  title,
-  value,
-  icon: Icon,
-  iconClassName,
-}: {
-  title: string;
-  value: string | number;
-  icon: React.ElementType;
-  iconClassName?: string;
-}) {
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <Icon className={`h-5 w-5 ${iconClassName}`} />
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold tabular-nums">{value}</div>
-      </CardContent>
-    </Card>
   );
 }

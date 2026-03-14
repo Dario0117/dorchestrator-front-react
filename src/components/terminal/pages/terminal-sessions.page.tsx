@@ -1,3 +1,4 @@
+import { SessionStatusBadge } from '@components/terminal/pages/session-status-badge';
 import { SessionHistoryExportDialog } from '@components/terminal/session-history-export-dialog';
 import {
   AlertDialog,
@@ -10,7 +11,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@components/ui/alert-dialog';
-import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
 import { EmptyState } from '@components/ui/empty-state';
 import { Input } from '@components/ui/input';
@@ -28,7 +28,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@components/ui/select';
-import { Skeleton } from '@components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -38,7 +37,6 @@ import {
   TableRow,
 } from '@components/ui/table';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
-import { badgeStyles } from '@lib/badge-styles';
 import { formatBytes } from '@lib/format-bytes';
 import { formatDurationCompact } from '@lib/format-duration';
 import { formatRelativeTime } from '@lib/format-relative-time';
@@ -46,90 +44,12 @@ import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
 import { Route } from '@routes/(authenticated)/$organizationSlug/terminal/index';
 import { useDevicesQueryOptions } from '@services/devices/list-devices.http-service';
 import { useListMembersQueryOptions } from '@services/organizations/list-members.http-service';
-import type { TerminalSessionListItem } from '@services/terminal/list-terminal-sessions.http-service';
 import { useTerminalSessionsSuspenseQuery } from '@services/terminal/list-terminal-sessions.http-service';
 import { useTerminateTerminalSessionMutation } from '@services/terminal/terminate-terminal-session.http-service';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { Download, Monitor, X } from 'lucide-react';
 import { useState } from 'react';
-
-const STATUS_BADGE_STYLES = {
-  active: badgeStyles.green,
-  created: badgeStyles.blue,
-  locked: badgeStyles.yellow,
-  terminated: badgeStyles.gray,
-} as const;
-
-function StatusBadge({
-  status,
-}: {
-  status: TerminalSessionListItem['status'];
-}) {
-  return (
-    <Badge
-      variant="outline"
-      className={STATUS_BADGE_STYLES[status]}
-    >
-      {status}
-    </Badge>
-  );
-}
-
-function SessionTableSkeleton() {
-  return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>User</TableHead>
-            <TableHead>Device</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Created</TableHead>
-            <TableHead>Last Activity</TableHead>
-            <TableHead>Terminated</TableHead>
-            <TableHead>Duration</TableHead>
-            <TableHead>Recording</TableHead>
-            <TableHead className="w-12" />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5'].map((id) => (
-            <TableRow key={id}>
-              <TableCell>
-                <Skeleton className="h-4 w-24" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-28" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-5 w-16" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-16" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-16" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-16" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-14" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-14" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-8 w-8" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  );
-}
 
 export function TerminalSessionsPage() {
   const currentOrganization = useCurrentOrganization();
@@ -449,7 +369,7 @@ export function TerminalSessionsPage() {
                         {session.deviceName}
                       </TableCell>
                       <TableCell>
-                        <StatusBadge status={session.status} />
+                        <SessionStatusBadge status={session.status} />
                       </TableCell>
                       <TableCell>
                         {session.createdAt
@@ -585,5 +505,3 @@ export function TerminalSessionsPage() {
     </section>
   );
 }
-
-export { SessionTableSkeleton };

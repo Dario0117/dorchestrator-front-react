@@ -1,19 +1,11 @@
-import {
-  SessionTableSkeleton,
-  TerminalSessionsPage,
-} from '@components/terminal/pages/terminal-sessions.page';
+import { SessionTableSkeleton } from '@components/terminal/pages/session-table-skeleton';
+import { TerminalSessionsPage } from '@components/terminal/pages/terminal-sessions.page';
 import { RouteErrorFallback } from '@components/ui/route-error-fallback';
 import { useTerminalSessionsQueryOptions } from '@services/terminal/list-terminal-sessions.http-service';
+import { TERMINAL_SESSION_STATUSES } from '@services/terminal/list-terminal-sessions.http-service.constants';
 import { createFileRoute } from '@tanstack/react-router';
 import { Suspense } from 'react';
 import { z } from 'zod/v4';
-
-const TERMINAL_SESSION_STATUSES = [
-  'created',
-  'active',
-  'locked',
-  'terminated',
-] as const;
 
 const searchParamsSchema = z.object({
   page: z.coerce.number().int().positive().default(1).catch(1),
