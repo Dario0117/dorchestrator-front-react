@@ -4,7 +4,6 @@ import type { OrganizationItem } from '@services/organizations/list-user-organiz
 import {
   Bookmark,
   HardDrive,
-  History,
   Home,
   ScrollText,
   Settings,
@@ -44,19 +43,20 @@ export function getSidebarData(
             icon: Terminal,
           },
           {
-            title: 'Sessions',
-            url: `${baseUrl}/terminal`,
+            title: 'Terminal',
             icon: Terminal,
-          },
-          {
-            title: 'Session History',
-            url: `${baseUrl}/terminal/history`,
-            icon: History,
-          },
-          {
-            title: 'Bookmarks',
-            url: `${baseUrl}/terminal/bookmarks`,
-            icon: Bookmark,
+            items: [
+              {
+                title: 'Sessions',
+                url: `${baseUrl}/terminal`,
+                icon: Terminal,
+              },
+              {
+                title: 'Bookmarks',
+                url: `${baseUrl}/terminal/bookmarks`,
+                icon: Bookmark,
+              },
+            ],
           },
         ],
       },

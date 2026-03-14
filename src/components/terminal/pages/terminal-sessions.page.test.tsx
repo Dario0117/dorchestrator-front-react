@@ -33,6 +33,10 @@ let mockSearchParams: {
   page: number;
   size: number;
   status?: string;
+  deviceId?: number;
+  userId?: string;
+  dateFrom?: string;
+  dateTo?: string;
 } = { page: 1, size: 25 };
 
 vi.mock(
@@ -93,10 +97,14 @@ function useMultiPageHandler(options?: {
                 deviceName: 'Production Server',
                 userId: 'user-1',
                 userName: 'Alice',
+                userEmail: 'alice@example.com',
                 status: 'active',
                 shell: '/bin/bash',
                 createdAt: new Date(Date.now() - 3600000).toISOString(),
                 lastActivityAt: new Date(Date.now() - 60000).toISOString(),
+                terminatedAt: null,
+                durationSeconds: 3600,
+                recordingSizeBytes: 102400,
               },
               {
                 id: 2,
@@ -104,10 +112,14 @@ function useMultiPageHandler(options?: {
                 deviceName: 'Dev Laptop',
                 userId: 'user-2',
                 userName: 'Bob',
+                userEmail: 'bob@example.com',
                 status: 'terminated',
                 shell: '/bin/zsh',
                 createdAt: new Date(Date.now() - 7200000).toISOString(),
                 lastActivityAt: new Date(Date.now() - 300000).toISOString(),
+                terminatedAt: new Date(Date.now() - 300000).toISOString(),
+                durationSeconds: 7200,
+                recordingSizeBytes: 204800,
               },
             ],
             hasNext,
@@ -178,11 +190,14 @@ describe('TerminalSessionsPage', () => {
     renderWithProviders(<TerminalSessionsPage />);
 
     await waitFor(() => {
+      expect(screen.getByText('User')).toBeInTheDocument();
       expect(screen.getByText('Device')).toBeInTheDocument();
-      expect(screen.getByText('Owner')).toBeInTheDocument();
       expect(screen.getByText('Status')).toBeInTheDocument();
       expect(screen.getByText('Created')).toBeInTheDocument();
       expect(screen.getByText('Last Activity')).toBeInTheDocument();
+      expect(screen.getByText('Terminated')).toBeInTheDocument();
+      expect(screen.getByText('Duration')).toBeInTheDocument();
+      expect(screen.getByText('Recording')).toBeInTheDocument();
     });
   });
 
@@ -225,7 +240,7 @@ describe('TerminalSessionsPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/No sessions match your filter/),
+        screen.getByText(/No sessions match your filters/),
       ).toBeInTheDocument();
     });
   });
@@ -631,7 +646,7 @@ describe('TerminalSessionsPage', () => {
   });
 
   describe('Clear filter button', () => {
-    it('should clear status filter when clicking "Clear Filter"', async () => {
+    it('should clear status filter when clicking "Clear Filters"', async () => {
       const user = userEvent.setup();
       useEmptyHandler();
       mockSearchParams = { page: 1, size: 25, status: 'active' };
@@ -640,25 +655,17 @@ describe('TerminalSessionsPage', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(/No sessions match your filter/),
+          screen.getByText(/No sessions match your filters/),
         ).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: 'Clear Filter' }));
+      await user.click(screen.getByRole('button', { name: 'Clear Filters' }));
 
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
-          search: expect.any(Function),
+          search: { page: 1, size: 25 },
         }),
       );
-
-      const call = mockNavigate.mock.calls[0] as [
-        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
-      ];
-      const result = call[0].search({ page: 2, size: 25, status: 'active' });
-      expect(result.page).toBe(1);
-      expect(result.size).toBe(25);
-      expect(result).not.toHaveProperty('status');
     });
   });
 
@@ -667,7 +674,9 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
-        expect(screen.getByText('Production Server')).toBeInTheDocument();
+        expect(screen.getAllByText('Production Server').length).toBeGreaterThan(
+          0,
+        );
       });
 
       const closeButtons = screen.getAllByRole('button', {
@@ -681,7 +690,9 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
-        expect(screen.getByText('Production Server')).toBeInTheDocument();
+        expect(screen.getAllByText('Production Server').length).toBeGreaterThan(
+          0,
+        );
       });
 
       const closeButtons = screen.getAllByRole('button', {
@@ -714,7 +725,9 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
-        expect(screen.getByText('Production Server')).toBeInTheDocument();
+        expect(screen.getAllByText('Production Server').length).toBeGreaterThan(
+          0,
+        );
       });
 
       const closeButtons = screen.getAllByRole('button', {
@@ -741,7 +754,9 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
-        expect(screen.getByText('Production Server')).toBeInTheDocument();
+        expect(screen.getAllByText('Production Server').length).toBeGreaterThan(
+          0,
+        );
       });
 
       const closeButtons = screen.getAllByRole('button', {
@@ -765,7 +780,9 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
-        expect(screen.getByText('Production Server')).toBeInTheDocument();
+        expect(screen.getAllByText('Production Server').length).toBeGreaterThan(
+          0,
+        );
       });
 
       const closeButtons = screen.getAllByRole('button', {
@@ -831,8 +848,8 @@ describe('TerminalSessionsPage', () => {
     it('should render skeleton rows', () => {
       renderWithProviders(<SessionTableSkeleton />);
 
+      expect(screen.getByText('User')).toBeInTheDocument();
       expect(screen.getByText('Device')).toBeInTheDocument();
-      expect(screen.getByText('Owner')).toBeInTheDocument();
       expect(screen.getByText('Status')).toBeInTheDocument();
     });
   });
@@ -869,10 +886,14 @@ describe('TerminalSessionsPage', () => {
                     deviceName: 'Null Dates Device',
                     userId: 'user-1',
                     userName: 'Charlie',
+                    userEmail: 'charlie@example.com',
                     status: 'created',
                     shell: '/bin/bash',
                     createdAt: '',
                     lastActivityAt: '',
+                    terminatedAt: null,
+                    durationSeconds: 0,
+                    recordingSizeBytes: null,
                   },
                 ],
                 hasNext: false,
@@ -912,10 +933,14 @@ describe('TerminalSessionsPage', () => {
                     deviceName: 'Terminated Device',
                     userId: 'user-1',
                     userName: 'Eve',
+                    userEmail: 'eve@example.com',
                     status: 'terminated',
                     shell: '/bin/bash',
                     createdAt: new Date().toISOString(),
                     lastActivityAt: new Date().toISOString(),
+                    terminatedAt: new Date().toISOString(),
+                    durationSeconds: 3600,
+                    recordingSizeBytes: 0,
                   },
                 ],
                 hasNext: false,
@@ -967,7 +992,9 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
-        expect(screen.getByText('Production Server')).toBeInTheDocument();
+        expect(screen.getAllByText('Production Server').length).toBeGreaterThan(
+          0,
+        );
       });
 
       const closeButtons = screen.getAllByRole('button', {
@@ -1010,7 +1037,9 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
-        expect(screen.getByText('Production Server')).toBeInTheDocument();
+        expect(screen.getAllByText('Production Server').length).toBeGreaterThan(
+          0,
+        );
       });
 
       // Open dialog and confirm termination

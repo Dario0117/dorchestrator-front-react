@@ -19,6 +19,10 @@ const searchParamsSchema = z.object({
   page: z.coerce.number().int().positive().default(1).catch(1),
   size: z.coerce.number().int().positive().max(100).default(25).catch(25),
   status: z.enum(TERMINAL_SESSION_STATUSES).optional().catch(undefined),
+  deviceId: z.coerce.number().int().positive().optional().catch(undefined),
+  userId: z.string().optional().catch(undefined),
+  dateFrom: z.string().optional().catch(undefined),
+  dateTo: z.string().optional().catch(undefined),
 });
 
 export const Route = createFileRoute(
@@ -34,10 +38,16 @@ export const Route = createFileRoute(
       errorDescription="Something went wrong while loading terminal sessions."
     />
   ),
-  loaderDeps: ({ search: { page, size, status } }) => ({
+  loaderDeps: ({
+    search: { page, size, status, deviceId, userId, dateFrom, dateTo },
+  }) => ({
     page,
     size,
     status,
+    deviceId,
+    userId,
+    dateFrom,
+    dateTo,
   }),
   loader: async (ctx) => {
     const currentOrganization = ctx.context.getCurrentOrganizationFromSlug(
@@ -48,6 +58,10 @@ export const Route = createFileRoute(
         page: ctx.deps.page,
         size: ctx.deps.size,
         status: ctx.deps.status,
+        deviceId: ctx.deps.deviceId,
+        userId: ctx.deps.userId,
+        dateFrom: ctx.deps.dateFrom,
+        dateTo: ctx.deps.dateTo,
       }),
     );
   },

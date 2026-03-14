@@ -1,3 +1,4 @@
+import { SessionHistoryExportDialog } from '@components/terminal/session-history-export-dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,6 +13,7 @@ import {
 import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
 import { EmptyState } from '@components/ui/empty-state';
+import { Input } from '@components/ui/input';
 import {
   Pagination,
   PaginationContent,
@@ -37,14 +39,20 @@ import {
 } from '@components/ui/table';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { badgeStyles } from '@lib/badge-styles';
+import { formatBytes } from '@lib/format-bytes';
+import { formatDurationCompact } from '@lib/format-duration';
 import { formatRelativeTime } from '@lib/format-relative-time';
 import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
 import { Route } from '@routes/(authenticated)/$organizationSlug/terminal/index';
+import { useDevicesQueryOptions } from '@services/devices/list-devices.http-service';
+import { useListMembersQueryOptions } from '@services/organizations/list-members.http-service';
 import type { TerminalSessionListItem } from '@services/terminal/list-terminal-sessions.http-service';
 import { useTerminalSessionsSuspenseQuery } from '@services/terminal/list-terminal-sessions.http-service';
 import { useTerminateTerminalSessionMutation } from '@services/terminal/terminate-terminal-session.http-service';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { Monitor, X } from 'lucide-react';
+import { Download, Monitor, X } from 'lucide-react';
+import { useState } from 'react';
 
 const STATUS_BADGE_STYLES = {
   active: badgeStyles.green,
@@ -74,11 +82,14 @@ function SessionTableSkeleton() {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>User</TableHead>
             <TableHead>Device</TableHead>
-            <TableHead>Owner</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>Last Activity</TableHead>
+            <TableHead>Terminated</TableHead>
+            <TableHead>Duration</TableHead>
+            <TableHead>Recording</TableHead>
             <TableHead className="w-12" />
           </TableRow>
         </TableHeader>
@@ -86,10 +97,10 @@ function SessionTableSkeleton() {
           {['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5'].map((id) => (
             <TableRow key={id}>
               <TableCell>
-                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-4 w-24" />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-28" />
               </TableCell>
               <TableCell>
                 <Skeleton className="h-5 w-16" />
@@ -99,6 +110,15 @@ function SessionTableSkeleton() {
               </TableCell>
               <TableCell>
                 <Skeleton className="h-4 w-16" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-16" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-14" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-14" />
               </TableCell>
               <TableCell>
                 <Skeleton className="h-8 w-8" />
@@ -113,8 +133,10 @@ function SessionTableSkeleton() {
 
 export function TerminalSessionsPage() {
   const currentOrganization = useCurrentOrganization();
-  const { page, size, status } = Route.useSearch();
+  const { page, size, status, deviceId, userId, dateFrom, dateTo } =
+    Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
   const organizationId = currentOrganization.id;
 
@@ -122,7 +144,21 @@ export function TerminalSessionsPage() {
     page,
     size,
     status,
+    deviceId,
+    userId,
+    dateFrom,
+    dateTo,
   });
+
+  const { data: devicesData } = useQuery(
+    useDevicesQueryOptions(organizationId, 1, 100),
+  );
+  const { data: membersData } = useQuery(
+    useListMembersQueryOptions(organizationId, { page: 1, size: 100 }),
+  );
+
+  const devices = devicesData?.responseData?.results ?? [];
+  const members = membersData?.responseData?.results ?? [];
 
   const sessions = data.responseData?.results || [];
   const totalPages = data.responseData?.totalPages || 0;
@@ -152,6 +188,54 @@ export function TerminalSessionsPage() {
     });
   };
 
+  const handleDeviceFilter = (value: string) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: 1,
+        deviceId: value === 'all' ? undefined : Number(value),
+      }),
+    });
+  };
+
+  const handleUserFilter = (value: string) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: 1,
+        userId: value === 'all' ? undefined : value,
+      }),
+    });
+  };
+
+  const handleDateFromFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: 1,
+        dateFrom: value ? `${value}T00:00:00.000Z` : undefined,
+      }),
+    });
+  };
+
+  const handleDateToFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: 1,
+        dateTo: value ? `${value}T23:59:59.999Z` : undefined,
+      }),
+    });
+  };
+
+  const handleClearFilters = () => {
+    navigate({
+      search: { page: 1, size },
+    });
+  };
+
   const terminateMutation = useTerminateTerminalSessionMutation();
 
   const handleRowClick = (sessionId: number) => {
@@ -175,14 +259,36 @@ export function TerminalSessionsPage() {
     });
   };
 
+  const hasActiveFilters =
+    status !== undefined ||
+    deviceId !== undefined ||
+    userId !== undefined ||
+    dateFrom !== undefined ||
+    dateTo !== undefined;
+
   return (
     <section className="p-6 md:p-10 space-y-6">
       <div className="py-6">
         <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <h1 className="text-2xl font-bold font-serif">Terminal Sessions</h1>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setExportDialogOpen(true)}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
         </div>
 
-        <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center">
+        <SessionHistoryExportDialog
+          open={exportDialogOpen}
+          onOpenChange={setExportDialogOpen}
+          organizationId={organizationId}
+          filters={{ status, deviceId, userId, dateFrom, dateTo }}
+        />
+
+        <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:flex-wrap">
           <Select
             value={status ?? 'all'}
             onValueChange={handleStatusFilter}
@@ -201,27 +307,95 @@ export function TerminalSessionsPage() {
               <SelectItem value="terminated">Terminated</SelectItem>
             </SelectContent>
           </Select>
+
+          <Select
+            value={deviceId !== undefined ? String(deviceId) : 'all'}
+            onValueChange={handleDeviceFilter}
+          >
+            <SelectTrigger
+              aria-label="Filter by device"
+              className="h-11 w-auto text-base md:text-sm"
+            >
+              <SelectValue placeholder="All devices" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All devices</SelectItem>
+              {devices.map((device) => (
+                <SelectItem
+                  key={device.id}
+                  value={String(device.id)}
+                >
+                  {device.deviceName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={userId ?? 'all'}
+            onValueChange={handleUserFilter}
+          >
+            <SelectTrigger
+              aria-label="Filter by user"
+              className="h-11 w-auto text-base md:text-sm"
+            >
+              <SelectValue placeholder="All users" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All users</SelectItem>
+              {members.map((member) => (
+                <SelectItem
+                  key={member.userId}
+                  value={member.userId}
+                >
+                  {member.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Input
+            type="date"
+            aria-label="From date"
+            value={dateFrom?.slice(0, 10) ?? ''}
+            onChange={handleDateFromFilter}
+            className="h-11 w-auto text-base md:text-sm"
+            placeholder="From"
+          />
+
+          <Input
+            type="date"
+            aria-label="To date"
+            value={dateTo?.slice(0, 10) ?? ''}
+            onChange={handleDateToFilter}
+            className="h-11 w-auto text-base md:text-sm"
+            placeholder="To"
+          />
+
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-11 text-base md:text-sm"
+              onClick={handleClearFilters}
+            >
+              Clear filters
+            </Button>
+          )}
         </div>
 
         {sessions.length === 0 ? (
-          status !== undefined ? (
+          hasActiveFilters ? (
             <EmptyState
               icon={Monitor}
-              title="No sessions match your filter"
-              description="Try a different status filter to find sessions."
+              title="No sessions match your filters"
+              description="Try adjusting your filters to find sessions."
               action={
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    navigate({
-                      search: (prev) => ({
-                        page: 1,
-                        size: prev.size,
-                      }),
-                    })
-                  }
+                  onClick={handleClearFilters}
                 >
-                  Clear Filter
+                  Clear Filters
                 </Button>
               }
             />
@@ -238,11 +412,14 @@ export function TerminalSessionsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>User</TableHead>
                     <TableHead>Device</TableHead>
-                    <TableHead>Owner</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Created</TableHead>
                     <TableHead>Last Activity</TableHead>
+                    <TableHead>Terminated</TableHead>
+                    <TableHead>Duration</TableHead>
+                    <TableHead>Recording</TableHead>
                     <TableHead className="w-12" />
                   </TableRow>
                 </TableHeader>
@@ -260,10 +437,17 @@ export function TerminalSessionsPage() {
                         }
                       }}
                     >
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{session.userName}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {session.userEmail}
+                          </div>
+                        </div>
+                      </TableCell>
                       <TableCell className="font-medium">
                         {session.deviceName}
                       </TableCell>
-                      <TableCell>{session.userName}</TableCell>
                       <TableCell>
                         <StatusBadge status={session.status} />
                       </TableCell>
@@ -276,6 +460,17 @@ export function TerminalSessionsPage() {
                         {session.lastActivityAt
                           ? formatRelativeTime(session.lastActivityAt)
                           : 'Never'}
+                      </TableCell>
+                      <TableCell>
+                        {session.terminatedAt
+                          ? formatRelativeTime(session.terminatedAt)
+                          : '—'}
+                      </TableCell>
+                      <TableCell>
+                        {formatDurationCompact(session.durationSeconds * 1000)}
+                      </TableCell>
+                      <TableCell>
+                        {formatBytes(session.recordingSizeBytes)}
                       </TableCell>
                       <TableCell>
                         {session.status !== 'terminated' && (

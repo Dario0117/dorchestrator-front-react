@@ -1,6 +1,10 @@
 import { getSidebarData } from '@components/layout/data/sidebar-data';
 import type { SidebarData } from '@components/layout/data/sidebar-data.types';
-import type { NavGroup, NavItem } from '@components/layout/nav-group.types';
+import type {
+  NavCollapsible,
+  NavGroup,
+  NavItem,
+} from '@components/layout/nav-group.types';
 
 describe('Sidebar Data', () => {
   const testSlug = 'test-org';
@@ -94,7 +98,7 @@ describe('Sidebar Data', () => {
       return;
     }
 
-    expect(generalGroup.items).toHaveLength(6);
+    expect(generalGroup.items).toHaveLength(4);
 
     // Test Dashboard item
     const dashboardItem = generalGroup.items[0];
@@ -127,38 +131,24 @@ describe('Sidebar Data', () => {
     );
     expect(commandsItem.icon).toBeDefined();
 
-    // Test Sessions item
-    const sessionsItem = generalGroup.items[3];
-    if (!sessionsItem) {
+    // Test Terminal collapsible group
+    const terminalGroup = generalGroup.items[3];
+    if (!terminalGroup) {
       return;
     }
-    expect(sessionsItem.title).toBe('Sessions');
-    expect('url' in sessionsItem && sessionsItem.url).toBe(
-      `/${testSlug}/terminal`,
-    );
-    expect(sessionsItem.icon).toBeDefined();
+    expect(terminalGroup.title).toBe('Terminal');
+    expect(terminalGroup.icon).toBeDefined();
+    expect('items' in terminalGroup).toBe(true);
 
-    // Test Session History item
-    const sessionHistoryItem = generalGroup.items[4];
-    if (!sessionHistoryItem) {
-      return;
-    }
-    expect(sessionHistoryItem.title).toBe('Session History');
-    expect('url' in sessionHistoryItem && sessionHistoryItem.url).toBe(
-      `/${testSlug}/terminal/history`,
-    );
-    expect(sessionHistoryItem.icon).toBeDefined();
+    const terminalItems = (terminalGroup as NavCollapsible).items;
+    expect(terminalItems).toHaveLength(2);
 
-    // Test Bookmarks item
-    const bookmarksItem = generalGroup.items[5];
-    if (!bookmarksItem) {
-      return;
-    }
-    expect(bookmarksItem.title).toBe('Bookmarks');
-    expect('url' in bookmarksItem && bookmarksItem.url).toBe(
-      `/${testSlug}/terminal/bookmarks`,
-    );
-    expect(bookmarksItem.icon).toBeDefined();
+    expect(terminalItems[0]?.title).toBe('Sessions');
+    expect(terminalItems[0]?.url).toBe(`/${testSlug}/terminal`);
+    expect(terminalItems[0]?.icon).toBeDefined();
+
+    expect(terminalItems[1]?.title).toBe('Bookmarks');
+    expect(terminalItems[1]?.url).toBe(`/${testSlug}/terminal/bookmarks`);
   });
 
   it('should have valid nav items in Settings group', () => {

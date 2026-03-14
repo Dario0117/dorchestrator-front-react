@@ -177,13 +177,13 @@ function RecordingPlaybackPage() {
             size="sm"
             onClick={() =>
               navigate({
-                to: '/$organizationSlug/terminal/history',
+                to: '/$organizationSlug/terminal',
                 params: { organizationSlug: currentOrganization.slug },
               })
             }
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to History
+            Back to Sessions
           </Button>
         </div>
 

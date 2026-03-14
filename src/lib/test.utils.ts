@@ -40,7 +40,6 @@ import { getDeviceConfigHandler } from '@services/terminal/get-device-config.htt
 import { getEffectiveCeilingHandler } from '@services/terminal/get-effective-ceiling.http-service.handlers';
 import { getTerminalConfigHandler } from '@services/terminal/get-terminal-config.http-service.handlers';
 import { getTerminalSessionHandler } from '@services/terminal/get-terminal-session.http-service.handlers';
-import { listSessionHistoryHandler } from '@services/terminal/list-session-history.http-service.handlers';
 import { listTerminalSessionsHandler } from '@services/terminal/list-terminal-sessions.http-service.handlers';
 import { shareTerminalSessionHandler } from '@services/terminal/share-terminal-session.http-service.handlers';
 import { terminalAuthHandler } from '@services/terminal/terminal-auth.http-service.handlers';
@@ -102,7 +101,6 @@ export function MSWSuccessHandlers() {
     createTerminalSessionHandler,
     getTerminalSessionHandler,
     listTerminalSessionsHandler,
-    listSessionHistoryHandler,
     getTerminalConfigHandler,
     updateTerminalConfigHandler,
     getDeviceConfigHandler,

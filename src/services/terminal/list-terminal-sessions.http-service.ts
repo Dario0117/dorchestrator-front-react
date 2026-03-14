@@ -10,13 +10,24 @@ export interface TerminalSessionsQueryParams {
   size?: number;
   status?: TerminalSessionsQuery['status'];
   deviceId?: TerminalSessionsQuery['deviceId'];
+  userId?: TerminalSessionsQuery['userId'];
+  dateFrom?: TerminalSessionsQuery['dateFrom'];
+  dateTo?: TerminalSessionsQuery['dateTo'];
 }
 
 export const useTerminalSessionsQueryOptions = (
   organizationId: string,
   params: TerminalSessionsQueryParams = {},
 ) => {
-  const { page = 1, size = 25, status, deviceId } = params;
+  const {
+    page = 1,
+    size = 25,
+    status,
+    deviceId,
+    userId,
+    dateFrom,
+    dateTo,
+  } = params;
 
   return $api.queryOptions(
     'get',
@@ -31,6 +42,9 @@ export const useTerminalSessionsQueryOptions = (
           size,
           status,
           deviceId,
+          userId,
+          dateFrom,
+          dateTo,
         },
       },
     },

@@ -516,22 +516,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/{organizationId}/terminal/sessions/history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getApiV1ByOrganizationIdTerminalSessionsHistory"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/{organizationId}/terminal/sessions/export": {
         parameters: {
             query?: never;
@@ -8439,6 +8423,9 @@ export interface operations {
                 size: number;
                 status?: "created" | "active" | "locked" | "terminated";
                 deviceId?: number;
+                userId?: string;
+                dateFrom?: string;
+                dateTo?: string;
             };
             header?: never;
             path: {
@@ -8462,11 +8449,15 @@ export interface operations {
                                 deviceName: string;
                                 userId: string;
                                 userName: string;
+                                userEmail: string;
                                 /** @enum {string} */
                                 status: "created" | "active" | "locked" | "terminated";
                                 shell: string;
                                 createdAt: string;
                                 lastActivityAt: string | null;
+                                terminatedAt: string | null;
+                                durationSeconds: number;
+                                recordingSizeBytes: number | null;
                             }[];
                             hasNext: boolean;
                             hasPrevious: boolean;
@@ -8611,130 +8602,6 @@ export interface operations {
                             workingDirectory?: string[];
                             inactivityTimeoutMs?: string[];
                             hardCapMs?: string[];
-                        };
-                    };
-                };
-            };
-            /** @description Response for status 401 */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        responseData: null;
-                        responseErrors: {
-                            nonFieldErrors: string[];
-                        };
-                    };
-                };
-            };
-            /** @description Response for status 403 */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        responseData: null;
-                        responseErrors: {
-                            nonFieldErrors: string[];
-                        };
-                    };
-                };
-            };
-            /** @description Response for status 404 */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        responseData: null;
-                        responseErrors: {
-                            nonFieldErrors: string[];
-                        };
-                    };
-                };
-            };
-            /** @description Response for status 500 */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        responseData: null;
-                        responseErrors: {
-                            nonFieldErrors: string[];
-                        };
-                    };
-                };
-            };
-        };
-    };
-    getApiV1ByOrganizationIdTerminalSessionsHistory: {
-        parameters: {
-            query: {
-                page: number;
-                size: number;
-                status?: "created" | "active" | "locked" | "terminated";
-                deviceId?: number;
-                userId?: string;
-                dateFrom?: string;
-                dateTo?: string;
-            };
-            header?: never;
-            path: {
-                organizationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response for status 200 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        responseData: {
-                            results: {
-                                id: number;
-                                /** @enum {string} */
-                                status: "created" | "active" | "locked" | "terminated";
-                                userId: string;
-                                userName: string;
-                                userEmail: string;
-                                deviceId: number;
-                                deviceName: string;
-                                createdAt: string;
-                                terminatedAt: string | null;
-                                durationSeconds: number;
-                                recordingSizeBytes: number | null;
-                            }[];
-                            hasNext: boolean;
-                            hasPrevious: boolean;
-                            totalResults: number;
-                            totalPages: number;
-                            page: number;
-                            size: number;
-                        };
-                        responseErrors: null;
-                    };
-                };
-            };
-            /** @description Response for status 400 */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        responseData: null;
-                        responseErrors: {
-                            nonFieldErrors: string[];
                         };
                     };
                 };
