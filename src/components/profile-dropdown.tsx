@@ -11,6 +11,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
+import { useCurrentOrganization } from '@hooks/use-current-organization';
 import useDialogState from '@hooks/use-dialog-state';
 import { useProfileSuspendedQuery } from '@services/users/get-profile.http-service';
 import { Link } from '@tanstack/react-router';
@@ -18,6 +19,7 @@ import { Link } from '@tanstack/react-router';
 export function ProfileDropdown() {
   const [open, setOpen] = useDialogState();
   const { data: profile } = useProfileSuspendedQuery();
+  const currentOrganization = useCurrentOrganization();
 
   const avatarFallback = profile.name.charAt(0);
 
@@ -56,7 +58,10 @@ export function ProfileDropdown() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link to=".">
+              <Link
+                to="/$organizationSlug/profile"
+                params={{ organizationSlug: currentOrganization.slug }}
+              >
                 Profile
                 <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
               </Link>

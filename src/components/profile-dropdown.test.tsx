@@ -4,6 +4,14 @@ import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { Suspense } from 'react';
 
+vi.mock('@hooks/use-current-organization', () => ({
+  useCurrentOrganization: vi.fn(() => ({
+    id: 'org-1',
+    name: 'Test Organization',
+    slug: 'test-org',
+  })),
+}));
+
 vi.mock('@tanstack/react-router', () => ({
   Link: ({
     children,

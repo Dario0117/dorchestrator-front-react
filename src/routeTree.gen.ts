@@ -21,6 +21,7 @@ import { Route as authenticatedOrganizationSlugIndexRouteImport } from './routes
 import { Route as authenticatedOrganizationSlugSettingsRouteImport } from './routes/(authenticated)/$organizationSlug/settings'
 import { Route as authenticatedOrganizationSlugQueuedSessionsRouteImport } from './routes/(authenticated)/$organizationSlug/queued-sessions'
 import { Route as authenticatedOrganizationSlugProjectsRouteImport } from './routes/(authenticated)/$organizationSlug/projects'
+import { Route as authenticatedOrganizationSlugProfileRouteImport } from './routes/(authenticated)/$organizationSlug/profile'
 import { Route as authenticatedOrganizationSlugDraftsRouteImport } from './routes/(authenticated)/$organizationSlug/drafts'
 import { Route as authenticatedOrganizationSlugDevicesRouteImport } from './routes/(authenticated)/$organizationSlug/devices'
 import { Route as authenticatedOrganizationSlugApiRouteImport } from './routes/(authenticated)/$organizationSlug/api'
@@ -96,6 +97,12 @@ const authenticatedOrganizationSlugProjectsRoute =
   authenticatedOrganizationSlugProjectsRouteImport.update({
     id: '/projects',
     path: '/projects',
+    getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
+  } as any)
+const authenticatedOrganizationSlugProfileRoute =
+  authenticatedOrganizationSlugProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
     getParentRoute: () => authenticatedOrganizationSlugRouteRoute,
   } as any)
 const authenticatedOrganizationSlugDraftsRoute =
@@ -177,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/$organizationSlug/api': typeof authenticatedOrganizationSlugApiRoute
   '/$organizationSlug/devices': typeof authenticatedOrganizationSlugDevicesRoute
   '/$organizationSlug/drafts': typeof authenticatedOrganizationSlugDraftsRoute
+  '/$organizationSlug/profile': typeof authenticatedOrganizationSlugProfileRoute
   '/$organizationSlug/projects': typeof authenticatedOrganizationSlugProjectsRoute
   '/$organizationSlug/queued-sessions': typeof authenticatedOrganizationSlugQueuedSessionsRoute
   '/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
@@ -199,6 +207,7 @@ export interface FileRoutesByTo {
   '/$organizationSlug/api': typeof authenticatedOrganizationSlugApiRoute
   '/$organizationSlug/devices': typeof authenticatedOrganizationSlugDevicesRoute
   '/$organizationSlug/drafts': typeof authenticatedOrganizationSlugDraftsRoute
+  '/$organizationSlug/profile': typeof authenticatedOrganizationSlugProfileRoute
   '/$organizationSlug/projects': typeof authenticatedOrganizationSlugProjectsRoute
   '/$organizationSlug/queued-sessions': typeof authenticatedOrganizationSlugQueuedSessionsRoute
   '/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
@@ -225,6 +234,7 @@ export interface FileRoutesById {
   '/(authenticated)/$organizationSlug/api': typeof authenticatedOrganizationSlugApiRoute
   '/(authenticated)/$organizationSlug/devices': typeof authenticatedOrganizationSlugDevicesRoute
   '/(authenticated)/$organizationSlug/drafts': typeof authenticatedOrganizationSlugDraftsRoute
+  '/(authenticated)/$organizationSlug/profile': typeof authenticatedOrganizationSlugProfileRoute
   '/(authenticated)/$organizationSlug/projects': typeof authenticatedOrganizationSlugProjectsRoute
   '/(authenticated)/$organizationSlug/queued-sessions': typeof authenticatedOrganizationSlugQueuedSessionsRoute
   '/(authenticated)/$organizationSlug/settings': typeof authenticatedOrganizationSlugSettingsRoute
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug/api'
     | '/$organizationSlug/devices'
     | '/$organizationSlug/drafts'
+    | '/$organizationSlug/profile'
     | '/$organizationSlug/projects'
     | '/$organizationSlug/queued-sessions'
     | '/$organizationSlug/settings'
@@ -272,6 +283,7 @@ export interface FileRouteTypes {
     | '/$organizationSlug/api'
     | '/$organizationSlug/devices'
     | '/$organizationSlug/drafts'
+    | '/$organizationSlug/profile'
     | '/$organizationSlug/projects'
     | '/$organizationSlug/queued-sessions'
     | '/$organizationSlug/settings'
@@ -297,6 +309,7 @@ export interface FileRouteTypes {
     | '/(authenticated)/$organizationSlug/api'
     | '/(authenticated)/$organizationSlug/devices'
     | '/(authenticated)/$organizationSlug/drafts'
+    | '/(authenticated)/$organizationSlug/profile'
     | '/(authenticated)/$organizationSlug/projects'
     | '/(authenticated)/$organizationSlug/queued-sessions'
     | '/(authenticated)/$organizationSlug/settings'
@@ -402,6 +415,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrganizationSlugProjectsRouteImport
       parentRoute: typeof authenticatedOrganizationSlugRouteRoute
     }
+    '/(authenticated)/$organizationSlug/profile': {
+      id: '/(authenticated)/$organizationSlug/profile'
+      path: '/profile'
+      fullPath: '/$organizationSlug/profile'
+      preLoaderRoute: typeof authenticatedOrganizationSlugProfileRouteImport
+      parentRoute: typeof authenticatedOrganizationSlugRouteRoute
+    }
     '/(authenticated)/$organizationSlug/drafts': {
       id: '/(authenticated)/$organizationSlug/drafts'
       path: '/drafts'
@@ -486,6 +506,7 @@ interface authenticatedOrganizationSlugRouteRouteChildren {
   authenticatedOrganizationSlugApiRoute: typeof authenticatedOrganizationSlugApiRoute
   authenticatedOrganizationSlugDevicesRoute: typeof authenticatedOrganizationSlugDevicesRoute
   authenticatedOrganizationSlugDraftsRoute: typeof authenticatedOrganizationSlugDraftsRoute
+  authenticatedOrganizationSlugProfileRoute: typeof authenticatedOrganizationSlugProfileRoute
   authenticatedOrganizationSlugProjectsRoute: typeof authenticatedOrganizationSlugProjectsRoute
   authenticatedOrganizationSlugQueuedSessionsRoute: typeof authenticatedOrganizationSlugQueuedSessionsRoute
   authenticatedOrganizationSlugSettingsRoute: typeof authenticatedOrganizationSlugSettingsRoute
@@ -508,6 +529,8 @@ const authenticatedOrganizationSlugRouteRouteChildren: authenticatedOrganization
       authenticatedOrganizationSlugDevicesRoute,
     authenticatedOrganizationSlugDraftsRoute:
       authenticatedOrganizationSlugDraftsRoute,
+    authenticatedOrganizationSlugProfileRoute:
+      authenticatedOrganizationSlugProfileRoute,
     authenticatedOrganizationSlugProjectsRoute:
       authenticatedOrganizationSlugProjectsRoute,
     authenticatedOrganizationSlugQueuedSessionsRoute:
