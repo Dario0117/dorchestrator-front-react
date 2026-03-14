@@ -645,6 +645,255 @@ describe('TerminalSessionsPage', () => {
     });
   });
 
+  describe('Device filter', () => {
+    it('should call navigate with deviceId when selecting a device', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Filter by device')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByLabelText('Filter by device'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('option', { name: 'Test Server' }),
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('option', { name: 'Test Server' }));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          search: expect.any(Function),
+        }),
+      );
+
+      const call = mockNavigate.mock.calls[0] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = call[0].search({ page: 2, size: 25 });
+      expect(result).toEqual({ page: 1, size: 25, deviceId: 1 });
+    });
+
+    it('should clear deviceId when selecting "All devices"', async () => {
+      const user = userEvent.setup();
+      mockSearchParams = { page: 1, size: 25, deviceId: 1 };
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Filter by device')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByLabelText('Filter by device'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('option', { name: 'All devices' }),
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('option', { name: 'All devices' }));
+
+      const call = mockNavigate.mock.calls[0] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = call[0].search({ page: 2, size: 25, deviceId: 1 });
+      expect(result.deviceId).toBeUndefined();
+      expect(result.page).toBe(1);
+    });
+  });
+
+  describe('User filter', () => {
+    it('should call navigate with userId when selecting a user', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Filter by user')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByLabelText('Filter by user'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('option', { name: 'Alice Owner' }),
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('option', { name: 'Alice Owner' }));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          search: expect.any(Function),
+        }),
+      );
+
+      const call = mockNavigate.mock.calls[0] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = call[0].search({ page: 2, size: 25 });
+      expect(result).toEqual({ page: 1, size: 25, userId: 'user-1' });
+    });
+
+    it('should clear userId when selecting "All users"', async () => {
+      const user = userEvent.setup();
+      mockSearchParams = { page: 1, size: 25, userId: 'user-1' };
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Filter by user')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByLabelText('Filter by user'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('option', { name: 'All users' }),
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('option', { name: 'All users' }));
+
+      const call = mockNavigate.mock.calls[0] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = call[0].search({ page: 2, size: 25, userId: 'user-1' });
+      expect(result.userId).toBeUndefined();
+      expect(result.page).toBe(1);
+    });
+  });
+
+  describe('Date filters', () => {
+    it('should call navigate with dateFrom when setting from date', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('From date')).toBeInTheDocument();
+      });
+
+      await user.type(screen.getByLabelText('From date'), '2026-01-01');
+
+      expect(mockNavigate).toHaveBeenCalled();
+
+      const calls = mockNavigate.mock.calls;
+      const lastCall = calls[calls.length - 1] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = lastCall[0].search({ page: 2, size: 25 });
+      expect(result.page).toBe(1);
+      expect(result.dateFrom).toBe('2026-01-01T00:00:00.000Z');
+    });
+
+    it('should clear dateFrom when clearing from date input', async () => {
+      mockSearchParams = {
+        page: 1,
+        size: 25,
+        dateFrom: '2026-01-01T00:00:00.000Z',
+      };
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('From date')).toBeInTheDocument();
+      });
+
+      const input = screen.getByLabelText('From date') as HTMLInputElement;
+      input.focus();
+      await userEvent.clear(input);
+
+      expect(mockNavigate).toHaveBeenCalled();
+
+      const calls = mockNavigate.mock.calls;
+      const lastCall = calls[calls.length - 1] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = lastCall[0].search({
+        page: 2,
+        size: 25,
+        dateFrom: '2026-01-01T00:00:00.000Z',
+      });
+      expect(result.dateFrom).toBeUndefined();
+      expect(result.page).toBe(1);
+    });
+
+    it('should call navigate with dateTo when setting to date', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('To date')).toBeInTheDocument();
+      });
+
+      await user.type(screen.getByLabelText('To date'), '2026-12-31');
+
+      expect(mockNavigate).toHaveBeenCalled();
+
+      const calls = mockNavigate.mock.calls;
+      const lastCall = calls[calls.length - 1] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = lastCall[0].search({ page: 2, size: 25 });
+      expect(result.page).toBe(1);
+      expect(result.dateTo).toBe('2026-12-31T23:59:59.999Z');
+    });
+
+    it('should clear dateTo when clearing to date input', async () => {
+      mockSearchParams = {
+        page: 1,
+        size: 25,
+        dateTo: '2026-12-31T23:59:59.999Z',
+      };
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('To date')).toBeInTheDocument();
+      });
+
+      const input = screen.getByLabelText('To date') as HTMLInputElement;
+      input.focus();
+      await userEvent.clear(input);
+
+      expect(mockNavigate).toHaveBeenCalled();
+
+      const calls = mockNavigate.mock.calls;
+      const lastCall = calls[calls.length - 1] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = lastCall[0].search({
+        page: 2,
+        size: 25,
+        dateTo: '2026-12-31T23:59:59.999Z',
+      });
+      expect(result.dateTo).toBeUndefined();
+      expect(result.page).toBe(1);
+    });
+  });
+
+  describe('Export button', () => {
+    it('should open export dialog when clicking Export button', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /Export/ }),
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('button', { name: /Export/ }));
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+      });
+    });
+  });
+
   describe('Clear filter button', () => {
     it('should clear status filter when clicking "Clear Filters"', async () => {
       const user = userEvent.setup();
