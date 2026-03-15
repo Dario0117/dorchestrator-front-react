@@ -41,12 +41,50 @@ const mockTeams = [
   },
 ];
 
-function renderTeamSwitcher(teams = mockTeams, activeSlug = 'dorchestrator') {
+const mockTeamsByOrgSlug = {
+  dorchestrator: [
+    {
+      id: 'team-1',
+      name: 'Engineering',
+      slug: 'engineering',
+      organizationId: 'org-1',
+      createdAt: '2024-01-01T00:00:00Z',
+    },
+    {
+      id: 'team-2',
+      name: 'Design',
+      slug: 'design',
+      organizationId: 'org-1',
+      createdAt: '2024-01-01T00:00:00Z',
+    },
+  ],
+  'acme-inc': [
+    {
+      id: 'team-3',
+      name: 'Sales',
+      slug: 'sales',
+      organizationId: 'org-2',
+      createdAt: '2024-01-01T00:00:00Z',
+    },
+  ],
+};
+
+function renderTeamSwitcher(
+  teams = mockTeams,
+  activeSlug = 'dorchestrator',
+  props: Partial<
+    Pick<
+      Parameters<typeof TeamSwitcher>[0],
+      'teamsByOrgSlug' | 'activeTeamSlug' | 'onTeamChange'
+    >
+  > = {},
+) {
   return renderWithProviders(
     <SidebarProvider>
       <TeamSwitcher
         teams={teams}
         activeSlug={activeSlug}
+        {...props}
       />
     </SidebarProvider>,
   );
@@ -61,7 +99,6 @@ describe('TeamSwitcher', () => {
     renderTeamSwitcher();
 
     expect(screen.getByText('Dorchestrator')).toBeInTheDocument();
-    expect(screen.getByText('Vite + ShadcnUI')).toBeInTheDocument();
   });
 
   it('should return null when no teams are provided', () => {
@@ -191,6 +228,115 @@ describe('TeamSwitcher', () => {
     renderTeamSwitcher(mockTeams, 'acme-inc');
 
     expect(screen.getByText('Acme Inc')).toBeInTheDocument();
-    expect(screen.getByText('Enterprise')).toBeInTheDocument();
+  });
+
+  it('should display active team name when activeTeamSlug is provided', () => {
+    renderTeamSwitcher(mockTeams, 'dorchestrator', {
+      teamsByOrgSlug: mockTeamsByOrgSlug,
+      activeTeamSlug: 'engineering',
+    });
+
+    expect(screen.getByText('Engineering')).toBeInTheDocument();
+  });
+
+  it('should render team radio options in dropdown', async () => {
+    const user = userEvent.setup();
+    renderTeamSwitcher(mockTeams, 'dorchestrator', {
+      teamsByOrgSlug: mockTeamsByOrgSlug,
+      activeTeamSlug: 'engineering',
+    });
+
+    const trigger = screen.getByRole('button', { name: /dorchestrator/i });
+    await user.click(trigger);
+
+    expect(
+      screen.getByRole('menuitemradio', { name: /engineering/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitemradio', { name: /design/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitemradio', { name: /sales/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('should call onTeamChange when a team radio option is selected', async () => {
+    const onTeamChange = vi.fn();
+    const user = userEvent.setup();
+    renderTeamSwitcher(mockTeams, 'dorchestrator', {
+      teamsByOrgSlug: mockTeamsByOrgSlug,
+      activeTeamSlug: 'engineering',
+
+      onTeamChange,
+    });
+
+    const trigger = screen.getByRole('button', { name: /dorchestrator/i });
+    await user.click(trigger);
+
+    const designOption = screen.getByRole('menuitemradio', { name: /design/i });
+    await user.click(designOption);
+
+    expect(onTeamChange).toHaveBeenCalledWith('design');
+  });
+
+  it('should call onTeamChange without navigating when selecting a team within the active org', async () => {
+    const onTeamChange = vi.fn();
+    const user = userEvent.setup();
+    renderTeamSwitcher(mockTeams, 'dorchestrator', {
+      teamsByOrgSlug: mockTeamsByOrgSlug,
+      activeTeamSlug: 'engineering',
+
+      onTeamChange,
+    });
+
+    const trigger = screen.getByRole('button', { name: /dorchestrator/i });
+    await user.click(trigger);
+
+    const designOption = screen.getByRole('menuitemradio', { name: /design/i });
+    await user.click(designOption);
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(onTeamChange).toHaveBeenCalledWith('design');
+  });
+
+  it('should navigate to org+team when selecting a team under a non-active org', async () => {
+    const onTeamChange = vi.fn();
+    const user = userEvent.setup();
+    renderTeamSwitcher(mockTeams, 'dorchestrator', {
+      teamsByOrgSlug: mockTeamsByOrgSlug,
+      activeTeamSlug: 'engineering',
+      onTeamChange,
+    });
+
+    const trigger = screen.getByRole('button', { name: /dorchestrator/i });
+    await user.click(trigger);
+
+    const salesOption = screen.getByRole('menuitemradio', { name: /sales/i });
+    await user.click(salesOption);
+
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: '/$organizationSlug/t/$teamSlug',
+      params: {
+        organizationSlug: 'acme-inc',
+        teamSlug: 'sales',
+      },
+    });
+    expect(onTeamChange).not.toHaveBeenCalled();
+  });
+
+  it('should render team options with no radio selected when activeTeamId is null', async () => {
+    const user = userEvent.setup();
+    renderTeamSwitcher(mockTeams, 'dorchestrator', {
+      teamsByOrgSlug: mockTeamsByOrgSlug,
+      activeTeamSlug: undefined,
+    });
+
+    const trigger = screen.getByRole('button', { name: /dorchestrator/i });
+    await user.click(trigger);
+
+    const engineeringOption = screen.getByRole('menuitemradio', {
+      name: /engineering/i,
+    });
+    expect(engineeringOption).not.toBeChecked();
   });
 });

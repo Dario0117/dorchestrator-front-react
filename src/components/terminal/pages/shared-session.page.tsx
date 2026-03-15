@@ -9,7 +9,7 @@ import { Skeleton } from '@components/ui/skeleton';
 import { badgeStyles } from '@lib/badge-styles';
 import { useResolveShareLinkQuery } from '@services/terminal/resolve-share-link.http-service';
 import { terminalWsClient } from '@services/terminal/terminal-ws.client';
-import { Link } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
 import { AlertTriangle, ArrowLeft, Eye, Terminal } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -22,6 +22,7 @@ export function SharedSessionPage({
   organizationSlug: string;
   organizationId: string;
 }) {
+  const { teamSlug } = useParams({ strict: false }) as { teamSlug: string };
   const {
     fontSize,
     increase: increaseFontSize,
@@ -77,8 +78,8 @@ export function SharedSessionPage({
             asChild
           >
             <Link
-              to="/$organizationSlug/terminal"
-              params={{ organizationSlug }}
+              to="/$organizationSlug/t/$teamSlug/terminal"
+              params={{ organizationSlug, teamSlug }}
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to sessions
@@ -105,8 +106,8 @@ export function SharedSessionPage({
             asChild
           >
             <Link
-              to="/$organizationSlug/terminal"
-              params={{ organizationSlug }}
+              to="/$organizationSlug/t/$teamSlug/terminal"
+              params={{ organizationSlug, teamSlug }}
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to sessions

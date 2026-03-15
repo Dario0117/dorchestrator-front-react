@@ -37,17 +37,21 @@ let mockSearchParams: {
 } = { page: 1, size: 25 };
 
 vi.mock(
-  '@routes/(authenticated)/$organizationSlug/terminal/index',
+  '@routes/(authenticated)/$organizationSlug/t/$teamSlug/terminal/index',
   async (importOriginal) => {
     const actual =
       await importOriginal<
-        typeof import('@routes/(authenticated)/$organizationSlug/terminal/index')
+        typeof import('@routes/(authenticated)/$organizationSlug/t/$teamSlug/terminal/index')
       >();
     return {
       ...actual,
       Route: {
         ...actual.Route,
         useSearch: vi.fn(() => mockSearchParams),
+        useParams: vi.fn(() => ({
+          organizationSlug: 'test-org',
+          teamSlug: 'default',
+        })),
       },
     };
   },
@@ -246,7 +250,7 @@ describe('TerminalSessionsPage', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(
       expect.objectContaining({
-        to: '/$organizationSlug/terminal/$sessionId',
+        to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
         params: expect.objectContaining({
           sessionId: '2',
         }),
@@ -1057,7 +1061,7 @@ describe('TerminalSessionsPage', () => {
 
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
-          to: '/$organizationSlug/terminal/$sessionId',
+          to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
         }),
       );
     });
@@ -1076,7 +1080,7 @@ describe('TerminalSessionsPage', () => {
 
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
-          to: '/$organizationSlug/terminal/$sessionId',
+          to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
         }),
       );
     });

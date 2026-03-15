@@ -18,7 +18,7 @@ const searchParamsSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  '/(authenticated)/$organizationSlug/terminal/',
+  '/(authenticated)/$organizationSlug/t/$teamSlug/terminal/',
 )({
   validateSearch: searchParamsSchema,
   component: TerminalSessionsRoute,

@@ -22,17 +22,21 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
 });
 
 vi.mock(
-  '@routes/(authenticated)/$organizationSlug/devices',
+  '@routes/(authenticated)/$organizationSlug/t/$teamSlug/devices',
   async (importOriginal) => {
     const actual =
       await importOriginal<
-        typeof import('@routes/(authenticated)/$organizationSlug/devices')
+        typeof import('@routes/(authenticated)/$organizationSlug/t/$teamSlug/devices')
       >();
     return {
       ...actual,
       Route: {
         ...actual.Route,
         useSearch: vi.fn(() => ({ page: 1, size: 10 })),
+        useParams: vi.fn(() => ({
+          organizationSlug: 'test-org',
+          teamSlug: 'default',
+        })),
       },
     };
   },
@@ -684,7 +688,7 @@ describe('DevicesPage', () => {
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
-          to: '/$organizationSlug/terminal/$sessionId',
+          to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
           params: expect.objectContaining({
             organizationSlug: 'test-org',
             sessionId: '1',

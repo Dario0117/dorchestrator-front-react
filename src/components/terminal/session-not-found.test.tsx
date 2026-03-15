@@ -28,7 +28,12 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
 
 describe('SessionNotFound', () => {
   it('should render "Session not found" heading', () => {
-    renderWithProviders(<SessionNotFound organizationSlug="test-org" />);
+    renderWithProviders(
+      <SessionNotFound
+        organizationSlug="test-org"
+        teamSlug="default"
+      />,
+    );
 
     expect(
       screen.getByRole('heading', { name: 'Session not found' }),
@@ -36,7 +41,12 @@ describe('SessionNotFound', () => {
   });
 
   it('should render description text', () => {
-    renderWithProviders(<SessionNotFound organizationSlug="test-org" />);
+    renderWithProviders(
+      <SessionNotFound
+        organizationSlug="test-org"
+        teamSlug="default"
+      />,
+    );
 
     expect(
       screen.getByText(/does not exist or you don't have access/),
@@ -44,7 +54,12 @@ describe('SessionNotFound', () => {
   });
 
   it('should render link back to sessions list', () => {
-    renderWithProviders(<SessionNotFound organizationSlug="test-org" />);
+    renderWithProviders(
+      <SessionNotFound
+        organizationSlug="test-org"
+        teamSlug="default"
+      />,
+    );
 
     expect(screen.getByText('Back to sessions')).toBeInTheDocument();
   });

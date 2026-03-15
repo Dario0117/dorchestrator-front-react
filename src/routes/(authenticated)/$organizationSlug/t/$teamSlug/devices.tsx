@@ -9,20 +9,28 @@ const searchParamsSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  '/(authenticated)/$organizationSlug/devices',
+  '/(authenticated)/$organizationSlug/t/$teamSlug/devices',
 )({
   validateSearch: searchParamsSchema,
   component: DevicesPage,
-  loaderDeps: ({ search: { page, size } }) => ({ page, size }),
+  loaderDeps: ({ search: { page, size } }) => ({
+    page,
+    size,
+  }),
   loader: async (ctx) => {
     const currentOrganization = ctx.context.getCurrentOrganizationFromSlug(
       ctx.params.organizationSlug,
+    );
+    const currentTeam = ctx.context.getCurrentTeamFromSlug?.(
+      currentOrganization.id,
+      ctx.params.teamSlug,
     );
     await ctx.context.queryClient.ensureQueryData(
       useDevicesQueryOptions(
         currentOrganization.id,
         ctx.deps.page,
         ctx.deps.size,
+        currentTeam?.id,
       ),
     );
   },

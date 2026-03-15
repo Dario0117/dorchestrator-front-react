@@ -18,11 +18,11 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
 let mockSearchParams: Record<string, unknown> = { page: 1, size: 25 };
 
 vi.mock(
-  '@routes/(authenticated)/$organizationSlug/commands/index',
+  '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index',
   async (importOriginal) => {
     const actual =
       await importOriginal<
-        typeof import('@routes/(authenticated)/$organizationSlug/commands/index')
+        typeof import('@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index')
       >();
     return {
       ...actual,

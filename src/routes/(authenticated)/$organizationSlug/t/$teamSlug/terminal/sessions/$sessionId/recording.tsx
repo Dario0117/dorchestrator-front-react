@@ -6,7 +6,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Suspense } from 'react';
 
 export const Route = createFileRoute(
-  '/(authenticated)/$organizationSlug/terminal/sessions/$sessionId/recording',
+  '/(authenticated)/$organizationSlug/t/$teamSlug/terminal/sessions/$sessionId/recording',
 )({
   component: RecordingRoute,
   errorComponent: ({ reset }) => (

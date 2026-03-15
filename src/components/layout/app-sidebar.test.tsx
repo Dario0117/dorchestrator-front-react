@@ -4,11 +4,13 @@ import { LayoutProvider } from '@context/layout.provider';
 import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { Suspense } from 'react';
 import { server } from '@/../testsSetup';
 
 const mockNavigate = vi.fn();
+let mockParams: Record<string, string> = { organizationSlug: 'test-org' };
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual =
@@ -39,7 +41,7 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
       return select ? select(location) : location;
     },
     useNavigate: () => mockNavigate,
-    useParams: () => ({ organizationSlug: 'test-org' }),
+    useParams: () => mockParams,
   };
 });
 
@@ -59,6 +61,82 @@ vi.mock('@/app', () => ({
   _getNullableCurrentOrganizationFromSlug: () => mockCurrentOrganization,
 }));
 
+function useOrgHandlerWithTeams() {
+  server.use(
+    http.get(buildBackendUrl('/api/v1/organizations'), () => {
+      return HttpResponse.json({
+        responseData: {
+          results: [
+            {
+              id: 'org-1',
+              name: 'Test Organization',
+              slug: 'test-org',
+              role: 'owner',
+              memberCount: 1,
+              createdAt: '2024-01-01T00:00:00.000Z',
+              isDefault: true,
+              teams: [
+                {
+                  id: 'team-1',
+                  name: 'Alpha Team',
+                  slug: 'alpha',
+                  organizationId: 'org-1',
+                  createdAt: '2024-01-01T00:00:00.000Z',
+                  isDefault: true,
+                },
+                {
+                  id: 'team-2',
+                  name: 'Beta Team',
+                  slug: 'beta',
+                  organizationId: 'org-1',
+                  createdAt: '2024-01-01T00:00:00.000Z',
+                  isDefault: false,
+                },
+              ],
+            },
+          ],
+          hasNext: false,
+          hasPrevious: false,
+          totalResults: 1,
+          totalPages: 1,
+          page: 1,
+          size: 100,
+        },
+        responseErrors: null,
+      });
+    }),
+  );
+}
+
+function useOrgHandlerWithoutTeams() {
+  server.use(
+    http.get(buildBackendUrl('/api/v1/organizations'), () => {
+      return HttpResponse.json({
+        responseData: {
+          results: [
+            {
+              id: 'org-1',
+              name: 'Test Organization',
+              slug: 'test-org',
+              role: 'owner',
+              memberCount: 1,
+              createdAt: '2024-01-01T00:00:00.000Z',
+              isDefault: true,
+            },
+          ],
+          hasNext: false,
+          hasPrevious: false,
+          totalResults: 1,
+          totalPages: 1,
+          page: 1,
+          size: 100,
+        },
+        responseErrors: null,
+      });
+    }),
+  );
+}
+
 function renderAppSidebar() {
   return renderWithProviders(
     <Suspense fallback={<div>Loading...</div>}>
@@ -74,6 +152,8 @@ function renderAppSidebar() {
 describe('AppSidebar', () => {
   beforeEach(() => {
     mockCurrentOrganization = mockOrganization;
+    mockParams = { organizationSlug: 'test-org' };
+    mockNavigate.mockClear();
   });
 
   it('should render sidebar', async () => {
@@ -201,5 +281,176 @@ describe('AppSidebar', () => {
 
     const sidebar = container.querySelector('[data-slot="sidebar"]');
     expect(sidebar).toBeInTheDocument();
+  });
+
+  it('should render the sidebar with team switcher component', async () => {
+    renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Organization')).toBeInTheDocument();
+    });
+
+    // Team switcher should be rendered with the org name
+    const trigger = screen.getByRole('button', {
+      name: /test organization/i,
+    });
+    expect(trigger).toBeInTheDocument();
+  });
+
+  it('should pass teamSlug when params contain teamSlug', async () => {
+    mockParams = { organizationSlug: 'test-org', teamSlug: 'alpha' };
+    useOrgHandlerWithTeams();
+
+    renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Organization')).toBeInTheDocument();
+    });
+
+    // When teamSlug is in params, it should show the active team name
+    const trigger = screen.getByRole('button', {
+      name: /test organization/i,
+    });
+    expect(trigger).toBeInTheDocument();
+  });
+
+  it('should navigate when onTeamChange is triggered with a sub-path', async () => {
+    mockParams = { organizationSlug: 'test-org', teamSlug: 'alpha' };
+    useOrgHandlerWithTeams();
+
+    // Set window.location.pathname to include a team sub-path
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        ...window.location,
+        pathname: '/test-org/t/alpha/devices',
+      },
+    });
+
+    const user = userEvent.setup();
+    renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Organization')).toBeInTheDocument();
+    });
+
+    // Open the dropdown
+    const trigger = screen.getByRole('button', {
+      name: /test organization/i,
+    });
+    await user.click(trigger);
+
+    // Wait for dropdown to appear and click the Beta Team radio item
+    await waitFor(() => {
+      expect(screen.getByText('Beta Team')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText('Beta Team'));
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          params: {
+            organizationSlug: 'test-org',
+            teamSlug: 'beta',
+          },
+        }),
+      );
+    });
+  });
+
+  it('should navigate with empty sub-path when pathname has no team sub-path', async () => {
+    mockParams = { organizationSlug: 'test-org', teamSlug: 'alpha' };
+    useOrgHandlerWithTeams();
+
+    // Set window.location.pathname without a team sub-path pattern
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        ...window.location,
+        pathname: '/test-org',
+      },
+    });
+
+    const user = userEvent.setup();
+    renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Organization')).toBeInTheDocument();
+    });
+
+    // Open the dropdown
+    const trigger = screen.getByRole('button', {
+      name: /test organization/i,
+    });
+    await user.click(trigger);
+
+    await waitFor(() => {
+      expect(screen.getByText('Beta Team')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText('Beta Team'));
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: expect.stringContaining('/$organizationSlug/t/$teamSlug/'),
+          params: {
+            organizationSlug: 'test-org',
+            teamSlug: 'beta',
+          },
+        }),
+      );
+    });
+  });
+
+  it('should build teamsByOrgSlug with defined teams array', async () => {
+    useOrgHandlerWithTeams();
+
+    renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Organization')).toBeInTheDocument();
+    });
+
+    // Open the dropdown to see teams rendered
+    const user = userEvent.setup();
+    const trigger = screen.getByRole('button', {
+      name: /test organization/i,
+    });
+    await user.click(trigger);
+
+    await waitFor(() => {
+      expect(screen.getByText('Alpha Team')).toBeInTheDocument();
+    });
+    expect(screen.getByText('Beta Team')).toBeInTheDocument();
+  });
+
+  it('should fallback to empty teams when organization has no teams property', async () => {
+    useOrgHandlerWithoutTeams();
+
+    const { container } = renderAppSidebar();
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+
+    const sidebar = container.querySelector('[data-slot="sidebar"]');
+    expect(sidebar).toBeInTheDocument();
+
+    // Open the dropdown to verify no team radio items are rendered
+    const user = userEvent.setup();
+    const trigger = screen.getByRole('button', {
+      name: /test organization/i,
+    });
+    await user.click(trigger);
+
+    // Wait for the dropdown menu to appear
+    await waitFor(() => {
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+    });
+
+    // No team radio items should be present since teams is undefined
+    expect(screen.queryByRole('menuitemradio')).not.toBeInTheDocument();
   });
 });

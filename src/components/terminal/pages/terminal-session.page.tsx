@@ -6,8 +6,8 @@ import { useTerminalSessionSuspenseQuery } from '@services/terminal/get-terminal
 import { useParams } from '@tanstack/react-router';
 
 export function TerminalSessionPage() {
-  const { sessionId, organizationSlug } = useParams({
-    from: '/(authenticated)/$organizationSlug/terminal/$sessionId',
+  const { sessionId, organizationSlug, teamSlug } = useParams({
+    from: '/(authenticated)/$organizationSlug/t/$teamSlug/terminal/$sessionId',
   });
   const currentOrganization = useCurrentOrganization();
   const organizationId = currentOrganization.id;
@@ -24,6 +24,7 @@ export function TerminalSessionPage() {
       <SessionTerminated
         session={session}
         organizationSlug={organizationSlug}
+        teamSlug={teamSlug}
       />
     );
   }
@@ -34,6 +35,7 @@ export function TerminalSessionPage() {
         session={session}
         organizationId={organizationId}
         organizationSlug={organizationSlug}
+        teamSlug={teamSlug}
         onUnlocked={() => refetch()}
       />
     );

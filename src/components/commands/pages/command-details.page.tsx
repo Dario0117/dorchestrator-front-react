@@ -3,14 +3,14 @@ import { CommandOutput } from '@components/commands/command-output';
 import { Alert, AlertDescription } from '@components/ui/alert';
 import { Button } from '@components/ui/button';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
-import { Route } from '@routes/(authenticated)/$organizationSlug/commands/$commandId';
+import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/$commandId';
 import { useGetCommandSuspenseQuery } from '@services/commands/get-command.http-service';
 import { useNavigate } from '@tanstack/react-router';
 import { AlertTriangle, ArrowLeft, Info, Loader2 } from 'lucide-react';
 
 export function CommandDetailsPage() {
   const currentOrganization = useCurrentOrganization();
-  const { commandId, organizationSlug } = Route.useParams();
+  const { commandId, organizationSlug, teamSlug } = Route.useParams();
   const navigate = useNavigate();
 
   const { data } = useGetCommandSuspenseQuery(
@@ -29,8 +29,8 @@ export function CommandDetailsPage() {
 
   const handleBack = () => {
     navigate({
-      to: '/$organizationSlug/commands',
-      params: { organizationSlug },
+      to: '/$organizationSlug/t/$teamSlug/commands',
+      params: { organizationSlug, teamSlug },
     });
   };
 

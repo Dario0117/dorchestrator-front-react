@@ -28,7 +28,7 @@ import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { formatBytes } from '@lib/format-bytes';
 import { formatRelativeTime } from '@lib/format-relative-time';
 import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
-import { Route } from '@routes/(authenticated)/$organizationSlug/terminal/bookmarks';
+import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/terminal/bookmarks';
 import { useDeleteBookmarkMutation } from '@services/terminal/delete-bookmark.http-service';
 import { useBookmarksSuspenseQuery } from '@services/terminal/list-bookmarks.http-service';
 import { useNavigate } from '@tanstack/react-router';
@@ -37,6 +37,7 @@ import { Bookmark, Trash2 } from 'lucide-react';
 function BookmarksPage() {
   const currentOrganization = useCurrentOrganization();
   const { page, size } = Route.useSearch();
+  const { teamSlug } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
 
   const organizationId = currentOrganization.id;
@@ -61,9 +62,10 @@ function BookmarksPage() {
 
   const handleRowClick = (sessionId: number) => {
     navigate({
-      to: '/$organizationSlug/terminal/$sessionId',
+      to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
       params: {
         organizationSlug: currentOrganization.slug,
+        teamSlug,
         sessionId: String(sessionId),
       },
     });

@@ -38,17 +38,21 @@ let mockSearchParams: {
 } = { page: 1, size: 25 };
 
 vi.mock(
-  '@routes/(authenticated)/$organizationSlug/commands/index',
+  '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index',
   async (importOriginal) => {
     const actual =
       await importOriginal<
-        typeof import('@routes/(authenticated)/$organizationSlug/commands/index')
+        typeof import('@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index')
       >();
     return {
       ...actual,
       Route: {
         ...actual.Route,
         useSearch: vi.fn(() => mockSearchParams),
+        useParams: vi.fn(() => ({
+          organizationSlug: 'test-org',
+          teamSlug: 'default',
+        })),
       },
     };
   },

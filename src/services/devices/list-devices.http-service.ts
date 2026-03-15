@@ -5,6 +5,7 @@ export const useDevicesQueryOptions = (
   organizationId: string,
   page = 1,
   size = 10,
+  teamId?: string,
 ) =>
   $api.queryOptions(
     'get',
@@ -17,6 +18,7 @@ export const useDevicesQueryOptions = (
         query: {
           page: page,
           size: size,
+          teamId: teamId,
         },
       },
     },
@@ -29,8 +31,11 @@ export function useDevicesSuspenseQuery(
   organizationId: string,
   page = 1,
   size = 10,
+  teamId?: string,
 ) {
-  return useSuspenseQuery(useDevicesQueryOptions(organizationId, page, size));
+  return useSuspenseQuery(
+    useDevicesQueryOptions(organizationId, page, size, teamId),
+  );
 }
 
 export type useDevicesSuspenseQueryReturnType = ReturnType<

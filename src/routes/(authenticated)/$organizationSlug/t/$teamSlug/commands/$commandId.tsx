@@ -3,7 +3,7 @@ import { useGetCommandQueryOptions } from '@services/commands/get-command.http-s
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute(
-  '/(authenticated)/$organizationSlug/commands/$commandId',
+  '/(authenticated)/$organizationSlug/t/$teamSlug/commands/$commandId',
 )({
   component: CommandDetailsPage,
   loader: async (ctx) => {

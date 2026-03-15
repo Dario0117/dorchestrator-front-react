@@ -16,6 +16,7 @@ type GetUnreadCountSuccessResponse =
 const mockNavigate = vi.fn();
 const mockUseParams = vi.fn<() => Record<string, string>>(() => ({
   organizationSlug: 'test-org',
+  teamSlug: 'default',
 }));
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
@@ -222,7 +223,7 @@ describe('NotificationPanel', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(
       expect.objectContaining({
-        to: '/$organizationSlug/commands/$commandId',
+        to: '/$organizationSlug/t/$teamSlug/commands/$commandId',
         params: expect.objectContaining({
           organizationSlug: 'test-org',
           commandId: '102',
@@ -291,7 +292,7 @@ describe('NotificationPanel', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(
       expect.objectContaining({
-        to: '/$organizationSlug/terminal/$sessionId',
+        to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
         params: expect.objectContaining({
           organizationSlug: 'test-org',
           sessionId: 'session-1',
@@ -326,9 +327,52 @@ describe('NotificationPanel', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(
       expect.objectContaining({
-        to: '/$organizationSlug/commands/$commandId',
+        to: '/$organizationSlug/t/$teamSlug/commands/$commandId',
         params: expect.objectContaining({
           commandId: '200',
+        }),
+      }),
+    );
+  });
+
+  it('should use teamSlug from params when navigating on notification click', async () => {
+    mockUseParams.mockReturnValue({
+      organizationSlug: 'test-org',
+      teamSlug: 'my-team',
+    });
+
+    overrideNotificationsHandler([
+      {
+        id: 30,
+        message: 'Command completed with team',
+        resourceId: '300',
+        resourceType: 'command',
+        severity: 'success',
+        read: false,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+
+    renderWithProviders(<NotificationPanel />);
+
+    await openNotificationPanel();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Command completed with team'),
+      ).toBeInTheDocument();
+    });
+
+    const user = userEvent.setup();
+    await user.click(screen.getByText('Command completed with team'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: '/$organizationSlug/t/$teamSlug/commands/$commandId',
+        params: expect.objectContaining({
+          organizationSlug: 'test-org',
+          teamSlug: 'my-team',
+          commandId: '300',
         }),
       }),
     );

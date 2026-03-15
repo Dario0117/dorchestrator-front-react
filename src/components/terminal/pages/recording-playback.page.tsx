@@ -5,14 +5,14 @@ import { EmptyState } from '@components/ui/empty-state';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { formatBytes } from '@lib/format-bytes';
 import { formatDurationCompact } from '@lib/format-duration';
-import { Route } from '@routes/(authenticated)/$organizationSlug/terminal/sessions/$sessionId/recording';
+import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/terminal/sessions/$sessionId/recording';
 import { useGetRecordingSuspenseQuery } from '@services/terminal/get-recording.http-service';
 import { useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, FileWarning } from 'lucide-react';
 
 function RecordingPlaybackPage() {
   const currentOrganization = useCurrentOrganization();
-  const { sessionId } = Route.useParams();
+  const { sessionId, teamSlug } = Route.useParams();
   const navigate = useNavigate();
 
   const { data } = useGetRecordingSuspenseQuery(
@@ -31,8 +31,11 @@ function RecordingPlaybackPage() {
             size="sm"
             onClick={() =>
               navigate({
-                to: '/$organizationSlug/terminal',
-                params: { organizationSlug: currentOrganization.slug },
+                to: '/$organizationSlug/t/$teamSlug/terminal',
+                params: {
+                  organizationSlug: currentOrganization.slug,
+                  teamSlug,
+                },
               })
             }
           >

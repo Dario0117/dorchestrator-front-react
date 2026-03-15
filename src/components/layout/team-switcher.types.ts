@@ -1,3 +1,4 @@
+import type { TeamItem } from '@services/teams/list-teams.http-service';
 import type * as React from 'react';
 
 export type Team = {
@@ -13,4 +14,7 @@ export type TeamSwitcherProps = {
   label?: string;
   addButtonLabel?: string;
   onAdd?: () => void;
+  teamsByOrgSlug?: Record<string, TeamItem[]>;
+  activeTeamSlug?: string;
+  onTeamChange?: (teamSlug: string) => void;
 };

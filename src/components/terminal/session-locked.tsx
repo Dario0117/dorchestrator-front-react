@@ -12,11 +12,13 @@ export function SessionLocked({
   session,
   organizationId,
   organizationSlug,
+  teamSlug,
   onUnlocked,
 }: {
   session: TerminalSessionDetail;
   organizationId: string;
   organizationSlug: string;
+  teamSlug: string;
   onUnlocked: () => void;
 }) {
   const [showReauth, setShowReauth] = useState(true);
@@ -74,8 +76,8 @@ export function SessionLocked({
             asChild
           >
             <Link
-              to="/$organizationSlug/terminal"
-              params={{ organizationSlug }}
+              to="/$organizationSlug/t/$teamSlug/terminal"
+              params={{ organizationSlug, teamSlug }}
             >
               Back to sessions
             </Link>

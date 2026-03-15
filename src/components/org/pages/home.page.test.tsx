@@ -16,11 +16,15 @@ type GetOrganizationStatsSuccessResponse =
 type GetOrganizationDetailsSuccessResponse =
   operations['getApiV1ByOrganizationIdOrganization']['responses']['200']['content']['application/json'];
 
+const mockUseParams = vi.fn<() => Record<string, string>>(() => ({
+  organizationSlug: 'test-org',
+}));
+
 vi.mock('@tanstack/react-router', async () => {
   const actual = await vi.importActual('@tanstack/react-router');
   return {
     ...actual,
-    useParams: () => ({ organizationSlug: 'test-org' }),
+    useParams: () => mockUseParams(),
     Link: ({
       children,
       ...props
@@ -50,6 +54,7 @@ const mockOrganization = {
 
 describe('HomePage', () => {
   beforeEach(() => {
+    mockUseParams.mockReturnValue({ organizationSlug: 'test-org' });
     // Seed query cache with organization data (new API response shape)
     queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
       responseData: {
@@ -245,6 +250,25 @@ describe('HomePage', () => {
     });
 
     expect(screen.getByText('free')).toBeInTheDocument();
+  });
+
+  it('should use teamSlug from params when available', async () => {
+    mockUseParams.mockReturnValue({
+      organizationSlug: 'test-org',
+      teamSlug: 'my-team',
+    });
+
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <HomePage />
+      </Suspense>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Welcome to Test Organization'),
+      ).toBeInTheDocument();
+    });
   });
 
   describe('Mobile Responsive Layout (AC2, AC3)', () => {

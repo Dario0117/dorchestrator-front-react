@@ -61,6 +61,7 @@ describe('SessionLocked', () => {
         session={lockedSession}
         organizationId="org-1"
         organizationSlug="test-org"
+        teamSlug="default"
         onUnlocked={mockOnUnlocked}
       />,
     );
@@ -76,6 +77,7 @@ describe('SessionLocked', () => {
         session={lockedSession}
         organizationId="org-1"
         organizationSlug="test-org"
+        teamSlug="default"
         onUnlocked={mockOnUnlocked}
       />,
     );
@@ -90,6 +92,7 @@ describe('SessionLocked', () => {
         session={lockedSession}
         organizationId="org-1"
         organizationSlug="test-org"
+        teamSlug="default"
         onUnlocked={mockOnUnlocked}
       />,
     );
@@ -103,6 +106,7 @@ describe('SessionLocked', () => {
         session={lockedSession}
         organizationId="org-1"
         organizationSlug="test-org"
+        teamSlug="default"
         onUnlocked={mockOnUnlocked}
       />,
     );
@@ -118,6 +122,7 @@ describe('SessionLocked', () => {
         session={lockedSession}
         organizationId="org-1"
         organizationSlug="test-org"
+        teamSlug="default"
         onUnlocked={mockOnUnlocked}
       />,
     );
@@ -136,6 +141,7 @@ describe('SessionLocked', () => {
         session={lockedSession}
         organizationId="org-1"
         organizationSlug="test-org"
+        teamSlug="default"
         onUnlocked={mockOnUnlocked}
       />,
     );
@@ -170,6 +176,7 @@ describe('SessionLocked', () => {
         session={lockedSession}
         organizationId="org-1"
         organizationSlug="test-org"
+        teamSlug="default"
         onUnlocked={mockOnUnlocked}
       />,
     );
@@ -208,6 +215,7 @@ describe('SessionLocked', () => {
         session={lockedSession}
         organizationId="org-1"
         organizationSlug="test-org"
+        teamSlug="default"
         onUnlocked={mockOnUnlocked}
       />,
     );

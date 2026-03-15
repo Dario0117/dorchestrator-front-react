@@ -148,6 +148,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/organizations/default-team": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1OrganizationsDefault-team"];
+        put: operations["putApiV1OrganizationsDefault-team"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/{organizationId}/organization": {
         parameters: {
             query?: never;
@@ -188,6 +204,38 @@ export interface paths {
             cookie?: never;
         };
         get: operations["getApiV1ByOrganizationIdMembers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/teams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdTeams"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/teams/{teamId}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdTeamsByTeamIdMembers"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1249,6 +1297,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/organization/set-active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Set the active organization */
+        post: operations["setActiveOrganization"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/organization/check-slug": {
         parameters: {
             query?: never;
@@ -1342,6 +1407,216 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/organization/set-active-team": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Set the active team */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        teamId?: string | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Success */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Team"];
+                    };
+                };
+                /** @description Bad Request. Usually due to missing parameters, or invalid parameters. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                /** @description Unauthorized. Due to missing or invalid authentication. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                /** @description Forbidden. You do not have permission to access this resource or to perform this action. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message?: string;
+                        };
+                    };
+                };
+                /** @description Not Found. The requested resource was not found. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message?: string;
+                        };
+                    };
+                };
+                /** @description Too Many Requests. You have exceeded the rate limit. Try again later. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message?: string;
+                        };
+                    };
+                };
+                /** @description Internal Server Error. This is a problem with the server that you cannot fix. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message?: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/organization/list-user-teams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List all teams that the current user is a part of. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Teams retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Team"][];
+                    };
+                };
+                /** @description Bad Request. Usually due to missing parameters, or invalid parameters. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                /** @description Unauthorized. Due to missing or invalid authentication. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                /** @description Forbidden. You do not have permission to access this resource or to perform this action. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message?: string;
+                        };
+                    };
+                };
+                /** @description Not Found. The requested resource was not found. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message?: string;
+                        };
+                    };
+                };
+                /** @description Too Many Requests. You have exceeded the rate limit. Try again later. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message?: string;
+                        };
+                    };
+                };
+                /** @description Internal Server Error. This is a problem with the server that you cannot fix. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message?: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1530,6 +1805,7 @@ export interface components {
             userId: string;
             impersonatedBy?: string;
             activeOrganizationId?: string;
+            activeTeamId?: string;
         };
         Account: {
             id?: string;
@@ -1612,6 +1888,22 @@ export interface components {
             createdAt: string;
             metadata?: string;
         };
+        Team: {
+            id?: string;
+            name: string;
+            organizationId: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        TeamMember: {
+            id?: string;
+            teamId: string;
+            userId: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
         Member: {
             id?: string;
             organizationId: string;
@@ -1626,6 +1918,7 @@ export interface components {
             organizationId: string;
             email: string;
             role?: string;
+            teamId?: string;
             /** @default pending */
             status: string;
             /** Format: date-time */
@@ -2219,6 +2512,7 @@ export interface operations {
                                 emailVerified: boolean;
                                 image: string | null;
                                 createdAt: string;
+                                activeTeamId: string | null;
                             };
                         };
                         responseErrors: null;
@@ -2325,6 +2619,13 @@ export interface operations {
                                 memberCount: number;
                                 createdAt: string;
                                 isDefault: boolean;
+                                teams: {
+                                    id: string;
+                                    name: string;
+                                    slug: string;
+                                    organizationId: string;
+                                    createdAt: string;
+                                }[];
                             }[];
                             hasNext: boolean;
                             hasPrevious: boolean;
@@ -2558,6 +2859,207 @@ export interface operations {
                         responseErrors: {
                             nonFieldErrors?: string[];
                             organizationId?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "getApiV1OrganizationsDefault-team": {
+        parameters: {
+            query: {
+                organizationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string | null;
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "putApiV1OrganizationsDefault-team": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    organizationId: string;
+                    teamId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors?: string[];
+                            organizationId?: string[];
+                            teamId?: string[];
                         };
                     };
                 };
@@ -3044,6 +3546,223 @@ export interface operations {
             };
         };
     };
+    postApiV1ByOrganizationIdTeams: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                    slug: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 201 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: string;
+                                name: string;
+                                slug: string;
+                                organizationId: string;
+                                createdAt: string;
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors?: string[];
+                            name?: string[];
+                            slug?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getApiV1ByOrganizationIdTeamsByTeamIdMembers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                teamId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: string;
+                                userId: string;
+                                teamId: string;
+                                name: string;
+                                email: string;
+                                createdAt: string | null;
+                            }[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
     postApiV1ByOrganizationIdOrganizationLeave: {
         parameters: {
             query?: never;
@@ -3348,6 +4067,7 @@ export interface operations {
             query: {
                 page: number;
                 size: number;
+                teamId?: string;
             };
             header?: never;
             path: {
@@ -9219,6 +9939,100 @@ export interface operations {
                     "application/json": {
                         token?: string;
                     };
+                };
+            };
+            /** @description Bad Request. Usually due to missing parameters, or invalid parameters. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unauthorized. Due to missing or invalid authentication. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Forbidden. You do not have permission to access this resource or to perform this action. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Not Found. The requested resource was not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Too Many Requests. You have exceeded the rate limit. Try again later. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Internal Server Error. This is a problem with the server that you cannot fix. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    setActiveOrganization: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    organizationId?: string | null;
+                    /** @description The organization slug to set as active. It can be null to unset the active organization if organizationId is not provided. Eg: "org-slug" */
+                    organizationSlug?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Organization"];
                 };
             };
             /** @description Bad Request. Usually due to missing parameters, or invalid parameters. */

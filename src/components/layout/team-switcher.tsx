@@ -4,6 +4,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
@@ -23,10 +25,17 @@ export function TeamSwitcher({
   label = 'Teams',
   addButtonLabel = 'Add team',
   onAdd,
+  teamsByOrgSlug,
+  activeTeamSlug,
+  onTeamChange,
 }: TeamSwitcherProps) {
   const { isMobile } = useSidebar();
   const navigate = useNavigate();
   const activeTeam = teams.find((team) => team.slug === activeSlug) ?? teams[0];
+  const activeOrgTeams = teamsByOrgSlug?.[activeSlug] ?? [];
+  const activeTeamName = activeOrgTeams.find(
+    (t) => t.slug === activeTeamSlug,
+  )?.name;
 
   if (!activeTeam) {
     return null;
@@ -48,7 +57,11 @@ export function TeamSwitcher({
                 <span className="truncate font-semibold">
                   {activeTeam.name}
                 </span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                {activeTeamName && (
+                  <span className="truncate text-xs text-muted-foreground">
+                    {activeTeamName}
+                  </span>
+                )}
               </div>
               <ChevronsUpDown className="ms-auto" />
             </SidebarMenuButton>
@@ -62,24 +75,57 @@ export function TeamSwitcher({
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               {label}
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.slug}
-                onClick={() =>
-                  navigate({
-                    to: '/$organizationSlug',
-                    params: { organizationSlug: team.slug },
-                  })
-                }
-                className="gap-2 p-2"
-              >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <team.logo className="size-4 shrink-0" />
+            {teams.map((team, index) => {
+              const isActive = team.slug === activeSlug;
+              const orgTeams = teamsByOrgSlug?.[team.slug] ?? [];
+              return (
+                <div key={team.slug}>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      navigate({
+                        to: '/$organizationSlug',
+                        params: { organizationSlug: team.slug },
+                      })
+                    }
+                    className="gap-2 p-2"
+                  >
+                    <div className="flex size-6 items-center justify-center rounded-sm border">
+                      <team.logo className="size-4 shrink-0" />
+                    </div>
+                    {team.name}
+                    <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  {orgTeams.length > 0 && (
+                    <DropdownMenuRadioGroup
+                      value={isActive ? (activeTeamSlug ?? '') : ''}
+                      onValueChange={(teamSlug) => {
+                        if (isActive) {
+                          onTeamChange?.(teamSlug);
+                        } else {
+                          navigate({
+                            to: '/$organizationSlug/t/$teamSlug',
+                            params: {
+                              organizationSlug: team.slug,
+                              teamSlug,
+                            },
+                          });
+                        }
+                      }}
+                    >
+                      {orgTeams.map((teamOption) => (
+                        <DropdownMenuRadioItem
+                          className="pl-10"
+                          key={teamOption.id}
+                          value={teamOption.slug}
+                        >
+                          {teamOption.name}
+                        </DropdownMenuRadioItem>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  )}
                 </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            ))}
+              );
+            })}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="gap-2 p-2"

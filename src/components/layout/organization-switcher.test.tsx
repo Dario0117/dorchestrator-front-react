@@ -321,6 +321,5 @@ describe('OrganizationSwitcher', () => {
     renderOrganizationSwitcher(mockTeams, 'acme-inc');
 
     expect(screen.getByText('Acme Inc')).toBeInTheDocument();
-    expect(screen.getByText('Enterprise')).toBeInTheDocument();
   });
 });

@@ -3,7 +3,7 @@ import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute(
-  '/(authenticated)/$organizationSlug/terminal/shared/$shareToken',
+  '/(authenticated)/$organizationSlug/t/$teamSlug/terminal/shared/$shareToken',
 )({
   component: SharedSessionRoute,
 });

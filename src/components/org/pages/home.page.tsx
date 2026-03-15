@@ -6,11 +6,13 @@ import { EmptyState } from '@components/ui/empty-state';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useOrganizationDetailsSuspenseQuery } from '@services/organizations/get-organization-details.http-service';
 import { useOrganizationStatsSuspenseQuery } from '@services/organizations/get-organization-stats.http-service';
-import { Link } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
 import { Building2, HardDrive, Terminal } from 'lucide-react';
 
 export function HomePage() {
   const currentOrganization = useCurrentOrganization();
+  const params = useParams({ strict: false });
+  const teamSlug = 'teamSlug' in params ? (params.teamSlug as string) : '';
   const organizationId = currentOrganization.id;
 
   const { data: orgDetails } =
@@ -55,8 +57,8 @@ export function HomePage() {
           size="lg"
         >
           <Link
-            to="/$organizationSlug/devices"
-            params={{ organizationSlug: currentOrganization.slug }}
+            to="/$organizationSlug/t/$teamSlug/devices"
+            params={{ organizationSlug: currentOrganization.slug, teamSlug }}
           >
             Add Device
           </Link>
@@ -67,8 +69,8 @@ export function HomePage() {
           variant="outline"
         >
           <Link
-            to="/$organizationSlug/commands"
-            params={{ organizationSlug: currentOrganization.slug }}
+            to="/$organizationSlug/t/$teamSlug/commands"
+            params={{ organizationSlug: currentOrganization.slug, teamSlug }}
             search={{ executeModal: 'open' }}
           >
             Execute Command
@@ -87,9 +89,10 @@ export function HomePage() {
               {stats.responseData.results.recentCommands.map((command) => (
                 <Link
                   key={command.id}
-                  to="/$organizationSlug/commands/$commandId"
+                  to="/$organizationSlug/t/$teamSlug/commands/$commandId"
                   params={{
                     organizationSlug: currentOrganization.slug,
+                    teamSlug,
                     commandId: String(command.id),
                   }}
                   className="flex justify-between items-center p-2 rounded-md hover:bg-muted transition-colors"
@@ -125,8 +128,11 @@ export function HomePage() {
                   variant="outline"
                 >
                   <Link
-                    to="/$organizationSlug/commands"
-                    params={{ organizationSlug: currentOrganization.slug }}
+                    to="/$organizationSlug/t/$teamSlug/commands"
+                    params={{
+                      organizationSlug: currentOrganization.slug,
+                      teamSlug,
+                    }}
                     search={{ executeModal: 'open' }}
                   >
                     Execute your first command

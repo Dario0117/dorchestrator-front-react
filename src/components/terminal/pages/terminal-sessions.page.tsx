@@ -41,7 +41,7 @@ import { formatBytes } from '@lib/format-bytes';
 import { formatDurationCompact } from '@lib/format-duration';
 import { formatRelativeTime } from '@lib/format-relative-time';
 import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
-import { Route } from '@routes/(authenticated)/$organizationSlug/terminal/index';
+import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/terminal/index';
 import { useDevicesQueryOptions } from '@services/devices/list-devices.http-service';
 import { useListMembersQueryOptions } from '@services/organizations/list-members.http-service';
 import { useTerminalSessionsSuspenseQuery } from '@services/terminal/list-terminal-sessions.http-service';
@@ -55,6 +55,7 @@ export function TerminalSessionsPage() {
   const currentOrganization = useCurrentOrganization();
   const { page, size, status, deviceId, userId, dateFrom, dateTo } =
     Route.useSearch();
+  const { teamSlug } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
@@ -160,9 +161,10 @@ export function TerminalSessionsPage() {
 
   const handleRowClick = (sessionId: number) => {
     navigate({
-      to: '/$organizationSlug/terminal/$sessionId',
+      to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
       params: {
         organizationSlug: currentOrganization.slug,
+        teamSlug,
         sessionId: String(sessionId),
       },
     });

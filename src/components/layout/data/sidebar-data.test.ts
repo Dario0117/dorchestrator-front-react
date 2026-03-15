@@ -16,6 +16,7 @@ describe('Sidebar Data', () => {
     memberCount: 1,
     createdAt: '2025-12-21T10:00:00.000Z',
     isDefault: true,
+    teams: [],
   };
   const secondOrganization = {
     id: 'org-456',
@@ -25,6 +26,7 @@ describe('Sidebar Data', () => {
     memberCount: 3,
     createdAt: '2025-12-22T10:00:00.000Z',
     isDefault: false,
+    teams: [],
   };
   const allOrganizations = [testOrganization, secondOrganization];
   let sidebarData: SidebarData;
@@ -223,5 +225,46 @@ describe('Sidebar Data', () => {
     expect(typedData).toBeDefined();
     expect(typedData.teams).toBeDefined();
     expect(typedData.navGroups).toBeDefined();
+  });
+
+  it('should use team-scoped URLs when teamSlug is provided', () => {
+    const teamData = getSidebarData(
+      testOrganization,
+      allOrganizations,
+      'my-team',
+    );
+    const generalGroup = teamData.navGroups[0];
+    const settingsGroup = teamData.navGroups[1];
+
+    const dashboardItem = generalGroup?.items[0];
+    expect(dashboardItem && 'url' in dashboardItem && dashboardItem.url).toBe(
+      `/${testSlug}/t/my-team/`,
+    );
+
+    const devicesItem = generalGroup?.items[1];
+    expect(devicesItem && 'url' in devicesItem && devicesItem.url).toBe(
+      `/${testSlug}/t/my-team/devices`,
+    );
+
+    const commandsItem = generalGroup?.items[2];
+    expect(commandsItem && 'url' in commandsItem && commandsItem.url).toBe(
+      `/${testSlug}/t/my-team/commands`,
+    );
+
+    const terminalGroup = generalGroup?.items[3] as NavCollapsible;
+    expect(terminalGroup.items[0]?.url).toBe(`/${testSlug}/t/my-team/terminal`);
+    expect(terminalGroup.items[1]?.url).toBe(
+      `/${testSlug}/t/my-team/terminal/bookmarks`,
+    );
+
+    const auditLogsItem = settingsGroup?.items[0];
+    expect(auditLogsItem && 'url' in auditLogsItem && auditLogsItem.url).toBe(
+      `/${testSlug}/audit-logs`,
+    );
+
+    const orgSettingsItem = settingsGroup?.items[1];
+    expect(
+      orgSettingsItem && 'url' in orgSettingsItem && orgSettingsItem.url,
+    ).toBe(`/${testSlug}/settings`);
   });
 });

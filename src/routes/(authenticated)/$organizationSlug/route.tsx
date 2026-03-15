@@ -1,9 +1,10 @@
 import { logWarning } from '@lib/logger.utils';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { authClient } from '@/better-auth.client';
 
 export const Route = createFileRoute('/(authenticated)/$organizationSlug')({
   component: () => <Outlet />,
-  beforeLoad: (ctx) => {
+  beforeLoad: async (ctx) => {
     const currentOrganization =
       ctx.context._getNullableCurrentOrganizationFromSlug(
         ctx.params.organizationSlug,
@@ -22,5 +23,8 @@ export const Route = createFileRoute('/(authenticated)/$organizationSlug')({
         search: window.location.search,
       });
     }
+    await authClient.organization.setActive({
+      organizationId: currentOrganization.id,
+    });
   },
 });

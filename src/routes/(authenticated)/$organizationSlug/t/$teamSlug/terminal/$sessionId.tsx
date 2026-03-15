@@ -6,7 +6,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Suspense } from 'react';
 
 export const Route = createFileRoute(
-  '/(authenticated)/$organizationSlug/terminal/$sessionId',
+  '/(authenticated)/$organizationSlug/t/$teamSlug/terminal/$sessionId',
 )({
   component: () => (
     <Suspense fallback={<SessionLoadingSkeleton />}>

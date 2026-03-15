@@ -46,6 +46,7 @@ export function NotificationPanel() {
   const params = useParams({ strict: false });
   const organizationSlug =
     'organizationSlug' in params ? (params.organizationSlug as string) : '';
+  const teamSlug = 'teamSlug' in params ? (params.teamSlug as string) : '';
   const currentOrganization = useCurrentOrganization();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -89,8 +90,12 @@ export function NotificationPanel() {
     switch (notification.resourceType) {
       case 'command':
         navigate({
-          to: '/$organizationSlug/commands/$commandId',
-          params: { organizationSlug, commandId: notification.resourceId },
+          to: '/$organizationSlug/t/$teamSlug/commands/$commandId',
+          params: {
+            organizationSlug,
+            teamSlug,
+            commandId: notification.resourceId,
+          },
         });
         break;
       case 'device':
@@ -101,8 +106,12 @@ export function NotificationPanel() {
         break;
       case 'terminal_session':
         navigate({
-          to: '/$organizationSlug/terminal/$sessionId',
-          params: { organizationSlug, sessionId: notification.resourceId },
+          to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
+          params: {
+            organizationSlug,
+            teamSlug,
+            sessionId: notification.resourceId,
+          },
         });
         break;
       /* v8 ignore next 4 -- exhaustive check */

@@ -12,7 +12,7 @@ const searchParamsSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  '/(authenticated)/$organizationSlug/terminal/bookmarks',
+  '/(authenticated)/$organizationSlug/t/$teamSlug/terminal/bookmarks',
 )({
   validateSearch: searchParamsSchema,
   component: BookmarksRoute,

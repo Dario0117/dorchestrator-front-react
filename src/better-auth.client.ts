@@ -8,7 +8,7 @@ const BASE_PATH = '/api/v1';
 export const authClient = createAuthClient({
   basePath: BASE_PATH,
   baseURL: env.BACKEND_BASE_URL,
-  plugins: [emailOTPClient(), organizationClient()],
+  plugins: [emailOTPClient(), organizationClient({ teams: { enabled: true } })],
   fetchOptions: {
     onRequest: idempotencyOnRequest,
   },

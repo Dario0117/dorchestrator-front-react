@@ -13,8 +13,10 @@ import {
 export function getSidebarData(
   organization: OrganizationItem,
   allOrganizations: OrganizationItem[],
+  teamSlug?: string,
 ) {
-  const baseUrl = `/${organization.slug}`;
+  const orgUrl = `/${organization.slug}`;
+  const teamBaseUrl = teamSlug ? `/${organization.slug}/t/${teamSlug}` : orgUrl;
 
   const data: SidebarData = {
     teams: allOrganizations.map((org) => ({
@@ -29,17 +31,17 @@ export function getSidebarData(
         items: [
           {
             title: 'Dashboard',
-            url: `${baseUrl}/`,
+            url: `${teamBaseUrl}/`,
             icon: Home,
           },
           {
             title: 'Devices',
-            url: `${baseUrl}/devices`,
+            url: `${teamBaseUrl}/devices`,
             icon: HardDrive,
           },
           {
             title: 'Commands',
-            url: `${baseUrl}/commands`,
+            url: `${teamBaseUrl}/commands`,
             icon: Terminal,
           },
           {
@@ -48,12 +50,12 @@ export function getSidebarData(
             items: [
               {
                 title: 'Sessions',
-                url: `${baseUrl}/terminal`,
+                url: `${teamBaseUrl}/terminal`,
                 icon: Terminal,
               },
               {
                 title: 'Bookmarks',
-                url: `${baseUrl}/terminal/bookmarks`,
+                url: `${teamBaseUrl}/terminal/bookmarks`,
                 icon: Bookmark,
               },
             ],
@@ -65,12 +67,12 @@ export function getSidebarData(
         items: [
           {
             title: 'Audit Logs',
-            url: `${baseUrl}/audit-logs`,
+            url: `${orgUrl}/audit-logs`,
             icon: ScrollText,
           },
           {
             title: 'Organization Settings',
-            url: `${baseUrl}/settings`,
+            url: `${orgUrl}/settings`,
             icon: Settings,
           },
         ],

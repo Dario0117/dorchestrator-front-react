@@ -19,7 +19,7 @@ import {
 } from '@components/ui/select';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
-import { Route } from '@routes/(authenticated)/$organizationSlug/commands/index';
+import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index';
 import { useCommandsSuspenseQuery } from '@services/commands/list-commands.http-service';
 import { useNavigate } from '@tanstack/react-router';
 import { Play, Search, Terminal } from 'lucide-react';
@@ -37,6 +37,7 @@ export function CommandsListPage() {
     endDate,
     search,
   } = Route.useSearch();
+  const { teamSlug } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -152,9 +153,10 @@ export function CommandsListPage() {
                   command={command}
                   onClick={() =>
                     navigate({
-                      to: '/$organizationSlug/commands/$commandId',
+                      to: '/$organizationSlug/t/$teamSlug/commands/$commandId',
                       params: {
                         organizationSlug: currentOrganization.slug,
+                        teamSlug,
                         commandId: String(command.id),
                       },
                     })

@@ -17,7 +17,7 @@ const searchParamsSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  '/(authenticated)/$organizationSlug/commands/',
+  '/(authenticated)/$organizationSlug/t/$teamSlug/commands/',
 )({
   validateSearch: searchParamsSchema,
   component: CommandsListPage,

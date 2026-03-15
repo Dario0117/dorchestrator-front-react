@@ -8,10 +8,12 @@ const CLOSE_TIMEOUT_MS = 10_000;
 export function useTerminalSessionLifecycle({
   organizationId,
   organizationSlug,
+  teamSlug,
   sessionId,
 }: {
   organizationId: string;
   organizationSlug: string;
+  teamSlug: string;
   sessionId: string;
 }) {
   const navigate = useNavigate();
@@ -24,8 +26,8 @@ export function useTerminalSessionLifecycle({
     (deviceId?: number) => {
       if (deviceId) {
         navigate({
-          to: '/$organizationSlug/devices',
-          params: { organizationSlug },
+          to: '/$organizationSlug/t/$teamSlug/devices',
+          params: { organizationSlug, teamSlug },
           search: { page: 1, size: 10 },
           replace: true,
         });
@@ -33,7 +35,7 @@ export function useTerminalSessionLifecycle({
         navigate({ to: '..', replace: true });
       }
     },
-    [navigate, organizationSlug],
+    [navigate, organizationSlug, teamSlug],
   );
 
   const handleSessionWarning = useCallback(

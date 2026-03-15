@@ -8,9 +8,11 @@ import { ArrowLeft, Play, Terminal } from 'lucide-react';
 export function SessionTerminated({
   session,
   organizationSlug,
+  teamSlug,
 }: {
   session: TerminalSessionDetail;
   organizationSlug: string;
+  teamSlug: string;
 }) {
   return (
     <div className="flex h-full items-center justify-center p-6">
@@ -45,9 +47,10 @@ export function SessionTerminated({
             asChild
           >
             <Link
-              to="/$organizationSlug/terminal/sessions/$sessionId/recording"
+              to="/$organizationSlug/t/$teamSlug/terminal/sessions/$sessionId/recording"
               params={{
                 organizationSlug,
+                teamSlug,
                 sessionId: String(session.id),
               }}
             >
@@ -60,8 +63,8 @@ export function SessionTerminated({
             asChild
           >
             <Link
-              to="/$organizationSlug/terminal"
-              params={{ organizationSlug }}
+              to="/$organizationSlug/t/$teamSlug/terminal"
+              params={{ organizationSlug, teamSlug }}
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to sessions

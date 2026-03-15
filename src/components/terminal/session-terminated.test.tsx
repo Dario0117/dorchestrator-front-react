@@ -50,6 +50,7 @@ describe('SessionTerminated', () => {
       <SessionTerminated
         session={terminatedSession}
         organizationSlug="test-org"
+        teamSlug="default"
       />,
     );
 
@@ -63,6 +64,7 @@ describe('SessionTerminated', () => {
       <SessionTerminated
         session={terminatedSession}
         organizationSlug="test-org"
+        teamSlug="default"
       />,
     );
 
@@ -75,6 +77,7 @@ describe('SessionTerminated', () => {
       <SessionTerminated
         session={terminatedSession}
         organizationSlug="test-org"
+        teamSlug="default"
       />,
     );
 
@@ -86,6 +89,7 @@ describe('SessionTerminated', () => {
       <SessionTerminated
         session={terminatedSession}
         organizationSlug="test-org"
+        teamSlug="default"
       />,
     );
 
@@ -102,6 +106,7 @@ describe('SessionTerminated', () => {
       <SessionTerminated
         session={sessionWithoutTerminatedAt}
         organizationSlug="test-org"
+        teamSlug="default"
       />,
     );
 
@@ -113,6 +118,7 @@ describe('SessionTerminated', () => {
       <SessionTerminated
         session={terminatedSession}
         organizationSlug="test-org"
+        teamSlug="default"
       />,
     );
 
@@ -124,13 +130,14 @@ describe('SessionTerminated', () => {
       <SessionTerminated
         session={terminatedSession}
         organizationSlug="test-org"
+        teamSlug="default"
       />,
     );
 
     const recordingLink = screen.getByText('View Recording').closest('a');
     expect(recordingLink).toHaveAttribute(
       'href',
-      '/$organizationSlug/terminal/sessions/$sessionId/recording',
+      '/$organizationSlug/t/$teamSlug/terminal/sessions/$sessionId/recording',
     );
   });
 });

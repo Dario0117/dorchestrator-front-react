@@ -16,7 +16,7 @@ import {
   PaginationPrevious,
 } from '@components/ui/pagination';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
-import { Route } from '@routes/(authenticated)/$organizationSlug/devices';
+import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/devices';
 import { useDevicesSuspenseQuery } from '@services/devices/list-devices.http-service';
 import { useRemoveDeviceMutation } from '@services/devices/remove-device.http-service';
 import { useNavigate } from '@tanstack/react-router';
@@ -26,6 +26,7 @@ import { useState } from 'react';
 export function DevicesPage() {
   const currentOrganization = useCurrentOrganization();
   const { page, size } = Route.useSearch();
+  const { teamSlug } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [executeCommandDevice, setExecuteCommandDevice] = useState<{
@@ -214,9 +215,10 @@ export function DevicesPage() {
             onSessionCreated={(sessionId) => {
               setSessionConfigDevice(null);
               navigate({
-                to: '/$organizationSlug/terminal/$sessionId',
+                to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
                 params: {
                   organizationSlug: currentOrganization.slug,
+                  teamSlug,
                   sessionId: String(sessionId),
                 },
               });

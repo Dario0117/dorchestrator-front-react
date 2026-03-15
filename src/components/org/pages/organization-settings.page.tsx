@@ -1,6 +1,7 @@
 import { SearchInput } from '@components/commands/filters/search-input';
 import { SelectFilter } from '@components/commands/filters/status-filter';
 import { ConfirmDialog } from '@components/confirm-dialog';
+import { TeamManagementSection } from '@components/org/team-management-section';
 import { TerminalConfigSection } from '@components/terminal/terminal-config-section';
 import { Alert, AlertDescription } from '@components/ui/alert';
 import { Badge } from '@components/ui/badge';
@@ -271,6 +272,11 @@ export function OrganizationSettingsPage() {
             </Alert>
           </CardContent>
         </Card>
+
+        <TeamManagementSection
+          organizationId={currentOrganization.id}
+          canManage={canManageMembers}
+        />
 
         {canManageMembers && <TerminalConfigSection />}
 

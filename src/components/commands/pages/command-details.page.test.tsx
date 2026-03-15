@@ -22,11 +22,11 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
 });
 
 vi.mock(
-  '@routes/(authenticated)/$organizationSlug/commands/$commandId',
+  '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/$commandId',
   async (importOriginal) => {
     const actual =
       await importOriginal<
-        typeof import('@routes/(authenticated)/$organizationSlug/commands/$commandId')
+        typeof import('@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/$commandId')
       >();
     return {
       ...actual,
@@ -34,6 +34,7 @@ vi.mock(
         ...actual.Route,
         useParams: vi.fn(() => ({
           organizationSlug: 'test-org',
+          teamSlug: 'default',
           commandId: '1',
         })),
       },
@@ -285,8 +286,8 @@ describe('CommandDetailsPage', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(
       expect.objectContaining({
-        to: '/$organizationSlug/commands',
-        params: { organizationSlug: 'test-org' },
+        to: '/$organizationSlug/t/$teamSlug/commands',
+        params: { organizationSlug: 'test-org', teamSlug: 'default' },
       }),
     );
   });

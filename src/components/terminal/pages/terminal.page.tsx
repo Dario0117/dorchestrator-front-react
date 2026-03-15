@@ -29,10 +29,9 @@ export function TerminalPage({
   onSessionLocked?: () => void;
   onSessionTerminated?: () => void;
 }) {
-  const { sessionId } = useParams({ strict: false }) as { sessionId: string };
-  const { organizationSlug } = useParams({ strict: false }) as {
-    organizationSlug: string;
-  };
+  const { sessionId, organizationSlug, teamSlug } = useParams({
+    strict: false,
+  }) as { sessionId: string; organizationSlug: string; teamSlug: string };
   const terminalRef = useRef<TerminalEmulatorHandle>(null);
 
   const fontSizeControls = useFontSize();
@@ -40,6 +39,7 @@ export function TerminalPage({
   const lifecycle = useTerminalSessionLifecycle({
     organizationId,
     organizationSlug,
+    teamSlug,
     sessionId,
   });
 

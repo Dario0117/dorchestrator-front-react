@@ -3,6 +3,7 @@ import {
   useUserOrganizationsQueryOptions,
   type useUserOrganizationsQueryReturnType,
 } from '@services/organizations/list-user-organizations.http-service';
+import { getAllTeamsFromCache } from '@services/teams/list-teams.http-service';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from '@/routeTree.gen';
 
@@ -40,6 +41,14 @@ export function _getNullableCurrentOrganizationFromSlug(slug: string) {
   return currentOrg;
 }
 
+export function _getNullableCurrentTeamFromSlug(
+  orgId: string,
+  teamSlug: string,
+) {
+  const teams = getAllTeamsFromCache();
+  return teams.find((t) => t.slug === teamSlug && t.organizationId === orgId);
+}
+
 export default function App() {
   return (
     <RouterProvider
@@ -51,6 +60,11 @@ export default function App() {
         getCurrentOrganizationFromSlug(slug: string) {
           // biome-ignore lint/style/noNonNullAssertion: At this point, currentOrganization must be defined (see route.tsx:beforeLoad)
           return _getNullableCurrentOrganizationFromSlug(slug)!;
+        },
+        _getNullableCurrentTeamFromSlug,
+        getCurrentTeamFromSlug(orgId: string, teamSlug: string) {
+          // biome-ignore lint/style/noNonNullAssertion: At this point, team must be defined (see t/$teamSlug/route.tsx:beforeLoad)
+          return _getNullableCurrentTeamFromSlug(orgId, teamSlug)!;
         },
       }}
     />

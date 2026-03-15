@@ -4,8 +4,10 @@ import { AlertTriangle, ArrowLeft } from 'lucide-react';
 
 export function SessionNotFound({
   organizationSlug,
+  teamSlug,
 }: {
   organizationSlug: string;
+  teamSlug: string;
 }) {
   return (
     <div className="flex h-full items-center justify-center p-6">
@@ -22,8 +24,8 @@ export function SessionNotFound({
           asChild
         >
           <Link
-            to="/$organizationSlug/terminal"
-            params={{ organizationSlug }}
+            to="/$organizationSlug/t/$teamSlug/terminal"
+            params={{ organizationSlug, teamSlug }}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to sessions

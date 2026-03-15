@@ -1,21 +1,55 @@
-import { HomePage } from '@components/org/pages/home.page';
-import { useOrganizationDetailsQueryOptions } from '@services/organizations/get-organization-details.http-service';
-import { useOrganizationStatsQueryOptions } from '@services/organizations/get-organization-stats.http-service';
-import { createFileRoute } from '@tanstack/react-router';
+import { useDefaultTeamQueryOptions } from '@services/teams/get-default-team.http-service';
+import {
+  getAllTeamsFromCache,
+  getTeamsForOrg,
+} from '@services/teams/list-teams.http-service';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(authenticated)/$organizationSlug/')({
-  component: HomePage,
   loader: async (ctx) => {
     const currentOrganization = ctx.context.getCurrentOrganizationFromSlug(
       ctx.params.organizationSlug,
     );
-    await Promise.all([
-      ctx.context.queryClient.ensureQueryData(
-        useOrganizationDetailsQueryOptions(currentOrganization.id),
-      ),
-      ctx.context.queryClient.ensureQueryData(
-        useOrganizationStatsQueryOptions(currentOrganization.id),
-      ),
-    ]);
+
+    const orgTeams = getTeamsForOrg(
+      getAllTeamsFromCache(),
+      currentOrganization.id,
+    );
+
+    // Try to get the user's default team
+    let defaultTeamSlug: string | undefined;
+    const defaultTeamOptions = useDefaultTeamQueryOptions(
+      currentOrganization.id,
+    );
+
+    try {
+      const defaultTeamData =
+        await ctx.context.queryClient.fetchQuery(defaultTeamOptions);
+      const defaultTeamId = defaultTeamData?.responseData?.results;
+
+      if (defaultTeamId) {
+        const defaultTeam = orgTeams.find((t) => t.id === defaultTeamId);
+        defaultTeamSlug = defaultTeam?.slug;
+      }
+    } catch {
+      // No default team set, will fall back
+    }
+
+    // Fallback: use first team alphabetically (admins will typically be first)
+    if (!defaultTeamSlug) {
+      const sorted = [...orgTeams].sort((a, b) => a.slug.localeCompare(b.slug));
+      defaultTeamSlug = sorted[0]?.slug;
+    }
+
+    if (defaultTeamSlug) {
+      throw redirect({
+        to: '/$organizationSlug/t/$teamSlug',
+        params: {
+          organizationSlug: ctx.params.organizationSlug,
+          teamSlug: defaultTeamSlug,
+        },
+        replace: true,
+      });
+    }
   },
 });

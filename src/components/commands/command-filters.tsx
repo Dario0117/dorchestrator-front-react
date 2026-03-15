@@ -4,7 +4,7 @@ import { SelectFilter } from '@components/commands/filters/status-filter';
 import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
-import { Route } from '@routes/(authenticated)/$organizationSlug/commands/index';
+import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index';
 import type { CommandStatus } from '@services/commands/list-commands.http-service.constants';
 import { useDevicesSuspenseQuery } from '@services/devices/list-devices.http-service';
 import { useNavigate } from '@tanstack/react-router';
