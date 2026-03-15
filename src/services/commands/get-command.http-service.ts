@@ -7,16 +7,22 @@ import { $api } from '@/http-service-setup';
 
 export const useGetCommandQueryOptions = (
   organizationId: string,
+  teamId: string,
   commandId: number,
 ) => ({
-  ...$api.queryOptions('get', '/api/v1/{organizationId}/commands/{commandId}', {
-    params: {
-      path: {
-        organizationId: organizationId,
-        commandId: commandId,
+  ...$api.queryOptions(
+    'get',
+    '/api/v1/{organizationId}/teams/{teamId}/commands/{commandId}',
+    {
+      params: {
+        path: {
+          organizationId: organizationId,
+          teamId: teamId,
+          commandId: commandId,
+        },
       },
     },
-  }),
+  ),
   refetchInterval: (query: {
     state: { data?: { responseData?: { results?: { status?: string } } } };
   }) => {
@@ -33,9 +39,12 @@ export const useGetCommandQueryOptions = (
 
 export function useGetCommandSuspenseQuery(
   organizationId: string,
+  teamId: string,
   commandId: number,
 ) {
-  return useSuspenseQuery(useGetCommandQueryOptions(organizationId, commandId));
+  return useSuspenseQuery(
+    useGetCommandQueryOptions(organizationId, teamId, commandId),
+  );
 }
 
 export type useGetCommandSuspenseQueryReturnType = ReturnType<

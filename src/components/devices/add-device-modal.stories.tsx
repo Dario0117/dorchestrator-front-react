@@ -30,6 +30,7 @@ function ModalWrapper({ organizationId }: { organizationId: string }) {
         open={open}
         onOpenChange={setOpen}
         organizationId={organizationId}
+        teamId="team-1"
       />
     </div>
   );
@@ -213,6 +214,7 @@ export const Default: Story = {
     open: false,
     onOpenChange: () => console.log('Modal state changed'),
     organizationId: 'org-123',
+    teamId: 'team-1',
   },
   render: () => <ModalWrapper organizationId="org-123" />,
   parameters: {
@@ -232,6 +234,7 @@ export const AlwaysOpen: Story = {
       console.log('Modal closed');
     },
     organizationId: 'org-123',
+    teamId: 'team-1',
   },
   parameters: {
     docs: {
@@ -248,6 +251,7 @@ export const WithTokenGeneration: Story = {
     open: false,
     onOpenChange: () => console.log('Modal state changed'),
     organizationId: 'org-123',
+    teamId: 'team-1',
   },
   render: () => {
     const [open, setOpen] = useState(false);

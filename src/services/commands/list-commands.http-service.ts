@@ -3,7 +3,7 @@ import { $api } from '@/http-service-setup';
 import type { operations } from '@/types/api.generated.types';
 
 type CommandsQuery =
-  operations['getApiV1ByOrganizationIdCommands']['parameters']['query'];
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdCommands']['parameters']['query'];
 
 export interface CommandsQueryParams {
   page?: number;
@@ -17,6 +17,7 @@ export interface CommandsQueryParams {
 
 export const useCommandsQueryOptions = (
   organizationId: string,
+  teamId: string,
   params: CommandsQueryParams = {},
 ) => {
   const {
@@ -29,29 +30,37 @@ export const useCommandsQueryOptions = (
     search,
   } = params;
 
-  return $api.queryOptions('get', '/api/v1/{organizationId}/commands', {
-    params: {
-      path: {
-        organizationId: organizationId,
-      },
-      query: {
-        page,
-        size,
-        deviceId,
-        status,
-        startDate,
-        endDate,
-        search,
+  return $api.queryOptions(
+    'get',
+    '/api/v1/{organizationId}/teams/{teamId}/commands',
+    {
+      params: {
+        path: {
+          organizationId,
+          teamId,
+        },
+        query: {
+          page,
+          size,
+          deviceId,
+          status,
+          startDate,
+          endDate,
+          search,
+        },
       },
     },
-  });
+  );
 };
 
 export function useCommandsSuspenseQuery(
   organizationId: string,
+  teamId: string,
   params: CommandsQueryParams = {},
 ) {
-  return useSuspenseQuery(useCommandsQueryOptions(organizationId, params));
+  return useSuspenseQuery(
+    useCommandsQueryOptions(organizationId, teamId, params),
+  );
 }
 
 export type useCommandsSuspenseQueryReturnType = ReturnType<

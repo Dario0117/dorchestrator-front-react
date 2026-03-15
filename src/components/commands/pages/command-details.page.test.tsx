@@ -42,6 +42,15 @@ vi.mock(
   },
 );
 
+vi.mock('@hooks/use-current-team', () => ({
+  useCurrentTeam: vi.fn(() => ({
+    id: 'team-1',
+    name: 'Default Team',
+    slug: 'default',
+    organizationId: 'org-1',
+  })),
+}));
+
 const mockOrganization = {
   id: 'org-1',
   name: 'Test Organization',
@@ -53,7 +62,7 @@ const mockOrganization = {
 };
 
 type GetCommandSuccessResponse =
-  operations['getApiV1ByOrganizationIdCommandsByCommandId']['responses']['200']['content']['application/json'];
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdCommandsByCommandId']['responses']['200']['content']['application/json'];
 
 const completedCommandResponse: GetCommandSuccessResponse = {
   responseData: {
@@ -137,22 +146,26 @@ describe('CommandDetailsPage', () => {
   it('should show pending status message', async () => {
     server.use(
       http.get<
-        { organizationId: string; commandId: string },
+        { organizationId: string; teamId: string; commandId: string },
         never,
         GetCommandSuccessResponse
-      >(buildBackendUrl('/api/v1/{organizationId}/commands/{commandId}'), () =>
-        HttpResponse.json({
-          responseData: {
-            results: {
-              ...completedCommandResponse.responseData.results,
-              status: 'pending',
-              startedAt: null,
-              completedAt: null,
-              results: [],
+      >(
+        buildBackendUrl(
+          '/api/v1/{organizationId}/teams/{teamId}/commands/{commandId}',
+        ),
+        () =>
+          HttpResponse.json({
+            responseData: {
+              results: {
+                ...completedCommandResponse.responseData.results,
+                status: 'pending',
+                startedAt: null,
+                completedAt: null,
+                results: [],
+              },
             },
-          },
-          responseErrors: null,
-        }),
+            responseErrors: null,
+          }),
       ),
     );
 
@@ -168,21 +181,25 @@ describe('CommandDetailsPage', () => {
   it('should show running status message with spinner', async () => {
     server.use(
       http.get<
-        { organizationId: string; commandId: string },
+        { organizationId: string; teamId: string; commandId: string },
         never,
         GetCommandSuccessResponse
-      >(buildBackendUrl('/api/v1/{organizationId}/commands/{commandId}'), () =>
-        HttpResponse.json({
-          responseData: {
-            results: {
-              ...completedCommandResponse.responseData.results,
-              status: 'running',
-              completedAt: null,
-              results: [],
+      >(
+        buildBackendUrl(
+          '/api/v1/{organizationId}/teams/{teamId}/commands/{commandId}',
+        ),
+        () =>
+          HttpResponse.json({
+            responseData: {
+              results: {
+                ...completedCommandResponse.responseData.results,
+                status: 'running',
+                completedAt: null,
+                results: [],
+              },
             },
-          },
-          responseErrors: null,
-        }),
+            responseErrors: null,
+          }),
       ),
     );
 
@@ -198,28 +215,32 @@ describe('CommandDetailsPage', () => {
   it('should show failed status message and results', async () => {
     server.use(
       http.get<
-        { organizationId: string; commandId: string },
+        { organizationId: string; teamId: string; commandId: string },
         never,
         GetCommandSuccessResponse
-      >(buildBackendUrl('/api/v1/{organizationId}/commands/{commandId}'), () =>
-        HttpResponse.json({
-          responseData: {
-            results: {
-              ...completedCommandResponse.responseData.results,
-              status: 'failed',
-              results: [
-                {
-                  id: 1,
-                  stdout: null,
-                  stderr: 'Permission denied\n',
-                  exitCode: 1,
-                  createdAt: '2025-12-28T10:01:30.000Z',
-                },
-              ],
+      >(
+        buildBackendUrl(
+          '/api/v1/{organizationId}/teams/{teamId}/commands/{commandId}',
+        ),
+        () =>
+          HttpResponse.json({
+            responseData: {
+              results: {
+                ...completedCommandResponse.responseData.results,
+                status: 'failed',
+                results: [
+                  {
+                    id: 1,
+                    stdout: null,
+                    stderr: 'Permission denied\n',
+                    exitCode: 1,
+                    createdAt: '2025-12-28T10:01:30.000Z',
+                  },
+                ],
+              },
             },
-          },
-          responseErrors: null,
-        }),
+            responseErrors: null,
+          }),
       ),
     );
 
@@ -236,22 +257,26 @@ describe('CommandDetailsPage', () => {
   it('should not show results section for pending command', async () => {
     server.use(
       http.get<
-        { organizationId: string; commandId: string },
+        { organizationId: string; teamId: string; commandId: string },
         never,
         GetCommandSuccessResponse
-      >(buildBackendUrl('/api/v1/{organizationId}/commands/{commandId}'), () =>
-        HttpResponse.json({
-          responseData: {
-            results: {
-              ...completedCommandResponse.responseData.results,
-              status: 'pending',
-              startedAt: null,
-              completedAt: null,
-              results: [],
+      >(
+        buildBackendUrl(
+          '/api/v1/{organizationId}/teams/{teamId}/commands/{commandId}',
+        ),
+        () =>
+          HttpResponse.json({
+            responseData: {
+              results: {
+                ...completedCommandResponse.responseData.results,
+                status: 'pending',
+                startedAt: null,
+                completedAt: null,
+                results: [],
+              },
             },
-          },
-          responseErrors: null,
-        }),
+            responseErrors: null,
+          }),
       ),
     );
 
@@ -295,17 +320,21 @@ describe('CommandDetailsPage', () => {
   it('should render nothing when command data is null', async () => {
     server.use(
       http.get<
-        { organizationId: string; commandId: string },
+        { organizationId: string; teamId: string; commandId: string },
         never,
         GetCommandSuccessResponse
-      >(buildBackendUrl('/api/v1/{organizationId}/commands/{commandId}'), () =>
-        HttpResponse.json({
-          responseData: {
-            results:
-              null as unknown as GetCommandSuccessResponse['responseData']['results'],
-          },
-          responseErrors: null,
-        }),
+      >(
+        buildBackendUrl(
+          '/api/v1/{organizationId}/teams/{teamId}/commands/{commandId}',
+        ),
+        () =>
+          HttpResponse.json({
+            responseData: {
+              results:
+                null as unknown as GetCommandSuccessResponse['responseData']['results'],
+            },
+            responseErrors: null,
+          }),
       ),
     );
 

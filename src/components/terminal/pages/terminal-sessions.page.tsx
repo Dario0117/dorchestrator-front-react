@@ -37,6 +37,7 @@ import {
   TableRow,
 } from '@components/ui/table';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { useCurrentTeam } from '@hooks/use-current-team';
 import { formatBytes } from '@lib/format-bytes';
 import { formatDurationCompact } from '@lib/format-duration';
 import { formatRelativeTime } from '@lib/format-relative-time';
@@ -53,6 +54,7 @@ import { useState } from 'react';
 
 export function TerminalSessionsPage() {
   const currentOrganization = useCurrentOrganization();
+  const currentTeam = useCurrentTeam();
   const { page, size, status, deviceId, userId, dateFrom, dateTo } =
     Route.useSearch();
   const { teamSlug } = Route.useParams();
@@ -60,8 +62,10 @@ export function TerminalSessionsPage() {
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
   const organizationId = currentOrganization.id;
+  // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
+  const teamId = currentTeam!.id;
 
-  const { data } = useTerminalSessionsSuspenseQuery(organizationId, {
+  const { data } = useTerminalSessionsSuspenseQuery(organizationId, teamId, {
     page,
     size,
     status,
@@ -72,7 +76,7 @@ export function TerminalSessionsPage() {
   });
 
   const { data: devicesData } = useQuery(
-    useDevicesQueryOptions(organizationId, 1, 100),
+    useDevicesQueryOptions(organizationId, teamId, 1, 100),
   );
   const { data: membersData } = useQuery(
     useListMembersQueryOptions(organizationId, { page: 1, size: 100 }),

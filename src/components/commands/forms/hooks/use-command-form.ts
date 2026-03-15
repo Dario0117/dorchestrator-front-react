@@ -11,6 +11,7 @@ interface UseCommandFormProps {
     data: NonNullable<useSubmitCommandMutationType['data']>,
   ) => void;
   organizationId: string;
+  teamId: string;
   initialDeviceId?: number;
 }
 
@@ -18,6 +19,7 @@ export function useCommandForm({
   submitCommandMutation,
   handleSuccess,
   organizationId,
+  teamId,
   initialDeviceId,
 }: UseCommandFormProps) {
   const form = useAppForm({
@@ -33,7 +35,7 @@ export function useCommandForm({
         {
           body: value,
           params: {
-            path: { organizationId },
+            path: { organizationId, teamId },
           },
         },
         {

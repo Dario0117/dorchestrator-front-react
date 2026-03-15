@@ -3,6 +3,7 @@ import { CommandOutput } from '@components/commands/command-output';
 import { Alert, AlertDescription } from '@components/ui/alert';
 import { Button } from '@components/ui/button';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { useCurrentTeam } from '@hooks/use-current-team';
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/$commandId';
 import { useGetCommandSuspenseQuery } from '@services/commands/get-command.http-service';
 import { useNavigate } from '@tanstack/react-router';
@@ -10,11 +11,14 @@ import { AlertTriangle, ArrowLeft, Info, Loader2 } from 'lucide-react';
 
 export function CommandDetailsPage() {
   const currentOrganization = useCurrentOrganization();
+  const currentTeam = useCurrentTeam();
   const { commandId, organizationSlug, teamSlug } = Route.useParams();
   const navigate = useNavigate();
 
   const { data } = useGetCommandSuspenseQuery(
     currentOrganization.id,
+    // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
+    currentTeam!.id,
     Number(commandId),
   );
 

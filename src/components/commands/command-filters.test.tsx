@@ -42,6 +42,15 @@ vi.mock('@hooks/use-current-organization', () => ({
   })),
 }));
 
+vi.mock('@hooks/use-current-team', () => ({
+  useCurrentTeam: vi.fn(() => ({
+    id: 'team-1',
+    name: 'Default Team',
+    slug: 'default',
+    organizationId: 'org-1',
+  })),
+}));
+
 vi.mock('@services/devices/list-devices.http-service', () => ({
   useDevicesSuspenseQuery: vi.fn(() => ({
     data: {

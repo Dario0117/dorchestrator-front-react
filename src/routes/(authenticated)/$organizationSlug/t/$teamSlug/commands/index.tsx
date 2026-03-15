@@ -28,9 +28,13 @@ export const Route = createFileRoute(
     const currentOrganization = ctx.context.getCurrentOrganizationFromSlug(
       ctx.params.organizationSlug,
     );
+    const currentTeam = ctx.context.getCurrentTeamFromSlug(
+      currentOrganization.id,
+      ctx.params.teamSlug,
+    );
     await Promise.all([
       ctx.context.queryClient.ensureQueryData(
-        useCommandsQueryOptions(currentOrganization.id, {
+        useCommandsQueryOptions(currentOrganization.id, currentTeam.id, {
           page: ctx.deps.page,
           size: ctx.deps.size,
           deviceId: ctx.deps.deviceId,
@@ -41,7 +45,7 @@ export const Route = createFileRoute(
         }),
       ),
       ctx.context.queryClient.ensureQueryData(
-        useDevicesQueryOptions(currentOrganization.id, 1, 100),
+        useDevicesQueryOptions(currentOrganization.id, currentTeam.id, 1, 100),
       ),
     ]);
   },

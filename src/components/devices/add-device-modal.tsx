@@ -16,12 +16,14 @@ interface AddDeviceModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   organizationId: string;
+  teamId: string;
 }
 
 export function AddDeviceModal({
   open,
   onOpenChange,
   organizationId,
+  teamId,
 }: AddDeviceModalProps) {
   const [token, setToken] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
@@ -37,6 +39,7 @@ export function AddDeviceModal({
         params: {
           path: {
             organizationId: organizationId,
+            teamId: teamId,
           },
         },
       },

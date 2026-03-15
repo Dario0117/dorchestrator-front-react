@@ -32,6 +32,7 @@ interface CreateTerminalSessionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   organizationId: string;
+  teamId: string;
   deviceId: number;
   deviceName: string;
   terminalAuthToken: string;
@@ -42,6 +43,7 @@ export function CreateTerminalSessionDialog({
   open,
   onOpenChange,
   organizationId,
+  teamId,
   deviceId,
   deviceName,
   terminalAuthToken,
@@ -74,6 +76,7 @@ export function CreateTerminalSessionDialog({
     open,
     onOpenChange,
     organizationId,
+    teamId,
     deviceId,
     terminalAuthToken,
     onSessionCreated,

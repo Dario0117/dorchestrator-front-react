@@ -42,6 +42,15 @@ vi.mock(
   },
 );
 
+vi.mock('@hooks/use-current-team', () => ({
+  useCurrentTeam: vi.fn(() => ({
+    id: 'team-1',
+    name: 'Default Team',
+    slug: 'default',
+    organizationId: 'org-1',
+  })),
+}));
+
 const mockOrganization = {
   id: 'org-1',
   name: 'Test Organization',
@@ -107,10 +116,10 @@ describe('DevicesPage', () => {
 
   it('should open add device modal from empty state action button', async () => {
     type ListDevicesSuccessResponse =
-      operations['getApiV1ByOrganizationIdDevices']['responses']['200']['content']['application/json'];
+      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
     server.use(
       http.get<never, never, ListDevicesSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
         () => {
           return HttpResponse.json({
             responseData: {
@@ -147,10 +156,10 @@ describe('DevicesPage', () => {
 
   it('should show empty state when no devices exist', async () => {
     type ListDevicesSuccessResponse =
-      operations['getApiV1ByOrganizationIdDevices']['responses']['200']['content']['application/json'];
+      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
     server.use(
       http.get<never, never, ListDevicesSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
         () => {
           return HttpResponse.json({
             responseData: {
@@ -200,10 +209,10 @@ describe('DevicesPage', () => {
 
   it('should render pagination when multiple pages exist', async () => {
     type ListDevicesSuccessResponse =
-      operations['getApiV1ByOrganizationIdDevices']['responses']['200']['content']['application/json'];
+      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
     server.use(
       http.get<never, never, ListDevicesSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
         () => {
           return HttpResponse.json({
             responseData: {
@@ -245,10 +254,10 @@ describe('DevicesPage', () => {
 
   it('should navigate to next page when Next is clicked', async () => {
     type ListDevicesSuccessResponse =
-      operations['getApiV1ByOrganizationIdDevices']['responses']['200']['content']['application/json'];
+      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
     server.use(
       http.get<never, never, ListDevicesSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
         () => {
           return HttpResponse.json({
             responseData: {
@@ -359,10 +368,10 @@ describe('DevicesPage', () => {
 
   it('should navigate to previous page when Previous is clicked', async () => {
     type ListDevicesSuccessResponse =
-      operations['getApiV1ByOrganizationIdDevices']['responses']['200']['content']['application/json'];
+      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
     server.use(
       http.get<never, never, ListDevicesSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
         () => {
           return HttpResponse.json({
             responseData: {
@@ -404,10 +413,10 @@ describe('DevicesPage', () => {
 
   it('should navigate when clicking a page number', async () => {
     type ListDevicesSuccessResponse =
-      operations['getApiV1ByOrganizationIdDevices']['responses']['200']['content']['application/json'];
+      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
     server.use(
       http.get<never, never, ListDevicesSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
         () => {
           return HttpResponse.json({
             responseData: {
@@ -761,10 +770,10 @@ describe('DevicesPage', () => {
 
   it('should handle responseData being null gracefully', async () => {
     type ListDevicesSuccessResponse =
-      operations['getApiV1ByOrganizationIdDevices']['responses']['200']['content']['application/json'];
+      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
     server.use(
       http.get<never, never, ListDevicesSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
         () => {
           return HttpResponse.json({
             responseData: null,

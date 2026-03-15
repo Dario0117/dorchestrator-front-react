@@ -3,9 +3,9 @@ import { HttpResponse, http } from 'msw';
 import type { operations } from '@/types/api.generated.types';
 
 type ListTerminalSessionsPathParams =
-  operations['getApiV1ByOrganizationIdTerminalSessions']['parameters']['path'];
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdTerminalSessions']['parameters']['path'];
 type ListTerminalSessionsSuccessResponse =
-  operations['getApiV1ByOrganizationIdTerminalSessions']['responses']['200']['content']['application/json'];
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdTerminalSessions']['responses']['200']['content']['application/json'];
 type TerminalSessionListItem = NonNullable<
   ListTerminalSessionsSuccessResponse['responseData']
 >['results'][0];
@@ -63,7 +63,7 @@ export const listTerminalSessionsHandler = http.get<
   never,
   ListTerminalSessionsSuccessResponse
 >(
-  buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+  buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/terminal/sessions'),
   ({ request }) => {
     const url = new URL(request.url);
     const page = Number.parseInt(url.searchParams.get('page') ?? '1', 10);

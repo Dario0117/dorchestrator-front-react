@@ -14,15 +14,16 @@ type DeviceConfigSuccessResponse =
   operations['getApiV1ByOrganizationIdTerminalConfigByDeviceId']['responses']['200']['content']['application/json'];
 
 type CreateSessionSuccessResponse =
-  operations['postApiV1ByOrganizationIdTerminalSessions']['responses']['201']['content']['application/json'];
+  operations['postApiV1ByOrganizationIdTeamsByTeamIdTerminalSessions']['responses']['201']['content']['application/json'];
 
 type CreateSessionErrorResponse =
-  operations['postApiV1ByOrganizationIdTerminalSessions']['responses']['400']['content']['application/json'];
+  operations['postApiV1ByOrganizationIdTeamsByTeamIdTerminalSessions']['responses']['400']['content']['application/json'];
 
 const defaultProps = {
   open: true,
   onOpenChange: vi.fn(),
   organizationId: 'org-123',
+  teamId: 'team-1',
   deviceId: 1,
   deviceName: 'Test Device',
   terminalAuthToken: 'auth-token-123',
@@ -435,7 +436,9 @@ describe('CreateTerminalSessionDialog', () => {
   it('should show Creating... text while mutation is pending', async () => {
     server.use(
       http.post<never, never, CreateSessionSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+        buildBackendUrl(
+          '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+        ),
         async () => {
           await new Promise((resolve) => setTimeout(resolve, 100));
           return HttpResponse.json(
@@ -510,7 +513,9 @@ describe('CreateTerminalSessionDialog', () => {
   it('should show API error message on mutation failure', async () => {
     server.use(
       http.post(
-        buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+        buildBackendUrl(
+          '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+        ),
         () => {
           return HttpResponse.json(
             {
@@ -542,7 +547,9 @@ describe('CreateTerminalSessionDialog', () => {
   it('should show default error message when API returns no nonFieldErrors', async () => {
     server.use(
       http.post(
-        buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+        buildBackendUrl(
+          '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+        ),
         () => {
           return HttpResponse.json(
             {
@@ -654,7 +661,9 @@ describe('CreateTerminalSessionDialog', () => {
   it('should disable Cancel button while mutation is pending', async () => {
     server.use(
       http.post(
-        buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+        buildBackendUrl(
+          '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+        ),
         async () => {
           await new Promise((resolve) => setTimeout(resolve, 200));
           return HttpResponse.json(

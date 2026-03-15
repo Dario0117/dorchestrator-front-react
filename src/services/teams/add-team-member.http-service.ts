@@ -1,21 +1,17 @@
 import { invalidateTeamMembersQuery } from '@services/teams/list-team-members.http-service';
-import { useMutation } from '@tanstack/react-query';
-import { authClient } from '@/better-auth.client';
+import { $api } from '@/http-service-setup';
 
 export function useAddTeamMemberMutation(
   organizationId: string,
   teamId: string,
 ) {
-  return useMutation({
-    mutationFn: async (params: { userId: string }) => {
-      const response = await authClient.organization.addTeamMember({
-        teamId,
-        userId: params.userId,
-      });
-      return response.data;
+  return $api.useMutation(
+    'post',
+    '/api/v1/{organizationId}/teams/{teamId}/members',
+    {
+      onSuccess: () => {
+        invalidateTeamMembersQuery(organizationId, teamId);
+      },
     },
-    onSuccess: () => {
-      invalidateTeamMembersQuery(organizationId, teamId);
-    },
-  });
+  );
 }

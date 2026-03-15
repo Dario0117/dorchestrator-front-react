@@ -45,8 +45,12 @@ export const Route = createFileRoute(
     const currentOrganization = ctx.context.getCurrentOrganizationFromSlug(
       ctx.params.organizationSlug,
     );
+    const currentTeam = ctx.context.getCurrentTeamFromSlug(
+      currentOrganization.id,
+      ctx.params.teamSlug,
+    );
     await ctx.context.queryClient.ensureQueryData(
-      useTerminalSessionsQueryOptions(currentOrganization.id, {
+      useTerminalSessionsQueryOptions(currentOrganization.id, currentTeam.id, {
         page: ctx.deps.page,
         size: ctx.deps.size,
         status: ctx.deps.status,

@@ -10,8 +10,9 @@ import {
   AUDIT_LOG_RESOURCE_TYPE_LABELS,
   type AuditLogAction,
 } from '@services/audit-logs/list-audit-logs.http-service.constants';
+import { getAllTeamsFromCache } from '@services/teams/list-teams.http-service';
 import { Check, ChevronDown, ChevronUp, Copy } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const ACTION_BADGE_CONFIG = {
   created: { label: 'Created', className: badgeStyles.green },
@@ -35,6 +36,16 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
   const resourceTypeLabel =
     AUDIT_LOG_RESOURCE_TYPE_LABELS[entry.resourceType] || entry.resourceType;
   const actorDisplay = entry.actorEmail ?? 'System';
+
+  const teamId = (entry.metadata?.after as Record<string, unknown> | undefined)
+    ?.teamId as string | undefined;
+  const teamName = useMemo(() => {
+    if (!teamId) {
+      return null;
+    }
+    const teams = getAllTeamsFromCache();
+    return teams.find((t) => t.id === teamId)?.name ?? null;
+  }, [teamId]);
 
   const handleToggle = () => setExpanded((prev) => !prev);
 
@@ -74,6 +85,13 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
         </TableCell>
         <TableCell>
           <Badge variant="outline">{resourceTypeLabel}</Badge>
+        </TableCell>
+        <TableCell>
+          {teamName ? (
+            <span className="text-sm">{teamName}</span>
+          ) : (
+            <span className="text-xs text-muted-foreground">—</span>
+          )}
         </TableCell>
         <TableCell>
           <span className="inline-flex items-center gap-1">
@@ -154,7 +172,7 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
       {expanded && entry.metadata && (
         <TableRow>
           <TableCell
-            colSpan={7}
+            colSpan={8}
             className="bg-muted/50 p-0"
           >
             <div className="p-4 text-xs font-mono overflow-auto max-h-64">

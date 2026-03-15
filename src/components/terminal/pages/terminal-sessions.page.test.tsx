@@ -57,6 +57,15 @@ vi.mock(
   },
 );
 
+vi.mock('@hooks/use-current-team', () => ({
+  useCurrentTeam: vi.fn(() => ({
+    id: 'team-1',
+    name: 'Default Team',
+    slug: 'default',
+    organizationId: 'org-1',
+  })),
+}));
+
 const mockOrganization = {
   id: 'org-1',
   name: 'Test Organization',
@@ -68,7 +77,7 @@ const mockOrganization = {
 };
 
 type ListTerminalSessionsSuccessResponse =
-  operations['getApiV1ByOrganizationIdTerminalSessions']['responses']['200']['content']['application/json'];
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdTerminalSessions']['responses']['200']['content']['application/json'];
 
 function useMultiPageHandler(options?: {
   page?: number;
@@ -87,7 +96,9 @@ function useMultiPageHandler(options?: {
 
   server.use(
     http.get<never, never, ListTerminalSessionsSuccessResponse>(
-      buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+      buildBackendUrl(
+        '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+      ),
       () => {
         return HttpResponse.json({
           responseData: {
@@ -140,7 +151,9 @@ function useMultiPageHandler(options?: {
 function useEmptyHandler() {
   server.use(
     http.get<never, never, ListTerminalSessionsSuccessResponse>(
-      buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+      buildBackendUrl(
+        '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+      ),
       () => {
         return HttpResponse.json({
           responseData: {
@@ -1107,7 +1120,9 @@ describe('TerminalSessionsPage', () => {
     it('should display "Never" when createdAt or lastActivityAt is null', async () => {
       server.use(
         http.get<never, never, ListTerminalSessionsSuccessResponse>(
-          buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+          buildBackendUrl(
+            '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+          ),
           () => {
             return HttpResponse.json({
               responseData: {
@@ -1154,7 +1169,9 @@ describe('TerminalSessionsPage', () => {
     it('should not show terminate button for terminated sessions', async () => {
       server.use(
         http.get<never, never, ListTerminalSessionsSuccessResponse>(
-          buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+          buildBackendUrl(
+            '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+          ),
           () => {
             return HttpResponse.json({
               responseData: {
@@ -1202,7 +1219,9 @@ describe('TerminalSessionsPage', () => {
     it('should handle responseData being null gracefully', async () => {
       server.use(
         http.get<never, never, ListTerminalSessionsSuccessResponse>(
-          buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+          buildBackendUrl(
+            '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+          ),
           () => {
             return HttpResponse.json({
               responseData: null,

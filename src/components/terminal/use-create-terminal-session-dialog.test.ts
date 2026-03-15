@@ -13,7 +13,7 @@ type DeviceConfigSuccessResponse =
   operations['getApiV1ByOrganizationIdTerminalConfigByDeviceId']['responses']['200']['content']['application/json'];
 
 type CreateSessionSuccessResponse =
-  operations['postApiV1ByOrganizationIdTerminalSessions']['responses']['201']['content']['application/json'];
+  operations['postApiV1ByOrganizationIdTeamsByTeamIdTerminalSessions']['responses']['201']['content']['application/json'];
 
 const MS_PER_MINUTE = 60 * 1000;
 const MS_PER_HOUR = 60 * 60 * 1000;
@@ -22,6 +22,7 @@ const DEFAULT_PROPS = {
   open: false,
   onOpenChange: vi.fn(),
   organizationId: 'org-1',
+  teamId: 'team-1',
   deviceId: 1,
   terminalAuthToken: 'mock-token',
   onSessionCreated: vi.fn(),
@@ -85,7 +86,9 @@ function setupCreateSessionHandler(
 ) {
   server.use(
     http.post(
-      buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+      buildBackendUrl(
+        '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+      ),
       () => {
         return HttpResponse.json(response, { status });
       },
@@ -102,7 +105,9 @@ function setupCreateSessionErrorHandler(
 ) {
   server.use(
     http.post(
-      buildBackendUrl('/api/v1/{organizationId}/terminal/sessions'),
+      buildBackendUrl(
+        '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
+      ),
       () => {
         return HttpResponse.json(errorBody, { status });
       },

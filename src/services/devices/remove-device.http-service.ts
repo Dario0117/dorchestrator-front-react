@@ -4,7 +4,7 @@ import { $api } from '@/http-service-setup';
 export function useRemoveDeviceMutation() {
   return $api.useMutation(
     'delete',
-    '/api/v1/{organizationId}/devices/{deviceId}',
+    '/api/v1/{organizationId}/teams/{teamId}/devices/{deviceId}',
     {
       onSuccess: (_data, variables) => {
         queryClient.invalidateQueries({

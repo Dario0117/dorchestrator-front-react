@@ -114,6 +114,7 @@ export function AuditLogsListPage() {
                     <TableHead>Time</TableHead>
                     <TableHead>Action</TableHead>
                     <TableHead>Resource</TableHead>
+                    <TableHead>Team</TableHead>
                     <TableHead>Actor</TableHead>
                     <TableHead>Resource ID</TableHead>
                     <TableHead>Request ID</TableHead>

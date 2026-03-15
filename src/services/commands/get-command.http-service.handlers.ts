@@ -3,14 +3,16 @@ import { HttpResponse, http } from 'msw';
 import type { operations } from '@/types/api.generated.types';
 
 type GetCommandSuccessResponse =
-  operations['getApiV1ByOrganizationIdCommandsByCommandId']['responses']['200']['content']['application/json'];
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdCommandsByCommandId']['responses']['200']['content']['application/json'];
 
 export const getCommandHandler = http.get<
-  { organizationId: string; commandId: string },
+  { organizationId: string; teamId: string; commandId: string },
   never,
   GetCommandSuccessResponse
 >(
-  buildBackendUrl('/api/v1/{organizationId}/commands/{commandId}'),
+  buildBackendUrl(
+    '/api/v1/{organizationId}/teams/{teamId}/commands/{commandId}',
+  ),
   ({ params }) =>
     HttpResponse.json({
       responseData: {

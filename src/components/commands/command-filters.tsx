@@ -4,6 +4,7 @@ import { SelectFilter } from '@components/commands/filters/status-filter';
 import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { useCurrentTeam } from '@hooks/use-current-team';
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index';
 import type { CommandStatus } from '@services/commands/list-commands.http-service.constants';
 import { useDevicesSuspenseQuery } from '@services/devices/list-devices.http-service';
@@ -38,7 +39,14 @@ function useActiveFilterCount() {
 
 function useDeviceOptions() {
   const currentOrganization = useCurrentOrganization();
-  const { data } = useDevicesSuspenseQuery(currentOrganization.id, 1, 100);
+  const currentTeam = useCurrentTeam();
+  const { data } = useDevicesSuspenseQuery(
+    currentOrganization.id,
+    // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
+    currentTeam!.id,
+    1,
+    100,
+  );
   const devices = data.responseData?.results ?? [];
 
   return useMemo(

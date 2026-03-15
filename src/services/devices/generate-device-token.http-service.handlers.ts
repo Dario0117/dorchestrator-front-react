@@ -3,15 +3,15 @@ import { HttpResponse, http } from 'msw';
 import type { operations } from '@/types/api.generated.types';
 
 type GenerateTokenPathParams =
-  operations['postApiV1ByOrganizationIdDevices']['parameters']['path'];
+  operations['postApiV1ByOrganizationIdTeamsByTeamIdDevices']['parameters']['path'];
 type GenerateTokenSuccessResponse =
-  operations['postApiV1ByOrganizationIdDevices']['responses']['201']['content']['application/json'];
+  operations['postApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['201']['content']['application/json'];
 
 export const generateDeviceTokenHandler = http.post<
   GenerateTokenPathParams,
   never,
   GenerateTokenSuccessResponse
->(buildBackendUrl('/api/v1/{organizationId}/devices'), () => {
+>(buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'), () => {
   return HttpResponse.json({
     responseData: {
       results: {

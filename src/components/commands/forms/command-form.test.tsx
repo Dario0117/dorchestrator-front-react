@@ -25,6 +25,15 @@ vi.mock('@hooks/use-current-organization', () => ({
   })),
 }));
 
+vi.mock('@hooks/use-current-team', () => ({
+  useCurrentTeam: vi.fn(() => ({
+    id: 'team-1',
+    name: 'Default Team',
+    slug: 'default',
+    organizationId: 'org-1',
+  })),
+}));
+
 const now = new Date();
 const recentDate = new Date(now.getTime() - 5 * 1000).toISOString();
 const oldDate = new Date(now.getTime() - 120 * 1000).toISOString();
@@ -108,6 +117,7 @@ function TestWrapper({
     submitCommandMutation: mockMutation,
     handleSuccess: mockHandleSuccess,
     organizationId: 'org-1',
+    teamId: 'team-1',
     initialDeviceId: pinnedDevice?.id,
   });
 

@@ -1,6 +1,8 @@
 import { ConfirmDialog } from '@components/confirm-dialog';
 import { Alert, AlertDescription } from '@components/ui/alert';
+import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
+import { Input } from '@components/ui/input';
 import {
   Select,
   SelectContent,
@@ -16,11 +18,12 @@ import {
   TableHeader,
   TableRow,
 } from '@components/ui/table';
+import { formatExpirationDate } from '@lib/format-expiration';
 import { useListMembersSuspenseQuery } from '@services/organizations/list-members.http-service';
 import { useAddTeamMemberMutation } from '@services/teams/add-team-member.http-service';
 import { useListTeamMembersSuspenseQuery } from '@services/teams/list-team-members.http-service';
 import { useRemoveTeamMemberMutation } from '@services/teams/remove-team-member.http-service';
-import { AlertTriangle, Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, Clock, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface TeamMembersPanelProps {
@@ -49,6 +52,7 @@ export function TeamMembersPanel({
   );
 
   const [selectedUserId, setSelectedUserId] = useState<string>('');
+  const [expiresAt, setExpiresAt] = useState<string>('');
   const [confirmRemove, setConfirmRemove] = useState<{
     userId: string;
     name: string;
@@ -67,8 +71,21 @@ export function TeamMembersPanel({
       return;
     }
     addMemberMutation.mutate(
-      { userId: selectedUserId },
-      { onSuccess: () => setSelectedUserId('') },
+      {
+        params: {
+          path: { organizationId, teamId },
+        },
+        body: {
+          userId: selectedUserId,
+          expiresAt: expiresAt ? new Date(expiresAt).toISOString() : undefined,
+        },
+      },
+      {
+        onSuccess: () => {
+          setSelectedUserId('');
+          setExpiresAt('');
+        },
+      },
     );
   };
 
@@ -77,7 +94,15 @@ export function TeamMembersPanel({
       return;
     }
     removeMemberMutation.mutate(
-      { userId: confirmRemove.userId },
+      {
+        params: {
+          path: {
+            organizationId,
+            teamId,
+            memberUserId: confirmRemove.userId,
+          },
+        },
+      },
       { onSuccess: () => setConfirmRemove(null) },
     );
   };
@@ -85,36 +110,60 @@ export function TeamMembersPanel({
   return (
     <div className="space-y-3 border-t pt-3">
       {canManage && availableMembers.length > 0 && (
-        <div className="flex items-center gap-2">
-          <Select
-            value={selectedUserId}
-            onValueChange={setSelectedUserId}
-          >
-            <SelectTrigger
-              className="flex-1"
-              aria-label="Select member to add"
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <Select
+              value={selectedUserId}
+              onValueChange={setSelectedUserId}
             >
-              <SelectValue placeholder="Select a member to add..." />
-            </SelectTrigger>
-            <SelectContent>
-              {availableMembers.map((m) => (
-                <SelectItem
-                  key={m.userId}
-                  value={m.userId}
-                >
-                  {m.name} ({m.email})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button
-            size="sm"
-            disabled={!selectedUserId || addMemberMutation.isPending}
-            onClick={handleAddMember}
-          >
-            <Plus className="mr-1 h-4 w-4" />
-            Add
-          </Button>
+              <SelectTrigger
+                className="flex-1"
+                aria-label="Select member to add"
+              >
+                <SelectValue placeholder="Select a member to add..." />
+              </SelectTrigger>
+              <SelectContent>
+                {availableMembers.map((m) => (
+                  <SelectItem
+                    key={m.userId}
+                    value={m.userId}
+                  >
+                    {m.name} ({m.email})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              size="sm"
+              disabled={!selectedUserId || addMemberMutation.isPending}
+              onClick={handleAddMember}
+            >
+              <Plus className="mr-1 h-4 w-4" />
+              Add
+            </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <Input
+              type="datetime-local"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+              className="flex-1"
+              aria-label="Access expiration date"
+              placeholder="Optional expiration"
+              min={new Date().toISOString().slice(0, 16)}
+            />
+            {expiresAt && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setExpiresAt('')}
+                aria-label="Clear expiration"
+              >
+                Clear
+              </Button>
+            )}
+          </div>
         </div>
       )}
 
@@ -128,6 +177,7 @@ export function TeamMembersPanel({
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Access</TableHead>
               {canManage && <TableHead>Actions</TableHead>}
             </TableRow>
           </TableHeader>
@@ -138,6 +188,16 @@ export function TeamMembersPanel({
                   {tm.name ?? tm.userId}
                 </TableCell>
                 <TableCell>{tm.email ?? '-'}</TableCell>
+                <TableCell>
+                  {tm.expiresAt ? (
+                    <Badge variant="outline">
+                      <Clock className="mr-1 h-3 w-3" />
+                      Expires {formatExpirationDate(tm.expiresAt)}
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary">Permanent</Badge>
+                  )}
+                </TableCell>
                 {canManage && (
                   <TableCell>
                     <Button

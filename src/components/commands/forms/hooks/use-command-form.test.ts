@@ -35,6 +35,7 @@ describe('useCommandForm', () => {
           submitCommandMutation: mockMutation,
           handleSuccess: mockHandleSuccess,
           organizationId: 'org-1',
+          teamId: 'team-1',
         }),
       { wrapper: createQueryThemeWrapper() },
     );
@@ -63,6 +64,7 @@ describe('useCommandForm', () => {
           submitCommandMutation: mockMutation,
           handleSuccess: mockHandleSuccess,
           organizationId: 'org-1',
+          teamId: 'team-1',
         }),
       { wrapper: createQueryThemeWrapper() },
     );
@@ -81,7 +83,7 @@ describe('useCommandForm', () => {
             command: 'echo hello',
           },
           params: {
-            path: { organizationId: 'org-1' },
+            path: { organizationId: 'org-1', teamId: 'team-1' },
           },
         },
         expect.any(Object),
@@ -103,6 +105,7 @@ describe('useCommandForm', () => {
           submitCommandMutation: mockMutation,
           handleSuccess: mockHandleSuccess,
           organizationId: 'org-1',
+          teamId: 'team-1',
         }),
       { wrapper: createQueryThemeWrapper() },
     );
@@ -131,6 +134,7 @@ describe('useCommandForm', () => {
           submitCommandMutation: mockMutation,
           handleSuccess: mockHandleSuccess,
           organizationId: 'org-1',
+          teamId: 'team-1',
         }),
       { wrapper: createQueryThemeWrapper() },
     );
@@ -158,6 +162,7 @@ describe('useCommandForm', () => {
           submitCommandMutation: mockMutation,
           handleSuccess: mockHandleSuccess,
           organizationId: 'org-1',
+          teamId: 'team-1',
         }),
       { wrapper: createQueryThemeWrapper() },
     );

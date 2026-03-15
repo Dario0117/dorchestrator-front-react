@@ -4,7 +4,7 @@ import type { operations } from '@/types/api.generated.types';
 
 // Session status type extracted from generated API types (source of truth)
 type ApiSessionStatus = NonNullable<
-  operations['getApiV1ByOrganizationIdTerminalSessions']['parameters']['query']['status']
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdTerminalSessions']['parameters']['query']['status']
 >;
 
 // =============================================================================

@@ -18,6 +18,7 @@ interface ExecuteCommandModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   organizationId: string;
+  teamId: string;
   pinnedDevice?: PinnedDevice;
 }
 
@@ -25,6 +26,7 @@ export function ExecuteCommandModal({
   open,
   onOpenChange,
   organizationId,
+  teamId,
   pinnedDevice,
 }: ExecuteCommandModalProps) {
   const submitCommandMutation = useSubmitCommandMutation();
@@ -32,6 +34,7 @@ export function ExecuteCommandModal({
   const form = useCommandForm({
     submitCommandMutation,
     organizationId,
+    teamId,
     initialDeviceId: pinnedDevice?.id,
     handleSuccess() {
       form.reset();

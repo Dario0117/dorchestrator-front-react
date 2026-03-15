@@ -18,6 +18,12 @@ const router = createRouter({
     getCurrentOrganizationFromSlug: () => {
       throw new Error('Function not implemented.');
     },
+    _getNullableCurrentTeamFromSlug: () => {
+      throw new Error('Function not implemented.');
+    },
+    getCurrentTeamFromSlug: () => {
+      throw new Error('Function not implemented.');
+    },
   },
 });
 

@@ -58,6 +58,15 @@ vi.mock(
   },
 );
 
+vi.mock('@hooks/use-current-team', () => ({
+  useCurrentTeam: vi.fn(() => ({
+    id: 'team-1',
+    name: 'Default Team',
+    slug: 'default',
+    organizationId: 'org-1',
+  })),
+}));
+
 const mockOrganization = {
   id: 'org-1',
   name: 'Test Organization',
@@ -69,7 +78,7 @@ const mockOrganization = {
 };
 
 type ListCommandsSuccessResponse =
-  operations['getApiV1ByOrganizationIdCommands']['responses']['200']['content']['application/json'];
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdCommands']['responses']['200']['content']['application/json'];
 
 function useMultiPageHandler(options?: {
   page?: number;
@@ -88,7 +97,7 @@ function useMultiPageHandler(options?: {
 
   server.use(
     http.get<never, never, ListCommandsSuccessResponse>(
-      buildBackendUrl('/api/v1/{organizationId}/commands'),
+      buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/commands'),
       () => {
         return HttpResponse.json({
           responseData: {
@@ -169,7 +178,7 @@ describe('CommandsListPage', () => {
   it('should show empty state when no commands exist', async () => {
     server.use(
       http.get<never, never, ListCommandsSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/commands'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/commands'),
         () => {
           return HttpResponse.json({
             responseData: {
@@ -200,7 +209,7 @@ describe('CommandsListPage', () => {
 
     server.use(
       http.get<never, never, ListCommandsSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/commands'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/commands'),
         () => {
           return HttpResponse.json({
             responseData: {
@@ -246,7 +255,7 @@ describe('CommandsListPage', () => {
 
     server.use(
       http.get<never, never, ListCommandsSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/commands'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/commands'),
         () => {
           return HttpResponse.json({
             responseData: {
@@ -367,7 +376,7 @@ describe('CommandsListPage', () => {
   it('should handle null responseData gracefully', async () => {
     server.use(
       http.get<never, never, ListCommandsSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/commands'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/commands'),
         () => {
           return HttpResponse.json({
             responseData: null,
@@ -675,7 +684,7 @@ describe('CommandsListPage', () => {
     it('should render empty state on mobile', async () => {
       server.use(
         http.get<never, never, ListCommandsSuccessResponse>(
-          buildBackendUrl('/api/v1/{organizationId}/commands'),
+          buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/commands'),
           () => {
             return HttpResponse.json({
               responseData: {
@@ -781,7 +790,7 @@ describe('CommandsListPage', () => {
     it('should render empty state on desktop', async () => {
       server.use(
         http.get<never, never, ListCommandsSuccessResponse>(
-          buildBackendUrl('/api/v1/{organizationId}/commands'),
+          buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/commands'),
           () => {
             return HttpResponse.json({
               responseData: {

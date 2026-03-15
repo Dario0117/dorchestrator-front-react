@@ -28,6 +28,15 @@ vi.mock('@hooks/use-current-organization', () => ({
   })),
 }));
 
+vi.mock('@hooks/use-current-team', () => ({
+  useCurrentTeam: vi.fn(() => ({
+    id: 'team-1',
+    name: 'Default Team',
+    slug: 'default',
+    organizationId: 'org-1',
+  })),
+}));
+
 const mockOrganization = {
   id: 'org-1',
   name: 'Test Organization',
@@ -48,6 +57,7 @@ function TestWrapper() {
     submitCommandMutation: mockMutation,
     handleSuccess: mockHandleSuccess,
     organizationId: 'org-1',
+    teamId: 'team-1',
   });
 
   return (
@@ -75,12 +85,15 @@ describe('CommandFormWithDeviceQuery', () => {
 
   it('should render with empty devices when responseData is null', async () => {
     server.use(
-      http.get(buildBackendUrl('/api/v1/{organizationId}/devices'), () => {
-        return HttpResponse.json({
-          responseData: null,
-          responseErrors: null,
-        });
-      }),
+      http.get(
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
+        () => {
+          return HttpResponse.json({
+            responseData: null,
+            responseErrors: null,
+          });
+        },
+      ),
     );
 
     renderWithProviders(<TestWrapper />);

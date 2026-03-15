@@ -1,7 +1,9 @@
 import { AuditLogRow } from '@components/audit-logs/audit-log-row';
 import { Table, TableBody } from '@components/ui/table';
+import { queryClient } from '@context/query.provider';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import type { AuditLogEntry } from '@services/audit-logs/list-audit-logs.http-service';
+import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -178,7 +180,8 @@ describe('AuditLogRow', () => {
     };
     renderRow(noRequestIdEntry);
     expect(screen.queryByLabelText('Copy request ID')).not.toBeInTheDocument();
-    expect(screen.getByText('—')).toBeInTheDocument();
+    const dashes = screen.getAllByText('—');
+    expect(dashes.length).toBeGreaterThanOrEqual(1);
   });
 
   it('should expand metadata details on click', async () => {
@@ -317,6 +320,51 @@ describe('AuditLogRow', () => {
     await user.keyboard('{Tab}');
 
     expect(row).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('should display team name when teamId is in metadata and team exists in cache', () => {
+    const teamId = 'team-123';
+    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
+      responseData: {
+        results: [
+          {
+            id: 'org-123',
+            name: 'Test Org',
+            teams: [
+              { id: teamId, name: 'Alpha Team', organizationId: 'org-123' },
+            ],
+          },
+        ],
+      },
+    });
+
+    const entryWithTeam: AuditLogEntry = {
+      ...mockEntry,
+      metadata: { after: { teamId, command: 'echo test' } },
+    };
+    renderRow(entryWithTeam);
+
+    expect(screen.getByText('Alpha Team')).toBeInTheDocument();
+
+    queryClient.clear();
+  });
+
+  it('should show dash when teamId is in metadata but team is not found in cache', () => {
+    queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
+      responseData: { results: [] },
+    });
+
+    const entryWithUnknownTeam: AuditLogEntry = {
+      ...mockEntry,
+      metadata: { after: { teamId: 'nonexistent-team' } },
+    };
+    renderRow(entryWithUnknownTeam);
+
+    expect(screen.queryByText('Alpha Team')).not.toBeInTheDocument();
+    const dashes = screen.getAllByText('—');
+    expect(dashes.length).toBeGreaterThanOrEqual(1);
+
+    queryClient.clear();
   });
 
   it('should render deactivated badge with amber styling', () => {

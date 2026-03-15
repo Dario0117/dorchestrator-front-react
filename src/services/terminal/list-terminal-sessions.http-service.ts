@@ -3,7 +3,7 @@ import { $api } from '@/http-service-setup';
 import type { operations } from '@/types/api.generated.types';
 
 type TerminalSessionsQuery =
-  operations['getApiV1ByOrganizationIdTerminalSessions']['parameters']['query'];
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdTerminalSessions']['parameters']['query'];
 
 export interface TerminalSessionsQueryParams {
   page?: number;
@@ -17,6 +17,7 @@ export interface TerminalSessionsQueryParams {
 
 export const useTerminalSessionsQueryOptions = (
   organizationId: string,
+  teamId: string,
   params: TerminalSessionsQueryParams = {},
 ) => {
   const {
@@ -31,11 +32,12 @@ export const useTerminalSessionsQueryOptions = (
 
   return $api.queryOptions(
     'get',
-    '/api/v1/{organizationId}/terminal/sessions',
+    '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
     {
       params: {
         path: {
           organizationId,
+          teamId,
         },
         query: {
           page,
@@ -56,10 +58,11 @@ export const useTerminalSessionsQueryOptions = (
 
 export function useTerminalSessionsSuspenseQuery(
   organizationId: string,
+  teamId: string,
   params: TerminalSessionsQueryParams = {},
 ) {
   return useSuspenseQuery(
-    useTerminalSessionsQueryOptions(organizationId, params),
+    useTerminalSessionsQueryOptions(organizationId, teamId, params),
   );
 }
 

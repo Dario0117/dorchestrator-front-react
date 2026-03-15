@@ -21,16 +21,16 @@ export const Route = createFileRoute(
     const currentOrganization = ctx.context.getCurrentOrganizationFromSlug(
       ctx.params.organizationSlug,
     );
-    const currentTeam = ctx.context.getCurrentTeamFromSlug?.(
+    const currentTeam = ctx.context.getCurrentTeamFromSlug(
       currentOrganization.id,
       ctx.params.teamSlug,
     );
     await ctx.context.queryClient.ensureQueryData(
       useDevicesQueryOptions(
         currentOrganization.id,
+        currentTeam.id,
         ctx.deps.page,
         ctx.deps.size,
-        currentTeam?.id,
       ),
     );
   },

@@ -10,9 +10,14 @@ export const Route = createFileRoute(
     const currentOrganization = ctx.context.getCurrentOrganizationFromSlug(
       ctx.params.organizationSlug,
     );
+    const currentTeam = ctx.context.getCurrentTeamFromSlug(
+      currentOrganization.id,
+      ctx.params.teamSlug,
+    );
     await ctx.context.queryClient.ensureQueryData(
       useGetCommandQueryOptions(
         currentOrganization.id,
+        currentTeam.id,
         Number(ctx.params.commandId),
       ),
     );

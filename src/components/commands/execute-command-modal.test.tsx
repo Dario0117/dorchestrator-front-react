@@ -15,6 +15,15 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
   };
 });
 
+vi.mock('@hooks/use-current-team', () => ({
+  useCurrentTeam: vi.fn(() => ({
+    id: 'team-1',
+    name: 'Default Team',
+    slug: 'default',
+    organizationId: 'org-1',
+  })),
+}));
+
 const mockOrganization = {
   id: 'org-1',
   name: 'Test Organization',
@@ -50,6 +59,7 @@ describe('ExecuteCommandModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId="org-1"
+        teamId="team-1"
       />,
     );
 
@@ -69,6 +79,7 @@ describe('ExecuteCommandModal', () => {
         open={false}
         onOpenChange={mockOnOpenChange}
         organizationId="org-1"
+        teamId="team-1"
       />,
     );
 
@@ -81,6 +92,7 @@ describe('ExecuteCommandModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId="org-1"
+        teamId="team-1"
       />,
     );
 
@@ -99,6 +111,7 @@ describe('ExecuteCommandModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId="org-1"
+        teamId="team-1"
       />,
     );
 
@@ -119,6 +132,7 @@ describe('ExecuteCommandModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId="org-1"
+        teamId="team-1"
       />,
     );
 

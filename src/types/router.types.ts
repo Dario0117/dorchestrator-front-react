@@ -8,9 +8,9 @@ export interface RouterContext {
     slug: string,
   ) => OrganizationItem | undefined;
   getCurrentOrganizationFromSlug: (slug: string) => OrganizationItem;
-  _getNullableCurrentTeamFromSlug?: (
+  _getNullableCurrentTeamFromSlug: (
     orgId: string,
     teamSlug: string,
   ) => TeamItem | undefined;
-  getCurrentTeamFromSlug?: (orgId: string, teamSlug: string) => TeamItem;
+  getCurrentTeamFromSlug: (orgId: string, teamSlug: string) => TeamItem;
 }

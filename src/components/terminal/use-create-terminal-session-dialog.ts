@@ -19,6 +19,7 @@ interface UseCreateTerminalSessionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   organizationId: string;
+  teamId: string;
   deviceId: number;
   terminalAuthToken: string;
   onSessionCreated: (sessionId: number) => void;
@@ -28,6 +29,7 @@ export function useCreateTerminalSessionDialog({
   open,
   onOpenChange,
   organizationId,
+  teamId,
   deviceId,
   terminalAuthToken,
   onSessionCreated,
@@ -146,7 +148,7 @@ export function useCreateTerminalSessionDialog({
 
     createSessionMutation.mutate(
       {
-        params: { path: { organizationId } },
+        params: { path: { organizationId, teamId } },
         body: {
           terminalAuthToken,
           deviceId,

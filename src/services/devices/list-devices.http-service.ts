@@ -3,22 +3,22 @@ import { $api } from '@/http-service-setup';
 
 export const useDevicesQueryOptions = (
   organizationId: string,
+  teamId: string,
   page = 1,
   size = 10,
-  teamId?: string,
 ) =>
   $api.queryOptions(
     'get',
-    '/api/v1/{organizationId}/devices',
+    '/api/v1/{organizationId}/teams/{teamId}/devices',
     {
       params: {
         path: {
-          organizationId: organizationId,
+          organizationId,
+          teamId,
         },
         query: {
-          page: page,
-          size: size,
-          teamId: teamId,
+          page,
+          size,
         },
       },
     },
@@ -29,12 +29,12 @@ export const useDevicesQueryOptions = (
 
 export function useDevicesSuspenseQuery(
   organizationId: string,
+  teamId: string,
   page = 1,
   size = 10,
-  teamId?: string,
 ) {
   return useSuspenseQuery(
-    useDevicesQueryOptions(organizationId, page, size, teamId),
+    useDevicesQueryOptions(organizationId, teamId, page, size),
   );
 }
 

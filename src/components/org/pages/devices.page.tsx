@@ -16,6 +16,7 @@ import {
   PaginationPrevious,
 } from '@components/ui/pagination';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { useCurrentTeam } from '@hooks/use-current-team';
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/devices';
 import { useDevicesSuspenseQuery } from '@services/devices/list-devices.http-service';
 import { useRemoveDeviceMutation } from '@services/devices/remove-device.http-service';
@@ -25,6 +26,7 @@ import { useState } from 'react';
 
 export function DevicesPage() {
   const currentOrganization = useCurrentOrganization();
+  const currentTeam = useCurrentTeam();
   const { page, size } = Route.useSearch();
   const { teamSlug } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -56,9 +58,11 @@ export function DevicesPage() {
     currentOrganization.role === 'owner';
 
   const organizationId = currentOrganization.id;
+  // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
+  const teamId = currentTeam!.id;
 
   // Fetch devices (pre-loaded by route loader)
-  const { data } = useDevicesSuspenseQuery(organizationId, page, size);
+  const { data } = useDevicesSuspenseQuery(organizationId, teamId, page, size);
 
   // Delete device mutation
   const deleteMutation = useRemoveDeviceMutation();
@@ -176,6 +180,7 @@ export function DevicesPage() {
             open={addModalOpen}
             onOpenChange={setAddModalOpen}
             organizationId={organizationId}
+            teamId={teamId}
           />
         )}
 
@@ -184,6 +189,7 @@ export function DevicesPage() {
             open={true}
             onOpenChange={() => setExecuteCommandDevice(null)}
             organizationId={organizationId}
+            teamId={teamId}
             pinnedDevice={executeCommandDevice}
           />
         )}
@@ -209,6 +215,7 @@ export function DevicesPage() {
             open={true}
             onOpenChange={() => setSessionConfigDevice(null)}
             organizationId={organizationId}
+            teamId={teamId}
             deviceId={sessionConfigDevice.id}
             deviceName={sessionConfigDevice.name}
             terminalAuthToken={sessionConfigDevice.terminalAuthToken}
@@ -247,6 +254,7 @@ export function DevicesPage() {
                 params: {
                   path: {
                     organizationId: organizationId,
+                    teamId: teamId,
                     deviceId: confirmDelete.id,
                   },
                 },

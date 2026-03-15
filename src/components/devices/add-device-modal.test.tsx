@@ -8,9 +8,9 @@ import { server } from '@/../testsSetup';
 import type { operations } from '@/types/api.generated.types';
 
 type GenerateTokenErrorResponse =
-  operations['postApiV1ByOrganizationIdDevices']['responses']['400']['content']['application/json'];
+  operations['postApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['400']['content']['application/json'];
 type GenerateTokenSuccessResponse =
-  operations['postApiV1ByOrganizationIdDevices']['responses']['201']['content']['application/json'];
+  operations['postApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['201']['content']['application/json'];
 
 const mockToken = 'test-token-12345-abcdef-67890';
 const mockExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
@@ -29,6 +29,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -44,6 +45,7 @@ describe('AddDeviceModal', () => {
         open={false}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -56,6 +58,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -69,6 +72,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -87,6 +91,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -104,6 +109,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -123,6 +129,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -147,6 +154,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -171,6 +179,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -193,6 +202,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -206,7 +216,7 @@ describe('AddDeviceModal', () => {
   it('should show error message on API failure', async () => {
     server.use(
       http.post<never, never, GenerateTokenErrorResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
         () => {
           return HttpResponse.json(
             {
@@ -227,6 +237,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -239,16 +250,19 @@ describe('AddDeviceModal', () => {
 
   it('should show default error message when no nonFieldErrors provided', async () => {
     server.use(
-      http.post(buildBackendUrl('/api/v1/{organizationId}/devices'), () => {
-        // Testing edge case where responseErrors is empty - use type bypass
-        return HttpResponse.json(
-          {
-            responseData: null,
-            responseErrors: {},
-          } as GenerateTokenErrorResponse,
-          { status: 400 },
-        );
-      }),
+      http.post(
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
+        () => {
+          // Testing edge case where responseErrors is empty - use type bypass
+          return HttpResponse.json(
+            {
+              responseData: null,
+              responseErrors: {},
+            } as GenerateTokenErrorResponse,
+            { status: 400 },
+          );
+        },
+      ),
     );
 
     const user = userEvent.setup();
@@ -257,6 +271,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -272,7 +287,7 @@ describe('AddDeviceModal', () => {
   it('should show Generating... text while mutation is pending', async () => {
     server.use(
       http.post<never, never, GenerateTokenSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
         async () => {
           await new Promise((resolve) => setTimeout(resolve, 100));
           return HttpResponse.json({
@@ -294,6 +309,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -314,6 +330,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -355,6 +372,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -384,12 +402,15 @@ describe('AddDeviceModal', () => {
 
   it('should not display token when onSuccess result has no responseData.results', async () => {
     server.use(
-      http.post(buildBackendUrl('/api/v1/{organizationId}/devices'), () => {
-        return HttpResponse.json({
-          responseData: null,
-          responseErrors: null,
-        } as unknown as GenerateTokenSuccessResponse);
-      }),
+      http.post(
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
+        () => {
+          return HttpResponse.json({
+            responseData: null,
+            responseErrors: null,
+          } as unknown as GenerateTokenSuccessResponse);
+        },
+      ),
     );
 
     const user = userEvent.setup();
@@ -398,6 +419,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 
@@ -420,7 +442,7 @@ describe('AddDeviceModal', () => {
   it('should show empty expiration when expiresAt is not provided', async () => {
     server.use(
       http.post<never, never, GenerateTokenSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/devices'),
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
         () => {
           return HttpResponse.json({
             responseData: {
@@ -441,6 +463,7 @@ describe('AddDeviceModal', () => {
         open={true}
         onOpenChange={mockOnOpenChange}
         organizationId={organizationId}
+        teamId="team-1"
       />,
     );
 

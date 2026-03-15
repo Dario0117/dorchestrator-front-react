@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@components/ui/select';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { useCurrentTeam } from '@hooks/use-current-team';
 import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index';
 import { useCommandsSuspenseQuery } from '@services/commands/list-commands.http-service';
@@ -27,6 +28,7 @@ import { useEffect, useState } from 'react';
 
 export function CommandsListPage() {
   const currentOrganization = useCurrentOrganization();
+  const currentTeam = useCurrentTeam();
   const {
     page,
     size,
@@ -43,8 +45,10 @@ export function CommandsListPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const organizationId = currentOrganization.id;
+  // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
+  const teamId = currentTeam!.id;
 
-  const { data } = useCommandsSuspenseQuery(organizationId, {
+  const { data } = useCommandsSuspenseQuery(organizationId, teamId, {
     page,
     size,
     deviceId,
@@ -228,6 +232,7 @@ export function CommandsListPage() {
             open={modalOpen}
             onOpenChange={handleModalChange}
             organizationId={organizationId}
+            teamId={teamId}
           />
         )}
       </div>

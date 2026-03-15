@@ -3,9 +3,9 @@ import { HttpResponse, http } from 'msw';
 import type { operations } from '@/types/api.generated.types';
 
 type ListDevicesPathParams =
-  operations['getApiV1ByOrganizationIdDevices']['parameters']['path'];
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['parameters']['path'];
 type ListDevicesSuccessResponse =
-  operations['getApiV1ByOrganizationIdDevices']['responses']['200']['content']['application/json'];
+  operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
 type ListDevicesDevice = NonNullable<
   ListDevicesSuccessResponse['responseData']
 >['results'][0];
@@ -52,27 +52,30 @@ export const listDevicesHandler = http.get<
   ListDevicesPathParams,
   never,
   ListDevicesSuccessResponse
->(buildBackendUrl('/api/v1/{organizationId}/devices'), ({ request }) => {
-  const url = new URL(request.url);
-  const page = Number.parseInt(url.searchParams.get('page') ?? '1', 10);
-  const size = Number.parseInt(url.searchParams.get('size') ?? '10', 10);
+>(
+  buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
+  ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number.parseInt(url.searchParams.get('page') ?? '1', 10);
+    const size = Number.parseInt(url.searchParams.get('size') ?? '10', 10);
 
-  const totalResults = mockDevices.length;
-  const totalPages = Math.ceil(totalResults / size);
-  const startIndex = (page - 1) * size;
-  const endIndex = startIndex + size;
-  const results = mockDevices.slice(startIndex, endIndex);
+    const totalResults = mockDevices.length;
+    const totalPages = Math.ceil(totalResults / size);
+    const startIndex = (page - 1) * size;
+    const endIndex = startIndex + size;
+    const results = mockDevices.slice(startIndex, endIndex);
 
-  return HttpResponse.json({
-    responseData: {
-      results,
-      hasNext: page < totalPages,
-      hasPrevious: page > 1,
-      totalResults,
-      totalPages,
-      page,
-      size,
-    },
-    responseErrors: null,
-  });
-});
+    return HttpResponse.json({
+      responseData: {
+        results,
+        hasNext: page < totalPages,
+        hasPrevious: page > 1,
+        totalResults,
+        totalPages,
+        page,
+        size,
+      },
+      responseErrors: null,
+    });
+  },
+);
