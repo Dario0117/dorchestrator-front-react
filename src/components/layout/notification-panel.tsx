@@ -20,7 +20,6 @@ import {
   useMarkAllNotificationsReadMutation,
   useMarkNotificationReadMutation,
 } from '@services/notifications/mark-notification-read.http-service';
-import { NOTIFICATION_POLLING_INTERVAL_MS } from '@services/notifications/notification.constants';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { Bell, BellOff, CheckCheck } from 'lucide-react';
@@ -55,7 +54,6 @@ export function NotificationPanel() {
 
   const { data: countData } = useQuery({
     ...getUnreadCountQueryOptions(organizationId),
-    refetchInterval: NOTIFICATION_POLLING_INTERVAL_MS,
     enabled: !!currentOrganization,
   });
 
