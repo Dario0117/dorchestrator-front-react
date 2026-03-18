@@ -3,11 +3,12 @@ import { useFontSize } from '@components/terminal/hooks/use-font-size';
 import { ColdStorageView } from '@components/terminal/pages/cold-storage-view';
 import { RestoringView } from '@components/terminal/pages/restoring-view';
 import { RecordingPlayer } from '@components/terminal/recording-player';
-import type { ImageMapping } from '@components/terminal/recording-player.types';
+import type { FileMapping } from '@components/terminal/recording-player.types';
+import { SessionFilePanel } from '@components/terminal/session-file-panel';
 import { EmptyState } from '@components/ui/empty-state';
 import type { RecordingData } from '@services/terminal/get-recording.http-service';
 import { RECORDING_STORAGE_TIER } from '@services/terminal/get-recording.http-service.constants';
-import { useSessionImagesQueryOptions } from '@services/terminal/list-session-images.http-service';
+import { useSessionFilesQueryOptions } from '@services/terminal/list-session-files.http-service';
 import { useQuery } from '@tanstack/react-query';
 import { FileWarning } from 'lucide-react';
 import { useMemo } from 'react';
@@ -28,14 +29,14 @@ export function RecordingContent({
   } = useFontSize();
 
   const { data: imagesData } = useQuery(
-    useSessionImagesQueryOptions(organizationId, sessionId),
+    useSessionFilesQueryOptions(organizationId, sessionId),
   );
 
-  const imageMap = useMemo<ImageMapping>(() => {
-    const images = imagesData?.responseData?.results ?? [];
-    const map: ImageMapping = {};
-    for (const img of images) {
-      map[img.filename] = img.id;
+  const fileMap = useMemo<FileMapping>(() => {
+    const files = imagesData?.responseData?.results ?? [];
+    const map: FileMapping = {};
+    for (const file of files) {
+      map[file.filename] = file.id;
     }
     return map;
   }, [imagesData]);
@@ -72,13 +73,18 @@ export function RecordingContent({
           onDecrease={decreaseFontSize}
         />
       </div>
+      <SessionFilePanel
+        organizationId={organizationId}
+        sessionId={sessionId}
+        readOnly
+      />
       <RecordingPlayer
         chunks={recording.chunks}
         durationSeconds={recording.durationSeconds}
         fontSize={fontSize}
         organizationId={organizationId}
         sessionId={sessionId}
-        imageMap={imageMap}
+        fileMap={fileMap}
       />
     </div>
   );

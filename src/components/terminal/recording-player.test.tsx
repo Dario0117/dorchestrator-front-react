@@ -255,7 +255,7 @@ describe('RecordingPlayer', () => {
         durationSeconds={1}
         organizationId="org-1"
         sessionId={1}
-        imageMap={{ 'screenshot.png': 42 }}
+        fileMap={{ 'screenshot.png': 42 }}
       />,
     );
 
@@ -376,7 +376,7 @@ describe('RecordingPlayer', () => {
     vi.useRealTimers();
   });
 
-  it('should render file marker with imageMap fallback when image not in map', () => {
+  it('should render file marker with fileMap fallback when image not in map', () => {
     vi.useFakeTimers();
 
     renderWithProviders(
@@ -385,7 +385,7 @@ describe('RecordingPlayer', () => {
         durationSeconds={1}
         organizationId="org-1"
         sessionId={1}
-        imageMap={{}}
+        fileMap={{}}
       />,
     );
 
@@ -409,7 +409,7 @@ describe('RecordingPlayer', () => {
     vi.useRealTimers();
   });
 
-  it('should render file marker without imageMap prop', () => {
+  it('should render file marker without fileMap prop', () => {
     vi.useFakeTimers();
 
     renderWithProviders(

@@ -107,7 +107,7 @@ describe('RecordingContent', () => {
     server.use(
       http.get(
         buildBackendUrl(
-          '/api/v1/{organizationId}/terminal/sessions/{sessionId}/images',
+          '/api/v1/{organizationId}/terminal/sessions/{sessionId}/files',
         ),
         () => {
           handlerCalled = true;

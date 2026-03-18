@@ -52,7 +52,6 @@ export const useExportStatusQueryOptions = (
 export async function downloadExportFile(
   organizationId: string,
   exportId: string,
-  filename: string,
 ) {
   const { data, error } = await fetchClient.GET(
     '/api/v1/{organizationId}/terminal/sessions/export/{exportId}/download',
@@ -60,7 +59,6 @@ export async function downloadExportFile(
       params: {
         path: { organizationId, exportId },
       },
-      parseAs: 'blob',
     },
   );
 
@@ -68,7 +66,12 @@ export async function downloadExportFile(
     throw new Error('Export download failed');
   }
 
-  const blobUrl = URL.createObjectURL(data);
+  const { downloadUrl, filename } = data.responseData.results;
+
+  const response = await fetch(downloadUrl);
+  const blob = await response.blob();
+  const blobUrl = URL.createObjectURL(blob);
+
   const anchor = document.createElement('a');
   anchor.href = blobUrl;
   anchor.download = filename;

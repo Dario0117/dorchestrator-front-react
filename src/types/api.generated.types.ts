@@ -740,30 +740,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/{organizationId}/terminal/sessions/{sessionId}/images": {
+    "/api/v1/{organizationId}/terminal/sessions/{sessionId}/files": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["getApiV1ByOrganizationIdTerminalSessionsBySessionIdImages"];
+        get: operations["getApiV1ByOrganizationIdTerminalSessionsBySessionIdFiles"];
         put?: never;
-        post: operations["postApiV1ByOrganizationIdTerminalSessionsBySessionIdImages"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/{organizationId}/terminal/sessions/{sessionId}/images/{imageId}": {
+    "/api/v1/{organizationId}/terminal/sessions/{sessionId}/files/upload-url": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["getApiV1ByOrganizationIdTerminalSessionsBySessionIdImagesByImageId"];
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdTerminalSessionsBySessionIdFilesUpload-url"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/terminal/sessions/{sessionId}/files/{fileId}/download-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdTerminalSessionsBySessionIdFilesByFileIdDownload-url"];
         put?: never;
         post?: never;
         delete?: never;
@@ -7592,7 +7608,95 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
-        responses: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                downloadUrl: string;
+                                filename: string;
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
     };
     getApiV1ByOrganizationIdTerminalSessionsBySessionIdRecording: {
         parameters: {
@@ -8150,7 +8254,7 @@ export interface operations {
             };
         };
     };
-    getApiV1ByOrganizationIdTerminalSessionsBySessionIdImages: {
+    getApiV1ByOrganizationIdTerminalSessionsBySessionIdFiles: {
         parameters: {
             query: {
                 page: number;
@@ -8180,7 +8284,6 @@ export interface operations {
                                 mimeType: string;
                                 sizeBytes: number;
                                 createdAt: string;
-                                transferredToDevice?: boolean;
                             }[];
                             hasNext: boolean;
                             hasPrevious: boolean;
@@ -8265,7 +8368,7 @@ export interface operations {
             };
         };
     };
-    postApiV1ByOrganizationIdTerminalSessionsBySessionIdImages: {
+    "postApiV1ByOrganizationIdTerminalSessionsBySessionIdFilesUpload-url": {
         parameters: {
             query?: never;
             header?: never;
@@ -8278,25 +8381,19 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: binary
-                     * @default File
-                     */
-                    file: string;
+                    filename: string;
+                    mimeType: string;
+                    sizeBytes: number;
                 };
                 "application/x-www-form-urlencoded": {
-                    /**
-                     * Format: binary
-                     * @default File
-                     */
-                    file: string;
+                    filename: string;
+                    mimeType: string;
+                    sizeBytes: number;
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: binary
-                     * @default File
-                     */
-                    file: string;
+                    filename: string;
+                    mimeType: string;
+                    sizeBytes: number;
                 };
             };
         };
@@ -8310,13 +8407,17 @@ export interface operations {
                     "application/json": {
                         responseData: {
                             results: {
-                                id: number;
-                                sessionId: number;
-                                filename: string;
-                                mimeType: string;
-                                sizeBytes: number;
-                                createdAt: string;
-                                transferredToDevice?: boolean;
+                                uploadUrl: string;
+                                objectKey: string;
+                                expiresInSeconds: number;
+                                file: {
+                                    id: number;
+                                    sessionId: number;
+                                    filename: string;
+                                    mimeType: string;
+                                    sizeBytes: number;
+                                    createdAt: string;
+                                };
                             };
                         };
                         responseErrors: null;
@@ -8395,19 +8496,107 @@ export interface operations {
             };
         };
     };
-    getApiV1ByOrganizationIdTerminalSessionsBySessionIdImagesByImageId: {
+    "getApiV1ByOrganizationIdTerminalSessionsBySessionIdFilesByFileIdDownload-url": {
         parameters: {
             query?: never;
             header?: never;
             path: {
                 organizationId: string;
                 sessionId: number;
-                imageId: number;
+                fileId: number;
             };
             cookie?: never;
         };
         requestBody?: never;
-        responses: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                downloadUrl: string;
+                                expiresInSeconds: number;
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
     };
     postApiV1ByOrganizationIdTerminalSessionsBySessionIdShare: {
         parameters: {

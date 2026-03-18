@@ -2,8 +2,11 @@ import {
   type FileEventData,
   RecordingFileMarker,
 } from '@components/terminal/recording-file-marker';
+import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import { HttpResponse, http } from 'msw';
+import { server } from '@/../testsSetup';
 
 const baseEvent: FileEventData = {
   filename: 'report.pdf',
@@ -21,6 +24,23 @@ const imageEvent: FileEventData = {
   transferId: 'transfer-2',
 };
 
+const downloadUrlHandler = http.get(
+  buildBackendUrl(
+    '/api/v1/{organizationId}/terminal/sessions/{sessionId}/files/{fileId}/download-url',
+  ),
+  () => {
+    return HttpResponse.json({
+      responseData: {
+        results: {
+          downloadUrl: 'https://s3.example.com/presigned-download-url',
+          expiresInSeconds: 3600,
+        },
+      },
+      responseErrors: null,
+    });
+  },
+);
+
 describe('RecordingFileMarker', () => {
   it('should render file name', () => {
     renderWithProviders(
@@ -29,7 +49,7 @@ describe('RecordingFileMarker', () => {
         timestamp="2026-01-15T10:30:00.000Z"
         organizationId="org-1"
         sessionId={1}
-        imageId={null}
+        fileId={null}
       />,
     );
 
@@ -43,7 +63,7 @@ describe('RecordingFileMarker', () => {
         timestamp="2026-01-15T10:30:00.000Z"
         organizationId="org-1"
         sessionId={1}
-        imageId={null}
+        fileId={null}
       />,
     );
 
@@ -51,53 +71,79 @@ describe('RecordingFileMarker', () => {
     expect(screen.getByText(/application\/pdf/)).toBeInTheDocument();
   });
 
-  it('should render file icon for non-image files', () => {
+  it('should render file icon for non-image files without fileId', () => {
     renderWithProviders(
       <RecordingFileMarker
         event={baseEvent}
         timestamp="2026-01-15T10:30:00.000Z"
         organizationId="org-1"
         sessionId={1}
-        imageId={null}
+        fileId={null}
       />,
     );
 
     expect(screen.getByTestId('recording-file-marker')).toBeInTheDocument();
-    // Should not have an img element
+    // Should not have an img element or link
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+  });
+
+  it('should render download link for non-image files with fileId', async () => {
+    server.use(downloadUrlHandler);
+
+    renderWithProviders(
+      <RecordingFileMarker
+        event={baseEvent}
+        timestamp="2026-01-15T10:30:00.000Z"
+        organizationId="org-1"
+        sessionId={1}
+        fileId={10}
+      />,
+    );
+
+    const link = await waitFor(() => screen.getByRole('link'));
+    expect(link).toHaveAttribute(
+      'href',
+      'https://s3.example.com/presigned-download-url',
+    );
+    expect(link).toHaveAttribute('target', '_blank');
+    // Should not render an image thumbnail for non-image files
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
 
-  it('should render image thumbnail when imageId is provided for image files', () => {
+  it('should render image thumbnail when fileId is provided for image files', async () => {
+    server.use(downloadUrlHandler);
+
     renderWithProviders(
       <RecordingFileMarker
         event={imageEvent}
         timestamp="2026-01-15T10:30:00.000Z"
         organizationId="org-1"
         sessionId={1}
-        imageId={42}
+        fileId={42}
       />,
     );
 
-    const img = screen.getByAltText('screenshot.png');
+    const img = await waitFor(() => screen.getByAltText('screenshot.png'));
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute(
       'src',
-      expect.stringContaining('/api/v1/org-1/terminal/sessions/1/images/42'),
+      'https://s3.example.com/presigned-download-url',
     );
   });
 
-  it('should render image icon when image file has no imageId', () => {
+  it('should render image icon when image file has no fileId (no preview)', () => {
     renderWithProviders(
       <RecordingFileMarker
         event={imageEvent}
         timestamp="2026-01-15T10:30:00.000Z"
         organizationId="org-1"
         sessionId={1}
-        imageId={null}
+        fileId={null}
       />,
     );
 
-    // Should not have an img element since imageId is null
+    // Should not have an img element since fileId is null
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
 
@@ -108,7 +154,7 @@ describe('RecordingFileMarker', () => {
         timestamp="2026-01-15T10:30:00.000Z"
         organizationId="org-1"
         sessionId={1}
-        imageId={null}
+        fileId={null}
       />,
     );
 
@@ -122,28 +168,30 @@ describe('RecordingFileMarker', () => {
         timestamp="2026-01-15T10:30:00.000Z"
         organizationId="org-1"
         sessionId={1}
-        imageId={null}
+        fileId={null}
       />,
     );
 
     expect(screen.getByText(/5\.0 MB/)).toBeInTheDocument();
   });
 
-  it('should render image link pointing to backend', () => {
+  it('should render image link pointing to presigned URL', async () => {
+    server.use(downloadUrlHandler);
+
     renderWithProviders(
       <RecordingFileMarker
         event={imageEvent}
         timestamp="2026-01-15T10:30:00.000Z"
         organizationId="org-1"
         sessionId={1}
-        imageId={42}
+        fileId={42}
       />,
     );
 
-    const link = screen.getByRole('link');
+    const link = await waitFor(() => screen.getByRole('link'));
     expect(link).toHaveAttribute(
       'href',
-      expect.stringContaining('/api/v1/org-1/terminal/sessions/1/images/42'),
+      'https://s3.example.com/presigned-download-url',
     );
     expect(link).toHaveAttribute('target', '_blank');
   });

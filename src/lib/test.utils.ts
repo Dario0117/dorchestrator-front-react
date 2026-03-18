@@ -29,6 +29,7 @@ import { createTerminalSessionHandler } from '@services/terminal/create-terminal
 import { deleteBookmarkHandler } from '@services/terminal/delete-bookmark.http-service.handlers';
 import {
   cancelExportHandler,
+  downloadExportFileHandler,
   downloadExportHandler,
   getExportStatusHandler,
   initiateExportHandler,
@@ -110,6 +111,7 @@ export function MSWSuccessHandlers() {
     initiateExportHandler,
     getExportStatusHandler,
     downloadExportHandler,
+    downloadExportFileHandler,
     pauseExportHandler,
     resumeExportHandler,
     cancelExportHandler,

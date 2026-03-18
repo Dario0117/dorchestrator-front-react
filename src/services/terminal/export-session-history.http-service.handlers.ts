@@ -43,6 +43,21 @@ export const getExportStatusHandler = http.get(
 export const downloadExportHandler = http.get(
   `${BASE}/api/v1/:organizationId/terminal/sessions/export/:exportId/download`,
   () => {
+    return HttpResponse.json({
+      responseData: {
+        results: {
+          downloadUrl: `${BASE}/fake-presigned/session-history-2026-01-01.csv`,
+          filename: 'session-history-2026-01-01.csv',
+        },
+      },
+      responseErrors: null,
+    });
+  },
+);
+
+export const downloadExportFileHandler = http.get(
+  `${BASE}/fake-presigned/session-history-2026-01-01.csv`,
+  () => {
     return new HttpResponse(
       'session_id,user_email,user_name,device_name,device_id,created_at,terminated_at,duration_seconds,status,recording_size_bytes\n',
       {

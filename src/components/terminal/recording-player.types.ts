@@ -29,7 +29,7 @@ export interface FileEventMetadata {
   transferId: string;
 }
 
-export interface ImageMapping {
+export interface FileMapping {
   [filename: string]: number;
 }
 
@@ -39,5 +39,5 @@ export interface RecordingPlayerProps {
   fontSize?: number;
   organizationId?: string;
   sessionId?: number;
-  imageMap?: ImageMapping;
+  fileMap?: FileMapping;
 }

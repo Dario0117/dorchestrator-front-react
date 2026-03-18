@@ -106,7 +106,7 @@ export function SessionHistoryExportDialog({
 
     if (exportStatus.status === 'completed' && !downloadTriggeredRef.current) {
       downloadTriggeredRef.current = true;
-      downloadExportFile(organizationId, exportId, exportStatus.filename)
+      downloadExportFile(organizationId, exportId)
         .then(() => onOpenChange(false))
         .catch((err) => {
           logError({ error: err }, 'Failed to download export file');

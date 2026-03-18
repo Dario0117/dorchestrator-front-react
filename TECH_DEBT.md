@@ -9,6 +9,7 @@
 - [ ] Adding a new device, when copying the command it changes the status of the token and not the command
 - [ ] Add the device id and user id on the command card
 - [ ] For date filters, prevent users from selecting a "to" date after the "from" date it doesn't make sense to add a range that is negative
+- [ ] Right now the download of exports does a fetch to download the file and then add the blob to the DOM. we shouldn't control the download of the file, we should just let the browser handle it. 
 
 ## Auth
 

@@ -1,5 +1,6 @@
-import { env } from '@lib/env.utils';
-import { FileIcon, ImageIcon } from 'lucide-react';
+import { getFileDownloadUrl } from '@services/terminal/get-file-download-url.http-service';
+import { DownloadIcon, FileIcon, ImageIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface FileEventData {
   filename: string;
@@ -14,7 +15,7 @@ interface RecordingFileMarkerProps {
   timestamp: string;
   organizationId: string;
   sessionId: number;
-  imageId: number | null;
+  fileId: number | null;
 }
 
 function formatSize(bytes: number) {
@@ -32,32 +33,48 @@ export function RecordingFileMarker({
   timestamp,
   organizationId,
   sessionId,
-  imageId,
+  fileId,
 }: RecordingFileMarkerProps) {
   const isImage = event.mimeType.startsWith('image/');
-  const imageUrl =
-    isImage && imageId !== null
-      ? `${env.BACKEND_BASE_URL}/api/v1/${organizationId}/terminal/sessions/${sessionId}/images/${imageId}`
-      : null;
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (fileId === null) {
+      return;
+    }
+
+    getFileDownloadUrl({ organizationId, sessionId, fileId }).then(
+      (result) => setDownloadUrl(result.downloadUrl),
+      () => setDownloadUrl(null),
+    );
+  }, [organizationId, sessionId, fileId]);
 
   return (
     <div
       className="flex items-center gap-3 rounded-md border bg-muted/30 p-2"
       data-testid="recording-file-marker"
     >
-      {imageUrl ? (
+      {downloadUrl && isImage ? (
         <a
-          href={imageUrl}
+          href={downloadUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="block h-10 w-10 shrink-0 overflow-hidden rounded border hover:ring-2 hover:ring-primary"
         >
           <img
-            src={imageUrl}
+            src={downloadUrl}
             alt={event.filename}
-            crossOrigin="use-credentials"
             className="h-full w-full object-cover"
           />
+        </a>
+      ) : downloadUrl ? (
+        <a
+          href={downloadUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded border bg-muted hover:ring-2 hover:ring-primary"
+        >
+          <DownloadIcon className="h-4 w-4 text-muted-foreground" />
         </a>
       ) : (
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded border bg-muted">

@@ -186,6 +186,18 @@ const heartbeatPongSchema = z.object({
   type: z.literal('heartbeat:pong'),
 });
 
+// File Transfer Messages (ID-based — agent downloads via its own HTTP client)
+const fileTransferSchema = z.object({
+  type: z.literal('file:transfer'),
+  sessionId: z.string(),
+  payload: z.object({
+    fileId: z.number(),
+    filename: z.string(),
+    mimeType: z.string(),
+    sizeBytes: z.number(),
+  }),
+});
+
 // Error Message
 const errorMessageSchema = z.object({
   type: z.literal('error'),
@@ -219,6 +231,7 @@ export const wsMessageSchema = z.discriminatedUnion('type', [
   suggestionNotifySchema,
   suggestionAcceptedSchema,
   suggestionDismissedSchema,
+  fileTransferSchema,
   heartbeatPingSchema,
   heartbeatPongSchema,
   errorMessageSchema,
@@ -248,6 +261,7 @@ export {
   suggestionNotifySchema,
   suggestionAcceptedSchema,
   suggestionDismissedSchema,
+  fileTransferSchema,
   heartbeatPingSchema,
   heartbeatPongSchema,
   errorMessageSchema,
@@ -282,6 +296,7 @@ export type SuggestionAcceptedMessage = z.infer<
 export type SuggestionDismissedMessage = z.infer<
   typeof suggestionDismissedSchema
 >;
+export type FileTransferMessage = z.infer<typeof fileTransferSchema>;
 export type HeartbeatPingMessage = z.infer<typeof heartbeatPingSchema>;
 export type HeartbeatPongMessage = z.infer<typeof heartbeatPongSchema>;
 export type ErrorMessage = z.infer<typeof errorMessageSchema>;

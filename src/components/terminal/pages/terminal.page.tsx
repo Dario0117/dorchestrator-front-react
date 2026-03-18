@@ -3,7 +3,7 @@ import { useTerminalBookmark } from '@components/terminal/hooks/use-terminal-boo
 import { useTerminalSessionLifecycle } from '@components/terminal/hooks/use-terminal-session-lifecycle';
 import { useTerminalShare } from '@components/terminal/hooks/use-terminal-share';
 import { useTerminalShortcuts } from '@components/terminal/hooks/use-terminal-shortcuts';
-import { SessionImagePanel } from '@components/terminal/session-image-panel';
+import { SessionFilePanel } from '@components/terminal/session-file-panel';
 import { ShortcutBuilderDialog } from '@components/terminal/shortcut-builder-dialog';
 import { SuggestionNotificationPanel } from '@components/terminal/suggestion-notification-panel';
 import { TerminalEmulator } from '@components/terminal/terminal-emulator';
@@ -93,7 +93,7 @@ export function TerminalPage({
         editingShortcut={shortcuts.editingShortcut}
       />
       <div className="shrink-0 border-b">
-        <SessionImagePanel
+        <SessionFilePanel
           organizationId={organizationId}
           sessionId={sessionIdNum}
         />

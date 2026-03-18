@@ -34,7 +34,7 @@ export function RecordingPlayer({
   fontSize = 14,
   organizationId,
   sessionId,
-  imageMap,
+  fileMap,
 }: RecordingPlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<Terminal | null>(null);
@@ -195,7 +195,7 @@ export function RecordingPlayer({
                 timestamp={fileEvent.timestamp}
                 organizationId={organizationId}
                 sessionId={sessionId}
-                imageId={imageMap?.[fileEvent.event.filename] ?? null}
+                fileId={fileMap?.[fileEvent.event.filename] ?? null}
               />
             ))}
           </div>
