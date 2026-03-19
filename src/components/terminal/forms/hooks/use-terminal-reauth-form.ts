@@ -14,7 +14,7 @@ export function useTerminalReauthForm({
       password: '',
     },
     validators: {
-      onBlur: terminalReauthFormSchema,
+      onSubmit: terminalReauthFormSchema,
     },
     onSubmit({ value }) {
       authMutation.mutate(

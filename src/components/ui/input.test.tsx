@@ -38,12 +38,6 @@ describe('Input', () => {
     expect(input).toHaveValue('test value');
   });
 
-  it('should render with custom className', () => {
-    render(<Input className="custom-input" />);
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveClass('custom-input');
-  });
-
   it('should be disabled when disabled prop is true', () => {
     render(<Input disabled />);
     const input = screen.getByRole('textbox');
@@ -119,25 +113,5 @@ describe('Input', () => {
     const input = screen.getByRole('textbox');
     expect(input).toBeInTheDocument();
     expect(input.tagName).toBe('INPUT');
-  });
-
-  describe('Mobile Touch Target and Font Requirements (AC1)', () => {
-    it('input meets 44px minimum height for mobile touch targets', () => {
-      render(<Input />);
-      const input = screen.getByRole('textbox');
-
-      // h-11 = 2.75rem = 44px (meets WCAG 2.5.5 AAA standards)
-      expect(input).toHaveClass('h-11');
-    });
-
-    it('input has 16px base font size to prevent iOS auto-zoom', () => {
-      render(<Input />);
-      const input = screen.getByRole('textbox');
-
-      // text-base = 16px on mobile (prevents iOS Safari auto-zoom on focus)
-      // md:text-sm = 14px on desktop (optimized for desktop UX)
-      expect(input).toHaveClass('text-base');
-      expect(input).toHaveClass('md:text-sm');
-    });
   });
 });

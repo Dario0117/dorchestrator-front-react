@@ -23,11 +23,11 @@ export function CreateOrganizationModal({
     <Dialog
       open={isOpen}
       modal
+      // biome-ignore lint/suspicious/noEmptyBlockStatements: intentionally prevent close
+      onOpenChange={() => {}}
     >
       <DialogContent
         className="max-w-md"
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
         showCloseButton={false}
       >
         <DialogHeader>

@@ -37,16 +37,10 @@ describe('Separator', () => {
     // Decorative separators might not always have aria-hidden in test environment
   });
 
-  it('can be non-decorative when specified', () => {
-    render(
-      <Separator
-        decorative={false}
-        data-testid="separator"
-      />,
-    );
+  it('has separator role', () => {
+    render(<Separator data-testid="separator" />);
 
     const separator = screen.getByTestId('separator');
-    expect(separator).not.toHaveAttribute('aria-hidden', 'true');
     expect(separator).toHaveAttribute('role', 'separator');
   });
 
@@ -93,16 +87,10 @@ describe('Separator', () => {
     expect(separator).toHaveAttribute('data-orientation', 'horizontal');
   });
 
-  it('has correct accessibility attributes for semantic separator', () => {
-    render(
-      <Separator
-        decorative={false}
-        data-testid="separator"
-      />,
-    );
+  it('has correct accessibility attributes', () => {
+    render(<Separator data-testid="separator" />);
 
     const separator = screen.getByTestId('separator');
     expect(separator).toHaveAttribute('role', 'separator');
-    expect(separator).not.toHaveAttribute('aria-hidden');
   });
 });

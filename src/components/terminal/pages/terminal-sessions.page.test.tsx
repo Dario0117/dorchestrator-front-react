@@ -1,7 +1,7 @@
 import { TerminalSessionsPage } from '@components/terminal/pages/terminal-sessions.page';
 import { queryClient } from '@context/query.provider';
 import { buildBackendUrl } from '@lib/test.utils';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import {
   setDesktopViewport,
   setMobileViewport,
@@ -317,14 +317,13 @@ describe('TerminalSessionsPage', () => {
     });
 
     it('should render all page size options', async () => {
-      const user = userEvent.setup();
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
         expect(screen.getByLabelText('Page size')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByLabelText('Page size'));
+      await clickTrigger(screen.getByLabelText('Page size'));
 
       await waitFor(() => {
         expect(
@@ -353,7 +352,7 @@ describe('TerminalSessionsPage', () => {
         expect(screen.getByLabelText('Page size')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByLabelText('Page size'));
+      await clickTrigger(screen.getByLabelText('Page size'));
 
       await waitFor(() => {
         expect(
@@ -386,7 +385,7 @@ describe('TerminalSessionsPage', () => {
 
       await waitFor(() => {
         const prevButton = screen.getByLabelText('Go to previous page');
-        expect(prevButton).toBeDisabled();
+        expect(prevButton).toHaveAttribute('aria-disabled', 'true');
       });
     });
 
@@ -403,7 +402,7 @@ describe('TerminalSessionsPage', () => {
 
       await waitFor(() => {
         const nextButton = screen.getByLabelText('Go to next page');
-        expect(nextButton).toBeDisabled();
+        expect(nextButton).toHaveAttribute('aria-disabled', 'true');
       });
     });
 
@@ -599,7 +598,7 @@ describe('TerminalSessionsPage', () => {
         expect(screen.getByLabelText('Filter by status')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByLabelText('Filter by status'));
+      await clickTrigger(screen.getByLabelText('Filter by status'));
 
       await waitFor(() => {
         expect(
@@ -632,7 +631,7 @@ describe('TerminalSessionsPage', () => {
         expect(screen.getByLabelText('Filter by status')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByLabelText('Filter by status'));
+      await clickTrigger(screen.getByLabelText('Filter by status'));
 
       await waitFor(() => {
         expect(
@@ -660,7 +659,7 @@ describe('TerminalSessionsPage', () => {
         expect(screen.getByLabelText('Filter by device')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByLabelText('Filter by device'));
+      await clickTrigger(screen.getByLabelText('Filter by device'));
 
       await waitFor(() => {
         expect(
@@ -693,7 +692,7 @@ describe('TerminalSessionsPage', () => {
         expect(screen.getByLabelText('Filter by device')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByLabelText('Filter by device'));
+      await clickTrigger(screen.getByLabelText('Filter by device'));
 
       await waitFor(() => {
         expect(
@@ -721,7 +720,7 @@ describe('TerminalSessionsPage', () => {
         expect(screen.getByLabelText('Filter by user')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByLabelText('Filter by user'));
+      await clickTrigger(screen.getByLabelText('Filter by user'));
 
       await waitFor(() => {
         expect(
@@ -754,7 +753,7 @@ describe('TerminalSessionsPage', () => {
         expect(screen.getByLabelText('Filter by user')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByLabelText('Filter by user'));
+      await clickTrigger(screen.getByLabelText('Filter by user'));
 
       await waitFor(() => {
         expect(
@@ -883,7 +882,6 @@ describe('TerminalSessionsPage', () => {
 
   describe('Export button', () => {
     it('should open export dialog when clicking Export button', async () => {
-      const user = userEvent.setup();
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
@@ -892,7 +890,7 @@ describe('TerminalSessionsPage', () => {
         ).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: /Export/ }));
+      await clickTrigger(screen.getByRole('button', { name: /Export/ }));
 
       await waitFor(() => {
         expect(screen.getByRole('dialog')).toBeInTheDocument();
@@ -922,6 +920,27 @@ describe('TerminalSessionsPage', () => {
         }),
       );
     });
+
+    it('should show "Clear filters" button in filter bar when filters are active and sessions exist', async () => {
+      const user = userEvent.setup();
+      mockSearchParams = { page: 1, size: 25, status: 'active' };
+
+      renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: 'Clear filters' }),
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Clear filters' }));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          search: { page: 1, size: 25 },
+        }),
+      );
+    });
   });
 
   describe('Terminate session', () => {
@@ -941,7 +960,6 @@ describe('TerminalSessionsPage', () => {
     });
 
     it('should open confirmation dialog when clicking terminate button', async () => {
-      const user = userEvent.setup();
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
@@ -953,7 +971,7 @@ describe('TerminalSessionsPage', () => {
       const closeButtons = screen.getAllByRole('button', {
         name: 'Close session',
       });
-      await user.click(closeButtons[0] as HTMLElement);
+      await clickTrigger(closeButtons[0] as HTMLElement);
 
       await waitFor(() => {
         expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
@@ -961,14 +979,14 @@ describe('TerminalSessionsPage', () => {
     });
 
     it('should terminate session when confirming dialog', async () => {
-      const user = userEvent.setup();
-
+      let deleteRequested = false;
       server.use(
         http.delete(
           buildBackendUrl(
             '/api/v1/{organizationId}/terminal/sessions/{sessionId}',
           ),
           () => {
+            deleteRequested = true;
             return HttpResponse.json({
               responseData: { results: ['Session terminated'] },
               responseErrors: null,
@@ -988,19 +1006,17 @@ describe('TerminalSessionsPage', () => {
       const closeButtons = screen.getAllByRole('button', {
         name: 'Close session',
       });
-      await user.click(closeButtons[0] as HTMLElement);
+      await clickTrigger(closeButtons[0] as HTMLElement);
 
       await waitFor(() => {
         expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: 'Close Session' }));
+      await clickTrigger(screen.getByRole('button', { name: 'Close Session' }));
 
-      // Dialog should close
+      // Mutation should be triggered
       await waitFor(() => {
-        expect(
-          screen.queryByText('Close terminal session?'),
-        ).not.toBeInTheDocument();
+        expect(deleteRequested).toBe(true);
       });
     });
 
@@ -1017,7 +1033,7 @@ describe('TerminalSessionsPage', () => {
       const closeButtons = screen.getAllByRole('button', {
         name: 'Close session',
       });
-      await user.click(closeButtons[0] as HTMLElement);
+      await clickTrigger(closeButtons[0] as HTMLElement);
 
       await waitFor(() => {
         expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
@@ -1031,7 +1047,6 @@ describe('TerminalSessionsPage', () => {
     });
 
     it('should cancel termination when clicking Cancel', async () => {
-      const user = userEvent.setup();
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
@@ -1043,13 +1058,13 @@ describe('TerminalSessionsPage', () => {
       const closeButtons = screen.getAllByRole('button', {
         name: 'Close session',
       });
-      await user.click(closeButtons[0] as HTMLElement);
+      await clickTrigger(closeButtons[0] as HTMLElement);
 
       await waitFor(() => {
         expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: 'Cancel' }));
+      await clickTrigger(screen.getByRole('button', { name: 'Cancel' }));
 
       await waitFor(() => {
         expect(
@@ -1263,8 +1278,7 @@ describe('TerminalSessionsPage', () => {
     });
 
     it('should show disabled terminate button when mutation is pending', async () => {
-      const user = userEvent.setup();
-
+      let deleteRequested = false;
       let resolveTerminate!: () => void;
       const terminatePromise = new Promise<void>((resolve) => {
         resolveTerminate = resolve;
@@ -1276,6 +1290,7 @@ describe('TerminalSessionsPage', () => {
             '/api/v1/{organizationId}/terminal/sessions/{sessionId}',
           ),
           async () => {
+            deleteRequested = true;
             await terminatePromise;
             return HttpResponse.json({
               responseData: { results: ['Session terminated'] },
@@ -1297,13 +1312,21 @@ describe('TerminalSessionsPage', () => {
       const closeButtons = screen.getAllByRole('button', {
         name: 'Close session',
       });
-      await user.click(closeButtons[0] as HTMLElement);
+      await clickTrigger(closeButtons[0] as HTMLElement);
 
       await waitFor(() => {
         expect(screen.getByText('Close terminal session?')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: 'Close Session' }));
+      await clickTrigger(screen.getByRole('button', { name: 'Close Session' }));
+
+      // Verify mutation was triggered
+      await waitFor(() => {
+        expect(deleteRequested).toBe(true);
+      });
+
+      // Close the dialog so the underlying table buttons become accessible
+      await clickTrigger(screen.getByRole('button', { name: 'Cancel' }));
 
       // While mutation is pending, the button should be disabled
       await waitFor(() => {

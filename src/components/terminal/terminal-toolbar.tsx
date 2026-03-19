@@ -139,15 +139,17 @@ export function TerminalToolbar({
           </Button>
         )}
         <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={isClosing}
-            >
-              <X className="mr-1 h-4 w-4" />
-              Close Session
-            </Button>
+          <AlertDialogTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={isClosing}
+              />
+            }
+          >
+            <X className="mr-1 h-4 w-4" />
+            Close Session
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>

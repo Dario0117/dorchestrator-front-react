@@ -2,7 +2,6 @@ import { HomePage } from '@components/org/pages/home.page';
 import { queryClient } from '@context/query.provider';
 import { buildBackendUrl } from '@lib/test.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { setMobileViewport, setTabletViewport } from '@lib/viewport-test-utils';
 import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { screen, waitFor } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
@@ -268,62 +267,6 @@ describe('HomePage', () => {
       expect(
         screen.getByText('Welcome to Test Organization'),
       ).toBeInTheDocument();
-    });
-  });
-
-  describe('Mobile Responsive Layout (AC2, AC3)', () => {
-    it('uses responsive padding on mobile (375px)', async () => {
-      setMobileViewport();
-      const { container } = renderWithProviders(
-        <Suspense fallback={<div>Loading...</div>}>
-          <HomePage />
-        </Suspense>,
-      );
-
-      await waitFor(() => {
-        const section = container.querySelector('section');
-        expect(section).toBeInTheDocument();
-      });
-
-      const section = container.querySelector('section');
-      // p-6 on mobile, md:p-10 on desktop
-      expect(section).toHaveClass('p-6');
-      expect(section).toHaveClass('md:p-10');
-    });
-
-    it('renders stats cards in single column on mobile', async () => {
-      setMobileViewport();
-      const { container } = renderWithProviders(
-        <Suspense fallback={<div>Loading...</div>}>
-          <HomePage />
-        </Suspense>,
-      );
-
-      await waitFor(() => {
-        const statsGrid = container.querySelector('.grid.md\\:grid-cols-3');
-        if (statsGrid) {
-          // md:grid-cols-3 means 3 columns at md breakpoint and above
-          // On mobile (< 768px), it defaults to grid-cols-1 (single column)
-          expect(statsGrid).toHaveClass('md:grid-cols-3');
-        }
-      });
-    });
-
-    it('renders stats cards in 3 columns on tablet and desktop', async () => {
-      setTabletViewport();
-      const { container } = renderWithProviders(
-        <Suspense fallback={<div>Loading...</div>}>
-          <HomePage />
-        </Suspense>,
-      );
-
-      await waitFor(() => {
-        const statsGrid = container.querySelector('.grid.md\\:grid-cols-3');
-        if (statsGrid) {
-          // md:grid-cols-3 applies at 768px+ (tablet and desktop)
-          expect(statsGrid).toHaveClass('md:grid-cols-3');
-        }
-      });
     });
   });
 });

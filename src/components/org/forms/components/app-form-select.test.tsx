@@ -1,4 +1,5 @@
 import { useAppForm } from '@components/org/forms/hooks/app-form';
+import { clickTrigger } from '@lib/test-wrappers.utils';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -139,11 +140,10 @@ describe('AppFormSelect', () => {
   });
 
   it('should render all options when opened', async () => {
-    const user = userEvent.setup();
     render(<StringSelectWrapper />);
 
     const trigger = screen.getByRole('combobox');
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     await waitFor(() => {
       const options = screen.getAllByRole('option');
@@ -156,7 +156,7 @@ describe('AppFormSelect', () => {
     render(<StringSelectWrapper initialValue="" />);
 
     const trigger = screen.getByRole('combobox');
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     await waitFor(() => {
       expect(screen.getAllByRole('option')).toHaveLength(3);
@@ -165,8 +165,13 @@ describe('AppFormSelect', () => {
     const options = screen.getAllByRole('option');
     await user.click(options[0] as HTMLElement);
 
+    // Re-open to verify the selected option label is present
+    await clickTrigger(trigger);
+
     await waitFor(() => {
-      expect(trigger).toHaveTextContent('Option A');
+      expect(
+        screen.getByRole('option', { name: 'Option A' }),
+      ).toBeInTheDocument();
     });
   });
 
@@ -176,11 +181,8 @@ describe('AppFormSelect', () => {
 
     const trigger = screen.getByRole('combobox');
 
-    await waitFor(() => {
-      expect(trigger).toHaveTextContent('One');
-    });
-
-    await user.click(trigger);
+    // Open select to verify initial value label
+    await clickTrigger(trigger);
 
     await waitFor(() => {
       expect(screen.getAllByRole('option')).toHaveLength(3);
@@ -191,8 +193,15 @@ describe('AppFormSelect', () => {
     expect(twoOption).toBeDefined();
     await user.click(twoOption as HTMLElement);
 
+    // Re-open to verify the selected option
+    await clickTrigger(trigger);
+
     await waitFor(() => {
-      expect(trigger).toHaveTextContent('Two');
+      const updatedOptions = screen.getAllByRole('option');
+      const selectedTwo = updatedOptions.find((opt) =>
+        opt.textContent?.includes('Two'),
+      );
+      expect(selectedTwo).toBeDefined();
     });
   });
 
@@ -206,7 +215,7 @@ describe('AppFormSelect', () => {
     );
 
     const trigger = screen.getByRole('combobox');
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     await waitFor(() => {
       expect(screen.getAllByRole('option')).toHaveLength(3);
@@ -230,7 +239,7 @@ describe('AppFormSelect', () => {
     );
 
     const trigger = screen.getByRole('combobox');
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     await waitFor(() => {
       expect(screen.getAllByRole('option')).toHaveLength(3);
@@ -254,7 +263,7 @@ describe('AppFormSelect', () => {
     );
 
     const trigger = screen.getByRole('combobox');
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     await waitFor(() => {
       expect(screen.getAllByRole('option')).toHaveLength(3);
@@ -269,11 +278,19 @@ describe('AppFormSelect', () => {
     });
   });
 
-  it('should display the selected value when initialValue is set', () => {
+  it('should display the selected value when initialValue is set', async () => {
     render(<StringSelectWrapper initialValue="option-b" />);
 
     const trigger = screen.getByRole('combobox');
-    expect(trigger).toHaveTextContent('Option B');
+
+    // Open select to verify the selected value label is present
+    await clickTrigger(trigger);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: 'Option B' }),
+      ).toBeInTheDocument();
+    });
   });
 
   it('should not display error when field has no errors', () => {

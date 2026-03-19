@@ -77,6 +77,12 @@ describe('RegisterForm', () => {
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'testpassword');
     await user.type(confirmPasswordInput, 'testpassword');
+    await user.tab();
+
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
+
     await user.click(submitButton);
 
     // better-auth wraps responses in { data: ..., error: null } format
@@ -112,6 +118,12 @@ describe('RegisterForm', () => {
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'testpassword');
     await user.type(confirmPasswordInput, 'testpassword');
+    await user.tab();
+
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
+
     await user.click(submitButton);
 
     // better-auth wraps responses in { data: ..., error: null } format

@@ -39,32 +39,24 @@ describe('AuditLogRow', () => {
     expect(screen.getByText('Created')).toBeInTheDocument();
   });
 
-  it('should render created badge with green styling', () => {
-    renderRow();
-    const badge = screen.getByText('Created');
-    expect(badge.className).toContain('bg-green-100');
-  });
-
-  it('should render updated badge with blue styling', () => {
+  it('should render updated badge with correct label', () => {
     const updatedEntry: AuditLogEntry = {
       ...mockEntry,
       action: 'updated',
       metadata: { after: { newStatus: 'completed' } },
     };
     renderRow(updatedEntry);
-    const badge = screen.getByText('Updated');
-    expect(badge.className).toContain('bg-blue-100');
+    expect(screen.getByText('Updated')).toBeInTheDocument();
   });
 
-  it('should render deleted badge with red styling', () => {
+  it('should render deleted badge with correct label', () => {
     const deletedEntry: AuditLogEntry = {
       ...mockEntry,
       action: 'deleted',
       metadata: { before: { deviceId: 'dev-2' } },
     };
     renderRow(deletedEntry);
-    const badge = screen.getByText('Deleted');
-    expect(badge.className).toContain('bg-red-100');
+    expect(screen.getByText('Deleted')).toBeInTheDocument();
   });
 
   it('should render the resource type badge', () => {
@@ -367,13 +359,12 @@ describe('AuditLogRow', () => {
     queryClient.clear();
   });
 
-  it('should render deactivated badge with amber styling', () => {
+  it('should render deactivated badge with correct label', () => {
     const deactivatedEntry: AuditLogEntry = {
       ...mockEntry,
       action: 'deactivated',
     };
     renderRow(deactivatedEntry);
-    const badge = screen.getByText('Deactivated');
-    expect(badge.className).toContain('bg-amber-100');
+    expect(screen.getByText('Deactivated')).toBeInTheDocument();
   });
 });

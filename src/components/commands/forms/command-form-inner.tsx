@@ -110,19 +110,12 @@ export function CommandFormInner({
             >
               Cancel
             </Button>
-            <form.Subscribe
-              selector={(state) => state.isValid && !state.isPristine}
-            >
-              {(canSubmit) => (
-                <Button
-                  type="submit"
-                  className="h-11"
-                  disabled={!canSubmit}
-                >
-                  Execute Command
-                </Button>
-              )}
-            </form.Subscribe>
+            <form.AppForm>
+              <form.AppSubscribeSubmitButton
+                label="Execute Command"
+                className="h-11 w-auto"
+              />
+            </form.AppForm>
           </div>
 
           <form.AppForm>

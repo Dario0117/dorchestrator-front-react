@@ -14,7 +14,7 @@ export function useUpdatePasswordForm({
       confirm: '',
     },
     validators: {
-      onBlur: updatePasswordFormSchema,
+      onSubmit: updatePasswordFormSchema,
     },
     onSubmit({ value }) {
       updatePasswordMutation.mutate(

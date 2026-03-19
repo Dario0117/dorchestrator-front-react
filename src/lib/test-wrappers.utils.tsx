@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@context/theme.provider';
 import type { ProviderWrapperOptions } from '@lib/test-wrappers.utils.types';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import type { ReactNode } from 'react';
 
 // Mock matchMedia
@@ -26,6 +26,7 @@ global.ResizeObserver = class ResizeObserver {
   observe() {
     // noop
   }
+  /* v8 ignore next 3 -- jsdom polyfill stub, never called in tests */
   unobserve() {
     // noop
   }
@@ -53,6 +54,17 @@ export const createQueryThemeWrapper = (options?: ProviderWrapperOptions) => {
     </ThemeProvider>
   );
 };
+
+/**
+ * Click a trigger element that opens a Base UI floating element (dropdown, dialog, etc).
+ * Uses fireEvent.click instead of userEvent.click because Base UI's floating-ui
+ * dismiss handler conflicts with userEvent's full pointer event sequence in jsdom.
+ */
+export function clickTrigger(element: HTMLElement) {
+  return act(() => {
+    fireEvent.click(element);
+  });
+}
 
 export function renderWithProviders(
   ui: React.ReactElement,

@@ -2,7 +2,7 @@ import { AppSidebar } from '@components/layout/app-sidebar';
 import { SidebarProvider } from '@components/ui/sidebar';
 import { LayoutProvider } from '@context/layout.provider';
 import { buildBackendUrl } from '@lib/test.utils';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
@@ -338,7 +338,7 @@ describe('AppSidebar', () => {
     const trigger = screen.getByRole('button', {
       name: /test organization/i,
     });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     // Wait for dropdown to appear and click the Beta Team radio item
     await waitFor(() => {
@@ -383,7 +383,7 @@ describe('AppSidebar', () => {
     const trigger = screen.getByRole('button', {
       name: /test organization/i,
     });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     await waitFor(() => {
       expect(screen.getByText('Beta Team')).toBeInTheDocument();
@@ -414,11 +414,10 @@ describe('AppSidebar', () => {
     });
 
     // Open the dropdown to see teams rendered
-    const user = userEvent.setup();
     const trigger = screen.getByRole('button', {
       name: /test organization/i,
     });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     await waitFor(() => {
       expect(screen.getByText('Alpha Team')).toBeInTheDocument();
@@ -439,11 +438,10 @@ describe('AppSidebar', () => {
     expect(sidebar).toBeInTheDocument();
 
     // Open the dropdown to verify no team radio items are rendered
-    const user = userEvent.setup();
     const trigger = screen.getByRole('button', {
       name: /test organization/i,
     });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     // Wait for the dropdown menu to appear
     await waitFor(() => {

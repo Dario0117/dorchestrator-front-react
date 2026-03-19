@@ -13,7 +13,7 @@ export function useResetPasswordForm({
       email: '',
     },
     validators: {
-      onBlur: resetPasswordFormSchema,
+      onSubmit: resetPasswordFormSchema,
     },
     onSubmit({ value }) {
       resetPasswordMutation.mutate(value, {

@@ -32,7 +32,12 @@ export function SelectFilter({
   ariaLabel,
   className = 'h-11 w-full text-base md:w-auto md:text-sm',
 }: SelectFilterProps) {
-  const handleChange = (selected: string) => {
+  const handleChange = (selected: string | null) => {
+    /* v8 ignore start -- Base UI types onValueChange as string | null but never emits null */
+    if (selected === null) {
+      return;
+    }
+    /* v8 ignore stop */
     onChange(selected === ALL_VALUE ? undefined : selected);
   };
 

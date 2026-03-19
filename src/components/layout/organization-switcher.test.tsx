@@ -1,7 +1,7 @@
 import { OrganizationSwitcher } from '@components/layout/organization-switcher';
 import { SidebarProvider } from '@components/ui/sidebar';
 import { buildBackendUrl } from '@lib/test.utils';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AudioWaveform, Command } from 'lucide-react';
@@ -58,24 +58,22 @@ describe('OrganizationSwitcher', () => {
   });
 
   it('should render with "Organizations" label and active team', async () => {
-    const user = userEvent.setup();
     renderOrganizationSwitcher();
 
     expect(screen.getByText('Dorchestrator')).toBeInTheDocument();
 
     // Open dropdown and verify label
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(screen.getByText('Organizations')).toBeInTheDocument();
   });
 
   it('should show "Add organization" button in dropdown', async () => {
-    const user = userEvent.setup();
     renderOrganizationSwitcher();
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(screen.getByText('Add organization')).toBeInTheDocument();
   });
@@ -85,7 +83,7 @@ describe('OrganizationSwitcher', () => {
     renderOrganizationSwitcher();
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const addButton = screen.getByRole('menuitem', {
       name: /add organization/i,
@@ -105,7 +103,7 @@ describe('OrganizationSwitcher', () => {
     renderOrganizationSwitcher();
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const addButton = screen.getByRole('menuitem', {
       name: /add organization/i,
@@ -123,7 +121,7 @@ describe('OrganizationSwitcher', () => {
 
     // Open dropdown, then click add
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const addButton = screen.getByRole('menuitem', {
       name: /add organization/i,
@@ -134,7 +132,7 @@ describe('OrganizationSwitcher', () => {
 
     // Close dialog via the close button
     const closeButton = screen.getByRole('button', { name: /close/i });
-    await user.click(closeButton);
+    await clickTrigger(closeButton);
 
     await waitFor(() => {
       expect(screen.queryByText('New Organization')).not.toBeInTheDocument();
@@ -147,7 +145,7 @@ describe('OrganizationSwitcher', () => {
 
     // Open dropdown, then click add
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const addButton = screen.getByRole('menuitem', {
       name: /add organization/i,
@@ -217,7 +215,7 @@ describe('OrganizationSwitcher', () => {
 
     // Open dropdown, then click add
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const addButton = screen.getByRole('menuitem', {
       name: /add organization/i,
@@ -281,7 +279,7 @@ describe('OrganizationSwitcher', () => {
 
     // Open dropdown, then click add
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const addButton = screen.getByRole('menuitem', {
       name: /add organization/i,

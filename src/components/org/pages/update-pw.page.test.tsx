@@ -51,6 +51,14 @@ describe('UpdatePasswordPage', () => {
 
     await user.type(passwordInput, 'newpassword123');
     await user.type(confirmPasswordInput, 'newpassword123');
+    // Blur the confirm field to trigger onBlur validation
+    await user.tab();
+
+    // Wait for the submit button to become enabled after validation
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
+
     await user.click(submitButton);
 
     // Wait for mutation to complete and navigation to occur

@@ -73,14 +73,14 @@ export function SessionLocked({
           <Button onClick={() => setShowReauth(true)}>Re-authenticate</Button>
           <Button
             variant="outline"
-            asChild
+            render={
+              <Link
+                to="/$organizationSlug/t/$teamSlug/terminal"
+                params={{ organizationSlug, teamSlug }}
+              />
+            }
           >
-            <Link
-              to="/$organizationSlug/t/$teamSlug/terminal"
-              params={{ organizationSlug, teamSlug }}
-            >
-              Back to sessions
-            </Link>
+            Back to sessions
           </Button>
         </div>
       </div>

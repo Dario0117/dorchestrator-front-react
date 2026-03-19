@@ -35,7 +35,12 @@ export function AppFormSelect({
 
   const currentValue = field.state.value ? String(field.state.value) : '';
 
-  const handleChange = (value: string) => {
+  const handleChange = (value: string | null) => {
+    /* v8 ignore start -- Base UI types onValueChange as string | null but never emits null */
+    if (value === null) {
+      return;
+    }
+    /* v8 ignore stop */
     if (typeof field.state.value === 'number') {
       field.handleChange(Number(value));
     } else {

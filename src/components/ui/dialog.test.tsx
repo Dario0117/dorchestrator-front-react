@@ -10,8 +10,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@components/ui/dialog';
-import { fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { clickTrigger } from '@lib/test-wrappers.utils';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 describe('Dialog', () => {
   it('should render dialog root with correct data-slot', () => {
@@ -38,8 +38,6 @@ describe('Dialog', () => {
   });
 
   it('should open dialog when trigger is clicked', async () => {
-    const user = userEvent.setup();
-
     render(
       <Dialog>
         <DialogTrigger>Open Dialog</DialogTrigger>
@@ -53,15 +51,13 @@ describe('Dialog', () => {
     );
 
     const trigger = screen.getByRole('button', { name: 'Open Dialog' });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(screen.getByText('Dialog Title')).toBeInTheDocument();
     expect(screen.getByText('Dialog description content')).toBeInTheDocument();
   });
 
   it('should close dialog when close button is clicked', async () => {
-    const user = userEvent.setup();
-
     render(
       <Dialog defaultOpen>
         <DialogContent>
@@ -76,7 +72,7 @@ describe('Dialog', () => {
     expect(screen.getByText('Dialog Title')).toBeInTheDocument();
 
     const closeButton = screen.getByRole('button', { name: 'Close' });
-    await user.click(closeButton);
+    await clickTrigger(closeButton);
 
     expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument();
   });
@@ -151,8 +147,6 @@ describe('Dialog', () => {
   });
 
   it('should close dialog when overlay is clicked', async () => {
-    const user = userEvent.setup();
-
     render(
       <Dialog defaultOpen>
         <DialogContent>
@@ -168,13 +162,13 @@ describe('Dialog', () => {
     expect(overlay).toBeInTheDocument();
 
     if (overlay) {
-      await user.click(overlay);
+      await clickTrigger(overlay as HTMLElement);
     }
 
     expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument();
   });
 
-  it('should close dialog when escape key is pressed', () => {
+  it('should close dialog when escape key is pressed', async () => {
     render(
       <Dialog defaultOpen>
         <DialogContent>
@@ -186,9 +180,12 @@ describe('Dialog', () => {
 
     expect(screen.getByText('Dialog Title')).toBeInTheDocument();
 
-    fireEvent.keyDown(document, { key: 'Escape' });
+    const dialog = screen.getByRole('dialog');
+    fireEvent.keyDown(dialog, { key: 'Escape' });
 
-    expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument();
+    });
   });
 
   it('should render DialogClose component with correct attributes', () => {
@@ -231,7 +228,6 @@ describe('Dialog', () => {
   });
 
   it('should support controlled dialog state', async () => {
-    const user = userEvent.setup();
     let isOpen = false;
     const setOpen = vi.fn((open: boolean) => {
       isOpen = open;
@@ -253,9 +249,9 @@ describe('Dialog', () => {
     expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument();
 
     const trigger = screen.getByRole('button', { name: 'Open Dialog' });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
-    expect(setOpen).toHaveBeenCalledWith(true);
+    expect(setOpen).toHaveBeenCalledWith(true, expect.anything());
 
     // Simulate controlled state update
     isOpen = true;

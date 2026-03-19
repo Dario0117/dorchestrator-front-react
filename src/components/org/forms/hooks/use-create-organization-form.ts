@@ -22,7 +22,7 @@ export function useCreateOrganizationForm({
       slug: '',
     },
     validators: {
-      onBlur: createOrganizationFormSchema,
+      onSubmit: createOrganizationFormSchema,
     },
     onSubmit({ value }) {
       createOrganizationMutation.mutate(

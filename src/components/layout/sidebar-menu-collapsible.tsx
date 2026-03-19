@@ -27,41 +27,37 @@ export function SidebarMenuCollapsible({
   const { setOpenMobile } = useSidebar();
   return (
     <Collapsible
-      asChild
+      render={<SidebarMenuItem />}
       defaultOpen={checkIsActive(href, item, true)}
       className="group/collapsible"
     >
-      <SidebarMenuItem>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton tooltip={item.title}>
-            {item.icon && <item.icon />}
-            <span>{item.title}</span>
-            {item.badge && <NavBadge>{item.badge}</NavBadge>}
-            <ChevronRight className="ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
-        <CollapsibleContent className="CollapsibleContent">
-          <SidebarMenuSub>
-            {item.items.map((subItem) => (
-              <SidebarMenuSubItem key={subItem.title}>
-                <SidebarMenuSubButton
-                  asChild
-                  isActive={checkIsActive(href, subItem)}
-                >
+      <CollapsibleTrigger render={<SidebarMenuButton tooltip={item.title} />}>
+        {item.icon && <item.icon />}
+        <span>{item.title}</span>
+        {item.badge && <NavBadge>{item.badge}</NavBadge>}
+        <ChevronRight className="ms-auto transition-transform duration-200 group-data-open/collapsible:rotate-90" />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="CollapsibleContent">
+        <SidebarMenuSub>
+          {item.items.map((subItem) => (
+            <SidebarMenuSubItem key={subItem.title}>
+              <SidebarMenuSubButton
+                render={
                   <Link
                     to={subItem.url}
                     onClick={() => setOpenMobile(false)}
-                  >
-                    {subItem.icon && <subItem.icon />}
-                    <span>{subItem.title}</span>
-                    {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </SidebarMenuItem>
+                  />
+                }
+                isActive={checkIsActive(href, subItem)}
+              >
+                {subItem.icon && <subItem.icon />}
+                <span>{subItem.title}</span>
+                {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}
+              </SidebarMenuSubButton>
+            </SidebarMenuSubItem>
+          ))}
+        </SidebarMenuSub>
+      </CollapsibleContent>
     </Collapsible>
   );
 }

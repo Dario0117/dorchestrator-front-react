@@ -1,6 +1,6 @@
 import { NavUser } from '@components/layout/nav-user';
 import { SidebarProvider } from '@components/ui/sidebar';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import {
   setDesktopViewport,
   setMobileViewport,
@@ -66,21 +66,19 @@ describe('NavUser', () => {
   });
 
   it('should open dropdown menu when clicked', async () => {
-    const user = userEvent.setup();
     renderNavUser();
 
     const trigger = screen.getByRole('button');
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(screen.getByText('Upgrade to Pro')).toBeInTheDocument();
   });
 
   it('should display menu items in dropdown', async () => {
-    const user = userEvent.setup();
     renderNavUser();
 
     const trigger = screen.getByRole('button');
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(screen.getByText('Upgrade to Pro')).toBeInTheDocument();
     expect(screen.getByText('Account')).toBeInTheDocument();
@@ -90,11 +88,10 @@ describe('NavUser', () => {
   });
 
   it('should display user information in dropdown header', async () => {
-    const user = userEvent.setup();
     renderNavUser();
 
     const trigger = screen.getByRole('button');
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const userNameInstances = screen.getAllByText('John Doe');
     expect(userNameInstances.length).toBeGreaterThan(1);
@@ -108,7 +105,7 @@ describe('NavUser', () => {
     renderNavUser();
 
     const trigger = screen.getByRole('button');
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const signOutButton = screen.getByText('Sign out');
     await user.click(signOutButton);
@@ -134,14 +131,13 @@ describe('NavUser', () => {
   });
 
   it('should render user avatar in both trigger and dropdown', async () => {
-    const user = userEvent.setup();
     renderNavUser();
 
     const button = screen.getByRole('button');
     const avatar = button.querySelector('[class*="rounded-lg"]');
     expect(avatar).toBeInTheDocument();
 
-    await user.click(button);
+    await clickTrigger(button);
 
     expect(screen.getByText('Upgrade to Pro')).toBeInTheDocument();
   });
@@ -156,11 +152,10 @@ describe('NavUser', () => {
 
   it('should render dropdown from bottom on mobile viewport', async () => {
     setMobileViewport();
-    const user = userEvent.setup();
     renderNavUser();
 
     const trigger = screen.getByRole('button');
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const menuContent = screen.getByRole('menu');
     expect(menuContent).toHaveAttribute('data-side', 'bottom');

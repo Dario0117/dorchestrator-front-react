@@ -10,12 +10,6 @@ describe('Button', () => {
     expect(button).toHaveAttribute('data-slot', 'button');
   });
 
-  it('should render with custom className', () => {
-    render(<Button className="custom-class">Test</Button>);
-    const button = screen.getByRole('button', { name: 'Test' });
-    expect(button).toHaveClass('custom-class');
-  });
-
   it('should render with different variants', () => {
     const { rerender } = render(
       <Button variant="destructive">Destructive</Button>,
@@ -72,11 +66,10 @@ describe('Button', () => {
     expect(button).toBeDisabled();
   });
 
-  it('should render as child component when asChild is true', () => {
+  it('should render as child component when render prop is used', () => {
     render(
-      <Button asChild>
-        <a href="/test">Link Button</a>
-      </Button>,
+      // biome-ignore lint/a11y/useAnchorContent: test element, children provided by Button
+      <Button render={<a href="/test" />}>Link Button</Button>,
     );
     const link = screen.getByRole('link', { name: 'Link Button' });
     expect(link).toBeInTheDocument();
@@ -120,46 +113,5 @@ describe('Button', () => {
     const button = screen.getByRole('button', { name: 'Large Destructive' });
     expect(button).toBeInTheDocument();
     expect(button).toHaveAttribute('data-slot', 'button');
-  });
-
-  describe('Mobile Touch Target Requirements (AC1)', () => {
-    it('default button meets 44px minimum height for mobile', () => {
-      render(<Button>Click me</Button>);
-      const button = screen.getByRole('button', { name: 'Click me' });
-
-      // h-11 = 2.75rem = 44px (meets WCAG 2.5.5 AAA and Apple HIG standards)
-      expect(button).toHaveClass('h-11');
-    });
-
-    it('icon button meets 44px minimum size for mobile', () => {
-      render(
-        <Button
-          size="icon"
-          aria-label="Icon button"
-        />,
-      );
-      const button = screen.getByRole('button');
-
-      // size-11 = 44px × 44px (meets touch target standards)
-      expect(button).toHaveClass('size-11');
-    });
-
-    it('small button meets 44px minimum height despite smaller font', () => {
-      render(<Button size="sm">Small</Button>);
-      const button = screen.getByRole('button', { name: 'Small' });
-
-      // h-11 = 44px (meets touch target minimum)
-      // text-sm provides visual distinction while maintaining accessibility
-      expect(button).toHaveClass('h-11');
-      expect(button).toHaveClass('text-sm');
-    });
-
-    it('large button exceeds minimum touch target', () => {
-      render(<Button size="lg">Large</Button>);
-      const button = screen.getByRole('button', { name: 'Large' });
-
-      // h-12 = 48px (exceeds 44px minimum, matches Material Design 48dp recommendation)
-      expect(button).toHaveClass('h-12');
-    });
   });
 });

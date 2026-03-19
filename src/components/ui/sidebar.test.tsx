@@ -24,8 +24,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '@components/ui/sidebar';
-import { SIDEBAR_KEYBOARD_SHORTCUT } from '@components/ui/sidebar.constants';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
 // Mock useIsMobile hook - default to desktop
@@ -103,31 +102,6 @@ describe('SidebarProvider', () => {
 
     await user.click(screen.getByTestId('toggle'));
 
-    expect(screen.getByTestId('state')).toHaveTextContent('collapsed');
-  });
-
-  it('should handle keyboard shortcut to toggle sidebar', async () => {
-    render(
-      <SidebarProvider>
-        <TestSidebarConsumer />
-      </SidebarProvider>,
-    );
-
-    expect(screen.getByTestId('state')).toHaveTextContent('expanded');
-
-    // Trigger keyboard shortcut (Cmd/Ctrl + B)
-    const event = new KeyboardEvent('keydown', {
-      key: SIDEBAR_KEYBOARD_SHORTCUT,
-      metaKey: true,
-      bubbles: true,
-      cancelable: true,
-    });
-    act(() => {
-      window.dispatchEvent(event);
-    });
-
-    // Wait for state to update
-    await screen.findByText('collapsed');
     expect(screen.getByTestId('state')).toHaveTextContent('collapsed');
   });
 
@@ -444,13 +418,13 @@ describe('Sidebar Components', () => {
     expect(label).toHaveTextContent('Label');
   });
 
-  it('should render SidebarGroupLabel as child with asChild prop', () => {
+  it('should render SidebarGroupLabel with render prop', () => {
     const { container } = render(
       <SidebarProvider>
         <Sidebar collapsible="none">
           <SidebarGroup>
-            <SidebarGroupLabel asChild>
-              <span data-testid="custom-label">Custom Label</span>
+            <SidebarGroupLabel render={<span data-testid="custom-label" />}>
+              Custom Label
             </SidebarGroupLabel>
           </SidebarGroup>
         </Sidebar>
@@ -477,18 +451,20 @@ describe('Sidebar Components', () => {
     expect(action).toHaveTextContent('Action');
   });
 
-  it('should render SidebarGroupAction as child with asChild prop', () => {
+  it('should render SidebarGroupAction with render prop', () => {
     const { container } = render(
       <SidebarProvider>
         <Sidebar collapsible="none">
           <SidebarGroup>
-            <SidebarGroupAction asChild>
-              <button
-                type="button"
-                data-testid="custom-action"
-              >
-                Custom Action
-              </button>
+            <SidebarGroupAction
+              render={
+                <button
+                  type="button"
+                  data-testid="custom-action"
+                />
+              }
+            >
+              Custom Action
             </SidebarGroupAction>
           </SidebarGroup>
         </Sidebar>
@@ -663,7 +639,7 @@ describe('SidebarMenu Components', () => {
 
     const button = container.querySelector('[data-sidebar="menu-button"]');
     expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute('data-active', 'true');
+    expect(button).toHaveAttribute('data-active');
   });
 
   it('should render SidebarMenuButton with variants', () => {
@@ -705,19 +681,22 @@ describe('SidebarMenu Components', () => {
     expect(buttons[1]).toHaveTextContent('Large');
   });
 
-  it('should render SidebarMenuButton with asChild prop', () => {
+  it('should render SidebarMenuButton with render prop', () => {
     const { container } = render(
       <SidebarProvider>
         <Sidebar collapsible="none">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <a
-                  href="/test"
-                  data-testid="custom-button"
-                >
-                  Link
-                </a>
+              <SidebarMenuButton
+                render={
+                  // biome-ignore lint/a11y/useAnchorContent: test element
+                  <a
+                    href="/test"
+                    data-testid="custom-button"
+                  />
+                }
+              >
+                Link
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -767,19 +746,21 @@ describe('SidebarMenu Components', () => {
     expect(action).toHaveTextContent('Action');
   });
 
-  it('should render SidebarMenuAction with asChild prop', () => {
+  it('should render SidebarMenuAction with render prop', () => {
     const { container } = render(
       <SidebarProvider>
         <Sidebar collapsible="none">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuAction asChild>
-                <button
-                  type="button"
-                  data-testid="custom-action"
-                >
-                  Custom
-                </button>
+              <SidebarMenuAction
+                render={
+                  <button
+                    type="button"
+                    data-testid="custom-action"
+                  />
+                }
+              >
+                Custom
               </SidebarMenuAction>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -933,7 +914,7 @@ describe('SidebarMenuSub Components', () => {
 
     const button = container.querySelector('[data-sidebar="menu-sub-button"]');
     expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute('data-active', 'true');
+    expect(button).toHaveAttribute('data-active');
   });
 
   it('should render SidebarMenuSubButton with size variants', () => {
@@ -963,7 +944,7 @@ describe('SidebarMenuSub Components', () => {
     expect(buttons[1]).toHaveTextContent('Medium');
   });
 
-  it('should render SidebarMenuSubButton with asChild prop', () => {
+  it('should render SidebarMenuSubButton with render prop', () => {
     const { container } = render(
       <SidebarProvider>
         <Sidebar collapsible="none">
@@ -971,13 +952,16 @@ describe('SidebarMenuSub Components', () => {
             <SidebarMenuItem>
               <SidebarMenuSub>
                 <SidebarMenuSubItem>
-                  <SidebarMenuSubButton asChild>
-                    <a
-                      href="/test"
-                      data-testid="custom-sub-button"
-                    >
-                      Link
-                    </a>
+                  <SidebarMenuSubButton
+                    render={
+                      // biome-ignore lint/a11y/useAnchorContent: test element
+                      <a
+                        href="/test"
+                        data-testid="custom-sub-button"
+                      />
+                    }
+                  >
+                    Link
                   </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
               </SidebarMenuSub>

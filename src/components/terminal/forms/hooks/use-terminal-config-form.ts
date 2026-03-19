@@ -16,7 +16,7 @@ export function useTerminalConfigForm({
   const form = useAppForm({
     defaultValues,
     validators: {
-      onBlur: terminalConfigFormSchema,
+      onSubmit: terminalConfigFormSchema,
     },
     onSubmit({ value }) {
       const inactivityTimeoutMs =

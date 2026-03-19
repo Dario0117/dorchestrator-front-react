@@ -103,7 +103,12 @@ export function TerminalSessionsPage() {
     });
   };
 
-  const handleStatusFilter = (newStatus: string) => {
+  const handleStatusFilter = (newStatus: string | null) => {
+    /* v8 ignore start -- Base UI types onValueChange as string | null but never emits null */
+    if (newStatus === null) {
+      return;
+    }
+    /* v8 ignore stop */
     navigate({
       search: (prev) => ({
         ...prev,
@@ -113,7 +118,12 @@ export function TerminalSessionsPage() {
     });
   };
 
-  const handleDeviceFilter = (value: string) => {
+  const handleDeviceFilter = (value: string | null) => {
+    /* v8 ignore start -- Base UI types onValueChange as string | null but never emits null */
+    if (value === null) {
+      return;
+    }
+    /* v8 ignore stop */
     navigate({
       search: (prev) => ({
         ...prev,
@@ -123,7 +133,12 @@ export function TerminalSessionsPage() {
     });
   };
 
-  const handleUserFilter = (value: string) => {
+  const handleUserFilter = (value: string | null) => {
+    /* v8 ignore start -- Base UI types onValueChange as string | null but never emits null */
+    if (value === null) {
+      return;
+    }
+    /* v8 ignore stop */
     navigate({
       search: (prev) => ({
         ...prev,
@@ -401,22 +416,24 @@ export function TerminalSessionsPage() {
                       <TableCell>
                         {session.status !== 'terminated' && (
                           <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8"
-                                disabled={
-                                  terminateMutation.isPending &&
-                                  terminateMutation.variables?.params?.path
-                                    ?.sessionId === session.id
-                                }
-                                onClick={(e) => e.stopPropagation()}
-                                onKeyDown={(e) => e.stopPropagation()}
-                              >
-                                <X className="h-4 w-4" />
-                                <span className="sr-only">Close session</span>
-                              </Button>
+                            <AlertDialogTrigger
+                              render={
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  disabled={
+                                    terminateMutation.isPending &&
+                                    terminateMutation.variables?.params?.path
+                                      ?.sessionId === session.id
+                                  }
+                                  onClick={(e) => e.stopPropagation()}
+                                  onKeyDown={(e) => e.stopPropagation()}
+                                />
+                              }
+                            >
+                              <X className="h-4 w-4" />
+                              <span className="sr-only">Close session</span>
                             </AlertDialogTrigger>
                             <AlertDialogContent
                               onClick={(e) => e.stopPropagation()}
@@ -484,7 +501,9 @@ export function TerminalSessionsPage() {
 
                 <Select
                   value={String(size)}
-                  onValueChange={(value) => handleSizeChange(Number(value))}
+                  onValueChange={(value) =>
+                    value !== null && handleSizeChange(Number(value))
+                  }
                 >
                   <SelectTrigger
                     aria-label="Page size"

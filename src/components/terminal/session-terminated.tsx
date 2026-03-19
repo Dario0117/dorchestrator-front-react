@@ -44,31 +44,31 @@ export function SessionTerminated({
         <div className="flex items-center justify-center gap-2">
           <Button
             variant="outline"
-            asChild
+            render={
+              <Link
+                to="/$organizationSlug/t/$teamSlug/terminal/sessions/$sessionId/recording"
+                params={{
+                  organizationSlug,
+                  teamSlug,
+                  sessionId: String(session.id),
+                }}
+              />
+            }
           >
-            <Link
-              to="/$organizationSlug/t/$teamSlug/terminal/sessions/$sessionId/recording"
-              params={{
-                organizationSlug,
-                teamSlug,
-                sessionId: String(session.id),
-              }}
-            >
-              <Play className="mr-2 h-4 w-4" />
-              View Recording
-            </Link>
+            <Play className="mr-2 h-4 w-4" />
+            View Recording
           </Button>
           <Button
             variant="outline"
-            asChild
+            render={
+              <Link
+                to="/$organizationSlug/t/$teamSlug/terminal"
+                params={{ organizationSlug, teamSlug }}
+              />
+            }
           >
-            <Link
-              to="/$organizationSlug/t/$teamSlug/terminal"
-              params={{ organizationSlug, teamSlug }}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to sessions
-            </Link>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to sessions
           </Button>
         </div>
       </div>

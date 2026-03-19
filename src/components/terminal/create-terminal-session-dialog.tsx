@@ -106,8 +106,13 @@ export function CreateTerminalSessionDialog({
               <Label htmlFor="inactivity-timeout">Inactivity Timeout</Label>
               <Select
                 value={inactivitySelection}
-                onValueChange={(val: InactivitySelection) => {
-                  setInactivitySelection(val);
+                onValueChange={(val) => {
+                  /* v8 ignore start -- Base UI types onValueChange as string | null but never emits null */
+                  if (val === null) {
+                    return;
+                  }
+                  /* v8 ignore stop */
+                  setInactivitySelection(val as InactivitySelection);
                   setError(null);
                 }}
               >
@@ -158,8 +163,13 @@ export function CreateTerminalSessionDialog({
                 <Label htmlFor="hard-cap">Hard Cap</Label>
                 <Select
                   value={hardCapSelection}
-                  onValueChange={(val: HardCapSelection) => {
-                    setHardCapSelection(val);
+                  onValueChange={(val) => {
+                    /* v8 ignore start -- Base UI types onValueChange as string | null but never emits null */
+                    if (val === null) {
+                      return;
+                    }
+                    /* v8 ignore stop */
+                    setHardCapSelection(val as HardCapSelection);
                     setError(null);
                   }}
                 >

@@ -18,12 +18,6 @@ describe('Card Components', () => {
       expect(card).toHaveAttribute('data-slot', 'card');
     });
 
-    it('should render with custom className', () => {
-      render(<Card className="custom-card">Card</Card>);
-      const card = screen.getByText('Card');
-      expect(card).toHaveClass('custom-card');
-    });
-
     it('should render as div element', () => {
       render(<Card>Card</Card>);
       const card = screen.getByText('Card');

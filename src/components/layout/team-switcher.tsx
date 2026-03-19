@@ -2,12 +2,12 @@ import type { TeamSwitcherProps } from '@components/layout/team-switcher.types';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
 import {
@@ -45,37 +45,39 @@ export function TeamSwitcher({
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <activeTeam.logo className="size-4" />
-              </div>
-              <div className="grid flex-1 text-start text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {activeTeam.name}
+          <DropdownMenuTrigger
+            render={
+              <SidebarMenuButton
+                size="lg"
+                className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+              />
+            }
+          >
+            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+              <activeTeam.logo className="size-4" />
+            </div>
+            <div className="grid flex-1 text-start text-sm leading-tight">
+              <span className="truncate font-semibold">{activeTeam.name}</span>
+              {activeTeamName && (
+                <span className="truncate text-xs text-muted-foreground">
+                  {activeTeamName}
                 </span>
-                {activeTeamName && (
-                  <span className="truncate text-xs text-muted-foreground">
-                    {activeTeamName}
-                  </span>
-                )}
-              </div>
-              <ChevronsUpDown className="ms-auto" />
-            </SidebarMenuButton>
+              )}
+            </div>
+            <ChevronsUpDown className="ms-auto" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--anchor-width) min-w-56 rounded-lg"
             align="start"
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-muted-foreground text-xs">
-              {label}
-            </DropdownMenuLabel>
-            {teams.map((team, index) => {
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-muted-foreground text-xs">
+                {label}
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
+            {teams.map((team) => {
               const isActive = team.slug === activeSlug;
               const orgTeams = teamsByOrgSlug?.[team.slug] ?? [];
               return (
@@ -93,7 +95,6 @@ export function TeamSwitcher({
                       <team.logo className="size-4 shrink-0" />
                     </div>
                     {team.name}
-                    <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                   </DropdownMenuItem>
                   {orgTeams.length > 0 && (
                     <DropdownMenuRadioGroup

@@ -28,7 +28,7 @@ export function useCommandForm({
       command: '',
     },
     validators: {
-      onBlur: commandFormSchema,
+      onSubmit: commandFormSchema,
     },
     onSubmit({ value }) {
       submitCommandMutation.mutate(

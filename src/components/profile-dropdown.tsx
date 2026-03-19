@@ -1,6 +1,6 @@
 import { SignOutDialog } from '@components/sign-out-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
-import { Button } from '@components/ui/button';
+import { buttonVariants } from '@components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,11 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import useDialogState from '@hooks/use-dialog-state';
+import { cn } from '@lib/utils';
 import { useProfileSuspendedQuery } from '@services/users/get-profile.http-service';
 import { Link } from '@tanstack/react-router';
 
@@ -25,65 +25,60 @@ export function ProfileDropdown() {
 
   return (
     <>
-      <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="relative h-8 w-8 rounded-full"
-          >
-            <Avatar className="h-8 w-8">
-              <AvatarImage
-                src="/avatars/01.png"
-                alt="@shadcn"
-              />
-              <AvatarFallback>{avatarFallback}</AvatarFallback>
-            </Avatar>
-          </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          className={cn(
+            buttonVariants({ variant: 'ghost' }),
+            'relative h-8 w-8 rounded-full',
+          )}
+        >
+          <Avatar className="h-8 w-8">
+            <AvatarImage
+              src="/avatars/01.png"
+              alt="@shadcn"
+            />
+            <AvatarFallback>{avatarFallback}</AvatarFallback>
+          </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent
           className="w-56"
           align="end"
-          forceMount
         >
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col gap-1.5">
-              <p className="text-sm leading-none font-medium">
-                {profile?.name}
-              </p>
-              <p className="text-muted-foreground text-xs leading-none">
-                {profile?.email}
-              </p>
-            </div>
-          </DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col gap-1.5">
+                <p className="text-sm leading-none font-medium">
+                  {profile?.name}
+                </p>
+                <p className="text-muted-foreground text-xs leading-none">
+                  {profile?.email}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+          </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem asChild>
-              <Link
-                to="/$organizationSlug/profile"
-                params={{ organizationSlug: currentOrganization.slug }}
-              >
-                Profile
-                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-              </Link>
+            <DropdownMenuItem
+              render={
+                <Link
+                  to="/$organizationSlug/profile"
+                  params={{ organizationSlug: currentOrganization.slug }}
+                />
+              }
+            >
+              Profile
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to=".">
-                Billing
-                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-              </Link>
+            <DropdownMenuItem render={<Link to="." />}>
+              Billing
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to=".">
-                Settings
-                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-              </Link>
+            <DropdownMenuItem render={<Link to="." />}>
+              Settings
             </DropdownMenuItem>
             <DropdownMenuItem>New Team</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>
             Sign out
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

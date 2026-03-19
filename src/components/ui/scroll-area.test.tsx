@@ -21,10 +21,10 @@ describe('ScrollArea', () => {
     expect(screen.getByTestId('scroll-area')).toBeInTheDocument();
   });
 
-  it('should render with horizontal orientation', () => {
+  it('should render with custom className', () => {
     render(
       <ScrollArea
-        orientation="horizontal"
+        className="custom-class"
         data-testid="scroll-area"
       >
         <div>Content</div>

@@ -53,28 +53,28 @@ export function HomePage() {
 
       <div className="flex flex-col md:flex-row gap-4">
         <Button
-          asChild
           size="lg"
+          render={
+            <Link
+              to="/$organizationSlug/t/$teamSlug/devices"
+              params={{ organizationSlug: currentOrganization.slug, teamSlug }}
+            />
+          }
         >
-          <Link
-            to="/$organizationSlug/t/$teamSlug/devices"
-            params={{ organizationSlug: currentOrganization.slug, teamSlug }}
-          >
-            Add Device
-          </Link>
+          Add Device
         </Button>
         <Button
-          asChild
           size="lg"
           variant="outline"
+          render={
+            <Link
+              to="/$organizationSlug/t/$teamSlug/commands"
+              params={{ organizationSlug: currentOrganization.slug, teamSlug }}
+              search={{ executeModal: 'open' }}
+            />
+          }
         >
-          <Link
-            to="/$organizationSlug/t/$teamSlug/commands"
-            params={{ organizationSlug: currentOrganization.slug, teamSlug }}
-            search={{ executeModal: 'open' }}
-          >
-            Execute Command
-          </Link>
+          Execute Command
         </Button>
       </div>
 
@@ -124,19 +124,19 @@ export function HomePage() {
               description="Execute your first command to see activity here."
               action={
                 <Button
-                  asChild
                   variant="outline"
+                  render={
+                    <Link
+                      to="/$organizationSlug/t/$teamSlug/commands"
+                      params={{
+                        organizationSlug: currentOrganization.slug,
+                        teamSlug,
+                      }}
+                      search={{ executeModal: 'open' }}
+                    />
+                  }
                 >
-                  <Link
-                    to="/$organizationSlug/t/$teamSlug/commands"
-                    params={{
-                      organizationSlug: currentOrganization.slug,
-                      teamSlug,
-                    }}
-                    search={{ executeModal: 'open' }}
-                  >
-                    Execute your first command
-                  </Link>
+                  Execute your first command
                 </Button>
               }
             />

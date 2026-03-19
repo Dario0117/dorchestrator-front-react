@@ -1,10 +1,6 @@
 import { TerminalShortcutPanel } from '@components/terminal/terminal-shortcut-panel';
 import type { CustomShortcut } from '@components/terminal/terminal-shortcut-panel.types';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
-import {
-  setDesktopViewport,
-  setMobileViewport,
-} from '@lib/viewport-test-utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -120,47 +116,12 @@ describe('TerminalShortcutPanel', () => {
     expect(panel).toBeInTheDocument();
   });
 
-  test('all buttons have minimum touch target size (44px)', () => {
+  test('renders correct number of buttons (8 preset + 1 Add)', () => {
     renderWithProviders(<TerminalShortcutPanel {...defaultProps} />);
 
     const buttons = screen.getAllByRole('button');
     // 8 preset buttons + 1 Add button
     expect(buttons).toHaveLength(9);
-
-    for (const button of buttons) {
-      expect(button.className).toContain('min-w-11');
-    }
-  });
-
-  test('container has mobile horizontal scroll classes', () => {
-    setMobileViewport();
-    renderWithProviders(<TerminalShortcutPanel {...defaultProps} />);
-
-    const panel = screen.getByTestId('shortcut-panel');
-    // Mobile base: horizontal scroll with nowrap
-    expect(panel.className).toContain('overflow-x-auto');
-    expect(panel.className).toContain('flex-nowrap');
-    // Desktop override: wrap and no overflow
-    expect(panel.className).toContain('md:flex-wrap');
-    expect(panel.className).toContain('md:overflow-visible');
-  });
-
-  test('buttons have responsive sizing classes for mobile and desktop', () => {
-    setDesktopViewport();
-    renderWithProviders(<TerminalShortcutPanel {...defaultProps} />);
-
-    const buttons = screen.getAllByRole('button');
-
-    for (const button of buttons) {
-      // Mobile: 44px touch targets with 16px text (prevents iOS auto-zoom)
-      expect(button.className).toContain('h-11');
-      expect(button.className).toContain('min-w-11');
-      expect(button.className).toContain('text-base');
-      // Desktop: compact sizing
-      expect(button.className).toContain('md:h-9');
-      expect(button.className).toContain('md:min-w-9');
-      expect(button.className).toContain('md:text-sm');
-    }
   });
 
   test('clicking Add button calls onAddShortcut', async () => {
@@ -301,7 +262,7 @@ describe('TerminalShortcutPanel', () => {
         />,
       );
 
-      await user.click(screen.getByTestId('custom-shortcut-menu-1'));
+      await clickTrigger(screen.getByTestId('custom-shortcut-menu-1'));
       await user.click(screen.getByText('Edit'));
       expect(mockOnEditShortcut).toHaveBeenCalledWith(keystrokeShortcut);
     });
@@ -315,7 +276,7 @@ describe('TerminalShortcutPanel', () => {
         />,
       );
 
-      await user.click(screen.getByTestId('custom-shortcut-menu-1'));
+      await clickTrigger(screen.getByTestId('custom-shortcut-menu-1'));
       await user.click(screen.getByText('Delete'));
       expect(mockOnDeleteShortcut).toHaveBeenCalledWith(1);
     });

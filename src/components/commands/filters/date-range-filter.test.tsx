@@ -1,5 +1,5 @@
 import { DateRangeFilter } from '@components/commands/filters/date-range-filter';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -13,20 +13,28 @@ describe('DateRangeFilter', () => {
     vi.useRealTimers();
   });
 
-  it('should render with "Any Time" shown by default', () => {
+  it('should render with "Any Time" shown by default', async () => {
     const onChange = vi.fn();
     renderWithProviders(<DateRangeFilter onChange={onChange} />);
 
-    expect(screen.getByLabelText('Filter by date range')).toBeInTheDocument();
-    expect(screen.getByText('Any Time')).toBeInTheDocument();
+    const trigger = screen.getByLabelText('Filter by date range');
+    expect(trigger).toBeInTheDocument();
+
+    // Open select to verify the "Any Time" option is present
+    await clickTrigger(trigger);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: 'Any Time' }),
+      ).toBeInTheDocument();
+    });
   });
 
   it('should show date preset options when clicked', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const onChange = vi.fn();
     renderWithProviders(<DateRangeFilter onChange={onChange} />);
 
-    await user.click(screen.getByLabelText('Filter by date range'));
+    await clickTrigger(screen.getByLabelText('Filter by date range'));
 
     await waitFor(() => {
       expect(
@@ -46,7 +54,7 @@ describe('DateRangeFilter', () => {
     const onChange = vi.fn();
     renderWithProviders(<DateRangeFilter onChange={onChange} />);
 
-    await user.click(screen.getByLabelText('Filter by date range'));
+    await clickTrigger(screen.getByLabelText('Filter by date range'));
 
     await waitFor(() => {
       expect(
@@ -83,7 +91,7 @@ describe('DateRangeFilter', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText('Filter by date range'));
+    await clickTrigger(screen.getByLabelText('Filter by date range'));
 
     await waitFor(() => {
       expect(
@@ -99,7 +107,7 @@ describe('DateRangeFilter', () => {
     });
   });
 
-  it('should reflect current "Last 24 hours" preset from startDate prop', () => {
+  it('should reflect current "Last 24 hours" preset from startDate prop', async () => {
     const onChange = vi.fn();
     renderWithProviders(
       <DateRangeFilter
@@ -108,10 +116,18 @@ describe('DateRangeFilter', () => {
       />,
     );
 
-    expect(screen.getByText('Last 24 hours')).toBeInTheDocument();
+    // Open select to verify the correct preset is available
+    const trigger = screen.getByLabelText('Filter by date range');
+    await clickTrigger(trigger);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: 'Last 24 hours' }),
+      ).toBeInTheDocument();
+    });
   });
 
-  it('should reflect current "Last 30 days" preset from startDate prop', () => {
+  it('should reflect current "Last 30 days" preset from startDate prop', async () => {
     const onChange = vi.fn();
     renderWithProviders(
       <DateRangeFilter
@@ -120,10 +136,18 @@ describe('DateRangeFilter', () => {
       />,
     );
 
-    expect(screen.getByText('Last 30 days')).toBeInTheDocument();
+    // Open select to verify the correct preset is available
+    const trigger = screen.getByLabelText('Filter by date range');
+    await clickTrigger(trigger);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: 'Last 30 days' }),
+      ).toBeInTheDocument();
+    });
   });
 
-  it('should show "Any Time" when startDate does not match any preset', () => {
+  it('should show "Any Time" when startDate does not match any preset', async () => {
     const onChange = vi.fn();
     // A date 3 days ago — doesn't match 24h, 7d, or 30d presets (outside 1h tolerance)
     renderWithProviders(
@@ -133,6 +157,14 @@ describe('DateRangeFilter', () => {
       />,
     );
 
-    expect(screen.getByText('Any Time')).toBeInTheDocument();
+    // Open select to verify "Any Time" option is present (no preset matched)
+    const trigger = screen.getByLabelText('Filter by date range');
+    await clickTrigger(trigger);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: 'Any Time' }),
+      ).toBeInTheDocument();
+    });
   });
 });

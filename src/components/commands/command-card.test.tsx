@@ -181,19 +181,18 @@ describe('CommandCard', () => {
     expect(handleClick).not.toHaveBeenCalled();
   });
 
-  it('should apply status border for failed status', () => {
+  it('should render failed status badge', () => {
     const failedCommand: ListCommandsCommand = {
       ...mockCommand,
       status: 'failed',
     };
-    const { container } = renderWithProviders(
+    renderWithProviders(
       <CommandCard
         command={failedCommand}
         onClick={vi.fn()}
       />,
     );
 
-    const card = container.querySelector('[role="button"]');
-    expect(card).toHaveClass('border-l-red-500');
+    expect(screen.getByText('Failed')).toBeInTheDocument();
   });
 });

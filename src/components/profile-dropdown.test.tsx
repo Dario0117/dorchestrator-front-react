@@ -1,5 +1,5 @@
 import { ProfileDropdown } from '@components/profile-dropdown';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { Suspense } from 'react';
@@ -63,7 +63,6 @@ describe('ProfileDropdown', () => {
   });
 
   it('should open dropdown menu when avatar is clicked', async () => {
-    const user = userEvent.setup();
     renderWithProviders(
       <Suspense fallback={<div>Loading...</div>}>
         <ProfileDropdown />
@@ -73,13 +72,12 @@ describe('ProfileDropdown', () => {
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
     const button = screen.getByRole('button');
-    await user.click(button);
+    await clickTrigger(button);
     expect(screen.getByText('Test User')).toBeInTheDocument();
     expect(screen.getByText('test@example.com')).toBeInTheDocument();
   });
 
   it('should render menu items', async () => {
-    const user = userEvent.setup();
     renderWithProviders(
       <Suspense fallback={<div>Loading...</div>}>
         <ProfileDropdown />
@@ -89,30 +87,12 @@ describe('ProfileDropdown', () => {
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
     const button = screen.getByRole('button');
-    await user.click(button);
+    await clickTrigger(button);
     expect(screen.getByText('Profile')).toBeInTheDocument();
     expect(screen.getByText('Billing')).toBeInTheDocument();
     expect(screen.getByText('Settings')).toBeInTheDocument();
     expect(screen.getByText('New Team')).toBeInTheDocument();
     expect(screen.getByText('Sign out')).toBeInTheDocument();
-  });
-
-  it('should render keyboard shortcuts', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(
-      <Suspense fallback={<div>Loading...</div>}>
-        <ProfileDropdown />
-      </Suspense>,
-    );
-    await waitFor(() => {
-      expect(screen.getByRole('button')).toBeInTheDocument();
-    });
-    const button = screen.getByRole('button');
-    await user.click(button);
-    expect(screen.getByText('⇧⌘P')).toBeInTheDocument();
-    expect(screen.getByText('⌘B')).toBeInTheDocument();
-    expect(screen.getByText('⌘S')).toBeInTheDocument();
-    expect(screen.getByText('⇧⌘Q')).toBeInTheDocument();
   });
 
   it('should open sign out dialog when sign out is clicked', async () => {
@@ -126,7 +106,7 @@ describe('ProfileDropdown', () => {
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
     const button = screen.getByRole('button');
-    await user.click(button);
+    await clickTrigger(button);
     const signOutItem = screen.getByText('Sign out');
     await user.click(signOutItem);
     expect(
@@ -137,7 +117,6 @@ describe('ProfileDropdown', () => {
   });
 
   it('should render profile links', async () => {
-    const user = userEvent.setup();
     renderWithProviders(
       <Suspense fallback={<div>Loading...</div>}>
         <ProfileDropdown />
@@ -147,7 +126,7 @@ describe('ProfileDropdown', () => {
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
     const button = screen.getByRole('button');
-    await user.click(button);
+    await clickTrigger(button);
     const profileLink = screen.getByText('Profile').closest('a');
     const billingLink = screen.getByText('Billing').closest('a');
     const settingsLink = screen.getByText('Settings').closest('a');

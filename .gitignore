@@ -29,6 +29,3 @@ mise.local.toml
 *.sw?
 
 coverage/
-
-*storybook.log
-storybook-static

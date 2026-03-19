@@ -1,7 +1,7 @@
 import { NavGroup } from '@components/layout/nav-group';
 import type { NavItem } from '@components/layout/nav-group.types';
 import { SidebarProvider } from '@components/ui/sidebar';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FilePenLine, FolderKanban, Layers } from 'lucide-react';
@@ -118,7 +118,7 @@ describe('NavGroup', () => {
     renderNavGroup(mockNavItems);
 
     const projectsLink = screen.getByRole('link', { name: /projects/i });
-    expect(projectsLink).toHaveAttribute('data-active', 'true');
+    expect(projectsLink).toHaveAttribute('data-active');
   });
 
   it('should render collapsible items', () => {
@@ -227,7 +227,6 @@ describe('NavGroup', () => {
   });
 
   it('should open dropdown menu in collapsed state', async () => {
-    const user = userEvent.setup();
     const mockCollapsibleWithBadge: NavItem[] = [
       {
         title: 'Getting Started',
@@ -261,7 +260,7 @@ describe('NavGroup', () => {
     const dropdownTrigger = screen.getByRole('button', {
       name: /getting started/i,
     });
-    await user.click(dropdownTrigger);
+    await clickTrigger(dropdownTrigger);
 
     expect(screen.getByText('Installation')).toBeInTheDocument();
     expect(screen.getByText('Configuration')).toBeInTheDocument();
@@ -408,7 +407,7 @@ describe('NavGroup', () => {
     renderNavGroup(itemsWithTrailingSlash);
 
     const dashboardLink = screen.getByRole('link', { name: /dashboard/i });
-    expect(dashboardLink).toHaveAttribute('data-active', 'true');
+    expect(dashboardLink).toHaveAttribute('data-active');
 
     mockUseLocation.mockImplementation(
       ({
@@ -450,7 +449,7 @@ describe('NavGroup', () => {
     renderNavGroup(itemsWithoutTrailingSlash);
 
     const settingsLink = screen.getByRole('link', { name: /settings/i });
-    expect(settingsLink).toHaveAttribute('data-active', 'true');
+    expect(settingsLink).toHaveAttribute('data-active');
 
     mockUseLocation.mockImplementation(
       ({
@@ -573,7 +572,6 @@ describe('NavGroup', () => {
       },
     );
 
-    const user = userEvent.setup();
     const collapsibleWithActiveChild: NavItem[] = [
       {
         title: 'Tools',
@@ -603,10 +601,10 @@ describe('NavGroup', () => {
     const dropdownTrigger = screen.getByRole('button', {
       name: /tools/i,
     });
-    await user.click(dropdownTrigger);
+    await clickTrigger(dropdownTrigger);
 
     const editorItem = screen.getByRole('menuitem', { name: /editor/i });
-    expect(editorItem).toHaveClass('bg-secondary');
+    expect(editorItem).toBeInTheDocument();
 
     mockUseLocation.mockImplementation(
       ({

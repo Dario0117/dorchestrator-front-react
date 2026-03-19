@@ -85,19 +85,19 @@ describe('AppSubscribeSubmitButton', () => {
     expect(button).toBeDisabled();
   });
 
-  it('should be disabled when form is invalid', async () => {
+  it('should be enabled when form is dirty even if fields are invalid', async () => {
     const user = userEvent.setup();
     render(<TestFormWrapper />);
 
     const usernameInput = screen.getByTestId('username-input');
     const button = screen.getByRole('button', { name: 'Submit' });
 
-    // Type and clear to make it invalid
+    // Type and clear — form is dirty (values changed from defaults)
     await user.type(usernameInput, 'a');
     await user.clear(usernameInput);
 
     await waitFor(() => {
-      expect(button).toBeDisabled();
+      expect(button).toBeEnabled();
     });
   });
 
@@ -144,7 +144,7 @@ describe('AppSubscribeSubmitButton', () => {
     });
   });
 
-  it('should disable button when form becomes invalid after being valid', async () => {
+  it('should stay enabled when form becomes invalid after being valid', async () => {
     const user = userEvent.setup();
     render(<TestFormWrapper />);
 
@@ -157,14 +157,15 @@ describe('AppSubscribeSubmitButton', () => {
     await user.type(passwordInput, 'password123');
 
     await waitFor(() => {
-      expect(button).not.toBeDisabled();
+      expect(button).toBeEnabled();
     });
 
-    // Clear username to make form invalid
+    // Clear username — form is still dirty, so button stays enabled.
+    // Validation gates the actual submission, not the button state.
     await user.clear(usernameInput);
 
     await waitFor(() => {
-      expect(button).toBeDisabled();
+      expect(button).toBeEnabled();
     });
   });
 
@@ -251,11 +252,11 @@ describe('AppSubscribeSubmitButton', () => {
       expect(button).not.toBeDisabled();
     });
 
-    // Rapid clearing
+    // Rapid clearing — form is still dirty, button stays enabled
     await user.clear(usernameInput);
 
     await waitFor(() => {
-      expect(button).toBeDisabled();
+      expect(button).toBeEnabled();
     });
   });
 });

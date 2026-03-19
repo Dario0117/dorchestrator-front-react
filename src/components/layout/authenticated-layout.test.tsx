@@ -157,12 +157,11 @@ describe('AuthenticatedLayout', () => {
     expect(layout).toBeInTheDocument();
   });
 
-  it('should render sidebar inset with correct classes', async () => {
+  it('should render sidebar inset', async () => {
     const { container } = await renderAuthenticatedLayout();
 
     const sidebarInset = container.querySelector('[data-slot="sidebar-inset"]');
     expect(sidebarInset).toBeInTheDocument();
-    expect(sidebarInset).toHaveClass('@container/content');
   });
 
   it('should render with custom children', async () => {
@@ -180,14 +179,11 @@ describe('AuthenticatedLayout', () => {
     expect(screen.getByText('Custom page content')).toBeInTheDocument();
   });
 
-  it('should have correct header structure with actions', async () => {
+  it('should have correct header structure', async () => {
     const { container } = await renderAuthenticatedLayout();
 
     const header = container.querySelector('header');
     expect(header).toBeInTheDocument();
-
-    const actionsContainer = header?.querySelector('.ms-auto');
-    expect(actionsContainer).toBeInTheDocument();
   });
 
   it('should render navigation groups in sidebar', async () => {

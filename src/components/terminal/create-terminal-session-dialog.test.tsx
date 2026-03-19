@@ -1,6 +1,6 @@
 import { CreateTerminalSessionDialog } from '@components/terminal/create-terminal-session-dialog';
 import { buildBackendUrl } from '@lib/test.utils';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
@@ -219,7 +219,7 @@ describe('CreateTerminalSessionDialog', () => {
       expect(screen.getByText('Inactivity Timeout')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByRole('combobox', { name: /inactivity/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /inactivity/i }));
     await user.click(screen.getByRole('option', { name: /Custom/ }));
 
     expect(screen.getByPlaceholderText('Minutes')).toBeInTheDocument();
@@ -234,21 +234,20 @@ describe('CreateTerminalSessionDialog', () => {
       expect(screen.getByText('Hard Cap')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByRole('combobox', { name: /hard cap/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /hard cap/i }));
     await user.click(screen.getByRole('option', { name: /Custom/ }));
 
     expect(screen.getByPlaceholderText('Hours')).toBeInTheDocument();
   });
 
   it('should show inactivity preset options filtered by ceiling', async () => {
-    const user = userEvent.setup();
     renderWithProviders(<CreateTerminalSessionDialog {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText('Inactivity Timeout')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByRole('combobox', { name: /inactivity/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /inactivity/i }));
 
     // Default ceiling is 3_600_000 (1 hour), so 15min and 30min presets should be visible
     expect(
@@ -274,7 +273,7 @@ describe('CreateTerminalSessionDialog', () => {
       expect(screen.getByText('Inactivity Timeout')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByRole('combobox', { name: /inactivity/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /inactivity/i }));
     await user.click(screen.getByRole('option', { name: /Custom/ }));
 
     await user.click(screen.getByText('Start Session'));
@@ -294,7 +293,7 @@ describe('CreateTerminalSessionDialog', () => {
       expect(screen.getByText('Inactivity Timeout')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByRole('combobox', { name: /inactivity/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /inactivity/i }));
     await user.click(screen.getByRole('option', { name: /Custom/ }));
 
     const minutesInput = screen.getByPlaceholderText('Minutes');
@@ -318,6 +317,7 @@ describe('CreateTerminalSessionDialog', () => {
     });
 
     const workingDirInput = screen.getByPlaceholderText('/home/user');
+    await user.click(workingDirInput);
     await user.type(workingDirInput, 'relative/path');
 
     await user.click(screen.getByText('Start Session'));
@@ -340,7 +340,7 @@ describe('CreateTerminalSessionDialog', () => {
       expect(screen.getByText('Hard Cap')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByRole('combobox', { name: /hard cap/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /hard cap/i }));
     await user.click(screen.getByRole('option', { name: /Custom/ }));
 
     await user.click(screen.getByText('Start Session'));
@@ -361,7 +361,7 @@ describe('CreateTerminalSessionDialog', () => {
       expect(screen.getByText('Hard Cap')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByRole('combobox', { name: /hard cap/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /hard cap/i }));
     await user.click(screen.getByRole('option', { name: /Custom/ }));
 
     const hoursInput = screen.getByPlaceholderText('Hours');
@@ -383,7 +383,7 @@ describe('CreateTerminalSessionDialog', () => {
     });
 
     // Trigger a validation error first
-    await user.click(screen.getByRole('combobox', { name: /inactivity/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /inactivity/i }));
     await user.click(screen.getByRole('option', { name: /Custom/ }));
     await user.click(screen.getByText('Start Session'));
 
@@ -392,7 +392,7 @@ describe('CreateTerminalSessionDialog', () => {
     });
 
     // Change selection to clear error
-    await user.click(screen.getByRole('combobox', { name: /inactivity/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /inactivity/i }));
     await user.click(screen.getByRole('option', { name: /Max/ }));
 
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
@@ -638,13 +638,13 @@ describe('CreateTerminalSessionDialog', () => {
     });
 
     // Set hard cap to custom 1 hour
-    await user.click(screen.getByRole('combobox', { name: /hard cap/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /hard cap/i }));
     await user.click(screen.getByRole('option', { name: /Custom/ }));
     const hoursInput = screen.getByPlaceholderText('Hours');
     await user.type(hoursInput, '1');
 
     // Set inactivity to custom 90 minutes (exceeds 1 hour hard cap)
-    await user.click(screen.getByRole('combobox', { name: /inactivity/i }));
+    await clickTrigger(screen.getByRole('combobox', { name: /inactivity/i }));
     await user.click(screen.getByRole('option', { name: /Custom/ }));
     const minutesInput = screen.getByPlaceholderText('Minutes');
     await user.type(minutesInput, '90');
@@ -701,5 +701,42 @@ describe('CreateTerminalSessionDialog', () => {
     await waitFor(() => {
       expect(defaultProps.onSessionCreated).toHaveBeenCalled();
     });
+  });
+
+  it('should handle null value in inactivity timeout select gracefully', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<CreateTerminalSessionDialog {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Inactivity Timeout')).toBeInTheDocument();
+    });
+
+    // Open inactivity select and select a preset
+    await clickTrigger(screen.getByRole('combobox', { name: /inactivity/i }));
+    await user.click(screen.getByRole('option', { name: /15 minutes/ }));
+
+    // Verify selection was made without errors
+    expect(
+      screen.getByRole('combobox', { name: /inactivity/i }),
+    ).toHaveTextContent('15');
+  });
+
+  it('should handle null value in hard cap select gracefully', async () => {
+    setupWithHardCap();
+    const user = userEvent.setup();
+    renderWithProviders(<CreateTerminalSessionDialog {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Hard Cap')).toBeInTheDocument();
+    });
+
+    // Open hard cap select and select a preset
+    await clickTrigger(screen.getByRole('combobox', { name: /hard cap/i }));
+    await user.click(screen.getByRole('option', { name: /1 hour/ }));
+
+    // Verify selection was made without errors
+    expect(
+      screen.getByRole('combobox', { name: /hard cap/i }),
+    ).toHaveTextContent('1');
   });
 });

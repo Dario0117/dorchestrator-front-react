@@ -53,14 +53,6 @@ description = "Generate OpenAPI types from backend"
 run = "bunx openapi-typescript http://localhost:9001/openapi/json --output ./src/types/api.generated.types.ts"
 description = "Generate OpenAPI types from backend running on agent port (9001)"
 
-[tasks.storybook]
-run = "bun run storybook"
-description = "Start Storybook development server"
-
-[tasks.buildStorybook]
-run = "bun run build-storybook"
-description = "Build Storybook for production"
-
 [tasks.build]
 depends = ["checkTs", "formatAndLint"]
 run = "bun run build"
@@ -72,6 +64,10 @@ description = "Preview production build"
 [tasks.deadCode]
 run = "bun run dead-code"
 description = "Find unused files, exports, types, and dependencies (knip)"
+
+[tasks.shadcn]
+run = "bunx shadcn"
+description = "Run shadcn CLI (e.g. mise run shadcn -- add button --view)"
 
 [tasks."scaffold:service"]
 run = "bun scripts/scaffold/service.ts"
@@ -87,4 +83,4 @@ description = "Scaffold service constants file for API-derived types"
 
 [tasks."scaffold:component"]
 run = "bun scripts/scaffold/component.ts"
-description = "Scaffold a new component with types, test, and stories"
+description = "Scaffold a new component with types and test"

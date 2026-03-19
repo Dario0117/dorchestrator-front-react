@@ -22,7 +22,7 @@ export function useCreateTeamForm({
       slug: '',
     },
     validators: {
-      onBlur: createTeamFormSchema,
+      onSubmit: createTeamFormSchema,
     },
     onSubmit({ value }) {
       createTeamMutation.mutate(

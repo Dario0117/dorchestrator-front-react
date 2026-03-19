@@ -61,7 +61,7 @@ interface UseRecordingPlaybackReturn {
   play: () => void;
   pause: () => void;
   restart: () => void;
-  changeSpeed: (value: string) => void;
+  changeSpeed: (value: string | null) => void;
   scrub: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -201,7 +201,12 @@ export function useRecordingPlayback({
   }, [writeOutputEventsUpTo]);
 
   const changeSpeed = useCallback(
-    (value: string) => {
+    (value: string | null) => {
+      /* v8 ignore start -- Base UI types onValueChange as string | null but never emits null */
+      if (value === null) {
+        return;
+      }
+      /* v8 ignore stop */
       const newSpeed = Number(value) as PlaybackSpeed;
       setPlaybackState((prev) => ({ ...prev, speed: newSpeed }));
 

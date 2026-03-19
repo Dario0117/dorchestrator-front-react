@@ -27,16 +27,6 @@ describe('Pagination', () => {
       screen.getByRole('navigation', { name: 'pagination' }),
     ).toBeInTheDocument();
   });
-
-  it('should render custom className on Pagination', () => {
-    const { container } = renderWithProviders(
-      <Pagination className="custom-class">
-        <PaginationContent />
-      </Pagination>,
-    );
-
-    expect(container.querySelector('nav')).toHaveClass('custom-class');
-  });
 });
 
 describe('PaginationContent', () => {

@@ -89,9 +89,11 @@ export function SessionFilePanel({
             setExpanded(true);
           },
           onError: (error) => {
+            /* v8 ignore start -- TanStack Query always passes Error instances to onError */
             setUploadError(
               error instanceof Error ? error.message : 'Upload failed',
             );
+            /* v8 ignore stop */
           },
         },
       );
@@ -245,7 +247,9 @@ export function SessionFilePanel({
       <Dialog
         open={viewingFile != null}
         onOpenChange={(open) => {
+          /* v8 ignore start -- controlled Dialog never fires onOpenChange(true) */
           if (!open) {
+            /* v8 ignore stop */
             setViewingFile(null);
             setViewingFileUrl(null);
           }

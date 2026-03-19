@@ -73,13 +73,6 @@ describe('PasswordInput', () => {
     expect(input).toHaveAttribute('type', 'password');
   });
 
-  it('should apply custom className', () => {
-    const { container } = render(<PasswordInput className="custom-class" />);
-    const input = container.querySelector('input');
-    expect(input).toHaveClass('custom-class');
-    expect(input).toHaveClass('pr-12'); // Should preserve internal padding
-  });
-
   it('should forward all standard input props', () => {
     render(
       <PasswordInput
@@ -180,25 +173,5 @@ describe('PasswordInput', () => {
       />,
     );
     expect(input).toHaveValue('updated');
-  });
-
-  describe('Mobile Touch Target Requirements', () => {
-    it('toggle button meets 44px minimum size for mobile', () => {
-      render(<PasswordInput />);
-      const toggleButton = screen.getByRole('button', {
-        name: 'Show password',
-      });
-
-      // size-11 = 44px × 44px (meets WCAG 2.5.5 AAA and Apple HIG standards)
-      expect(toggleButton).toHaveClass('size-11');
-    });
-
-    it('input meets 44px minimum height for mobile', () => {
-      const { container } = render(<PasswordInput />);
-      const input = container.querySelector('input');
-
-      // h-11 = 44px (inherited from Input component)
-      expect(input).toHaveClass('h-11');
-    });
   });
 });

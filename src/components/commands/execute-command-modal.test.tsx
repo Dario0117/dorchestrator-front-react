@@ -1,6 +1,6 @@
 import { ExecuteCommandModal } from '@components/commands/execute-command-modal';
 import { queryClient } from '@context/query.provider';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -141,7 +141,7 @@ describe('ExecuteCommandModal', () => {
     });
 
     // Select device and enter command
-    await user.click(screen.getByLabelText(/Device/));
+    await clickTrigger(screen.getByLabelText(/Device/));
     await waitFor(() => {
       expect(
         screen.getByRole('option', { name: /Test Server/ }),
@@ -152,11 +152,19 @@ describe('ExecuteCommandModal', () => {
     const textarea = screen.getByPlaceholderText('Enter your command...');
     await user.type(textarea, 'echo hello');
 
-    // Submit the form
     const submitButton = screen.getByRole('button', {
       name: 'Execute Command',
     });
     await user.click(submitButton);
+
+    // Device may appear offline if lastSeenAt from MSW handler is stale (>30s),
+    // which shows an offline confirmation dialog instead of submitting directly
+    const continueButton = await screen
+      .findByRole('button', { name: 'Continue' })
+      .catch(() => null);
+    if (continueButton) {
+      await user.click(continueButton);
+    }
 
     await waitFor(() => {
       expect(mockOnOpenChange).toHaveBeenCalledWith(false);

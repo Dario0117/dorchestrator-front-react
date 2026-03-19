@@ -9,10 +9,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@components/ui/alert-dialog';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { clickTrigger } from '@lib/test-wrappers.utils';
+import { render, screen, waitFor } from '@testing-library/react';
 
 describe('AlertDialog', () => {
-  it('renders trigger and opens dialog when clicked', () => {
+  it('renders trigger and opens dialog when clicked', async () => {
     render(
       <AlertDialog>
         <AlertDialogTrigger>Open Dialog</AlertDialogTrigger>
@@ -32,7 +33,7 @@ describe('AlertDialog', () => {
     const trigger = screen.getByText('Open Dialog');
     expect(trigger).toBeInTheDocument();
 
-    fireEvent.click(trigger);
+    await clickTrigger(trigger);
 
     expect(screen.getByText('Dialog Title')).toBeInTheDocument();
     expect(screen.getByText('Dialog Description')).toBeInTheDocument();
@@ -40,7 +41,7 @@ describe('AlertDialog', () => {
     expect(screen.getByText('Continue')).toBeInTheDocument();
   });
 
-  it('closes dialog when cancel button is clicked', () => {
+  it('closes dialog when cancel button is clicked', async () => {
     render(
       <AlertDialog>
         <AlertDialogTrigger>Open Dialog</AlertDialogTrigger>
@@ -56,14 +57,16 @@ describe('AlertDialog', () => {
       </AlertDialog>,
     );
 
-    fireEvent.click(screen.getByText('Open Dialog'));
+    await clickTrigger(screen.getByText('Open Dialog'));
     expect(screen.getByText('Dialog Title')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Cancel'));
-    expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument();
+    await clickTrigger(screen.getByText('Cancel'));
+    await waitFor(() => {
+      expect(screen.queryByText('Dialog Title')).not.toBeInTheDocument();
+    });
   });
 
-  it('calls action callback when action button is clicked', () => {
+  it('calls action callback when action button is clicked', async () => {
     const actionHandler = vi.fn();
 
     render(
@@ -83,13 +86,13 @@ describe('AlertDialog', () => {
       </AlertDialog>,
     );
 
-    fireEvent.click(screen.getByText('Open Dialog'));
-    fireEvent.click(screen.getByText('Continue'));
+    await clickTrigger(screen.getByText('Open Dialog'));
+    await clickTrigger(screen.getByText('Continue'));
 
     expect(actionHandler).toHaveBeenCalledTimes(1);
   });
 
-  it('renders all components correctly', () => {
+  it('renders all components correctly', async () => {
     render(
       <AlertDialog>
         <AlertDialogTrigger>Open Dialog</AlertDialogTrigger>
@@ -106,7 +109,7 @@ describe('AlertDialog', () => {
       </AlertDialog>,
     );
 
-    fireEvent.click(screen.getByText('Open Dialog'));
+    await clickTrigger(screen.getByText('Open Dialog'));
 
     expect(screen.getByRole('alertdialog')).toBeInTheDocument();
     expect(screen.getByText('Title')).toBeInTheDocument();
@@ -115,7 +118,7 @@ describe('AlertDialog', () => {
     expect(screen.getByText('Action')).toBeInTheDocument();
   });
 
-  it('has correct data-slot attributes', () => {
+  it('has correct data-slot attributes', async () => {
     const { container } = render(
       <AlertDialog>
         <AlertDialogTrigger>Open Dialog</AlertDialogTrigger>
@@ -133,14 +136,14 @@ describe('AlertDialog', () => {
       container.querySelector('[data-slot="alert-dialog-trigger"]'),
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Open Dialog'));
+    await clickTrigger(screen.getByText('Open Dialog'));
 
     // Check content elements after opening
     expect(screen.getByText('Title')).toBeInTheDocument();
     expect(screen.getByText('Description')).toBeInTheDocument();
   });
 
-  it('renders with overlay when content is shown', () => {
+  it('renders with overlay when content is shown', async () => {
     render(
       <AlertDialog>
         <AlertDialogTrigger>Open Dialog</AlertDialogTrigger>
@@ -151,14 +154,14 @@ describe('AlertDialog', () => {
       </AlertDialog>,
     );
 
-    fireEvent.click(screen.getByText('Open Dialog'));
+    await clickTrigger(screen.getByText('Open Dialog'));
 
     // Check that dialog content is rendered
     expect(screen.getByText('Title')).toBeInTheDocument();
     expect(screen.getByRole('alertdialog')).toBeInTheDocument();
   });
 
-  it('supports keyboard navigation', () => {
+  it('supports keyboard navigation', async () => {
     render(
       <AlertDialog>
         <AlertDialogTrigger>Open Dialog</AlertDialogTrigger>
@@ -174,13 +177,15 @@ describe('AlertDialog', () => {
     );
 
     const trigger = screen.getByText('Open Dialog');
-    fireEvent.click(trigger);
+    await clickTrigger(trigger);
 
     expect(screen.getByText('Title')).toBeInTheDocument();
 
     const cancelButton = screen.getByText('Cancel');
-    fireEvent.click(cancelButton);
+    await clickTrigger(cancelButton);
 
-    expect(screen.queryByText('Title')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('Title')).not.toBeInTheDocument();
+    });
   });
 });

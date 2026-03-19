@@ -1,7 +1,9 @@
 import { RegisterPage } from '@components/org/pages/register.page';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { registerHandler } from '@services/users/register.http-service.handlers';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { server } from '@/../testsSetup';
 
 interface LinkProps {
   children: React.ReactNode;
@@ -9,9 +11,11 @@ interface LinkProps {
   [key: string]: unknown;
 }
 
+const mockNavigate = vi.fn();
+
 // Mock the navigation hook
 vi.mock('@tanstack/react-router', () => ({
-  useNavigate: vi.fn(),
+  useNavigate: vi.fn(() => mockNavigate),
   Link: ({ children, to, ...props }: LinkProps) => (
     <a
       href={to}
@@ -22,33 +26,13 @@ vi.mock('@tanstack/react-router', () => ({
   ),
 }));
 
-const mockUseNavigate = vi.mocked(
-  await import('@tanstack/react-router'),
-).useNavigate;
-
-const mockNavigate = vi.fn();
-mockUseNavigate.mockReturnValue(mockNavigate);
-
 describe('RegisterPage', () => {
-  beforeEach(() => {
-    mockNavigate.mockClear();
-  });
-
   it('should render register form', () => {
     renderWithProviders(<RegisterPage />);
 
-    // Check that the register form is rendered
     const section = document.querySelector('section');
     expect(section).toBeInTheDocument();
-    expect(section).toHaveClass(
-      'flex',
-      'min-h-svh',
-      'w-full',
-      'items-center',
-      'justify-center',
-      'p-6',
-      'md:p-10',
-    );
+    expect(screen.getByText('Create your account')).toBeInTheDocument();
   });
 
   it('should have proper page structure', () => {
@@ -56,9 +40,6 @@ describe('RegisterPage', () => {
 
     const section = container.querySelector('section');
     expect(section).toBeInTheDocument();
-
-    const wrapper = container.querySelector('.w-full.max-w-sm');
-    expect(wrapper).toBeInTheDocument();
   });
 
   it('should render without errors', () => {
@@ -76,24 +57,32 @@ describe('RegisterPage', () => {
     expect(section).toBeInTheDocument();
   });
 
-  it('should navigate to login page on successful registration', async () => {
-    const user = userEvent.setup();
+  it('should render form with submit button and login link', () => {
     renderWithProviders(<RegisterPage />);
 
-    // Fill in the registration form
-    const nameInput = screen.getByLabelText(/Name/);
-    const emailInput = screen.getByLabelText(/Email/);
-    const passwordInput = screen.getByPlaceholderText('Password');
-    const confirmPasswordInput = screen.getByLabelText(/Confirm Password/);
-    const submitButton = screen.getByRole('button', { name: 'Register' });
+    expect(
+      screen.getByRole('button', { name: 'Register' }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/Name/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Email/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Confirm Password/)).toBeInTheDocument();
+  });
 
-    await user.type(nameInput, 'Test User');
-    await user.type(emailInput, 'test@example.com');
-    await user.type(passwordInput, 'password123');
-    await user.type(confirmPasswordInput, 'password123');
-    await user.click(submitButton);
+  it('should navigate to login with registered param on successful registration', async () => {
+    server.use(registerHandler);
+    const user = userEvent.setup();
 
-    // Wait for the mutation to complete and navigation to occur
+    renderWithProviders(<RegisterPage />);
+
+    await user.type(screen.getByLabelText(/Name/), 'Test User');
+    await user.type(screen.getByLabelText(/Email/), 'test@example.com');
+    const passwordFields = screen.getAllByLabelText(/Password/);
+    // First match is "Password", second is "Confirm Password"
+    await user.type(passwordFields[0] as HTMLElement, 'Password123!');
+    await user.type(screen.getByLabelText(/Confirm Password/), 'Password123!');
+
+    await user.click(screen.getByRole('button', { name: 'Register' }));
+
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith({
         to: '/login',

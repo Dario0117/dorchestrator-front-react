@@ -21,15 +21,15 @@ export function SessionNotFound({
         </p>
         <Button
           variant="outline"
-          asChild
+          render={
+            <Link
+              to="/$organizationSlug/t/$teamSlug/terminal"
+              params={{ organizationSlug, teamSlug }}
+            />
+          }
         >
-          <Link
-            to="/$organizationSlug/t/$teamSlug/terminal"
-            params={{ organizationSlug, teamSlug }}
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to sessions
-          </Link>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to sessions
         </Button>
       </div>
     </div>

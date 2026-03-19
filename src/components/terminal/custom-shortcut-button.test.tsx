@@ -1,6 +1,6 @@
 import { CustomShortcutButton } from '@components/terminal/custom-shortcut-button';
 import type { CustomShortcut } from '@components/terminal/terminal-shortcut-panel.types';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -50,8 +50,6 @@ describe('CustomShortcutButton', () => {
   });
 
   it('has Edit and Delete options in the dropdown menu', async () => {
-    const user = userEvent.setup();
-
     renderWithProviders(
       <CustomShortcutButton
         shortcut={defaultShortcut}
@@ -61,7 +59,7 @@ describe('CustomShortcutButton', () => {
       />,
     );
 
-    await user.click(screen.getByTestId('custom-shortcut-menu-1'));
+    await clickTrigger(screen.getByTestId('custom-shortcut-menu-1'));
     expect(screen.getByText('Edit')).toBeInTheDocument();
     expect(screen.getByText('Delete')).toBeInTheDocument();
   });
@@ -79,7 +77,7 @@ describe('CustomShortcutButton', () => {
       />,
     );
 
-    await user.click(screen.getByTestId('custom-shortcut-menu-1'));
+    await clickTrigger(screen.getByTestId('custom-shortcut-menu-1'));
     await user.click(screen.getByText('Edit'));
     expect(onEdit).toHaveBeenCalledWith(defaultShortcut);
   });
@@ -97,7 +95,7 @@ describe('CustomShortcutButton', () => {
       />,
     );
 
-    await user.click(screen.getByTestId('custom-shortcut-menu-1'));
+    await clickTrigger(screen.getByTestId('custom-shortcut-menu-1'));
     await user.click(screen.getByText('Delete'));
     expect(onDelete).toHaveBeenCalledWith(1);
   });

@@ -423,7 +423,7 @@ describe('AuditLogsListPage', () => {
 
       await waitFor(() => {
         const prevButton = screen.getByLabelText('Go to previous page');
-        expect(prevButton).toBeDisabled();
+        expect(prevButton).toHaveAttribute('aria-disabled', 'true');
       });
     });
 
@@ -440,7 +440,7 @@ describe('AuditLogsListPage', () => {
 
       await waitFor(() => {
         const nextButton = screen.getByLabelText('Go to next page');
-        expect(nextButton).toBeDisabled();
+        expect(nextButton).toHaveAttribute('aria-disabled', 'true');
       });
     });
 

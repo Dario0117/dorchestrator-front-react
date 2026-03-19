@@ -14,7 +14,7 @@ export function useLoginForm({
       password: '',
     },
     validators: {
-      onBlur: loginFormSchema,
+      onSubmit: loginFormSchema,
     },
     onSubmit({ value }) {
       loginMutation.mutate(value, {

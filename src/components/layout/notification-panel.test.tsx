@@ -1,7 +1,7 @@
 import { NotificationPanel } from '@components/layout/notification-panel';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { buildBackendUrl } from '@lib/test.utils';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
@@ -77,17 +77,13 @@ function overrideUnreadCountHandler(count: number) {
 }
 
 async function openNotificationPanel() {
-  const user = userEvent.setup();
-
   await waitFor(() => {
     expect(
       screen.getByRole('button', { name: /notifications/i }),
     ).toBeInTheDocument();
   });
 
-  await user.click(screen.getByRole('button', { name: /notifications/i }));
-
-  return user;
+  await clickTrigger(screen.getByRole('button', { name: /notifications/i }));
 }
 
 describe('NotificationPanel', () => {
@@ -191,7 +187,9 @@ describe('NotificationPanel', () => {
   it('should call mark all read mutation when button is clicked', async () => {
     renderWithProviders(<NotificationPanel />);
 
-    const user = await openNotificationPanel();
+    await openNotificationPanel();
+
+    const user = userEvent.setup();
 
     await waitFor(() => {
       expect(

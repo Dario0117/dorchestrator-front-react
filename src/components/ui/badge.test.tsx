@@ -34,13 +34,6 @@ describe('Badge', () => {
     expect(badge).toHaveAttribute('data-slot', 'badge');
   });
 
-  it('applies custom className', () => {
-    render(<Badge className="custom-class">Custom Badge</Badge>);
-
-    const badge = screen.getByText('Custom Badge');
-    expect(badge).toHaveClass('custom-class');
-  });
-
   it('renders as span by default', () => {
     render(<Badge>Span Badge</Badge>);
 
@@ -48,12 +41,8 @@ describe('Badge', () => {
     expect(badge.tagName).toBe('SPAN');
   });
 
-  it('renders as child element when asChild is true', () => {
-    render(
-      <Badge asChild>
-        <button type="button">Button Badge</button>
-      </Badge>,
-    );
+  it('renders as child element when render prop is used', () => {
+    render(<Badge render={<button type="button" />}>Button Badge</Badge>);
 
     const badge = screen.getByRole('button');
     expect(badge).toBeInTheDocument();

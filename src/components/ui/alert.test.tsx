@@ -57,16 +57,6 @@ describe('Alert', () => {
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
   });
 
-  it('should apply custom className', () => {
-    render(
-      <Alert className="custom-alert">
-        <AlertTitle>Custom alert</AlertTitle>
-      </Alert>,
-    );
-    const alert = screen.getByRole('alert');
-    expect(alert).toHaveClass('custom-alert');
-  });
-
   it('should forward additional props', () => {
     render(
       <Alert

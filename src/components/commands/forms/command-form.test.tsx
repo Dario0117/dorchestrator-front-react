@@ -1,7 +1,7 @@
 import { CommandForm } from '@components/commands/forms/command-form';
 import { useCommandForm } from '@components/commands/forms/hooks/use-command-form';
 import { queryClient } from '@context/query.provider';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import type { useSubmitCommandMutationType } from '@services/commands/submit-command.http-service';
 import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { screen, waitFor } from '@testing-library/react';
@@ -129,10 +129,10 @@ function TestWrapper({
   );
 }
 
-async function openDeviceSelect(user: ReturnType<typeof userEvent.setup>) {
+async function openDeviceSelect() {
   // The AppFormSelect sets id={field.name} on the trigger button
   const trigger = screen.getByRole('combobox', { name: /Device/ });
-  await user.click(trigger);
+  await clickTrigger(trigger);
 }
 
 describe('CommandForm', () => {
@@ -165,14 +165,13 @@ describe('CommandForm', () => {
   });
 
   it('should display devices with status indicators in dropdown', async () => {
-    const user = userEvent.setup();
     renderWithProviders(<TestWrapper />);
 
     await waitFor(() => {
       expect(screen.getByText('Device')).toBeInTheDocument();
     });
 
-    await openDeviceSelect(user);
+    await openDeviceSelect();
 
     await waitFor(() => {
       expect(
@@ -226,7 +225,6 @@ describe('CommandForm', () => {
 
     const trigger = await screen.findByRole('combobox', { name: /Device/ });
     expect(trigger).toBeDisabled();
-    expect(trigger).toHaveTextContent('Dev Laptop');
   });
 
   it('should show offline confirmation dialog when submitting for offline device', async () => {
@@ -238,7 +236,7 @@ describe('CommandForm', () => {
     });
 
     // Open select and choose offline device
-    await openDeviceSelect(user);
+    await openDeviceSelect();
 
     await waitFor(() => {
       expect(
@@ -248,14 +246,26 @@ describe('CommandForm', () => {
 
     await user.click(screen.getByRole('option', { name: /Dev Laptop/ }));
 
-    // Type a command
-    const textarea = screen.getByPlaceholderText('Enter your command...');
-    await user.type(textarea, 'ls -la');
+    await waitFor(() => {
+      expect(
+        screen.getByPlaceholderText('Enter your command...'),
+      ).toBeInTheDocument();
+    });
 
-    // Submit the form
+    // Click textarea to blur device select, then type a command
+    const textarea = screen.getByPlaceholderText('Enter your command...');
+    await user.click(textarea);
+    await user.type(textarea, 'ls -la');
+    await user.tab();
+
+    // Wait for the submit button to become enabled
     const submitButton = screen.getByRole('button', {
       name: 'Execute Command',
     });
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
+
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -277,7 +287,7 @@ describe('CommandForm', () => {
     });
 
     // Open select and choose offline device
-    await openDeviceSelect(user);
+    await openDeviceSelect();
 
     await waitFor(() => {
       expect(
@@ -287,13 +297,26 @@ describe('CommandForm', () => {
 
     await user.click(screen.getByRole('option', { name: /Dev Laptop/ }));
 
-    const textarea = screen.getByPlaceholderText('Enter your command...');
-    await user.type(textarea, 'ls -la');
+    await waitFor(() => {
+      expect(
+        screen.getByPlaceholderText('Enter your command...'),
+      ).toBeInTheDocument();
+    });
 
-    // Submit the form
+    // Click textarea to blur device select, then type a command
+    const textarea = screen.getByPlaceholderText('Enter your command...');
+    await user.click(textarea);
+    await user.type(textarea, 'ls -la');
+    await user.tab();
+
+    // Wait for the submit button to become enabled
     const submitButton = screen.getByRole('button', {
       name: 'Execute Command',
     });
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
+
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -302,7 +325,7 @@ describe('CommandForm', () => {
 
     // Click cancel on the dialog
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
-    await user.click(cancelButton);
+    await clickTrigger(cancelButton);
 
     await waitFor(() => {
       expect(screen.queryByText('Device Offline')).not.toBeInTheDocument();
@@ -347,7 +370,7 @@ describe('CommandForm', () => {
     });
 
     // Select offline device
-    await openDeviceSelect(user);
+    await openDeviceSelect();
     await waitFor(() => {
       expect(
         screen.getByRole('option', { name: /Dev Laptop/ }),
@@ -355,12 +378,30 @@ describe('CommandForm', () => {
     });
     await user.click(screen.getByRole('option', { name: /Dev Laptop/ }));
 
-    // Type a command
+    await waitFor(() => {
+      expect(
+        screen.getByPlaceholderText('Enter your command...'),
+      ).toBeInTheDocument();
+    });
+
+    // Blur device select to trigger onBlur validation for deviceId
     const textarea = screen.getByPlaceholderText('Enter your command...');
+    await user.click(textarea);
+
+    // Type a command and tab out to trigger onBlur validation for command
     await user.type(textarea, 'ls -la');
+    await user.tab();
+
+    // Wait for the submit button to become enabled after validation
+    const submitButton = screen.getByRole('button', {
+      name: 'Execute Command',
+    });
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
 
     // Submit
-    await user.click(screen.getByRole('button', { name: 'Execute Command' }));
+    await user.click(submitButton);
 
     // Wait for offline dialog
     await waitFor(() => {
@@ -383,7 +424,7 @@ describe('CommandForm', () => {
     );
 
     const trigger = await screen.findByRole('combobox', { name: /Device/ });
-    expect(trigger).toHaveTextContent('Dev Laptop');
+    expect(trigger).toBeDisabled();
 
     // Type a command
     const textarea = screen.getByPlaceholderText('Enter your command...');

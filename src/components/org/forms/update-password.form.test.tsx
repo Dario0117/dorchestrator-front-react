@@ -83,6 +83,12 @@ describe('UpdatePasswordForm', () => {
 
     await user.type(passwordInput, 'newpassword123');
     await user.type(confirmPasswordInput, 'newpassword123');
+    await user.tab();
+
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
+
     await user.click(submitButton);
 
     // better-auth wraps responses in { data: ..., error: null } format
@@ -263,6 +269,12 @@ describe('UpdatePasswordForm', () => {
       await user.clear(confirmPasswordInput);
       await user.type(passwordInput, password);
       await user.type(confirmPasswordInput, password);
+      await user.tab();
+
+      await waitFor(() => {
+        expect(submitButton).not.toBeDisabled();
+      });
+
       await user.click(submitButton);
 
       await waitFor(() => {

@@ -19,18 +19,18 @@ export function SidebarMenuLink({
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
-        asChild
+        render={
+          <Link
+            to={item.url}
+            onClick={() => setOpenMobile(false)}
+          />
+        }
         isActive={checkIsActive(href, item)}
         tooltip={item.title}
       >
-        <Link
-          to={item.url}
-          onClick={() => setOpenMobile(false)}
-        >
-          {item.icon && <item.icon />}
-          <span>{item.title}</span>
-          {item.badge && <NavBadge>{item.badge}</NavBadge>}
-        </Link>
+        {item.icon && <item.icon />}
+        <span>{item.title}</span>
+        {item.badge && <NavBadge>{item.badge}</NavBadge>}
       </SidebarMenuButton>
     </SidebarMenuItem>
   );

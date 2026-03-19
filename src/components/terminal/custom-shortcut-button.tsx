@@ -42,16 +42,18 @@ export function CustomShortcutButton({
         {shortcut.label}
       </Button>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 opacity-0 group-hover:opacity-100"
-            aria-label={`Options for ${shortcut.label}`}
-            data-testid={`custom-shortcut-menu-${shortcut.id}`}
-          >
-            <MoreVertical className="h-3 w-3" />
-          </Button>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 opacity-0 group-hover:opacity-100"
+              aria-label={`Options for ${shortcut.label}`}
+              data-testid={`custom-shortcut-menu-${shortcut.id}`}
+            />
+          }
+        >
+          <MoreVertical className="h-3 w-3" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => onEdit(shortcut)}>

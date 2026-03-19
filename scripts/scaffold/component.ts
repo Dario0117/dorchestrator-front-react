@@ -24,11 +24,10 @@ const componentBase = resolve(root, `src/components/${subdir}`);
 const componentPath = resolve(componentBase, `${fileName}.tsx`);
 const typesPath = resolve(componentBase, `${fileName}.types.ts`);
 const testPath = resolve(componentBase, `${fileName}.test.tsx`);
-const storiesPath = resolve(componentBase, `${fileName}.stories.tsx`);
 
 const filesToCreate = [componentPath, testPath];
 if (!isPage) {
-  filesToCreate.push(typesPath, storiesPath);
+  filesToCreate.push(typesPath);
 }
 
 for (const f of filesToCreate) {
@@ -79,32 +78,11 @@ describe('${componentName}', () => {
 });
 `;
 
-// Stories file (non-page only)
-const storiesContent = `import { ${pascal} } from '${componentImportAlias}';
-import type { Meta, StoryObj } from '@storybook/react-vite';
-
-const meta = {
-	title: 'Components/${pascal}',
-	component: ${pascal},
-	tags: ['autodocs'],
-} satisfies Meta<typeof ${pascal}>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
-	args: {
-		// TODO: add default args
-	},
-};
-`;
-
 writeFileSync(componentPath, componentContent);
 writeFileSync(testPath, testContent);
 
 if (!isPage) {
   writeFileSync(typesPath, typesContent);
-  writeFileSync(storiesPath, storiesContent);
 }
 
 const rel = (p: string) => p.replace(`${root}/`, '');
@@ -114,6 +92,3 @@ if (!isPage) {
   console.log(`Created: ${rel(typesPath)}`);
 }
 console.log(`Created: ${rel(testPath)}`);
-if (!isPage) {
-  console.log(`Created: ${rel(storiesPath)}`);
-}

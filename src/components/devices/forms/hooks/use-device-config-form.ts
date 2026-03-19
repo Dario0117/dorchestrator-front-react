@@ -17,7 +17,7 @@ export function useDeviceConfigForm({
   const form = useAppForm({
     defaultValues,
     validators: {
-      onBlur: deviceConfigFormSchema,
+      onSubmit: deviceConfigFormSchema,
     },
     onSubmit({ value }) {
       const inactivityTimeoutMs =

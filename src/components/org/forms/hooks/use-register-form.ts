@@ -16,7 +16,7 @@ export function useRegisterForm({
       email: '',
     },
     validators: {
-      onBlur: registerFormSchema,
+      onSubmit: registerFormSchema,
     },
     onSubmit({ value }) {
       registerMutation.mutate(

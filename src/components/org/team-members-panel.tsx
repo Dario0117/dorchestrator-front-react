@@ -114,7 +114,9 @@ export function TeamMembersPanel({
           <div className="flex items-center gap-2">
             <Select
               value={selectedUserId}
-              onValueChange={setSelectedUserId}
+              onValueChange={(value) =>
+                value !== null && setSelectedUserId(value)
+              }
             >
               <SelectTrigger
                 className="flex-1"

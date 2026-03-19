@@ -3,8 +3,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@components/ui/collapsible';
+import { clickTrigger } from '@lib/test-wrappers.utils';
 import { render, screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 
 describe('Collapsible', () => {
   it('should render collapsible component', () => {
@@ -28,7 +28,6 @@ describe('Collapsible', () => {
   });
 
   it('should toggle content visibility when trigger is clicked', async () => {
-    const user = userEvent.setup();
     render(
       <Collapsible>
         <CollapsibleTrigger>Toggle</CollapsibleTrigger>
@@ -36,11 +35,11 @@ describe('Collapsible', () => {
       </Collapsible>,
     );
     const trigger = screen.getByText('Toggle');
-    await user.click(trigger);
+    await clickTrigger(trigger);
     expect(screen.getByText('Content')).toBeInTheDocument();
   });
 
-  it('should render with data-slot attributes', () => {
+  it('should render with data-slot attributes', async () => {
     render(
       <Collapsible data-testid="collapsible">
         <CollapsibleTrigger data-testid="trigger">Toggle</CollapsibleTrigger>
@@ -55,6 +54,10 @@ describe('Collapsible', () => {
       'data-slot',
       'collapsible-trigger',
     );
+
+    // Open collapsible to render content in the DOM
+    await clickTrigger(screen.getByTestId('trigger'));
+
     expect(screen.getByTestId('content')).toHaveAttribute(
       'data-slot',
       'collapsible-content',

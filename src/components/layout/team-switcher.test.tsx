@@ -1,6 +1,6 @@
 import { TeamSwitcher } from '@components/layout/team-switcher';
 import { SidebarProvider } from '@components/ui/sidebar';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import {
   setDesktopViewport,
   setMobileViewport,
@@ -117,21 +117,19 @@ describe('TeamSwitcher', () => {
   });
 
   it('should open dropdown menu when trigger is clicked', async () => {
-    const user = userEvent.setup();
     renderTeamSwitcher();
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(screen.getByText('Teams')).toBeInTheDocument();
   });
 
   it('should display all teams in dropdown menu', async () => {
-    const user = userEvent.setup();
     renderTeamSwitcher();
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(screen.getAllByText('Dorchestrator')).toHaveLength(2);
     expect(screen.getByText('Acme Inc')).toBeInTheDocument();
@@ -143,7 +141,7 @@ describe('TeamSwitcher', () => {
     renderTeamSwitcher();
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const acmeInc = screen.getByRole('menuitem', { name: /acme inc/i });
     await user.click(acmeInc);
@@ -154,38 +152,24 @@ describe('TeamSwitcher', () => {
     });
   });
 
-  it('should display keyboard shortcuts for teams', async () => {
-    const user = userEvent.setup();
-    renderTeamSwitcher();
-
-    const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
-
-    expect(screen.getByText('⌘1')).toBeInTheDocument();
-    expect(screen.getByText('⌘2')).toBeInTheDocument();
-    expect(screen.getByText('⌘3')).toBeInTheDocument();
-  });
-
   it('should display "Add team" option', async () => {
-    const user = userEvent.setup();
     renderTeamSwitcher();
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(screen.getByText('Add team')).toBeInTheDocument();
   });
 
   it('should render team logos in dropdown menu', async () => {
-    const user = userEvent.setup();
     renderTeamSwitcher();
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const menuItems = screen.getAllByRole('menuitem');
-    const teamItems = menuItems.filter((item) =>
-      item.textContent?.includes('⌘'),
+    const teamItems = menuItems.filter(
+      (item) => !item.textContent?.includes('Add team'),
     );
 
     teamItems.forEach((item) => {
@@ -199,7 +183,7 @@ describe('TeamSwitcher', () => {
     renderTeamSwitcher();
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const acmeCorp = screen.getByRole('menuitem', { name: /acme corp/i });
     await user.click(acmeCorp);
@@ -212,11 +196,10 @@ describe('TeamSwitcher', () => {
 
   it('should render dropdown from bottom on mobile viewport', async () => {
     setMobileViewport();
-    const user = userEvent.setup();
     renderTeamSwitcher();
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const menuContent = screen.getByRole('menu');
     expect(menuContent).toHaveAttribute('data-side', 'bottom');
@@ -240,14 +223,13 @@ describe('TeamSwitcher', () => {
   });
 
   it('should render team radio options in dropdown', async () => {
-    const user = userEvent.setup();
     renderTeamSwitcher(mockTeams, 'dorchestrator', {
       teamsByOrgSlug: mockTeamsByOrgSlug,
       activeTeamSlug: 'engineering',
     });
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(
       screen.getByRole('menuitemradio', { name: /engineering/i }),
@@ -271,7 +253,7 @@ describe('TeamSwitcher', () => {
     });
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const designOption = screen.getByRole('menuitemradio', { name: /design/i });
     await user.click(designOption);
@@ -290,7 +272,7 @@ describe('TeamSwitcher', () => {
     });
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const designOption = screen.getByRole('menuitemradio', { name: /design/i });
     await user.click(designOption);
@@ -309,7 +291,7 @@ describe('TeamSwitcher', () => {
     });
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const salesOption = screen.getByRole('menuitemradio', { name: /sales/i });
     await user.click(salesOption);
@@ -325,14 +307,13 @@ describe('TeamSwitcher', () => {
   });
 
   it('should render team options with no radio selected when activeTeamId is null', async () => {
-    const user = userEvent.setup();
     renderTeamSwitcher(mockTeams, 'dorchestrator', {
       teamsByOrgSlug: mockTeamsByOrgSlug,
       activeTeamSlug: undefined,
     });
 
     const trigger = screen.getByRole('button', { name: /dorchestrator/i });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const engineeringOption = screen.getByRole('menuitemradio', {
       name: /engineering/i,

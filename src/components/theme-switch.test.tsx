@@ -1,6 +1,7 @@
 import { ThemeSwitch } from '@components/theme-switch';
 import { useTheme } from '@context/theme.provider';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { clickTrigger } from '@lib/test-wrappers.utils';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock the theme provider
@@ -57,11 +58,10 @@ describe('ThemeSwitch', () => {
   });
 
   it('should open dropdown menu when trigger is clicked', async () => {
-    const user = userEvent.setup();
     render(<ThemeSwitch />);
 
     const trigger = screen.getByRole('button', { name: 'Toggle theme' });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(
       screen.getByRole('menuitem', { name: /light/i }),
@@ -77,7 +77,7 @@ describe('ThemeSwitch', () => {
     render(<ThemeSwitch />);
 
     const trigger = screen.getByRole('button', { name: 'Toggle theme' });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const lightOption = screen.getByRole('menuitem', { name: /light/i });
     await user.click(lightOption);
@@ -90,7 +90,7 @@ describe('ThemeSwitch', () => {
     render(<ThemeSwitch />);
 
     const trigger = screen.getByRole('button', { name: 'Toggle theme' });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const darkOption = screen.getByRole('menuitem', { name: /dark/i });
     await user.click(darkOption);
@@ -103,7 +103,7 @@ describe('ThemeSwitch', () => {
     render(<ThemeSwitch />);
 
     const trigger = screen.getByRole('button', { name: 'Toggle theme' });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     const systemOption = screen.getByRole('menuitem', { name: /system/i });
     await user.click(systemOption);
@@ -112,7 +112,6 @@ describe('ThemeSwitch', () => {
   });
 
   it('should show check marks for theme options', async () => {
-    const user = userEvent.setup();
     mockUseTheme.mockReturnValue({
       theme: 'light',
       setTheme: mockSetTheme,
@@ -121,7 +120,7 @@ describe('ThemeSwitch', () => {
     render(<ThemeSwitch />);
 
     const trigger = screen.getByRole('button', { name: 'Toggle theme' });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     // Verify all check icons are present in the dropdown
     const lightOption = screen.getByRole('menuitem', { name: /light/i });
@@ -177,30 +176,25 @@ describe('ThemeSwitch', () => {
   });
 
   it('should close dropdown when escape key is pressed', async () => {
-    const user = userEvent.setup();
     render(<ThemeSwitch />);
 
     const trigger = screen.getByRole('button', { name: 'Toggle theme' });
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     // Verify dropdown is open
     expect(
       screen.getByRole('menuitem', { name: /light/i }),
     ).toBeInTheDocument();
 
-    // Press escape
-    fireEvent.keyDown(document, { key: 'Escape' });
+    // Press escape on the menu
+    const menu = screen.getByRole('menu');
+    fireEvent.keyDown(menu, { key: 'Escape' });
 
     // Verify dropdown is closed
-    expect(
-      screen.queryByRole('menuitem', { name: /light/i }),
-    ).not.toBeInTheDocument();
-  });
-
-  it('should have correct styling classes on trigger button', () => {
-    render(<ThemeSwitch />);
-
-    const button = screen.getByRole('button', { name: 'Toggle theme' });
-    expect(button).toHaveClass('scale-95', 'rounded-full');
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('menuitem', { name: /light/i }),
+      ).not.toBeInTheDocument();
+    });
   });
 });

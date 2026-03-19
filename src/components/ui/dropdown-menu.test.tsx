@@ -9,19 +9,16 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
+import { clickTrigger } from '@lib/test-wrappers.utils';
 import { render, screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 
 describe('DropdownMenu', () => {
   it('should render trigger and content', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Open Menu</DropdownMenuTrigger>
@@ -34,14 +31,12 @@ describe('DropdownMenu', () => {
     const trigger = screen.getByText('Open Menu');
     expect(trigger).toBeInTheDocument();
 
-    await user.click(trigger);
+    await clickTrigger(trigger);
 
     expect(await screen.findByText('Item 1')).toBeInTheDocument();
   });
 
   it('should render menu items with default variant', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -51,7 +46,7 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     const item = await screen.findByText('Default Item');
     expect(item).toBeInTheDocument();
@@ -59,8 +54,6 @@ describe('DropdownMenu', () => {
   });
 
   it('should render menu items with destructive variant', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -70,7 +63,7 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     const item = await screen.findByText('Delete');
     expect(item).toBeInTheDocument();
@@ -78,8 +71,6 @@ describe('DropdownMenu', () => {
   });
 
   it('should render menu items with inset prop', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -89,7 +80,7 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     const item = await screen.findByText('Inset Item');
     expect(item).toBeInTheDocument();
@@ -97,8 +88,6 @@ describe('DropdownMenu', () => {
   });
 
   it('should render checkbox items', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -113,15 +102,13 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     expect(await screen.findByText('Checked Item')).toBeInTheDocument();
     expect(await screen.findByText('Unchecked Item')).toBeInTheDocument();
   });
 
   it('should render radio group with radio items', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -138,15 +125,13 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     expect(await screen.findByText('Option 1')).toBeInTheDocument();
     expect(await screen.findByText('Option 2')).toBeInTheDocument();
   });
 
   it('should render menu group', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -159,42 +144,42 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     expect(await screen.findByText('Group Item 1')).toBeInTheDocument();
     expect(await screen.findByText('Group Item 2')).toBeInTheDocument();
   });
 
   it('should render menu label', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>Label Text</DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Label Text</DropdownMenuLabel>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     expect(await screen.findByText('Label Text')).toBeInTheDocument();
   });
 
   it('should render menu label with inset', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel inset>Inset Label</DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel inset>Inset Label</DropdownMenuLabel>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     const label = await screen.findByText('Inset Label');
     expect(label).toBeInTheDocument();
@@ -202,8 +187,6 @@ describe('DropdownMenu', () => {
   });
 
   it('should render separator', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -215,34 +198,13 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     expect(await screen.findByText('Item 1')).toBeInTheDocument();
     expect(await screen.findByText('Item 2')).toBeInTheDocument();
   });
 
-  it('should render shortcut', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <DropdownMenu>
-        <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem>
-            Item <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>,
-    );
-
-    await user.click(screen.getByText('Menu'));
-
-    expect(await screen.findByText('⌘K')).toBeInTheDocument();
-  });
-
   it('should render submenu', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -257,14 +219,12 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     expect(await screen.findByText('More Options')).toBeInTheDocument();
   });
 
   it('should render submenu trigger with inset', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -279,7 +239,7 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     const trigger = await screen.findByText('Inset Submenu');
     expect(trigger).toBeInTheDocument();
@@ -287,8 +247,6 @@ describe('DropdownMenu', () => {
   });
 
   it('should render portal', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -300,14 +258,12 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     expect(await screen.findByText('Portal Item')).toBeInTheDocument();
   });
 
   it('should render content with custom sideOffset', async () => {
-    const user = userEvent.setup();
-
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
@@ -317,29 +273,28 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
 
     expect(await screen.findByText('Item')).toBeInTheDocument();
   });
 
   it('should handle click on menu item', async () => {
-    const user = userEvent.setup();
     const handleClick = vi.fn();
 
     render(
       <DropdownMenu>
         <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onSelect={handleClick}>
+          <DropdownMenuItem onClick={handleClick}>
             Clickable Item
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>,
     );
 
-    await user.click(screen.getByText('Menu'));
+    await clickTrigger(screen.getByText('Menu'));
     const item = await screen.findByText('Clickable Item');
-    await user.click(item);
+    await clickTrigger(item);
 
     expect(handleClick).toHaveBeenCalled();
   });

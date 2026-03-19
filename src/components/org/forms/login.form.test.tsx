@@ -123,6 +123,14 @@ describe('LoginForm', () => {
 
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'testpassword');
+    // Blur the password field to trigger onBlur validation
+    await user.tab();
+
+    // Wait for the submit button to become enabled after validation
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
+
     await user.click(submitButton);
 
     // better-auth wraps responses in { data: ..., error: null } format

@@ -4,8 +4,6 @@
 @docs/testing.md
 @docs/api-services.md
 @docs/typescript-and-imports.md
-@docs/storybook.md
-
 # Development Commands
 
 All commands are run via [mise](https://mise.jdx.dev/). Always use `mise run <task>` — never run bun/npm/npx commands directly. Never use `mise exec` just to wrap arbitrary commands — only use the mise tasks listed below. If a task doesn't exist, evaluate adding one before resorting to `mise exec`.
@@ -43,7 +41,3 @@ Always run this before starting work to ensure types are up to date.
 - `mise run scaffold:form -- --name <form-name> --domain <domain> --fields <field1:type,field2:type,...>` — Scaffold a form (form, hook, schema, types)
 - `mise run scaffold:service-constants -- --service <service-file-path> --param <paramName>` — Scaffold constants derived from a service file
 - `mise run scaffold:component -- --name <name> --domain <domain> [--page]` — Scaffold a component (add `--page` for page components)
-
-## Storybook
-
-- `mise run storybook` — Start Storybook dev server

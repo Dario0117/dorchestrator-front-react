@@ -238,7 +238,7 @@ describe('AppFormTextarea', () => {
     expect(screen.queryByText(/\d+\/\d+/)).not.toBeInTheDocument();
   });
 
-  it('should apply destructive style when character count exceeds maxLength', async () => {
+  it('should show character count when exceeding maxLength', async () => {
     const user = userEvent.setup();
     render(
       <TestFormWrapper
@@ -251,12 +251,11 @@ describe('AppFormTextarea', () => {
     await user.type(textarea, 'abcd');
 
     await waitFor(() => {
-      const countElement = screen.getByText('4/3');
-      expect(countElement).toHaveClass('text-destructive');
+      expect(screen.getByText('4/3')).toBeInTheDocument();
     });
   });
 
-  it('should not apply destructive style when character count is within maxLength', async () => {
+  it('should show character count when within maxLength', async () => {
     const user = userEvent.setup();
     render(
       <TestFormWrapper
@@ -269,8 +268,7 @@ describe('AppFormTextarea', () => {
     await user.type(textarea, 'abc');
 
     await waitFor(() => {
-      const countElement = screen.getByText('3/10');
-      expect(countElement).not.toHaveClass('text-destructive');
+      expect(screen.getByText('3/10')).toBeInTheDocument();
     });
   });
 
