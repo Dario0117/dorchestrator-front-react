@@ -147,7 +147,7 @@ describe('ThemeSwitch', () => {
     render(<ThemeSwitch />);
 
     const metaTag = document.querySelector("meta[name='theme-color']");
-    expect(metaTag).toHaveAttribute('content', '#020817');
+    expect(metaTag).toHaveAttribute('content', '#1e2130');
   });
 
   it('should update theme-color meta tag when theme changes to light', () => {
@@ -159,7 +159,7 @@ describe('ThemeSwitch', () => {
     render(<ThemeSwitch />);
 
     const metaTag = document.querySelector("meta[name='theme-color']");
-    expect(metaTag).toHaveAttribute('content', '#fff');
+    expect(metaTag).toHaveAttribute('content', '#fcfcfc');
   });
 
   it('should handle missing theme-color meta tag gracefully', () => {

@@ -1,4 +1,4 @@
 export const THEME_COLORS = {
-  dark: '#020817',
-  light: '#fff',
+  dark: '#1e2130',
+  light: '#fcfcfc',
 } as const;
