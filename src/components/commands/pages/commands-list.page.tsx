@@ -1,6 +1,9 @@
 import { CommandCard } from '@components/commands/command-card';
 import { CommandFilters } from '@components/commands/command-filters';
 import { ExecuteCommandModal } from '@components/commands/execute-command-modal';
+import { PageHeadingBar } from '@components/layout/page-heading-bar';
+import { PageSection } from '@components/layout/page-section';
+import { SectionTitle } from '@components/layout/section-title';
 import { Button } from '@components/ui/button';
 import { EmptyState } from '@components/ui/empty-state';
 import {
@@ -101,10 +104,10 @@ export function CommandsListPage() {
   };
 
   return (
-    <section className="p-6 md:p-10 space-y-6">
+    <PageSection>
       <div className="py-6">
-        <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h1 className="text-2xl font-semibold">Command History</h1>
+        <PageHeadingBar>
+          <SectionTitle>Command History</SectionTitle>
           <Button
             className="w-full md:w-auto"
             onClick={() => setModalOpen(true)}
@@ -112,7 +115,7 @@ export function CommandsListPage() {
             <Play className="mr-2 h-4 w-4" />
             Execute New Command
           </Button>
-        </div>
+        </PageHeadingBar>
 
         <CommandFilters />
 
@@ -236,6 +239,6 @@ export function CommandsListPage() {
           />
         )}
       </div>
-    </section>
+    </PageSection>
   );
 }

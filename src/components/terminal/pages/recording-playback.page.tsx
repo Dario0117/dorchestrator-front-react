@@ -1,3 +1,6 @@
+import { PageHeadingBar } from '@components/layout/page-heading-bar';
+import { PageSection } from '@components/layout/page-section';
+import { SectionTitle } from '@components/layout/section-title';
 import { RecordingContent } from '@components/terminal/pages/recording-content';
 import { StorageTierBadge } from '@components/terminal/pages/storage-tier-badge';
 import { Button } from '@components/ui/button';
@@ -23,7 +26,7 @@ function RecordingPlaybackPage() {
   const recording = data.responseData?.results;
 
   return (
-    <section className="p-6 md:p-10 space-y-6">
+    <PageSection>
       <div className="py-6">
         <div className="mb-6 flex items-center gap-4">
           <Button
@@ -44,10 +47,8 @@ function RecordingPlaybackPage() {
           </Button>
         </div>
 
-        <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h1 className="text-2xl font-semibold">
-            Session Recording — #{sessionId}
-          </h1>
+        <PageHeadingBar>
+          <SectionTitle>Session Recording — #{sessionId}</SectionTitle>
           {recording && (
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <StorageTierBadge tier={recording.recordingStorageTier} />
@@ -58,7 +59,7 @@ function RecordingPlaybackPage() {
               </span>
             </div>
           )}
-        </div>
+        </PageHeadingBar>
 
         {recording ? (
           <RecordingContent
@@ -74,7 +75,7 @@ function RecordingPlaybackPage() {
           />
         )}
       </div>
-    </section>
+    </PageSection>
   );
 }
 

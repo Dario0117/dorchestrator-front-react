@@ -1,3 +1,6 @@
+import { PageHeadingBar } from '@components/layout/page-heading-bar';
+import { PageSection } from '@components/layout/page-section';
+import { SectionTitle } from '@components/layout/section-title';
 import { SessionStatusBadge } from '@components/terminal/pages/session-status-badge';
 import { SessionHistoryExportDialog } from '@components/terminal/session-history-export-dialog';
 import {
@@ -208,10 +211,10 @@ export function TerminalSessionsPage() {
     dateTo !== undefined;
 
   return (
-    <section className="p-6 md:p-10 space-y-6">
+    <PageSection>
       <div className="py-6">
-        <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h1 className="text-2xl font-semibold">Terminal Sessions</h1>
+        <PageHeadingBar>
+          <SectionTitle>Terminal Sessions</SectionTitle>
           <Button
             variant="outline"
             size="sm"
@@ -220,7 +223,7 @@ export function TerminalSessionsPage() {
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
-        </div>
+        </PageHeadingBar>
 
         <SessionHistoryExportDialog
           open={exportDialogOpen}
@@ -527,6 +530,6 @@ export function TerminalSessionsPage() {
           </>
         )}
       </div>
-    </section>
+    </PageSection>
   );
 }

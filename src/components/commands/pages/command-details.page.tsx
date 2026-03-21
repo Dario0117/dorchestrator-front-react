@@ -1,5 +1,7 @@
 import { CommandMetadata } from '@components/commands/command-metadata';
 import { CommandOutput } from '@components/commands/command-output';
+import { PageSection } from '@components/layout/page-section';
+import { PageTitle } from '@components/layout/page-title';
 import { Alert, AlertDescription } from '@components/ui/alert';
 import { Button } from '@components/ui/button';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
@@ -39,7 +41,7 @@ export function CommandDetailsPage() {
   };
 
   return (
-    <section className="space-y-6 p-6 md:p-10">
+    <PageSection>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Button
@@ -50,7 +52,7 @@ export function CommandDetailsPage() {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-2xl font-semibold">Command #{command.id}</h1>
+          <PageTitle>Command #{command.id}</PageTitle>
         </div>
 
         <CommandMetadata command={command} />
@@ -89,6 +91,6 @@ export function CommandDetailsPage() {
           />
         )}
       </div>
-    </section>
+    </PageSection>
   );
 }

@@ -1,3 +1,6 @@
+import { PageDescription } from '@components/layout/page-description';
+import { PageSection } from '@components/layout/page-section';
+import { PageTitle } from '@components/layout/page-title';
 import { ChangePasswordForm } from '@components/org/forms/change-password.form';
 import { Alert, AlertDescription } from '@components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
@@ -12,12 +15,12 @@ export function ProfilePage() {
   const [passwordChanged, setPasswordChanged] = useState(false);
 
   return (
-    <section className="p-6 md:p-10 space-y-6">
+    <PageSection>
       <div>
-        <h1 className="text-2xl font-semibold">Profile</h1>
-        <p className="text-muted-foreground">
+        <PageTitle>Profile</PageTitle>
+        <PageDescription>
           Manage your account and security settings
-        </p>
+        </PageDescription>
       </div>
 
       <div className="grid gap-6 md:grid-cols-1 max-w-2xl">
@@ -62,6 +65,6 @@ export function ProfilePage() {
           }}
         />
       </div>
-    </section>
+    </PageSection>
   );
 }

@@ -1,6 +1,9 @@
 import { SearchInput } from '@components/commands/filters/search-input';
 import { SelectFilter } from '@components/commands/filters/status-filter';
 import { ConfirmDialog } from '@components/confirm-dialog';
+import { PageDescription } from '@components/layout/page-description';
+import { PageSection } from '@components/layout/page-section';
+import { PageTitle } from '@components/layout/page-title';
 import { TeamManagementSection } from '@components/org/team-management-section';
 import { TerminalConfigSection } from '@components/terminal/terminal-config-section';
 import { Alert, AlertDescription } from '@components/ui/alert';
@@ -139,12 +142,12 @@ export function OrganizationSettingsPage() {
   };
 
   return (
-    <section className="p-6 md:p-10 space-y-6">
+    <PageSection>
       <div>
-        <h1 className="text-2xl font-semibold">Organization Settings</h1>
-        <p className="text-muted-foreground">
+        <PageTitle>Organization Settings</PageTitle>
+        <PageDescription>
           View your organization configuration and billing settings
-        </p>
+        </PageDescription>
       </div>
 
       <div className="grid gap-6 md:grid-cols-1">
@@ -636,6 +639,6 @@ export function OrganizationSettingsPage() {
         confirmText="Delete"
         destructive
       />
-    </section>
+    </PageSection>
   );
 }

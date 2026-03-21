@@ -1,3 +1,5 @@
+import { PageSection } from '@components/layout/page-section';
+import { SectionTitle } from '@components/layout/section-title';
 import { BookmarksPage } from '@components/terminal/pages/bookmarks.page';
 import { BookmarksTableSkeleton } from '@components/terminal/pages/bookmarks-table-skeleton';
 import { RouteErrorFallback } from '@components/ui/route-error-fallback';
@@ -42,12 +44,12 @@ function BookmarksRoute() {
   return (
     <Suspense
       fallback={
-        <section className="space-y-6 p-6 md:p-10">
+        <PageSection>
           <div className="py-6">
-            <h1 className="mb-6 text-2xl font-semibold">Bookmarked Sessions</h1>
+            <SectionTitle className="mb-6">Bookmarked Sessions</SectionTitle>
             <BookmarksTableSkeleton />
           </div>
-        </section>
+        </PageSection>
       }
     >
       <BookmarksPage />

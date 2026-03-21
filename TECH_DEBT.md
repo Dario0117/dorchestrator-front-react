@@ -11,6 +11,8 @@
 - [ ] For date filters, prevent users from selecting a "to" date after the "from" date it doesn't make sense to add a range that is negative
 - [ ] Right now the download of exports does a fetch to download the file and then add the blob to the DOM. we shouldn't control the download of the file, we should just let the browser handle it.
 - [ ] Some buttons don't have the hand cursor, we should add it
+- [ ] We might need to integrate the device status to the ws system, maybe also a notification to detect when the device list is updated
+- [ ] When we don't know where to redirect to in the frontend in terms of team, we should default to the default on the current organization so we don't have wrong states
 
 ## Auth
 

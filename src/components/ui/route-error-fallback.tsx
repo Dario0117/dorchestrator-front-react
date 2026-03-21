@@ -1,3 +1,5 @@
+import { PageSection } from '@components/layout/page-section';
+import { SectionTitle } from '@components/layout/section-title';
 import { AlertTriangle } from 'lucide-react';
 import { EmptyState } from './empty-state';
 
@@ -15,9 +17,9 @@ export function RouteErrorFallback({
   reset,
 }: RouteErrorFallbackProps) {
   return (
-    <section className="space-y-6 p-6 md:p-10">
+    <PageSection>
       <div className="py-6">
-        <h1 className="mb-6 text-2xl font-semibold">{pageTitle}</h1>
+        <SectionTitle className="mb-6">{pageTitle}</SectionTitle>
         <EmptyState
           icon={AlertTriangle}
           title={errorTitle}
@@ -33,6 +35,6 @@ export function RouteErrorFallback({
           }
         />
       </div>
-    </section>
+    </PageSection>
   );
 }

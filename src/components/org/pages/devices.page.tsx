@@ -3,6 +3,9 @@ import { ConfirmDialog } from '@components/confirm-dialog';
 import { AddDeviceModal } from '@components/devices/add-device-modal';
 import { DeviceCard } from '@components/devices/device-card';
 import { DeviceConfigDialog } from '@components/devices/device-config-dialog';
+import { PageHeadingBar } from '@components/layout/page-heading-bar';
+import { PageSection } from '@components/layout/page-section';
+import { PageTitle } from '@components/layout/page-title';
 import { CreateTerminalSessionDialog } from '@components/terminal/create-terminal-session-dialog';
 import { TerminalReauthModal } from '@components/terminal/terminal-reauth-modal';
 import { Button } from '@components/ui/button';
@@ -79,15 +82,15 @@ export function DevicesPage() {
   };
 
   return (
-    <section className="p-6 md:p-10 space-y-6">
+    <PageSection>
       <div className="py-6">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Devices</h1>
+        <PageHeadingBar>
+          <PageTitle>Devices</PageTitle>
           <Button onClick={() => setAddModalOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Device
           </Button>
-        </div>
+        </PageHeadingBar>
 
         {devices.length === 0 ? (
           <EmptyState
@@ -266,6 +269,6 @@ export function DevicesPage() {
           />
         )}
       </div>
-    </section>
+    </PageSection>
   );
 }

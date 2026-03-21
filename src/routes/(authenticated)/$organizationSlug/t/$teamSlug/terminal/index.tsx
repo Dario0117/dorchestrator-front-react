@@ -1,3 +1,5 @@
+import { PageSection } from '@components/layout/page-section';
+import { SectionTitle } from '@components/layout/section-title';
 import { SessionTableSkeleton } from '@components/terminal/pages/session-table-skeleton';
 import { TerminalSessionsPage } from '@components/terminal/pages/terminal-sessions.page';
 import { RouteErrorFallback } from '@components/ui/route-error-fallback';
@@ -67,12 +69,12 @@ function TerminalSessionsRoute() {
   return (
     <Suspense
       fallback={
-        <section className="p-6 md:p-10 space-y-6">
+        <PageSection>
           <div className="py-6">
-            <h1 className="mb-6 text-2xl font-semibold">Terminal Sessions</h1>
+            <SectionTitle className="mb-6">Terminal Sessions</SectionTitle>
             <SessionTableSkeleton />
           </div>
-        </section>
+        </PageSection>
       }
     >
       <TerminalSessionsPage />

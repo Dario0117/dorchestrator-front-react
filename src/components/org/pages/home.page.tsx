@@ -1,4 +1,7 @@
 import { CommandStatusBadge } from '@components/commands/command-status-badge';
+import { PageDescription } from '@components/layout/page-description';
+import { PageSection } from '@components/layout/page-section';
+import { PageTitle } from '@components/layout/page-title';
 import { StatCard } from '@components/org/pages/stat-card';
 import { Button } from '@components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
@@ -20,14 +23,12 @@ export function HomePage() {
   const { data: stats } = useOrganizationStatsSuspenseQuery(organizationId);
 
   return (
-    <section className="p-6 md:p-10 space-y-6">
+    <PageSection>
       <div>
-        <h1 className="text-2xl font-semibold">
-          Welcome to {currentOrganization.name}
-        </h1>
-        <p className="text-muted-foreground">
+        <PageTitle>Welcome to {currentOrganization.name}</PageTitle>
+        <PageDescription>
           Manage your devices and execute remote commands
-        </p>
+        </PageDescription>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -143,6 +144,6 @@ export function HomePage() {
           )}
         </CardContent>
       </Card>
-    </section>
+    </PageSection>
   );
 }

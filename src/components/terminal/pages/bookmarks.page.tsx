@@ -1,3 +1,6 @@
+import { PageHeadingBar } from '@components/layout/page-heading-bar';
+import { PageSection } from '@components/layout/page-section';
+import { SectionTitle } from '@components/layout/section-title';
 import { BookmarkStatusBadge } from '@components/terminal/pages/bookmark-status-badge';
 import { InlineNoteEditor } from '@components/terminal/pages/inline-note-editor';
 import { Button } from '@components/ui/button';
@@ -81,11 +84,11 @@ function BookmarksPage() {
   };
 
   return (
-    <section className="space-y-6 p-6 md:p-10">
+    <PageSection>
       <div className="py-6">
-        <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h1 className="text-2xl font-semibold">Bookmarked Sessions</h1>
-        </div>
+        <PageHeadingBar>
+          <SectionTitle>Bookmarked Sessions</SectionTitle>
+        </PageHeadingBar>
 
         {bookmarks.length === 0 ? (
           <EmptyState
@@ -222,7 +225,7 @@ function BookmarksPage() {
           </>
         )}
       </div>
-    </section>
+    </PageSection>
   );
 }
 

@@ -1,5 +1,8 @@
 import { AuditLogFilters } from '@components/audit-logs/audit-log-filters';
 import { AuditLogRow } from '@components/audit-logs/audit-log-row';
+import { PageHeadingBar } from '@components/layout/page-heading-bar';
+import { PageSection } from '@components/layout/page-section';
+import { SectionTitle } from '@components/layout/section-title';
 import { Button } from '@components/ui/button';
 import { EmptyState } from '@components/ui/empty-state';
 import {
@@ -71,11 +74,11 @@ export function AuditLogsListPage() {
   };
 
   return (
-    <section className="p-6 md:p-10 space-y-6">
+    <PageSection>
       <div className="py-6">
-        <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h1 className="text-2xl font-semibold">Audit Logs</h1>
-        </div>
+        <PageHeadingBar>
+          <SectionTitle>Audit Logs</SectionTitle>
+        </PageHeadingBar>
 
         <AuditLogFilters />
 
@@ -190,6 +193,6 @@ export function AuditLogsListPage() {
           </>
         )}
       </div>
-    </section>
+    </PageSection>
   );
 }
