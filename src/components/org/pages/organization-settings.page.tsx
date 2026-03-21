@@ -141,9 +141,7 @@ export function OrganizationSettingsPage() {
   return (
     <section className="p-6 md:p-10 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight font-serif">
-          Organization Settings
-        </h1>
+        <h1 className="text-2xl font-semibold">Organization Settings</h1>
         <p className="text-muted-foreground">
           View your organization configuration and billing settings
         </p>

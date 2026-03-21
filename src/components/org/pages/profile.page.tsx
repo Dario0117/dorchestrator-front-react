@@ -14,9 +14,7 @@ export function ProfilePage() {
   return (
     <section className="p-6 md:p-10 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight font-serif">
-          Profile
-        </h1>
+        <h1 className="text-2xl font-semibold">Profile</h1>
         <p className="text-muted-foreground">
           Manage your account and security settings
         </p>

@@ -84,7 +84,7 @@ function BookmarksPage() {
     <section className="space-y-6 p-6 md:p-10">
       <div className="py-6">
         <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h1 className="font-serif text-2xl font-bold">Bookmarked Sessions</h1>
+          <h1 className="text-2xl font-semibold">Bookmarked Sessions</h1>
         </div>
 
         {bookmarks.length === 0 ? (

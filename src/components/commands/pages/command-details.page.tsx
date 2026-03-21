@@ -50,9 +50,7 @@ export function CommandDetailsPage() {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-3xl font-bold font-serif">
-            Command #{command.id}
-          </h1>
+          <h1 className="text-2xl font-semibold">Command #{command.id}</h1>
         </div>
 
         <CommandMetadata command={command} />

@@ -17,7 +17,7 @@ export function RouteErrorFallback({
   return (
     <section className="space-y-6 p-6 md:p-10">
       <div className="py-6">
-        <h1 className="mb-6 font-serif text-2xl font-bold">{pageTitle}</h1>
+        <h1 className="mb-6 text-2xl font-semibold">{pageTitle}</h1>
         <EmptyState
           icon={AlertTriangle}
           title={errorTitle}

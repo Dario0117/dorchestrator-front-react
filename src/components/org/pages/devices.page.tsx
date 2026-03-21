@@ -82,7 +82,7 @@ export function DevicesPage() {
     <section className="p-6 md:p-10 space-y-6">
       <div className="py-6">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-3xl font-bold font-serif">Devices</h1>
+          <h1 className="text-2xl font-semibold">Devices</h1>
           <Button onClick={() => setAddModalOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Device

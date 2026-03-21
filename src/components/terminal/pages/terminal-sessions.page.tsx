@@ -211,7 +211,7 @@ export function TerminalSessionsPage() {
     <section className="p-6 md:p-10 space-y-6">
       <div className="py-6">
         <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h1 className="text-2xl font-bold font-serif">Terminal Sessions</h1>
+          <h1 className="text-2xl font-semibold">Terminal Sessions</h1>
           <Button
             variant="outline"
             size="sm"

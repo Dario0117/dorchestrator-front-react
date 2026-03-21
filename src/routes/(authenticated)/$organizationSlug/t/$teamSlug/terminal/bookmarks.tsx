@@ -44,9 +44,7 @@ function BookmarksRoute() {
       fallback={
         <section className="space-y-6 p-6 md:p-10">
           <div className="py-6">
-            <h1 className="mb-6 font-serif text-2xl font-bold">
-              Bookmarked Sessions
-            </h1>
+            <h1 className="mb-6 text-2xl font-semibold">Bookmarked Sessions</h1>
             <BookmarksTableSkeleton />
           </div>
         </section>

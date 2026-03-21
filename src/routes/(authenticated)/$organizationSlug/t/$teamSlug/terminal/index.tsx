@@ -69,9 +69,7 @@ function TerminalSessionsRoute() {
       fallback={
         <section className="p-6 md:p-10 space-y-6">
           <div className="py-6">
-            <h1 className="mb-6 text-2xl font-bold font-serif">
-              Terminal Sessions
-            </h1>
+            <h1 className="mb-6 text-2xl font-semibold">Terminal Sessions</h1>
             <SessionTableSkeleton />
           </div>
         </section>
