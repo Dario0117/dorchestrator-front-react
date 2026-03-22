@@ -1,13 +1,13 @@
-import { TeamSwitcher } from '@components/layout/team-switcher';
-import type { TeamSwitcherProps } from '@components/layout/team-switcher.types';
-import { CreateOrganizationForm } from '@components/org/forms/create-organization.form';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
+} from '@components/ds/molecules/dialog';
+import { TeamSwitcher } from '@components/layout/team-switcher';
+import type { TeamSwitcherProps } from '@components/layout/team-switcher.types';
+import { CreateOrganizationForm } from '@components/org/forms/create-organization.form';
 import { queryClient } from '@context/query.provider';
 import { useCreateOrganizationMutation } from '@services/organizations/create-organization.http-service';
 import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';

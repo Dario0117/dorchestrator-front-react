@@ -1,12 +1,12 @@
-import { Button } from '@components/ui/button';
+import { Button } from '@components/ds/atoms/button';
+import { Input } from '@components/ds/atoms/input';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
-import { Input } from '@components/ui/input';
+} from '@components/ds/molecules/dialog';
 import type { TeamItem } from '@services/teams/list-teams.http-service';
 import { useUpdateTeamMutation } from '@services/teams/update-team.http-service';
 import { useState } from 'react';

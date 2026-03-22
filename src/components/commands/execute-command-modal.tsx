@@ -6,7 +6,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
+} from '@components/ds/molecules/dialog';
 import { useSubmitCommandMutation } from '@services/commands/submit-command.http-service';
 
 export interface PinnedDevice {

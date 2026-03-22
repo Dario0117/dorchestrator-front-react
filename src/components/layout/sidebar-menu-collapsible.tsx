@@ -1,11 +1,8 @@
-import { checkIsActive } from '@components/layout/check-is-active';
-import { NavBadge } from '@components/layout/nav-badge';
-import type { NavCollapsible } from '@components/layout/nav-group.types';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@components/ui/collapsible';
+} from '@components/ds/atoms/collapsible';
 import {
   SidebarMenuButton,
   SidebarMenuItem,
@@ -13,7 +10,10 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   useSidebar,
-} from '@components/ui/sidebar';
+} from '@components/ds/organisms/sidebar';
+import { checkIsActive } from '@components/layout/check-is-active';
+import { NavBadge } from '@components/layout/nav-badge';
+import type { NavCollapsible } from '@components/layout/nav-group.types';
 import { Link } from '@tanstack/react-router';
 import { ChevronRight } from 'lucide-react';
 

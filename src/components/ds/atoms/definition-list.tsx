@@ -1,17 +1,14 @@
-import { cn } from '@/lib/utils';
+type DefinitionListProps = Omit<React.ComponentProps<'dl'>, 'className'>;
 
-function DefinitionList({
-  className,
-  ref,
-  ...props
-}: React.ComponentProps<'dl'>) {
+function DefinitionList({ ref, ...props }: DefinitionListProps) {
   return (
     <dl
       ref={ref}
-      className={cn('space-y-4', className)}
+      className="space-y-4"
       {...props}
     />
   );
 }
 
 export { DefinitionList };
+export type { DefinitionListProps };

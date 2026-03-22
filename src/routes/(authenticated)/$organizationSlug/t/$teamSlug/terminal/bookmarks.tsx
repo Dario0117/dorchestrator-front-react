@@ -1,8 +1,9 @@
-import { PageSection } from '@components/layout/page-section';
-import { SectionTitle } from '@components/layout/section-title';
+import { Box } from '@components/ds/atoms/box';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { RouteErrorFallback } from '@components/ds/atoms/route-error-fallback';
+import { SectionTitle } from '@components/ds/atoms/section-title';
 import { BookmarksPage } from '@components/terminal/pages/bookmarks.page';
 import { BookmarksTableSkeleton } from '@components/terminal/pages/bookmarks-table-skeleton';
-import { RouteErrorFallback } from '@components/ui/route-error-fallback';
 import { useBookmarksQueryOptions } from '@services/terminal/list-bookmarks.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 import { Suspense } from 'react';
@@ -46,7 +47,9 @@ function BookmarksRoute() {
       fallback={
         <PageSection>
           <div className="py-6">
-            <SectionTitle className="mb-6">Bookmarked Sessions</SectionTitle>
+            <Box spaceBelow="lg">
+              <SectionTitle>Bookmarked Sessions</SectionTitle>
+            </Box>
             <BookmarksTableSkeleton />
           </div>
         </PageSection>

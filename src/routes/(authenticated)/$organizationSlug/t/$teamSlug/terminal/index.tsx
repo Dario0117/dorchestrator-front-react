@@ -1,8 +1,9 @@
-import { PageSection } from '@components/layout/page-section';
-import { SectionTitle } from '@components/layout/section-title';
+import { Box } from '@components/ds/atoms/box';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { RouteErrorFallback } from '@components/ds/atoms/route-error-fallback';
+import { SectionTitle } from '@components/ds/atoms/section-title';
 import { SessionTableSkeleton } from '@components/terminal/pages/session-table-skeleton';
 import { TerminalSessionsPage } from '@components/terminal/pages/terminal-sessions.page';
-import { RouteErrorFallback } from '@components/ui/route-error-fallback';
 import { useTerminalSessionsQueryOptions } from '@services/terminal/list-terminal-sessions.http-service';
 import { TERMINAL_SESSION_STATUSES } from '@services/terminal/list-terminal-sessions.http-service.constants';
 import { createFileRoute } from '@tanstack/react-router';
@@ -71,7 +72,9 @@ function TerminalSessionsRoute() {
       fallback={
         <PageSection>
           <div className="py-6">
-            <SectionTitle className="mb-6">Terminal Sessions</SectionTitle>
+            <Box spaceBelow="lg">
+              <SectionTitle>Terminal Sessions</SectionTitle>
+            </Box>
             <SessionTableSkeleton />
           </div>
         </PageSection>

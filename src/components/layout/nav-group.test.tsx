@@ -1,6 +1,6 @@
+import { SidebarProvider } from '@components/ds/organisms/sidebar';
 import { NavGroup } from '@components/layout/nav-group';
 import type { NavItem } from '@components/layout/nav-group.types';
-import { SidebarProvider } from '@components/ui/sidebar';
 import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

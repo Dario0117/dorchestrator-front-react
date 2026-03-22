@@ -1,33 +1,29 @@
 import { SearchInput } from '@components/commands/filters/search-input';
 import { SelectFilter } from '@components/commands/filters/status-filter';
 import { ConfirmDialog } from '@components/confirm-dialog';
+import { Alert, AlertDescription } from '@components/ds/atoms/alert';
+import { Badge } from '@components/ds/atoms/badge';
+import { Button } from '@components/ds/atoms/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import { DefinitionList } from '@components/ds/atoms/definition-list';
 import { MetadataLabel } from '@components/ds/atoms/metadata-label';
+import { PageDescription } from '@components/ds/atoms/page-description';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { PageTitle } from '@components/ds/atoms/page-title';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
-import { PageDescription } from '@components/layout/page-description';
-import { PageSection } from '@components/layout/page-section';
-import { PageTitle } from '@components/layout/page-title';
-import { TeamManagementSection } from '@components/org/team-management-section';
-import { TerminalConfigSection } from '@components/terminal/terminal-config-section';
-import { Alert, AlertDescription } from '@components/ui/alert';
-import { Badge } from '@components/ui/badge';
-import { Button } from '@components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from '@components/ui/pagination';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@components/ui/select';
+} from '@components/ds/atoms/select';
 import {
   Table,
   TableBody,
@@ -35,7 +31,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@components/ui/table';
+} from '@components/ds/atoms/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@components/ds/molecules/pagination';
+import { TeamManagementSection } from '@components/org/team-management-section';
+import { TerminalConfigSection } from '@components/terminal/terminal-config-section';
 import { queryClient } from '@context/query.provider';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';

@@ -1,4 +1,4 @@
-import { Badge } from '@components/ui/badge';
+import { Badge } from '@components/ds/atoms/badge';
 import { badgeStyles } from '@lib/badge-styles';
 import type { CommandStatus } from '@services/commands/list-commands.http-service.constants';
 import { CheckCircle2, Clock, Loader2, XCircle } from 'lucide-react';

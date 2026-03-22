@@ -1,4 +1,4 @@
-import { Input } from '@components/ui/input';
+import { Input } from '@components/ds/atoms/input';
 import { Search, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 

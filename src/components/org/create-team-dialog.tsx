@@ -1,11 +1,11 @@
-import { useCreateTeamForm } from '@components/org/forms/hooks/use-create-team-form';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
+} from '@components/ds/molecules/dialog';
+import { useCreateTeamForm } from '@components/org/forms/hooks/use-create-team-form';
 import { generateSlugSuggestion } from '@lib/organization-logo.utils';
 import { useCreateTeamMutation } from '@services/teams/create-team.http-service';
 

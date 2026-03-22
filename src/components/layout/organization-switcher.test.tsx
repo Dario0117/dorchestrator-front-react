@@ -1,5 +1,5 @@
+import { SidebarProvider } from '@components/ds/organisms/sidebar';
 import { OrganizationSwitcher } from '@components/layout/organization-switcher';
-import { SidebarProvider } from '@components/ui/sidebar';
 import { buildBackendUrl } from '@lib/test.utils';
 import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';

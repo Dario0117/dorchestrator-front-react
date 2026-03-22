@@ -13,8 +13,10 @@ React 19 + TypeScript frontend with TanStack Router, TanStack Query, Zustand, an
 | Task | Command |
 |---|---|
 | Dev server | `mise run devForAgents` |
+| **All quality checks** | **`mise run check`** |
 | TypeScript check | `mise run checkTs` |
 | Format + lint (fix) | `mise run formatAndLint` |
+| Import boundary | `mise run checkImportBoundary` |
 | Tests | `mise run testForAgents` |
 | Tests (single file) | `mise run test -- path/to/file.test.tsx` |
 | Coverage | `mise run coverageForAgents` |
@@ -30,7 +32,7 @@ React 19 + TypeScript frontend with TanStack Router, TanStack Query, Zustand, an
 1. Before starting work: run `mise run openApi` to generate latest API types
 2. Implement feature/fix
 3. Write tests
-4. Run quality checks until clean: `mise run formatAndLint && mise run checkTs && mise run testForAgents`
+4. Run quality checks until clean: `mise run check && mise run testForAgents`
 
 ## Strict Rules
 

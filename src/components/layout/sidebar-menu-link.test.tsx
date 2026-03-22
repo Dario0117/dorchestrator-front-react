@@ -1,5 +1,5 @@
+import { SidebarProvider } from '@components/ds/organisms/sidebar';
 import { SidebarMenuLink } from '@components/layout/sidebar-menu-link';
-import { SidebarProvider } from '@components/ui/sidebar';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen } from '@testing-library/react';
 import { Home } from 'lucide-react';

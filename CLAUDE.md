@@ -24,8 +24,10 @@ Never use `mise run dev`.
 
 ## Code Quality
 
+- `mise run check` — **Run all quality checks** (TypeScript + Biome + import boundary) — no tests
 - `mise run checkTs` — TypeScript type checking (no emit)
 - `mise run formatAndLint` — Format + lint with Biome (applies fixes)
+- `mise run checkImportBoundary` — Enforce ds/ import boundary (no `@components/ui/` imports outside `ds/`)
 - `mise run deadCode` — Find unused files, exports, types, and dependencies (knip)
 - `mise run build` — Production build
 

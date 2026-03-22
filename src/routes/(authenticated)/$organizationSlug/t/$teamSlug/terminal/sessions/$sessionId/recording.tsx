@@ -1,6 +1,6 @@
+import { RouteErrorFallback } from '@components/ds/atoms/route-error-fallback';
 import { RecordingPlaybackPage } from '@components/terminal/pages/recording-playback.page';
 import { RecordingPlaybackSkeleton } from '@components/terminal/pages/recording-playback-skeleton';
-import { RouteErrorFallback } from '@components/ui/route-error-fallback';
 import { useGetRecordingQueryOptions } from '@services/terminal/get-recording.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 import { Suspense } from 'react';

@@ -1,5 +1,5 @@
+import { Button } from '@components/ds/atoms/button';
 import { useFormContext } from '@components/org/forms/hooks/app-form';
-import { Button } from '@components/ui/button';
 import { cn } from '@lib/utils';
 
 export function AppSubscribeSubmitButton({

@@ -1,11 +1,16 @@
+import { Button } from '@components/ds/atoms/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { useCreateOrganizationForm } from '@components/org/forms/hooks/use-create-organization-form';
 import {
   SlugStatus,
   useSlugValidation,
 } from '@components/org/forms/hooks/use-slug-validation';
-import { Button } from '@components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import {
   generateInitials,
   generateSlugSuggestion,

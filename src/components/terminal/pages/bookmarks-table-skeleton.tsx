@@ -1,5 +1,4 @@
-import { TableWrapper } from '@components/ds/atoms/table-wrapper';
-import { Skeleton } from '@components/ui/skeleton';
+import { Skeleton } from '@components/ds/atoms/skeleton';
 import {
   Table,
   TableBody,
@@ -7,7 +6,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@components/ui/table';
+} from '@components/ds/atoms/table';
+import { TableWrapper } from '@components/ds/atoms/table-wrapper';
 
 export function BookmarksTableSkeleton() {
   return (

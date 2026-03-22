@@ -1,26 +1,26 @@
 import { CommandCard } from '@components/commands/command-card';
 import { CommandFilters } from '@components/commands/command-filters';
 import { ExecuteCommandModal } from '@components/commands/execute-command-modal';
+import { Button } from '@components/ds/atoms/button';
+import { EmptyState } from '@components/ds/atoms/empty-state';
+import { PageSection } from '@components/ds/atoms/page-section';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
-import { PageHeadingBar } from '@components/layout/page-heading-bar';
-import { PageSection } from '@components/layout/page-section';
-import { SectionTitle } from '@components/layout/section-title';
-import { Button } from '@components/ui/button';
-import { EmptyState } from '@components/ui/empty-state';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from '@components/ui/pagination';
+import { SectionTitle } from '@components/ds/atoms/section-title';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@components/ui/select';
+} from '@components/ds/atoms/select';
+import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@components/ds/molecules/pagination';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useCurrentTeam } from '@hooks/use-current-team';
 import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';

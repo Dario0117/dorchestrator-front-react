@@ -1,7 +1,10 @@
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@components/ds/atoms/avatar';
+import { buttonVariants } from '@components/ds/atoms/button';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
-import { SignOutDialog } from '@components/sign-out-dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
-import { buttonVariants } from '@components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +13,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu';
+} from '@components/ds/molecules/dropdown-menu';
+import { SignOutDialog } from '@components/sign-out-dialog';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import useDialogState from '@hooks/use-dialog-state';
 import { cn } from '@lib/utils';

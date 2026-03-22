@@ -1,5 +1,15 @@
+import { Button } from '@components/ds/atoms/button';
+import { Input } from '@components/ds/atoms/input';
+import { Label } from '@components/ds/atoms/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ds/atoms/select';
+import { Skeleton } from '@components/ds/atoms/skeleton';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
-import { Button } from '@components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -7,17 +17,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
-import { Input } from '@components/ui/input';
-import { Label } from '@components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@components/ui/select';
-import { Skeleton } from '@components/ui/skeleton';
+} from '@components/ds/molecules/dialog';
 
 import { formatDurationHuman } from '@lib/format-duration';
 

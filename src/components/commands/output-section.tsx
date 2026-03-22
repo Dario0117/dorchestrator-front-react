@@ -1,10 +1,10 @@
 import { TerminalHeader } from '@components/commands/terminal-header';
-import { Button } from '@components/ui/button';
+import { Button } from '@components/ds/atoms/button';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@components/ui/collapsible';
+} from '@components/ds/atoms/collapsible';
 import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
 import { Check, ChevronDown, Copy, Download } from 'lucide-react';
 import { useState } from 'react';

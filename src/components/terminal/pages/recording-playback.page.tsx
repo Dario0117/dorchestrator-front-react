@@ -1,10 +1,10 @@
-import { PageHeadingBar } from '@components/layout/page-heading-bar';
-import { PageSection } from '@components/layout/page-section';
-import { SectionTitle } from '@components/layout/section-title';
+import { Button } from '@components/ds/atoms/button';
+import { EmptyState } from '@components/ds/atoms/empty-state';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { SectionTitle } from '@components/ds/atoms/section-title';
+import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
 import { RecordingContent } from '@components/terminal/pages/recording-content';
 import { StorageTierBadge } from '@components/terminal/pages/storage-tier-badge';
-import { Button } from '@components/ui/button';
-import { EmptyState } from '@components/ui/empty-state';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { formatBytes } from '@lib/format-bytes';
 import { formatDurationCompact } from '@lib/format-duration';

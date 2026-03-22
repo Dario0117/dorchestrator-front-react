@@ -1,4 +1,4 @@
-import { EmptyState } from '@components/ui/empty-state';
+import { EmptyState } from '@components/ds/atoms/empty-state';
 import { Loader2 } from 'lucide-react';
 
 export function RestoringView() {

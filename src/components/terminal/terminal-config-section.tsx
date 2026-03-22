@@ -1,5 +1,5 @@
+import { Alert, AlertDescription } from '@components/ds/atoms/alert';
 import { TerminalConfigForm } from '@components/terminal/forms/terminal-config.form';
-import { Alert, AlertDescription } from '@components/ui/alert';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useGetTerminalConfigSuspenseQuery } from '@services/terminal/get-terminal-config.http-service';
 import { useUpdateTerminalConfigMutation } from '@services/terminal/update-terminal-config.http-service';

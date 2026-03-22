@@ -1,17 +1,19 @@
 import { cn } from '@/lib/utils';
 
-function SecondaryText({
-  className,
-  ref,
-  ...props
-}: React.ComponentProps<'span'>) {
+interface SecondaryTextProps
+  extends Omit<React.ComponentProps<'span'>, 'className'> {
+  centered?: boolean;
+}
+
+function SecondaryText({ centered, ref, ...props }: SecondaryTextProps) {
   return (
     <span
       ref={ref}
-      className={cn('text-sm text-muted-foreground', className)}
+      className={cn('text-sm text-muted-foreground', centered && 'text-center')}
       {...props}
     />
   );
 }
 
 export { SecondaryText };
+export type { SecondaryTextProps };

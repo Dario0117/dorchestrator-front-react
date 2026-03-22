@@ -1,13 +1,13 @@
+import { Button } from '@components/ds/atoms/button';
+import { Input } from '@components/ds/atoms/input';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
-import { Button } from '@components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
-import { Input } from '@components/ui/input';
+} from '@components/ds/molecules/dialog';
 import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
 import { useGenerateTokenMutation } from '@services/devices/generate-device-token.http-service';
 import { CheckCircle, Copy } from 'lucide-react';

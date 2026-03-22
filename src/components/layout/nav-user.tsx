@@ -1,6 +1,8 @@
-import type { NavUserProps } from '@components/layout/nav-user.types';
-import { SignOutDialog } from '@components/sign-out-dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@components/ds/atoms/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,13 +11,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu';
+} from '@components/ds/molecules/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@components/ui/sidebar';
+} from '@components/ds/organisms/sidebar';
+import type { NavUserProps } from '@components/layout/nav-user.types';
+import { SignOutDialog } from '@components/sign-out-dialog';
 import useDialogState from '@hooks/use-dialog-state';
 import { Link } from '@tanstack/react-router';
 import {

@@ -1,6 +1,6 @@
+import { Label } from '@components/ds/atoms/label';
 import { normalizeFieldErrors } from '@components/org/forms/components/normalize-field-errors';
 import { useFieldContext } from '@components/org/forms/hooks/app-form';
-import { Label } from '@components/ui/label';
 import { cn } from '@lib/utils';
 
 interface AppFormTextareaProps {

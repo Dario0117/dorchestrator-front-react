@@ -1,11 +1,11 @@
-import { checkIsActive } from '@components/layout/check-is-active';
-import { NavBadge } from '@components/layout/nav-badge';
-import type { NavLink } from '@components/layout/nav-group.types';
 import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@components/ui/sidebar';
+} from '@components/ds/organisms/sidebar';
+import { checkIsActive } from '@components/layout/check-is-active';
+import { NavBadge } from '@components/layout/nav-badge';
+import type { NavLink } from '@components/layout/nav-group.types';
 import { Link } from '@tanstack/react-router';
 
 export function SidebarMenuLink({

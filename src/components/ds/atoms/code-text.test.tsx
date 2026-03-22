@@ -15,6 +15,13 @@ describe('CodeText', () => {
     });
   });
 
+  describe('semantic props', () => {
+    it('accepts truncate prop', () => {
+      render(<CodeText truncate>truncated code</CodeText>);
+      expect(screen.getByText('truncated code')).toBeInTheDocument();
+    });
+  });
+
   describe('ref forwarding', () => {
     it('forwards ref to the span element', () => {
       const ref = createRef<HTMLSpanElement>();

@@ -1,9 +1,9 @@
 import { CommandMetadata } from '@components/commands/command-metadata';
 import { CommandOutput } from '@components/commands/command-output';
-import { PageSection } from '@components/layout/page-section';
-import { PageTitle } from '@components/layout/page-title';
-import { Alert, AlertDescription } from '@components/ui/alert';
-import { Button } from '@components/ui/button';
+import { Alert, AlertDescription } from '@components/ds/atoms/alert';
+import { Button } from '@components/ds/atoms/button';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { PageTitle } from '@components/ds/atoms/page-title';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useCurrentTeam } from '@hooks/use-current-team';
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/$commandId';

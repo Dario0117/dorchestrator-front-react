@@ -2,10 +2,7 @@
 
 ## UI Enhancements
 
-- [ ] Update to shadcn v2 (remove radix if possible and move it to base-ui)
 - [ ] On ResetPasswordPage, add a toast to show the user that the password has been reset and they need to check their email (a message is coming from the backend, we can use that one).
-- [ ] When doing blur on a form it marks everything as error, let's only do it when we interact with the form
-- [ ] Abstract the pagination logic, we are duplicating it in some components
 - [ ] Adding a new device, when copying the command it changes the status of the token and not the command
 - [ ] Add the device id and user id on the command card
 - [ ] For date filters, prevent users from selecting a "to" date after the "from" date it doesn't make sense to add a range that is negative

@@ -1,12 +1,12 @@
-import { getSidebarData } from '@components/layout/data/sidebar-data';
-import { NavGroup } from '@components/layout/nav-group';
-import { OrganizationSwitcher } from '@components/layout/organization-switcher';
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarRail,
-} from '@components/ui/sidebar';
+} from '@components/ds/organisms/sidebar';
+import { getSidebarData } from '@components/layout/data/sidebar-data';
+import { NavGroup } from '@components/layout/nav-group';
+import { OrganizationSwitcher } from '@components/layout/organization-switcher';
 import { useLayout } from '@context/layout.provider';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useUserOrganizationsSuspendedQuery } from '@services/organizations/list-user-organizations.http-service';

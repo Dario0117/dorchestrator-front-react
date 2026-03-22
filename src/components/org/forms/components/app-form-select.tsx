@@ -1,13 +1,13 @@
-import { normalizeFieldErrors } from '@components/org/forms/components/normalize-field-errors';
-import { useFieldContext } from '@components/org/forms/hooks/app-form';
-import { Label } from '@components/ui/label';
+import { Label } from '@components/ds/atoms/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@components/ui/select';
+} from '@components/ds/atoms/select';
+import { normalizeFieldErrors } from '@components/org/forms/components/normalize-field-errors';
+import { useFieldContext } from '@components/org/forms/hooks/app-form';
 
 export interface SelectOption {
   value: string;

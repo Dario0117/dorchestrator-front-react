@@ -1,11 +1,26 @@
+import { Button } from '@components/ds/atoms/button';
+import { EmptyState } from '@components/ds/atoms/empty-state';
+import { Input } from '@components/ds/atoms/input';
+import { PageSection } from '@components/ds/atoms/page-section';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
+import { SectionTitle } from '@components/ds/atoms/section-title';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ds/atoms/select';
 import { SmallText } from '@components/ds/atoms/small-text';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@components/ds/atoms/table';
 import { TableWrapper } from '@components/ds/atoms/table-wrapper';
-import { PageHeadingBar } from '@components/layout/page-heading-bar';
-import { PageSection } from '@components/layout/page-section';
-import { SectionTitle } from '@components/layout/section-title';
-import { SessionStatusBadge } from '@components/terminal/pages/session-status-badge';
-import { SessionHistoryExportDialog } from '@components/terminal/session-history-export-dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,32 +31,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@components/ui/alert-dialog';
-import { Button } from '@components/ui/button';
-import { EmptyState } from '@components/ui/empty-state';
-import { Input } from '@components/ui/input';
+} from '@components/ds/molecules/alert-dialog';
+import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
-} from '@components/ui/pagination';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@components/ui/table';
+} from '@components/ds/molecules/pagination';
+import { SessionStatusBadge } from '@components/terminal/pages/session-status-badge';
+import { SessionHistoryExportDialog } from '@components/terminal/session-history-export-dialog';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useCurrentTeam } from '@hooks/use-current-team';
 import { formatBytes } from '@lib/format-bytes';

@@ -1,13 +1,13 @@
 import { DeviceConfigForm } from '@components/devices/forms/device-config.form';
-import { Alert, AlertDescription } from '@components/ui/alert';
+import { Alert, AlertDescription } from '@components/ds/atoms/alert';
+import { Skeleton } from '@components/ds/atoms/skeleton';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
-import { Skeleton } from '@components/ui/skeleton';
+} from '@components/ds/molecules/dialog';
 import { useGetDeviceConfigQueryOptions } from '@services/terminal/get-device-config.http-service';
 import { useGetTerminalConfigQueryOptions } from '@services/terminal/get-terminal-config.http-service';
 import { useUpdateDeviceConfigMutation } from '@services/terminal/update-device-config.http-service';

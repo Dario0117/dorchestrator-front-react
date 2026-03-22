@@ -15,6 +15,13 @@ describe('SecondaryText', () => {
     });
   });
 
+  describe('semantic props', () => {
+    it('accepts centered prop', () => {
+      render(<SecondaryText centered>centered text</SecondaryText>);
+      expect(screen.getByText('centered text')).toBeInTheDocument();
+    });
+  });
+
   describe('ref forwarding', () => {
     it('forwards ref to the span element', () => {
       const ref = createRef<HTMLSpanElement>();

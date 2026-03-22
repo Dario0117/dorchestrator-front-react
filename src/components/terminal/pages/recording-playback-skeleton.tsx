@@ -1,5 +1,5 @@
-import { PageSection } from '@components/layout/page-section';
-import { Skeleton } from '@components/ui/skeleton';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { Skeleton } from '@components/ds/atoms/skeleton';
 
 export function RecordingPlaybackSkeleton() {
   return (

@@ -1,5 +1,5 @@
+import { Alert, AlertDescription } from '@components/ds/atoms/alert';
 import { LoginForm } from '@components/org/forms/login.form';
-import { Alert, AlertDescription } from '@components/ui/alert';
 import { Route } from '@routes/(unauthenticated)/login';
 import { useLoginMutation } from '@services/users/login.http-service';
 import { useNavigate } from '@tanstack/react-router';

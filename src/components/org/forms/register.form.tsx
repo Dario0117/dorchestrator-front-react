@@ -1,6 +1,11 @@
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import { useRegisterForm } from '@components/org/forms/hooks/use-register-form';
 import type { RegisterFormProps } from '@components/org/forms/register.form.types';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 
 export function RegisterForm({
   registerMutation,

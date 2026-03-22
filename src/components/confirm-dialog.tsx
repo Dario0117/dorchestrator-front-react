@@ -1,4 +1,5 @@
 import type { ConfirmDialogProps } from '@components/confirm-dialog.types';
+import { Button } from '@components/ds/atoms/button';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -7,8 +8,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@components/ui/alert-dialog';
-import { Button } from '@components/ui/button';
+} from '@components/ds/molecules/alert-dialog';
 import { cn } from '@lib/utils';
 
 export function ConfirmDialog(props: ConfirmDialogProps) {

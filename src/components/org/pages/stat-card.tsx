@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 
 export function StatCard({
   title,

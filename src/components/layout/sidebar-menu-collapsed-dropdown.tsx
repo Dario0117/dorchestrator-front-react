@@ -1,6 +1,3 @@
-import { checkIsActive } from '@components/layout/check-is-active';
-import { NavBadge } from '@components/layout/nav-badge';
-import type { NavCollapsible } from '@components/layout/nav-group.types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,8 +6,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu';
-import { SidebarMenuButton, SidebarMenuItem } from '@components/ui/sidebar';
+} from '@components/ds/molecules/dropdown-menu';
+import {
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from '@components/ds/organisms/sidebar';
+import { checkIsActive } from '@components/layout/check-is-active';
+import { NavBadge } from '@components/layout/nav-badge';
+import type { NavCollapsible } from '@components/layout/nav-group.types';
 import { Link } from '@tanstack/react-router';
 import { ChevronRight } from 'lucide-react';
 

@@ -1,6 +1,11 @@
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import { useTerminalConfigForm } from '@components/terminal/forms/hooks/use-terminal-config-form';
 import type { TerminalConfigFormProps } from '@components/terminal/forms/terminal-config.form.types';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 
 export function TerminalConfigForm({
   updateConfigMutation,

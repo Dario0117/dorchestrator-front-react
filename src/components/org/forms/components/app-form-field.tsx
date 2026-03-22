@@ -1,9 +1,9 @@
+import { Input } from '@components/ds/atoms/input';
+import { Label } from '@components/ds/atoms/label';
+import { PasswordInput } from '@components/ds/atoms/password-input';
 import type { FormFieldProps } from '@components/org/forms/components/app-form-field.types';
 import { normalizeFieldErrors } from '@components/org/forms/components/normalize-field-errors';
 import { useFieldContext } from '@components/org/forms/hooks/app-form';
-import { Input } from '@components/ui/input';
-import { Label } from '@components/ui/label';
-import { PasswordInput } from '@components/ui/password-input';
 
 export function AppFormField({
   label,

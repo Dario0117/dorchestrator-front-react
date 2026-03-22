@@ -6,7 +6,7 @@ import {
 } from '@components/commands/forms/device-status.utils';
 import type { CommandFormType } from '@components/commands/forms/hooks/use-command-form';
 import { ConfirmDialog } from '@components/confirm-dialog';
-import { Button } from '@components/ui/button';
+import { Button } from '@components/ds/atoms/button';
 import type { ListDevicesDevice } from '@services/devices/list-devices.http-service';
 import { useMemo, useState } from 'react';
 

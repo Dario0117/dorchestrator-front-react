@@ -1,6 +1,11 @@
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import { useResetPasswordForm } from '@components/org/forms/hooks/use-reset-password-form';
 import type { ResetPasswordFormProps } from '@components/org/forms/reset-password.form.types';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 
 export function ResetPasswordForm({
   resetPasswordMutation,

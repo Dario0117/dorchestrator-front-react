@@ -1,6 +1,11 @@
 import { OutputSection } from '@components/commands/output-section';
-import { Badge } from '@components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+import { Badge } from '@components/ds/atoms/badge';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import type { GetCommandDetail } from '@services/commands/get-command.http-service';
 
 interface CommandOutputProps {

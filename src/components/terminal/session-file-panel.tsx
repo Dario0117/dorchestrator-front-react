@@ -1,11 +1,11 @@
+import { Button } from '@components/ds/atoms/button';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
-import { Button } from '@components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
+} from '@components/ds/molecules/dialog';
 import { getFileDownloadUrl } from '@services/terminal/get-file-download-url.http-service';
 import type { SessionFileItem } from '@services/terminal/list-session-files.http-service';
 import { useSessionFilesQueryOptions } from '@services/terminal/list-session-files.http-service';

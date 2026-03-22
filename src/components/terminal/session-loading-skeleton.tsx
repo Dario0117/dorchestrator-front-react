@@ -1,4 +1,4 @@
-import { Skeleton } from '@components/ui/skeleton';
+import { Skeleton } from '@components/ds/atoms/skeleton';
 
 export function SessionLoadingSkeleton() {
   return (

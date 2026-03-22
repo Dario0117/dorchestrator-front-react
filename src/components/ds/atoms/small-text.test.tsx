@@ -15,6 +15,36 @@ describe('SmallText', () => {
     });
   });
 
+  describe('semantic props', () => {
+    it('accepts centered prop', () => {
+      render(<SmallText centered>centered text</SmallText>);
+      expect(screen.getByText('centered text')).toBeInTheDocument();
+    });
+
+    it('accepts mono prop', () => {
+      render(<SmallText mono>mono text</SmallText>);
+      expect(screen.getByText('mono text')).toBeInTheDocument();
+    });
+
+    it('accepts noWrap prop', () => {
+      render(<SmallText noWrap>no wrap text</SmallText>);
+      expect(screen.getByText('no wrap text')).toBeInTheDocument();
+    });
+
+    it('accepts multiple semantic props', () => {
+      render(
+        <SmallText
+          centered
+          mono
+          noWrap
+        >
+          all props
+        </SmallText>,
+      );
+      expect(screen.getByText('all props')).toBeInTheDocument();
+    });
+  });
+
   describe('ref forwarding', () => {
     it('forwards ref to the span element', () => {
       const ref = createRef<HTMLSpanElement>();

@@ -1,5 +1,5 @@
 import { AuditLogRow } from '@components/audit-logs/audit-log-row';
-import { Table, TableBody } from '@components/ui/table';
+import { Table, TableBody } from '@components/ds/atoms/table';
 import { queryClient } from '@context/query.provider';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import type { AuditLogEntry } from '@services/audit-logs/list-audit-logs.http-service';

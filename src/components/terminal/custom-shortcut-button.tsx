@@ -1,11 +1,11 @@
-import type { CustomShortcut } from '@components/terminal/terminal-shortcut-panel.types';
-import { Button } from '@components/ui/button';
+import { Button } from '@components/ds/atoms/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu';
+} from '@components/ds/molecules/dropdown-menu';
+import type { CustomShortcut } from '@components/terminal/terminal-shortcut-panel.types';
 import { MoreVertical, Pencil, Send, Trash2, Zap } from 'lucide-react';
 
 export function CustomShortcutButton({

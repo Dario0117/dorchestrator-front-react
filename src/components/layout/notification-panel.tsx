@@ -1,5 +1,6 @@
+import { Button } from '@components/ds/atoms/button';
+import { ScrollArea } from '@components/ds/atoms/scroll-area';
 import { SmallText } from '@components/ds/atoms/small-text';
-import { Button } from '@components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,8 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu';
-import { ScrollArea } from '@components/ui/scroll-area';
+} from '@components/ds/molecules/dropdown-menu';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { badgeStyles } from '@lib/badge-styles';
 import { formatRelativeTime } from '@lib/format-relative-time';

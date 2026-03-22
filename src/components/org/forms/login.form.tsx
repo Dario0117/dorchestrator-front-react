@@ -1,6 +1,6 @@
+import { FormCard } from '@components/ds/atoms/form-card';
 import { useLoginForm } from '@components/org/forms/hooks/use-login-form';
 import type { LoginFormProps } from '@components/org/forms/login.form.types';
-import { FormCard } from '@components/ui/form-card';
 import { Link } from '@tanstack/react-router';
 
 export function LoginForm({ loginMutation, handleSuccess }: LoginFormProps) {

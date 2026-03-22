@@ -1,10 +1,12 @@
 import { ConfirmDialog } from '@components/confirm-dialog';
+import { Button } from '@components/ds/atoms/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
-import { CreateTeamDialog } from '@components/org/create-team-dialog';
-import { EditTeamDialog } from '@components/org/edit-team-dialog';
-import { TeamMembersPanel } from '@components/org/team-members-panel';
-import { Button } from '@components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import {
   Table,
   TableBody,
@@ -12,7 +14,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@components/ui/table';
+} from '@components/ds/atoms/table';
+import { CreateTeamDialog } from '@components/org/create-team-dialog';
+import { EditTeamDialog } from '@components/org/edit-team-dialog';
+import { TeamMembersPanel } from '@components/org/team-members-panel';
 import { useDefaultTeamQuery } from '@services/teams/get-default-team.http-service';
 import type { TeamItem } from '@services/teams/list-teams.http-service';
 import {

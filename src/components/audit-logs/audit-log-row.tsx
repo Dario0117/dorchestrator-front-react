@@ -1,8 +1,9 @@
+import { Badge } from '@components/ds/atoms/badge';
+import { Button } from '@components/ds/atoms/button';
+import { Flex } from '@components/ds/atoms/flex';
 import { InlineCode } from '@components/ds/atoms/inline-code';
 import { SmallText } from '@components/ds/atoms/small-text';
-import { Badge } from '@components/ui/badge';
-import { Button } from '@components/ui/button';
-import { TableCell, TableRow } from '@components/ui/table';
+import { TableCell, TableRow } from '@components/ds/atoms/table';
 import { useCopyToClipboard } from '@hooks/use-copy-to-clipboard';
 import { badgeStyles } from '@lib/badge-styles';
 import { formatRelativeTime } from '@lib/format-relative-time';
@@ -76,9 +77,7 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
         aria-expanded={entry.metadata ? expanded : undefined}
       >
         <TableCell>
-          <SmallText className="whitespace-nowrap">
-            {formatRelativeTime(entry.createdAt)}
-          </SmallText>
+          <SmallText noWrap>{formatRelativeTime(entry.createdAt)}</SmallText>
         </TableCell>
         <TableCell>
           <Badge className={cn('border-0', actionConfig.className)}>
@@ -157,13 +156,16 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
         </TableCell>
         <TableCell>
           {entry.metadata && (
-            <SmallText className="flex items-center gap-1">
+            <Flex
+              align="center"
+              gap="xs"
+            >
               {expanded ? (
                 <ChevronUp className="h-3 w-3" />
               ) : (
                 <ChevronDown className="h-3 w-3" />
               )}
-            </SmallText>
+            </Flex>
           )}
         </TableCell>
       </TableRow>

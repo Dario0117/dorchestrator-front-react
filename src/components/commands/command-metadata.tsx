@@ -1,6 +1,11 @@
 import { CommandStatusBadge } from '@components/commands/command-status-badge';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import { CodeText } from '@components/ds/atoms/code-text';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import { formatDurationBetween } from '@lib/format-duration';
 import type { GetCommandDetail } from '@services/commands/get-command.http-service';
 import { Clock, Monitor, Timer, User } from 'lucide-react';

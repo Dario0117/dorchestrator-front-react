@@ -1,5 +1,5 @@
+import { SidebarProvider } from '@components/ds/organisms/sidebar';
 import { AppSidebar } from '@components/layout/app-sidebar';
-import { SidebarProvider } from '@components/ui/sidebar';
 import { LayoutProvider } from '@context/layout.provider';
 import { buildBackendUrl } from '@lib/test.utils';
 import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';

@@ -1,16 +1,16 @@
 import { ConfirmDialog } from '@components/confirm-dialog';
+import { Alert, AlertDescription } from '@components/ds/atoms/alert';
+import { Badge } from '@components/ds/atoms/badge';
+import { Button } from '@components/ds/atoms/button';
+import { Input } from '@components/ds/atoms/input';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
-import { Alert, AlertDescription } from '@components/ui/alert';
-import { Badge } from '@components/ui/badge';
-import { Button } from '@components/ui/button';
-import { Input } from '@components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@components/ui/select';
+} from '@components/ds/atoms/select';
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@components/ui/table';
+} from '@components/ds/atoms/table';
 import { formatExpirationDate } from '@lib/format-expiration';
 import { useListMembersSuspenseQuery } from '@services/organizations/list-members.http-service';
 import { useAddTeamMemberMutation } from '@services/teams/add-team-member.http-service';

@@ -1,13 +1,19 @@
 import { cn } from '@/lib/utils';
 
-function CodeText({ className, ref, ...props }: React.ComponentProps<'span'>) {
+interface CodeTextProps
+  extends Omit<React.ComponentProps<'span'>, 'className'> {
+  truncate?: boolean;
+}
+
+function CodeText({ truncate, ref, ...props }: CodeTextProps) {
   return (
     <span
       ref={ref}
-      className={cn('font-mono text-sm', className)}
+      className={cn('font-mono text-sm', truncate && 'truncate')}
       {...props}
     />
   );
 }
 
 export { CodeText };
+export type { CodeTextProps };

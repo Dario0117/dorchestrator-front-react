@@ -61,6 +61,14 @@ run = "bun run build"
 run = "bun run preview"
 description = "Preview production build"
 
+[tasks.check]
+depends = ["checkTs", "formatAndLint", "checkImportBoundary"]
+description = "Run all quality checks (TypeScript, Biome, import boundary) — no tests"
+
+[tasks.checkImportBoundary]
+run = "bun scripts/check-import-boundary.ts"
+description = "Enforce ds/ import boundary — no direct @components/ui/ imports outside ds/"
+
 [tasks.deadCode]
 run = "bun run dead-code"
 description = "Find unused files, exports, types, and dependencies (knip)"

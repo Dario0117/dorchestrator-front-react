@@ -1,11 +1,11 @@
-import { CreateOrganizationForm } from '@components/org/forms/create-organization.form';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
+} from '@components/ds/molecules/dialog';
+import { CreateOrganizationForm } from '@components/org/forms/create-organization.form';
 import { useCreateOrganizationMutation } from '@services/organizations/create-organization.http-service';
 
 interface CreateOrganizationModalProps {

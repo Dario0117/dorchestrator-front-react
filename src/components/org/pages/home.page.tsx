@@ -1,13 +1,18 @@
 import { CommandStatusBadge } from '@components/commands/command-status-badge';
+import { Button } from '@components/ds/atoms/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import { CodeText } from '@components/ds/atoms/code-text';
+import { EmptyState } from '@components/ds/atoms/empty-state';
+import { PageDescription } from '@components/ds/atoms/page-description';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { PageTitle } from '@components/ds/atoms/page-title';
 import { SmallText } from '@components/ds/atoms/small-text';
-import { PageDescription } from '@components/layout/page-description';
-import { PageSection } from '@components/layout/page-section';
-import { PageTitle } from '@components/layout/page-title';
 import { StatCard } from '@components/org/pages/stat-card';
-import { Button } from '@components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
-import { EmptyState } from '@components/ui/empty-state';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useOrganizationDetailsSuspenseQuery } from '@services/organizations/get-organization-details.http-service';
 import { useOrganizationStatsSuspenseQuery } from '@services/organizations/get-organization-stats.http-service';
@@ -101,8 +106,8 @@ export function HomePage() {
                   className="flex justify-between items-center p-2 rounded-md hover:bg-muted transition-colors"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <SmallText className="font-mono">#{command.id}</SmallText>
-                    <CodeText className="truncate">{command.command}</CodeText>
+                    <SmallText mono>#{command.id}</SmallText>
+                    <CodeText truncate>{command.command}</CodeText>
                   </div>
                   <div className="flex gap-2 items-center shrink-0">
                     <SmallText>{command.deviceName}</SmallText>

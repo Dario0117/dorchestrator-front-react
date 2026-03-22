@@ -3,13 +3,11 @@ import { ConfirmDialog } from '@components/confirm-dialog';
 import { AddDeviceModal } from '@components/devices/add-device-modal';
 import { DeviceCard } from '@components/devices/device-card';
 import { DeviceConfigDialog } from '@components/devices/device-config-dialog';
-import { PageHeadingBar } from '@components/layout/page-heading-bar';
-import { PageSection } from '@components/layout/page-section';
-import { PageTitle } from '@components/layout/page-title';
-import { CreateTerminalSessionDialog } from '@components/terminal/create-terminal-session-dialog';
-import { TerminalReauthModal } from '@components/terminal/terminal-reauth-modal';
-import { Button } from '@components/ui/button';
-import { EmptyState } from '@components/ui/empty-state';
+import { Button } from '@components/ds/atoms/button';
+import { EmptyState } from '@components/ds/atoms/empty-state';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { PageTitle } from '@components/ds/atoms/page-title';
+import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
 import {
   Pagination,
   PaginationContent,
@@ -17,7 +15,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@components/ui/pagination';
+} from '@components/ds/molecules/pagination';
+import { CreateTerminalSessionDialog } from '@components/terminal/create-terminal-session-dialog';
+import { TerminalReauthModal } from '@components/terminal/terminal-reauth-modal';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useCurrentTeam } from '@hooks/use-current-team';
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/devices';

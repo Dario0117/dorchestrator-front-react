@@ -1,10 +1,10 @@
+import { Button } from '@components/ds/atoms/button';
+import { Separator } from '@components/ds/atoms/separator';
 import { CustomShortcutButton } from '@components/terminal/custom-shortcut-button';
 import type {
   ShortcutDefinition,
   TerminalShortcutPanelProps,
 } from '@components/terminal/terminal-shortcut-panel.types';
-import { Button } from '@components/ui/button';
-import { Separator } from '@components/ui/separator';
 import { Plus } from 'lucide-react';
 
 const PRESET_SHORTCUTS: ShortcutDefinition[] = [

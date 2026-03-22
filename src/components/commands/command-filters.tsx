@@ -1,8 +1,8 @@
 import { DateRangeFilter } from '@components/commands/filters/date-range-filter';
 import { SearchInput } from '@components/commands/filters/search-input';
 import { SelectFilter } from '@components/commands/filters/status-filter';
-import { Badge } from '@components/ui/badge';
-import { Button } from '@components/ui/button';
+import { Badge } from '@components/ds/atoms/badge';
+import { Button } from '@components/ds/atoms/button';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { useCurrentTeam } from '@hooks/use-current-team';
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index';

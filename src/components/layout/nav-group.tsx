@@ -1,13 +1,13 @@
-import type { NavGroup as NavGroupProps } from '@components/layout/nav-group.types';
-import { SidebarMenuCollapsedDropdown } from '@components/layout/sidebar-menu-collapsed-dropdown';
-import { SidebarMenuCollapsible } from '@components/layout/sidebar-menu-collapsible';
-import { SidebarMenuLink } from '@components/layout/sidebar-menu-link';
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   useSidebar,
-} from '@components/ui/sidebar';
+} from '@components/ds/organisms/sidebar';
+import type { NavGroup as NavGroupProps } from '@components/layout/nav-group.types';
+import { SidebarMenuCollapsedDropdown } from '@components/layout/sidebar-menu-collapsed-dropdown';
+import { SidebarMenuCollapsible } from '@components/layout/sidebar-menu-collapsible';
+import { SidebarMenuLink } from '@components/layout/sidebar-menu-link';
 import { useLocation } from '@tanstack/react-router';
 
 export function NavGroup({ title, items }: NavGroupProps) {

@@ -1,8 +1,8 @@
+import { Button } from '@components/ds/atoms/button';
+import { Input } from '@components/ds/atoms/input';
+import { Label } from '@components/ds/atoms/label';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
-import { KeySequenceComposer } from '@components/terminal/key-sequence-composer';
-import type { ShortcutMode } from '@components/terminal/terminal-shortcut-panel.types';
-import { Button } from '@components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -10,9 +10,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
-import { Input } from '@components/ui/input';
-import { Label } from '@components/ui/label';
+} from '@components/ds/molecules/dialog';
+import { KeySequenceComposer } from '@components/terminal/key-sequence-composer';
+import type { ShortcutMode } from '@components/terminal/terminal-shortcut-panel.types';
 import type { ShortcutItem } from '@services/terminal/list-shortcuts.http-service';
 import { Loader2, Play, Plus, Save, Send, Zap } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';

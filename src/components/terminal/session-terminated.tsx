@@ -1,7 +1,7 @@
+import { Badge } from '@components/ds/atoms/badge';
+import { Button } from '@components/ds/atoms/button';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
-import { Badge } from '@components/ui/badge';
-import { Button } from '@components/ui/button';
 import { badgeStyles } from '@lib/badge-styles';
 import type { TerminalSessionDetail } from '@services/terminal/get-terminal-session.http-service';
 import { Link } from '@tanstack/react-router';

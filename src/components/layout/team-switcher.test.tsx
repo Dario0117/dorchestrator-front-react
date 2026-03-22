@@ -1,5 +1,5 @@
+import { SidebarProvider } from '@components/ds/organisms/sidebar';
 import { TeamSwitcher } from '@components/layout/team-switcher';
-import { SidebarProvider } from '@components/ui/sidebar';
 import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import {
   setDesktopViewport,

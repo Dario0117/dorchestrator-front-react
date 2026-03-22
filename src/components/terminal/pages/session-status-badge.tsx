@@ -1,4 +1,4 @@
-import { Badge } from '@components/ui/badge';
+import { Badge } from '@components/ds/atoms/badge';
 import { badgeStyles } from '@lib/badge-styles';
 import type { TerminalSessionListItem } from '@services/terminal/list-terminal-sessions.http-service';
 

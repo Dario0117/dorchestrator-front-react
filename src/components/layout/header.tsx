@@ -1,5 +1,5 @@
+import { SidebarTrigger } from '@components/ds/organisms/sidebar';
 import type { HeaderProps } from '@components/layout/header.types';
-import { SidebarTrigger } from '@components/ui/sidebar';
 import { cn } from '@lib/utils';
 import { useEffect, useState } from 'react';
 

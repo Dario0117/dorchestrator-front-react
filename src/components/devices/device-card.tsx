@@ -1,15 +1,15 @@
-import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
-import { SecondaryText } from '@components/ds/atoms/secondary-text';
-import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
-import { Badge } from '@components/ui/badge';
-import { Button } from '@components/ui/button';
+import { Badge } from '@components/ds/atoms/badge';
+import { Button } from '@components/ds/atoms/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@components/ui/card';
+} from '@components/ds/atoms/card';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SecondaryText } from '@components/ds/atoms/secondary-text';
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { cn } from '@lib/utils';
 import type { ListDevicesDevice } from '@services/devices/list-devices.http-service';
 import {

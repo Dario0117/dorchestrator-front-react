@@ -1,5 +1,5 @@
+import { Button } from '@components/ds/atoms/button';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
-import { Button } from '@components/ui/button';
 import { Link } from '@tanstack/react-router';
 import { AlertTriangle, ArrowLeft } from 'lucide-react';
 

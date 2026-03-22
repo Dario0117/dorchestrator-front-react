@@ -1,11 +1,16 @@
+import { Alert, AlertDescription } from '@components/ds/atoms/alert';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import { DefinitionList } from '@components/ds/atoms/definition-list';
 import { MetadataLabel } from '@components/ds/atoms/metadata-label';
-import { PageDescription } from '@components/layout/page-description';
-import { PageSection } from '@components/layout/page-section';
-import { PageTitle } from '@components/layout/page-title';
+import { PageDescription } from '@components/ds/atoms/page-description';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { PageTitle } from '@components/ds/atoms/page-title';
 import { ChangePasswordForm } from '@components/org/forms/change-password.form';
-import { Alert, AlertDescription } from '@components/ui/alert';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import { useChangePasswordMutation } from '@services/users/change-password.http-service';
 import { useProfileSuspendedQuery } from '@services/users/get-profile.http-service';
 import { CheckCircle2, User } from 'lucide-react';

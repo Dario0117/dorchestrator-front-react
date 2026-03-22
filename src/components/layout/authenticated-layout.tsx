@@ -1,3 +1,7 @@
+import {
+  SidebarInset,
+  SidebarProvider,
+} from '@components/ds/organisms/sidebar';
 import { AppSidebar } from '@components/layout/app-sidebar';
 import type { AuthenticatedLayoutProps } from '@components/layout/authenticated-layout.types';
 import { Header } from '@components/layout/header';
@@ -6,7 +10,6 @@ import { OrganizationCheckWrapper } from '@components/layout/organization-check-
 import { ProfileDropdown } from '@components/profile-dropdown';
 import { SkipToMain } from '@components/skip-to-main';
 import { ThemeSwitch } from '@components/theme-switch';
-import { SidebarInset, SidebarProvider } from '@components/ui/sidebar';
 import { LayoutProvider } from '@context/layout.provider';
 import { useEventsWebSocket } from '@hooks/use-events-websocket';
 import { useWebSocketEvents } from '@hooks/use-websocket-events';

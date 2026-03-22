@@ -1,17 +1,14 @@
-import { cn } from '@/lib/utils';
+type TableWrapperProps = Omit<React.ComponentProps<'div'>, 'className'>;
 
-function TableWrapper({
-  className,
-  ref,
-  ...props
-}: React.ComponentProps<'div'>) {
+function TableWrapper({ ref, ...props }: TableWrapperProps) {
   return (
     <div
       ref={ref}
-      className={cn('rounded-md border', className)}
+      className="rounded-md border"
       {...props}
     />
   );
 }
 
 export { TableWrapper };
+export type { TableWrapperProps };

@@ -1,26 +1,15 @@
+import { Button } from '@components/ds/atoms/button';
+import { EmptyState } from '@components/ds/atoms/empty-state';
+import { PageSection } from '@components/ds/atoms/page-section';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
-import { TableWrapper } from '@components/ds/atoms/table-wrapper';
-import { PageHeadingBar } from '@components/layout/page-heading-bar';
-import { PageSection } from '@components/layout/page-section';
-import { SectionTitle } from '@components/layout/section-title';
-import { BookmarkStatusBadge } from '@components/terminal/pages/bookmark-status-badge';
-import { InlineNoteEditor } from '@components/terminal/pages/inline-note-editor';
-import { Button } from '@components/ui/button';
-import { EmptyState } from '@components/ui/empty-state';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from '@components/ui/pagination';
+import { SectionTitle } from '@components/ds/atoms/section-title';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@components/ui/select';
+} from '@components/ds/atoms/select';
 import {
   Table,
   TableBody,
@@ -28,7 +17,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@components/ui/table';
+} from '@components/ds/atoms/table';
+import { TableWrapper } from '@components/ds/atoms/table-wrapper';
+import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@components/ds/molecules/pagination';
+import { BookmarkStatusBadge } from '@components/terminal/pages/bookmark-status-badge';
+import { InlineNoteEditor } from '@components/terminal/pages/inline-note-editor';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
 import { formatBytes } from '@lib/format-bytes';
 import { formatRelativeTime } from '@lib/format-relative-time';

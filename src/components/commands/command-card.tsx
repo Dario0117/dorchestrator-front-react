@@ -1,5 +1,10 @@
 import { CommandStatusBadge } from '@components/commands/command-status-badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import { formatRelativeTime } from '@lib/format-relative-time';
 import { cn } from '@lib/utils';
 import type { ListCommandsCommand } from '@services/commands/list-commands.http-service';

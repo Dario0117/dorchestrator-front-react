@@ -1,5 +1,5 @@
-import { Button } from '@components/ui/button';
-import { EmptyState } from '@components/ui/empty-state';
+import { Button } from '@components/ds/atoms/button';
+import { EmptyState } from '@components/ds/atoms/empty-state';
 import { useRestoreRecordingMutation } from '@services/terminal/restore-recording.http-service';
 import { FileWarning } from 'lucide-react';
 

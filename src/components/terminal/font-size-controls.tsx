@@ -1,8 +1,8 @@
+import { Button } from '@components/ds/atoms/button';
 import {
   MAX_FONT_SIZE,
   MIN_FONT_SIZE,
 } from '@components/terminal/hooks/use-font-size';
-import { Button } from '@components/ui/button';
 import { Minus, Plus } from 'lucide-react';
 
 interface FontSizeControlsProps {

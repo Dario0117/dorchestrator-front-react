@@ -1,5 +1,5 @@
-import { Badge } from '@components/ui/badge';
-import { Button } from '@components/ui/button';
+import { Badge } from '@components/ds/atoms/badge';
+import { Button } from '@components/ds/atoms/button';
 import { queryClient } from '@context/query.provider';
 import { badgeStyles } from '@lib/badge-styles';
 import { useListSessionSuggestionsQuery } from '@services/terminal/list-session-suggestions.http-service';

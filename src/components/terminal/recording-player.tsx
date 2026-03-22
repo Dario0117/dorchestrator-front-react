@@ -1,6 +1,15 @@
 import '@xterm/xterm/css/xterm.css';
 
+import { Box } from '@components/ds/atoms/box';
+import { Button } from '@components/ds/atoms/button';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ds/atoms/select';
 import {
   type FileEventData,
   RecordingFileMarker,
@@ -14,14 +23,6 @@ import {
   formatTimestamp,
 } from '@components/terminal/recording-player.utils';
 import { useRecordingPlayback } from '@components/terminal/use-recording-playback';
-import { Button } from '@components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@components/ui/select';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { Terminal } from '@xterm/xterm';
 import { Pause, Play, RotateCcw } from 'lucide-react';
@@ -160,10 +161,12 @@ export function RecordingPlayer({
             </SelectContent>
           </Select>
 
-          <SecondaryText className="ml-auto">
-            Event {playbackState.currentEventIndex + 1} /{' '}
-            {playbackState.totalEvents}
-          </SecondaryText>
+          <Box spaceLeft="auto">
+            <SecondaryText>
+              Event {playbackState.currentEventIndex + 1} /{' '}
+              {playbackState.totalEvents}
+            </SecondaryText>
+          </Box>
         </div>
 
         <input

@@ -1,7 +1,4 @@
-import { FontSizeControls } from '@components/terminal/font-size-controls';
-import type { useFontSize } from '@components/terminal/hooks/use-font-size';
-import { SessionViewerList } from '@components/terminal/session-viewer-list';
-import { TerminalConnectionStatus } from '@components/terminal/terminal-connection-status';
+import { Button } from '@components/ds/atoms/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,8 +9,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@components/ui/alert-dialog';
-import { Button } from '@components/ui/button';
+} from '@components/ds/molecules/alert-dialog';
+import { FontSizeControls } from '@components/terminal/font-size-controls';
+import type { useFontSize } from '@components/terminal/hooks/use-font-size';
+import { SessionViewerList } from '@components/terminal/session-viewer-list';
+import { TerminalConnectionStatus } from '@components/terminal/terminal-connection-status';
 import {
   Bookmark,
   BookmarkCheck,

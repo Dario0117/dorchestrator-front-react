@@ -1,12 +1,12 @@
-import { TerminalReauthForm } from '@components/terminal/forms/terminal-reauth.form';
-import type { TerminalReauthModalProps } from '@components/terminal/terminal-reauth-modal.types';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
+} from '@components/ds/molecules/dialog';
+import { TerminalReauthForm } from '@components/terminal/forms/terminal-reauth.form';
+import type { TerminalReauthModalProps } from '@components/terminal/terminal-reauth-modal.types';
 import { useTerminalAuthMutation } from '@services/terminal/terminal-auth.http-service';
 
 export function TerminalReauthModal({

@@ -1,6 +1,14 @@
+import { Button } from '@components/ds/atoms/button';
+import { Label } from '@components/ds/atoms/label';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ds/atoms/select';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
-import { Button } from '@components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,15 +16,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@components/ui/dialog';
-import { Label } from '@components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@components/ui/select';
+} from '@components/ds/molecules/dialog';
 import { logError } from '@lib/logger.utils';
 import {
   downloadExportFile,

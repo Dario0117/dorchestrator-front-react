@@ -1,11 +1,11 @@
-import { THEME_COLORS } from '@components/theme-switch.constants';
-import { Button } from '@components/ui/button';
+import { Button } from '@components/ds/atoms/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu';
+} from '@components/ds/molecules/dropdown-menu';
+import { THEME_COLORS } from '@components/theme-switch.constants';
 import { useTheme } from '@context/theme.provider';
 import { cn } from '@lib/utils';
 import { Check, Moon, Sun } from 'lucide-react';

@@ -1,8 +1,8 @@
 import { ActionFilter } from '@components/audit-logs/filters/action-filter';
 import { AuditLogDateRangeFilter } from '@components/audit-logs/filters/audit-log-date-range-filter';
 import { ResourceTypeFilter } from '@components/audit-logs/filters/resource-type-filter';
-import { Badge } from '@components/ui/badge';
-import { Button } from '@components/ui/button';
+import { Badge } from '@components/ds/atoms/badge';
+import { Button } from '@components/ds/atoms/button';
 import { Route } from '@routes/(authenticated)/$organizationSlug/audit-logs/index';
 import { useNavigate } from '@tanstack/react-router';
 import { X } from 'lucide-react';

@@ -1,4 +1,4 @@
-import { Badge } from '@components/ui/badge';
+import { Badge } from '@components/ds/atoms/badge';
 import { badgeStyles } from '@lib/badge-styles';
 import { terminalWsClient } from '@services/terminal/terminal-ws.client';
 import { Eye } from 'lucide-react';

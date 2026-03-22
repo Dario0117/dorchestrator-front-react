@@ -1,5 +1,5 @@
+import { FormErrorDisplay } from '@components/ds/atoms/form-error-display';
 import { useFormContext } from '@components/org/forms/hooks/app-form';
-import { FormErrorDisplay } from '@components/ui/form-error-display';
 
 function extractErrors(
   errorMap: Record<string, unknown> | undefined,

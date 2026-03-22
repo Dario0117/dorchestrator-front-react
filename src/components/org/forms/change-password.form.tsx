@@ -1,6 +1,11 @@
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@components/ds/atoms/card';
 import type { ChangePasswordFormProps } from '@components/org/forms/change-password.form.types';
 import { useChangePasswordForm } from '@components/org/forms/hooks/use-change-password-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 
 export function ChangePasswordForm({
   changePasswordMutation,

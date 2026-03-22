@@ -1,12 +1,12 @@
+import { Badge } from '@components/ds/atoms/badge';
+import { Button } from '@components/ds/atoms/button';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { Skeleton } from '@components/ds/atoms/skeleton';
 import { FontSizeControls } from '@components/terminal/font-size-controls';
 import { useFontSize } from '@components/terminal/hooks/use-font-size';
 import { SuggestionSidebar } from '@components/terminal/suggestion-sidebar';
 import { TerminalConnectionStatus } from '@components/terminal/terminal-connection-status';
 import { TerminalEmulator } from '@components/terminal/terminal-emulator';
-import { Badge } from '@components/ui/badge';
-import { Button } from '@components/ui/button';
-import { Skeleton } from '@components/ui/skeleton';
 import { badgeStyles } from '@lib/badge-styles';
 import { useResolveShareLinkQuery } from '@services/terminal/resolve-share-link.http-service';
 import { terminalWsClient } from '@services/terminal/terminal-ws.client';

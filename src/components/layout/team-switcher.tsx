@@ -1,5 +1,4 @@
 import { SmallText } from '@components/ds/atoms/small-text';
-import type { TeamSwitcherProps } from '@components/layout/team-switcher.types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,13 +9,14 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu';
+} from '@components/ds/molecules/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@components/ui/sidebar';
+} from '@components/ds/organisms/sidebar';
+import type { TeamSwitcherProps } from '@components/layout/team-switcher.types';
 import { useNavigate } from '@tanstack/react-router';
 import { ChevronsUpDown, Plus } from 'lucide-react';
 
@@ -60,7 +60,7 @@ export function TeamSwitcher({
             <div className="grid flex-1 text-start text-sm leading-tight">
               <span className="truncate font-semibold">{activeTeam.name}</span>
               {activeTeamName && (
-                <SmallText className="truncate">{activeTeamName}</SmallText>
+                <SmallText truncate>{activeTeamName}</SmallText>
               )}
             </div>
             <ChevronsUpDown className="ms-auto" />

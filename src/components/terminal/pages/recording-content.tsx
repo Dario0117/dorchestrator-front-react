@@ -1,3 +1,4 @@
+import { EmptyState } from '@components/ds/atoms/empty-state';
 import { FontSizeControls } from '@components/terminal/font-size-controls';
 import { useFontSize } from '@components/terminal/hooks/use-font-size';
 import { ColdStorageView } from '@components/terminal/pages/cold-storage-view';
@@ -5,7 +6,6 @@ import { RestoringView } from '@components/terminal/pages/restoring-view';
 import { RecordingPlayer } from '@components/terminal/recording-player';
 import type { FileMapping } from '@components/terminal/recording-player.types';
 import { SessionFilePanel } from '@components/terminal/session-file-panel';
-import { EmptyState } from '@components/ui/empty-state';
 import type { RecordingData } from '@services/terminal/get-recording.http-service';
 import { RECORDING_STORAGE_TIER } from '@services/terminal/get-recording.http-service.constants';
 import { useSessionFilesQueryOptions } from '@services/terminal/list-session-files.http-service';

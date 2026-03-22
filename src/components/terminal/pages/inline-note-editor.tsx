@@ -1,5 +1,5 @@
-import { Button } from '@components/ui/button';
-import { Input } from '@components/ui/input';
+import { Button } from '@components/ds/atoms/button';
+import { Input } from '@components/ds/atoms/input';
 import type { BookmarkItem } from '@services/terminal/list-bookmarks.http-service';
 import { useUpdateBookmarkNoteMutation } from '@services/terminal/update-bookmark-note.http-service';
 import { Pencil, X } from 'lucide-react';
