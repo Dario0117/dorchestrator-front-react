@@ -8,14 +8,7 @@ import { EmptyState } from '@components/ds/atoms/empty-state';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { PageTitle } from '@components/ds/atoms/page-title';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@components/ds/molecules/pagination';
+import { PaginatedFooter } from '@components/ds/organisms/paginated-footer';
 import { CreateTerminalSessionDialog } from '@components/terminal/create-terminal-session-dialog';
 import { TerminalReauthModal } from '@components/terminal/terminal-reauth-modal';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
@@ -72,12 +65,19 @@ export function DevicesPage() {
 
   const devices = data.responseData?.results || [];
   const totalPages = data.responseData?.totalPages || 0;
+  const totalResults = data.responseData?.totalResults || 0;
   const hasNext = data.responseData?.hasNext || false;
   const hasPrevious = data.responseData?.hasPrevious || false;
 
   const handlePageChange = (newPage: number) => {
     navigate({
       search: (prev) => ({ ...prev, page: newPage }),
+    });
+  };
+
+  const handleSizeChange = (newSize: number) => {
+    navigate({
+      search: (prev) => ({ ...prev, page: 1, size: newSize }),
     });
   };
 
@@ -139,42 +139,18 @@ export function DevicesPage() {
               ))}
             </div>
 
-            {totalPages > 1 && (
-              <div className="mt-8">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => handlePageChange(page - 1)}
-                        aria-disabled={!hasPrevious}
-                        disabled={!hasPrevious}
-                      />
-                    </PaginationItem>
-
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (pageNum) => (
-                        <PaginationItem key={pageNum}>
-                          <PaginationLink
-                            onClick={() => handlePageChange(pageNum)}
-                            isActive={pageNum === page}
-                          >
-                            {pageNum}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ),
-                    )}
-
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => handlePageChange(page + 1)}
-                        aria-disabled={!hasNext}
-                        disabled={!hasNext}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
-            )}
+            <PaginatedFooter
+              totalResults={totalResults}
+              singularLabel="device"
+              pluralLabel="devices"
+              page={page}
+              totalPages={totalPages}
+              hasNext={hasNext}
+              hasPrevious={hasPrevious}
+              size={size}
+              onPageChange={handlePageChange}
+              onSizeChange={handleSizeChange}
+            />
           </>
         )}
 

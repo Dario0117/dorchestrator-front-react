@@ -1,7 +1,7 @@
 import { DevicesPage } from '@components/org/pages/devices.page';
 import { queryClient } from '@context/query.provider';
 import { buildBackendUrl } from '@lib/test.utils';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -32,7 +32,7 @@ vi.mock(
       ...actual,
       Route: {
         ...actual.Route,
-        useSearch: vi.fn(() => ({ page: 1, size: 10 })),
+        useSearch: vi.fn(() => ({ page: 1, size: 25 })),
         useParams: vi.fn(() => ({
           organizationSlug: 'test-org',
           teamSlug: 'default',
@@ -366,6 +366,70 @@ describe('DevicesPage', () => {
     });
   });
 
+  it('should navigate with size reset to page 1 when page size is changed', async () => {
+    type ListDevicesSuccessResponse =
+      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
+    server.use(
+      http.get<never, never, ListDevicesSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
+        () => {
+          return HttpResponse.json({
+            responseData: {
+              results: [
+                {
+                  id: 1,
+                  deviceName: 'Device 1',
+                  platform: 'linux',
+                  lastSeenAt: new Date().toISOString(),
+                  createdAt: new Date().toISOString(),
+                },
+              ],
+              hasNext: true,
+              hasPrevious: false,
+              totalResults: 50,
+              totalPages: 2,
+              page: 1,
+              size: 25,
+            },
+            responseErrors: null,
+          });
+        },
+      ),
+    );
+
+    const user = userEvent.setup();
+    renderWithProviders(<DevicesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Device 1')).toBeInTheDocument();
+    });
+
+    // Open the page size selector and change to 50
+    const trigger = screen.getByLabelText('Page size');
+    await clickTrigger(trigger);
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('option').length).toBeGreaterThan(0);
+    });
+
+    const option50 = screen.getByRole('option', { name: '50 per page' });
+    await user.click(option50);
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: expect.any(Function),
+      }),
+    );
+
+    const call = mockNavigate.mock.calls[0] as [
+      { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+    ];
+    const searchFn = call[0].search;
+    const result = searchFn({ page: 2, size: 25 });
+    expect(result.page).toBe(1);
+    expect(result.size).toBe(50);
+  });
+
   it('should navigate to previous page when Previous is clicked', async () => {
     type ListDevicesSuccessResponse =
       operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
@@ -411,7 +475,7 @@ describe('DevicesPage', () => {
     expect(mockNavigate).toHaveBeenCalled();
   });
 
-  it('should navigate when clicking a page number', async () => {
+  it('should navigate when clicking next page', async () => {
     type ListDevicesSuccessResponse =
       operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
     server.use(
@@ -434,7 +498,7 @@ describe('DevicesPage', () => {
               totalResults: 20,
               totalPages: 2,
               page: 1,
-              size: 10,
+              size: 25,
             },
             responseErrors: null,
           });
@@ -449,9 +513,8 @@ describe('DevicesPage', () => {
       expect(screen.getByText('Device 1')).toBeInTheDocument();
     });
 
-    // Click page 2 link
-    const page2Link = screen.getByRole('button', { name: '2' });
-    await user.click(page2Link);
+    // Click next page button
+    await user.click(screen.getByLabelText('Go to next page'));
 
     expect(mockNavigate).toHaveBeenCalled();
   });

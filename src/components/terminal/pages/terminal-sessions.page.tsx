@@ -2,7 +2,6 @@ import { Button } from '@components/ds/atoms/button';
 import { EmptyState } from '@components/ds/atoms/empty-state';
 import { Input } from '@components/ds/atoms/input';
 import { PageSection } from '@components/ds/atoms/page-section';
-import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { SectionTitle } from '@components/ds/atoms/section-title';
 import {
   Select,
@@ -33,13 +32,7 @@ import {
   AlertDialogTrigger,
 } from '@components/ds/molecules/alert-dialog';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from '@components/ds/molecules/pagination';
+import { PaginatedFooter } from '@components/ds/organisms/paginated-footer';
 import { SessionStatusBadge } from '@components/terminal/pages/session-status-badge';
 import { SessionHistoryExportDialog } from '@components/terminal/session-history-export-dialog';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
@@ -47,7 +40,6 @@ import { useCurrentTeam } from '@hooks/use-current-team';
 import { formatBytes } from '@lib/format-bytes';
 import { formatDurationCompact } from '@lib/format-duration';
 import { formatRelativeTime } from '@lib/format-relative-time';
-import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/terminal/index';
 import { useDevicesQueryOptions } from '@services/devices/list-devices.http-service';
 import { useListMembersQueryOptions } from '@services/organizations/list-members.http-service';
@@ -470,64 +462,18 @@ export function TerminalSessionsPage() {
               </Table>
             </TableWrapper>
 
-            <div className="mt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
-              <SecondaryText>
-                {totalResults} total{' '}
-                {totalResults === 1 ? 'session' : 'sessions'}
-              </SecondaryText>
-
-              <div className="flex flex-col items-center gap-4 md:flex-row">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => handlePageChange(page - 1)}
-                        aria-disabled={!hasPrevious}
-                        disabled={!hasPrevious}
-                      />
-                    </PaginationItem>
-
-                    <PaginationItem>
-                      <output className="px-2 text-sm">
-                        Page {page} of {totalPages}
-                      </output>
-                    </PaginationItem>
-
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => handlePageChange(page + 1)}
-                        aria-disabled={!hasNext}
-                        disabled={!hasNext}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-
-                <Select
-                  value={String(size)}
-                  onValueChange={(value) =>
-                    value !== null && handleSizeChange(Number(value))
-                  }
-                >
-                  <SelectTrigger
-                    aria-label="Page size"
-                    className="h-11 w-auto text-base md:text-sm"
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAGE_SIZE_OPTIONS.map((option) => (
-                      <SelectItem
-                        key={option}
-                        value={String(option)}
-                      >
-                        {option} per page
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            <PaginatedFooter
+              totalResults={totalResults}
+              singularLabel="session"
+              pluralLabel="sessions"
+              page={page}
+              totalPages={totalPages}
+              hasNext={hasNext}
+              hasPrevious={hasPrevious}
+              size={size}
+              onPageChange={handlePageChange}
+              onSizeChange={handleSizeChange}
+            />
           </>
         )}
       </div>

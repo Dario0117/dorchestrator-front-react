@@ -165,6 +165,35 @@ describe('FormField', () => {
     expect(input).toBeRequired();
   });
 
+  it('should display fallback error message when error is not a string', () => {
+    const mockFieldWithObjectError = {
+      name: 'testField',
+      state: {
+        value: '',
+        meta: {
+          errors: [{ code: 'custom' }],
+        },
+      },
+      handleBlur: vi.fn(),
+      handleChange: vi.fn(),
+    };
+
+    render(
+      <FormField
+        field={
+          mockFieldWithObjectError as unknown as Parameters<
+            typeof FormField
+          >[0]['field']
+        }
+        label="Test Field"
+        placeholder="Enter value"
+      />,
+    );
+
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByText('Invalid input')).toBeInTheDocument();
+  });
+
   it('should set aria-invalid when there are errors', () => {
     // Create a mock field with errors
     const mockFieldWithError = {

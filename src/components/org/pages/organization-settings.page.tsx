@@ -16,14 +16,6 @@ import { PageDescription } from '@components/ds/atoms/page-description';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { PageTitle } from '@components/ds/atoms/page-title';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
-import { SecondaryText } from '@components/ds/atoms/secondary-text';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@components/ds/atoms/select';
 import {
   Table,
   TableBody,
@@ -32,18 +24,11 @@ import {
   TableHeader,
   TableRow,
 } from '@components/ds/atoms/table';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from '@components/ds/molecules/pagination';
+import { PaginatedFooter } from '@components/ds/organisms/paginated-footer';
 import { TeamManagementSection } from '@components/org/team-management-section';
 import { TerminalConfigSection } from '@components/terminal/terminal-config-section';
 import { queryClient } from '@context/query.provider';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
-import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
 import { Route } from '@routes/(authenticated)/$organizationSlug/settings';
 import { useDeleteOrganizationMutation } from '@services/organizations/delete-organization.http-service';
 import { useOrganizationDetailsSuspenseQuery } from '@services/organizations/get-organization-details.http-service';
@@ -375,62 +360,18 @@ export function OrganizationSettingsPage() {
                   </TableBody>
                 </Table>
 
-                <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
-                  <SecondaryText>
-                    {totalResults} total{' '}
-                    {totalResults === 1 ? 'result' : 'results'}
-                  </SecondaryText>
-
-                  <div className="flex flex-col items-center gap-4 md:flex-row">
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationItem>
-                          <PaginationPrevious
-                            onClick={() => handlePageChange(page - 1)}
-                            aria-disabled={!hasPrevious}
-                            disabled={!hasPrevious}
-                          />
-                        </PaginationItem>
-
-                        <PaginationItem>
-                          <output className="px-2 text-sm">
-                            Page {page} of {totalPages}
-                          </output>
-                        </PaginationItem>
-
-                        <PaginationItem>
-                          <PaginationNext
-                            onClick={() => handlePageChange(page + 1)}
-                            aria-disabled={!hasNext}
-                            disabled={!hasNext}
-                          />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
-
-                    <Select
-                      value={String(size)}
-                      onValueChange={(value) => handleSizeChange(Number(value))}
-                    >
-                      <SelectTrigger
-                        aria-label="Page size"
-                        className="h-11 w-auto text-base md:text-sm"
-                      >
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PAGE_SIZE_OPTIONS.map((option) => (
-                          <SelectItem
-                            key={option}
-                            value={String(option)}
-                          >
-                            {option} per page
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+                <PaginatedFooter
+                  totalResults={totalResults}
+                  singularLabel="result"
+                  pluralLabel="results"
+                  page={page}
+                  totalPages={totalPages}
+                  hasNext={hasNext}
+                  hasPrevious={hasPrevious}
+                  size={size}
+                  onPageChange={handlePageChange}
+                  onSizeChange={handleSizeChange}
+                />
               </>
             )}
 

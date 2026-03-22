@@ -3,15 +3,7 @@ import { AuditLogRow } from '@components/audit-logs/audit-log-row';
 import { Button } from '@components/ds/atoms/button';
 import { EmptyState } from '@components/ds/atoms/empty-state';
 import { PageSection } from '@components/ds/atoms/page-section';
-import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { SectionTitle } from '@components/ds/atoms/section-title';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@components/ds/atoms/select';
 import {
   Table,
   TableBody,
@@ -21,15 +13,8 @@ import {
 } from '@components/ds/atoms/table';
 import { TableWrapper } from '@components/ds/atoms/table-wrapper';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from '@components/ds/molecules/pagination';
+import { PaginatedFooter } from '@components/ds/organisms/paginated-footer';
 import { useCurrentOrganization } from '@hooks/use-current-organization';
-import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
 import { Route } from '@routes/(authenticated)/$organizationSlug/audit-logs/index';
 import { useAuditLogsSuspenseQuery } from '@services/audit-logs/list-audit-logs.http-service';
 import { useNavigate } from '@tanstack/react-router';
@@ -137,61 +122,18 @@ export function AuditLogsListPage() {
               </Table>
             </TableWrapper>
 
-            <div className="mt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
-              <SecondaryText>
-                {totalResults} total {totalResults === 1 ? 'entry' : 'entries'}
-              </SecondaryText>
-
-              <div className="flex flex-col items-center gap-4 md:flex-row">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => handlePageChange(page - 1)}
-                        aria-disabled={!hasPrevious}
-                        disabled={!hasPrevious}
-                      />
-                    </PaginationItem>
-
-                    <PaginationItem>
-                      <output className="px-2 text-sm">
-                        Page {page} of {totalPages}
-                      </output>
-                    </PaginationItem>
-
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => handlePageChange(page + 1)}
-                        aria-disabled={!hasNext}
-                        disabled={!hasNext}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-
-                <Select
-                  value={String(size)}
-                  onValueChange={(value) => handleSizeChange(Number(value))}
-                >
-                  <SelectTrigger
-                    aria-label="Page size"
-                    className="h-11 w-auto text-base md:text-sm"
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAGE_SIZE_OPTIONS.map((option) => (
-                      <SelectItem
-                        key={option}
-                        value={String(option)}
-                      >
-                        {option} per page
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            <PaginatedFooter
+              totalResults={totalResults}
+              singularLabel="entry"
+              pluralLabel="entries"
+              page={page}
+              totalPages={totalPages}
+              hasNext={hasNext}
+              hasPrevious={hasPrevious}
+              size={size}
+              onPageChange={handlePageChange}
+              onSizeChange={handleSizeChange}
+            />
           </>
         )}
       </div>
