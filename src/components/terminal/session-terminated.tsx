@@ -1,3 +1,5 @@
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
 import { badgeStyles } from '@lib/badge-styles';
@@ -21,9 +23,9 @@ export function SessionTerminated({
           <Terminal className="h-6 w-6 text-muted-foreground" />
         </div>
         <h2 className="text-xl font-semibold">Session terminated</h2>
-        <p className="text-sm text-muted-foreground">
+        <SecondaryParagraph>
           This terminal session has been terminated and cannot be reconnected.
-        </p>
+        </SecondaryParagraph>
         <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground">
           <span>{session.deviceName}</span>
           <span>&middot;</span>
@@ -37,9 +39,9 @@ export function SessionTerminated({
           </Badge>
         </div>
         {session.terminatedAt && (
-          <p className="text-xs text-muted-foreground">
+          <SmallParagraph>
             Terminated at {new Date(session.terminatedAt).toLocaleString()}
-          </p>
+          </SmallParagraph>
         )}
         <div className="flex items-center justify-center gap-2">
           <Button

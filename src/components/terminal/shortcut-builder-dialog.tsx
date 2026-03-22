@@ -1,3 +1,5 @@
+import { SecondaryText } from '@components/ds/atoms/secondary-text';
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { KeySequenceComposer } from '@components/terminal/key-sequence-composer';
 import type { ShortcutMode } from '@components/terminal/terminal-shortcut-panel.types';
 import { Button } from '@components/ui/button';
@@ -165,9 +167,9 @@ export function ShortcutBuilderDialog({
               maxLength={30}
               data-testid="shortcut-label-input"
             />
-            <p className="text-xs text-muted-foreground">
+            <SmallParagraph>
               Displayed on the button (max 30 characters)
-            </p>
+            </SmallParagraph>
           </div>
 
           <div className="grid gap-2">
@@ -206,11 +208,11 @@ export function ShortcutBuilderDialog({
                 Snippet
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <SmallParagraph>
               {mode === 'keystroke'
                 ? 'Sends a keyboard shortcut or escape sequence directly (e.g. Ctrl+C, Ctrl+L).'
                 : 'Pastes the command text into the terminal without executing, so you can review or edit before pressing Enter.'}
-            </p>
+            </SmallParagraph>
           </div>
 
           {mode === 'snippet' && (
@@ -222,9 +224,9 @@ export function ShortcutBuilderDialog({
                 >
                   Auto-send
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <SmallParagraph>
                   Automatically press Enter after pasting the command
-                </p>
+                </SmallParagraph>
               </div>
               <Button
                 id="auto-send-toggle"
@@ -267,9 +269,9 @@ export function ShortcutBuilderDialog({
                         {parseSequenceForPreview(keySequence)}
                       </code>
                     ) : (
-                      <span className="text-sm text-muted-foreground">
+                      <SecondaryText>
                         Use the keys below to build a shortcut
-                      </span>
+                      </SecondaryText>
                     )}
                   </div>
                   {keySequence && (
@@ -332,9 +334,7 @@ export function ShortcutBuilderDialog({
 
           {label && keySequence && (
             <div className="rounded-md border p-3">
-              <p className="mb-2 text-xs text-muted-foreground">
-                Button preview:
-              </p>
+              <SmallParagraph className="mb-2">Button preview:</SmallParagraph>
               <Button
                 type="button"
                 variant="outline"

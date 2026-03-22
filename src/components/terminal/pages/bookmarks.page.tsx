@@ -1,3 +1,5 @@
+import { SecondaryText } from '@components/ds/atoms/secondary-text';
+import { TableWrapper } from '@components/ds/atoms/table-wrapper';
 import { PageHeadingBar } from '@components/layout/page-heading-bar';
 import { PageSection } from '@components/layout/page-section';
 import { SectionTitle } from '@components/layout/section-title';
@@ -98,7 +100,7 @@ function BookmarksPage() {
           />
         ) : (
           <>
-            <div className="rounded-md border">
+            <TableWrapper>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -164,13 +166,13 @@ function BookmarksPage() {
                   ))}
                 </TableBody>
               </Table>
-            </div>
+            </TableWrapper>
 
             <div className="mt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
-              <span className="text-sm text-muted-foreground">
+              <SecondaryText>
                 {totalResults} total{' '}
                 {totalResults === 1 ? 'bookmark' : 'bookmarks'}
-              </span>
+              </SecondaryText>
 
               <div className="flex flex-col items-center gap-4 md:flex-row">
                 <Pagination>

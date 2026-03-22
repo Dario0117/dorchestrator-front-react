@@ -1,3 +1,5 @@
+import { InlineCode } from '@components/ds/atoms/inline-code';
+import { SmallText } from '@components/ds/atoms/small-text';
 import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
 import { TableCell, TableRow } from '@components/ui/table';
@@ -74,9 +76,9 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
         aria-expanded={entry.metadata ? expanded : undefined}
       >
         <TableCell>
-          <span className="text-xs text-muted-foreground whitespace-nowrap">
+          <SmallText className="whitespace-nowrap">
             {formatRelativeTime(entry.createdAt)}
-          </span>
+          </SmallText>
         </TableCell>
         <TableCell>
           <Badge className={cn('border-0', actionConfig.className)}>
@@ -90,7 +92,7 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
           {teamName ? (
             <span className="text-sm">{teamName}</span>
           ) : (
-            <span className="text-xs text-muted-foreground">—</span>
+            <SmallText>—</SmallText>
           )}
         </TableCell>
         <TableCell>
@@ -126,9 +128,7 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
                 <Copy className="h-3 w-3" />
               )}
             </Button>
-            <code className="text-xs text-muted-foreground">
-              {entry.resourceId}
-            </code>
+            <InlineCode>{entry.resourceId}</InlineCode>
           </span>
         </TableCell>
         <TableCell>
@@ -149,23 +149,21 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
                   <Copy className="h-3 w-3" />
                 )}
               </Button>
-              <code className="text-xs text-muted-foreground">
-                {entry.requestId}
-              </code>
+              <InlineCode>{entry.requestId}</InlineCode>
             </span>
           ) : (
-            <span className="text-xs text-muted-foreground">—</span>
+            <SmallText>—</SmallText>
           )}
         </TableCell>
         <TableCell>
           {entry.metadata && (
-            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+            <SmallText className="flex items-center gap-1">
               {expanded ? (
                 <ChevronUp className="h-3 w-3" />
               ) : (
                 <ChevronDown className="h-3 w-3" />
               )}
-            </span>
+            </SmallText>
           )}
         </TableCell>
       </TableRow>

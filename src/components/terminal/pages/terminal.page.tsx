@@ -1,3 +1,4 @@
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { useFontSize } from '@components/terminal/hooks/use-font-size';
 import { useTerminalBookmark } from '@components/terminal/hooks/use-terminal-bookmark';
 import { useTerminalSessionLifecycle } from '@components/terminal/hooks/use-terminal-session-lifecycle';
@@ -130,9 +131,7 @@ export function TerminalPage({
         />
         {lifecycle.isClosing && (
           <div className="absolute inset-0 flex items-center justify-center bg-background/50">
-            <p className="text-sm text-muted-foreground">
-              Closing session&hellip;
-            </p>
+            <SecondaryParagraph>Closing session&hellip;</SecondaryParagraph>
           </div>
         )}
       </div>

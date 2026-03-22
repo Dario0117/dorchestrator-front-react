@@ -1,4 +1,5 @@
 import { ConfirmDialog } from '@components/confirm-dialog';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { Alert, AlertDescription } from '@components/ui/alert';
 import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
@@ -170,9 +171,9 @@ export function TeamMembersPanel({
       )}
 
       {teamMembers.length === 0 ? (
-        <p className="py-2 text-center text-sm text-muted-foreground">
+        <SecondaryParagraph className="py-2 text-center">
           No members in this team yet.
-        </p>
+        </SecondaryParagraph>
       ) : (
         <Table>
           <TableHeader>

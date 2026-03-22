@@ -1,3 +1,5 @@
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { Button } from '@components/ui/button';
 import {
   Dialog,
@@ -255,11 +257,11 @@ export function SessionHistoryExportDialog({
                   <SelectItem value="json">JSON</SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-sm text-muted-foreground">
+              <SecondaryParagraph>
                 {format === 'csv'
                   ? 'Comma-separated values, compatible with Excel and Google Sheets.'
                   : 'Structured JSON format for programmatic use.'}
-              </p>
+              </SecondaryParagraph>
             </div>
           )}
 
@@ -289,17 +291,17 @@ export function SessionHistoryExportDialog({
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-xs text-muted-foreground">
+              <SmallParagraph>
                 {rowsProcessed} of {totalRows} rows processed
-              </p>
+              </SmallParagraph>
             </div>
           )}
 
           {isCancelled && (
-            <p className="text-sm text-muted-foreground">
+            <SecondaryParagraph>
               Export was cancelled. {rowsProcessed} of {totalRows} rows were
               processed.
-            </p>
+            </SecondaryParagraph>
           )}
 
           {error && (

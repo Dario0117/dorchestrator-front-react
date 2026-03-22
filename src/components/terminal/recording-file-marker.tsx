@@ -1,3 +1,4 @@
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { getFileDownloadUrl } from '@services/terminal/get-file-download-url.http-service';
 import { DownloadIcon, FileIcon, ImageIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -87,10 +88,10 @@ export function RecordingFileMarker({
       )}
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium">{event.filename}</p>
-        <p className="text-xs text-muted-foreground">
+        <SmallParagraph>
           {formatSize(event.sizeBytes)} &middot; {event.mimeType} &middot;{' '}
           {new Date(timestamp).toLocaleTimeString()}
-        </p>
+        </SmallParagraph>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { useCreateOrganizationForm } from '@components/org/forms/hooks/use-create-organization-form';
 import {
   SlugStatus,
@@ -73,9 +74,9 @@ export function CreateOrganizationForm({
                 </div>
               </div>
 
-              <p className="text-center text-sm text-muted-foreground">
+              <SecondaryParagraph className="text-center">
                 Your organization logo will display the initials above
-              </p>
+              </SecondaryParagraph>
 
               {/* Organization Name Field */}
               <form.AppField name="name">

@@ -1,6 +1,10 @@
 import { SearchInput } from '@components/commands/filters/search-input';
 import { SelectFilter } from '@components/commands/filters/status-filter';
 import { ConfirmDialog } from '@components/confirm-dialog';
+import { DefinitionList } from '@components/ds/atoms/definition-list';
+import { MetadataLabel } from '@components/ds/atoms/metadata-label';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { PageDescription } from '@components/layout/page-description';
 import { PageSection } from '@components/layout/page-section';
 import { PageTitle } from '@components/layout/page-title';
@@ -159,34 +163,28 @@ export function OrganizationSettingsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <dl className="space-y-4">
+            <DefinitionList>
               <div>
-                <dt className="text-sm font-medium text-muted-foreground">
-                  Organization Name
-                </dt>
+                <MetadataLabel>Organization Name</MetadataLabel>
                 <dd className="text-base">{currentOrganization.name}</dd>
               </div>
 
               <div>
-                <dt className="text-sm font-medium text-muted-foreground">
-                  Organization ID
-                </dt>
+                <MetadataLabel>Organization ID</MetadataLabel>
                 <dd className="text-base font-mono">
                   {currentOrganization.id}
                 </dd>
               </div>
 
               <div>
-                <dt className="text-sm font-medium text-muted-foreground">
-                  Created
-                </dt>
+                <MetadataLabel>Created</MetadataLabel>
                 <dd className="text-base">
                   {details?.createdAt
                     ? new Date(details.createdAt).toLocaleDateString()
                     : 'N/A'}
                 </dd>
               </div>
-            </dl>
+            </DefinitionList>
           </CardContent>
         </Card>
 
@@ -208,10 +206,10 @@ export function OrganizationSettingsPage() {
               </Alert>
             ) : (
               <>
-                <p className="text-sm text-muted-foreground">
+                <SecondaryParagraph>
                   Set this organization as your default to be redirected here
                   after logging in.
-                </p>
+                </SecondaryParagraph>
                 <Button
                   variant="outline"
                   disabled={setDefaultMutation.isPending}
@@ -246,23 +244,19 @@ export function OrganizationSettingsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <dl className="space-y-4">
+            <DefinitionList>
               <div>
-                <dt className="text-sm font-medium text-muted-foreground">
-                  Current Tier
-                </dt>
+                <MetadataLabel>Current Tier</MetadataLabel>
                 <dd className="text-base">{details?.tier ?? 'Free Tier'}</dd>
               </div>
 
               <div>
-                <dt className="text-sm font-medium text-muted-foreground">
-                  Device Limit
-                </dt>
+                <MetadataLabel>Device Limit</MetadataLabel>
                 <dd className="text-base">
                   {details?.deviceLimit ?? 'Unlimited'}
                 </dd>
               </div>
-            </dl>
+            </DefinitionList>
 
             <Alert>
               <Info className="h-4 w-4" />
@@ -308,13 +302,13 @@ export function OrganizationSettingsPage() {
 
             {members.length === 0 ? (
               search !== undefined || role !== undefined ? (
-                <p className="py-6 text-center text-sm text-muted-foreground">
+                <SecondaryParagraph className="py-6 text-center">
                   No members match your filters
-                </p>
+                </SecondaryParagraph>
               ) : (
-                <p className="py-6 text-center text-sm text-muted-foreground">
+                <SecondaryParagraph className="py-6 text-center">
                   No members found
-                </p>
+                </SecondaryParagraph>
               )
             ) : (
               <>
@@ -377,10 +371,10 @@ export function OrganizationSettingsPage() {
                 </Table>
 
                 <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
-                  <span className="text-sm text-muted-foreground">
+                  <SecondaryText>
                     {totalResults} total{' '}
                     {totalResults === 1 ? 'result' : 'results'}
-                  </span>
+                  </SecondaryText>
 
                   <div className="flex flex-col items-center gap-4 md:flex-row">
                     <Pagination>
@@ -472,10 +466,10 @@ export function OrganizationSettingsPage() {
                 </Alert>
               ) : (
                 <>
-                  <p className="text-sm text-muted-foreground">
+                  <SecondaryParagraph>
                     You will lose access to all devices, commands, and data in
                     this organization.
-                  </p>
+                  </SecondaryParagraph>
                   <Button
                     variant="destructive"
                     disabled={leaveOrganizationMutation.isPending}
@@ -502,11 +496,11 @@ export function OrganizationSettingsPage() {
               <h3 className="text-sm font-medium">Delete Organization</h3>
               {currentOrganization.role === 'owner' ? (
                 <>
-                  <p className="text-sm text-muted-foreground">
+                  <SecondaryParagraph>
                     Deleting this organization will permanently remove all
                     devices, commands, and associated data. This action cannot
                     be undone.
-                  </p>
+                  </SecondaryParagraph>
                   <Button
                     variant="destructive"
                     disabled={deleteOrganizationMutation.isPending}

@@ -1,3 +1,4 @@
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { TerminalReauthModal } from '@components/terminal/terminal-reauth-modal';
 import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
@@ -48,10 +49,10 @@ export function SessionLocked({
           <Lock className="h-6 w-6 text-muted-foreground" />
         </div>
         <h2 className="text-xl font-semibold">Session locked</h2>
-        <p className="text-sm text-muted-foreground">
+        <SecondaryParagraph>
           This session has been locked due to inactivity. Re-authenticate to
           resume.
-        </p>
+        </SecondaryParagraph>
         {unlockMutation.isError && (
           <p className="text-sm text-destructive">
             Failed to unlock session. Please try again.

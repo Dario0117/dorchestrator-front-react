@@ -1,3 +1,4 @@
+import { SmallText } from '@components/ds/atoms/small-text';
 import type { TeamSwitcherProps } from '@components/layout/team-switcher.types';
 import {
   DropdownMenu,
@@ -59,9 +60,7 @@ export function TeamSwitcher({
             <div className="grid flex-1 text-start text-sm leading-tight">
               <span className="truncate font-semibold">{activeTeam.name}</span>
               {activeTeamName && (
-                <span className="truncate text-xs text-muted-foreground">
-                  {activeTeamName}
-                </span>
+                <SmallText className="truncate">{activeTeamName}</SmallText>
               )}
             </div>
             <ChevronsUpDown className="ms-auto" />

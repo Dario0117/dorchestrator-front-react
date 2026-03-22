@@ -1,3 +1,4 @@
+import { SmallText } from '@components/ds/atoms/small-text';
 import { Button } from '@components/ui/button';
 import {
   DropdownMenu,
@@ -209,9 +210,9 @@ export function NotificationPanel() {
                     </span>
                   </div>
                   <div className="flex w-full items-center gap-2 ml-4">
-                    <span className="text-xs text-muted-foreground">
+                    <SmallText>
                       {formatRelativeTime(notification.createdAt)}
-                    </span>
+                    </SmallText>
                     <span
                       className={cn(
                         'rounded px-1.5 py-0.5 text-[10px] font-medium',

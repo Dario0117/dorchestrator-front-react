@@ -1,3 +1,4 @@
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { Button } from '@components/ui/button';
 import { Link } from '@tanstack/react-router';
 import { AlertTriangle, ArrowLeft } from 'lucide-react';
@@ -16,9 +17,9 @@ export function SessionNotFound({
           <AlertTriangle className="h-6 w-6 text-muted-foreground" />
         </div>
         <h2 className="text-xl font-semibold">Session not found</h2>
-        <p className="text-sm text-muted-foreground">
+        <SecondaryParagraph>
           This session does not exist or you don&apos;t have access to it.
-        </p>
+        </SecondaryParagraph>
         <Button
           variant="outline"
           render={

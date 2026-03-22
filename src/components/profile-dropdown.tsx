@@ -1,3 +1,4 @@
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { SignOutDialog } from '@components/sign-out-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
 import { buttonVariants } from '@components/ui/button';
@@ -50,9 +51,9 @@ export function ProfileDropdown() {
                 <p className="text-sm leading-none font-medium">
                   {profile?.name}
                 </p>
-                <p className="text-muted-foreground text-xs leading-none">
+                <SmallParagraph className="leading-none">
                   {profile?.email}
-                </p>
+                </SmallParagraph>
               </div>
             </DropdownMenuLabel>
           </DropdownMenuGroup>

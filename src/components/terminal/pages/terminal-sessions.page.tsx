@@ -1,3 +1,6 @@
+import { SecondaryText } from '@components/ds/atoms/secondary-text';
+import { SmallText } from '@components/ds/atoms/small-text';
+import { TableWrapper } from '@components/ds/atoms/table-wrapper';
 import { PageHeadingBar } from '@components/layout/page-heading-bar';
 import { PageSection } from '@components/layout/page-section';
 import { SectionTitle } from '@components/layout/section-title';
@@ -352,7 +355,7 @@ export function TerminalSessionsPage() {
           )
         ) : (
           <>
-            <div className="rounded-md border">
+            <TableWrapper>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -384,9 +387,7 @@ export function TerminalSessionsPage() {
                       <TableCell>
                         <div>
                           <div className="font-medium">{session.userName}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {session.userEmail}
-                          </div>
+                          <SmallText>{session.userEmail}</SmallText>
                         </div>
                       </TableCell>
                       <TableCell className="font-medium">
@@ -467,13 +468,13 @@ export function TerminalSessionsPage() {
                   ))}
                 </TableBody>
               </Table>
-            </div>
+            </TableWrapper>
 
             <div className="mt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
-              <span className="text-sm text-muted-foreground">
+              <SecondaryText>
                 {totalResults} total{' '}
                 {totalResults === 1 ? 'session' : 'sessions'}
-              </span>
+              </SecondaryText>
 
               <div className="flex flex-col items-center gap-4 md:flex-row">
                 <Pagination>

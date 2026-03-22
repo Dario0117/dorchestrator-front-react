@@ -1,3 +1,4 @@
+import { TableWrapper } from '@components/ds/atoms/table-wrapper';
 import { Skeleton } from '@components/ui/skeleton';
 import {
   Table,
@@ -10,7 +11,7 @@ import {
 
 export function SessionTableSkeleton() {
   return (
-    <div className="rounded-md border">
+    <TableWrapper>
       <Table>
         <TableHeader>
           <TableRow>
@@ -59,6 +60,6 @@ export function SessionTableSkeleton() {
           ))}
         </TableBody>
       </Table>
-    </div>
+    </TableWrapper>
   );
 }

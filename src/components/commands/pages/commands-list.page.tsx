@@ -1,6 +1,7 @@
 import { CommandCard } from '@components/commands/command-card';
 import { CommandFilters } from '@components/commands/command-filters';
 import { ExecuteCommandModal } from '@components/commands/execute-command-modal';
+import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { PageHeadingBar } from '@components/layout/page-heading-bar';
 import { PageSection } from '@components/layout/page-section';
 import { SectionTitle } from '@components/layout/section-title';
@@ -173,9 +174,9 @@ export function CommandsListPage() {
             </div>
 
             <div className="mt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
-              <span className="text-sm text-muted-foreground">
+              <SecondaryText>
                 {totalResults} total {totalResults === 1 ? 'result' : 'results'}
-              </span>
+              </SecondaryText>
 
               <div className="flex flex-col items-center gap-4 md:flex-row">
                 <Pagination>

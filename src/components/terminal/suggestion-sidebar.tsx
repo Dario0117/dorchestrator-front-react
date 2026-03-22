@@ -1,3 +1,4 @@
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
@@ -129,18 +130,18 @@ export function SuggestionSidebar({
       </div>
       <div className="flex-1 overflow-y-auto p-2">
         {text.length > 0 && (
-          <p className="mb-1 text-right text-xs text-muted-foreground">
+          <SmallParagraph className="mb-1 text-right">
             {text.length}/{MAX_SUGGESTION_LENGTH}
-          </p>
+          </SmallParagraph>
         )}
         {isLoading ? (
-          <p className="py-4 text-center text-xs text-muted-foreground">
+          <SmallParagraph className="py-4 text-center">
             Loading suggestions...
-          </p>
+          </SmallParagraph>
         ) : suggestions.length === 0 ? (
-          <p className="py-4 text-center text-xs text-muted-foreground">
+          <SmallParagraph className="py-4 text-center">
             No suggestions sent yet
-          </p>
+          </SmallParagraph>
         ) : (
           <div className="space-y-2">
             {suggestions.map((s) => (

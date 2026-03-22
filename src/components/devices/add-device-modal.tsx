@@ -1,3 +1,4 @@
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { Button } from '@components/ui/button';
 import {
   Dialog,
@@ -136,9 +137,7 @@ export function AddDeviceModal({
                     )}
                   </Button>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {formatExpiration()}
-                </p>
+                <SmallParagraph>{formatExpiration()}</SmallParagraph>
               </div>
 
               <div className="space-y-2">

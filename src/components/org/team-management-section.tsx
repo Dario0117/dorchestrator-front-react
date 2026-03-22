@@ -1,4 +1,5 @@
 import { ConfirmDialog } from '@components/confirm-dialog';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { CreateTeamDialog } from '@components/org/create-team-dialog';
 import { EditTeamDialog } from '@components/org/edit-team-dialog';
 import { TeamMembersPanel } from '@components/org/team-members-panel';
@@ -99,9 +100,9 @@ export function TeamManagementSection({
       </CardHeader>
       <CardContent className="space-y-4">
         {teams.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted-foreground">
+          <SecondaryParagraph className="py-6 text-center">
             No teams yet. Create a team to organize device access.
-          </p>
+          </SecondaryParagraph>
         ) : (
           <Table>
             <TableHeader>
@@ -184,9 +185,9 @@ export function TeamManagementSection({
                       >
                         <Suspense
                           fallback={
-                            <p className="py-4 text-center text-sm text-muted-foreground">
+                            <SecondaryParagraph className="py-4 text-center">
                               Loading members...
-                            </p>
+                            </SecondaryParagraph>
                           }
                         >
                           <TeamMembersPanel

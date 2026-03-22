@@ -1,3 +1,6 @@
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SecondaryText } from '@components/ds/atoms/secondary-text';
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { Badge } from '@components/ui/badge';
 import { Button } from '@components/ui/button';
 import {
@@ -119,9 +122,9 @@ export function DeviceCard({
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-lg">{device.deviceName}</CardTitle>
-            <p className="text-xs text-muted-foreground font-mono mt-0.5">
+            <SmallParagraph className="font-mono mt-0.5">
               ID: {device.id}
-            </p>
+            </SmallParagraph>
           </div>
           <Badge>
             <PlatformIcon className="mr-1 h-3 w-3" />
@@ -132,11 +135,11 @@ export function DeviceCard({
       <CardContent>
         <div className="flex items-center gap-2">
           <div className={`h-2 w-2 rounded-full ${status.color}`} />
-          <span className="text-sm text-muted-foreground">{status.text}</span>
+          <SecondaryText>{status.text}</SecondaryText>
         </div>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <SecondaryParagraph className="mt-2">
           Last seen: {formatLastSeen()}
-        </p>
+        </SecondaryParagraph>
       </CardContent>
       <CardFooter className="flex gap-2">
         <Button

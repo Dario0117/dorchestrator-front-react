@@ -4,7 +4,7 @@
 
 - Unit and integration tests only — no e2e tests
 - Co-located test files: `[filename].test.ts` or `[filename].test.tsx` alongside source
-- Target >85% coverage per component, aim for 100%
+- Target >85% coverage per component, aim for 100% — applies to `components/ds/`, `components/layout/`, and domain components. Does not apply to `components/ui/` (shadcn-managed)
 - Vitest globals are enabled — don't import from `vitest`
 - Test wrappers: use `renderWithProviders()` and `createQueryThemeWrapper()` from `@lib/test-wrappers.utils.tsx` — never create new wrappers, update existing ones if needed
 - MSW handlers aggregated in `@lib/test.utils.ts` via `MSWSuccessHandlers()`
@@ -17,6 +17,7 @@
 - Zod schemas (in `**/validation/` folders)
 - HTTP service files (`*.http-service.ts`) unless they have custom logic beyond query/mutation exposure — create the test file with a comment explaining no meaningful logic exists
 - Exceptions without custom code (simple wrappers extending base exceptions)
+- shadcn components in `components/ui/` — these are third-party managed. We test our ds/ wrappers instead, which exercise the shadcn internals we actually use. Don't enforce coverage on `components/ui/` directly.
 
 ## Mocking Rules
 

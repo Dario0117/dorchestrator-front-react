@@ -1,3 +1,4 @@
+import { TableWrapper } from '@components/ds/atoms/table-wrapper';
 import { Skeleton } from '@components/ui/skeleton';
 import {
   Table,
@@ -10,7 +11,7 @@ import {
 
 export function BookmarksTableSkeleton() {
   return (
-    <div className="rounded-md border">
+    <TableWrapper>
       <Table>
         <TableHeader>
           <TableRow>
@@ -51,6 +52,6 @@ export function BookmarksTableSkeleton() {
           ))}
         </TableBody>
       </Table>
-    </div>
+    </TableWrapper>
   );
 }

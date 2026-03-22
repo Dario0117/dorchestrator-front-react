@@ -1,4 +1,6 @@
 import { CommandStatusBadge } from '@components/commands/command-status-badge';
+import { CodeText } from '@components/ds/atoms/code-text';
+import { SmallText } from '@components/ds/atoms/small-text';
 import { PageDescription } from '@components/layout/page-description';
 import { PageSection } from '@components/layout/page-section';
 import { PageTitle } from '@components/layout/page-title';
@@ -99,20 +101,14 @@ export function HomePage() {
                   className="flex justify-between items-center p-2 rounded-md hover:bg-muted transition-colors"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="text-xs text-muted-foreground font-mono">
-                      #{command.id}
-                    </span>
-                    <span className="font-mono text-sm truncate">
-                      {command.command}
-                    </span>
+                    <SmallText className="font-mono">#{command.id}</SmallText>
+                    <CodeText className="truncate">{command.command}</CodeText>
                   </div>
                   <div className="flex gap-2 items-center shrink-0">
-                    <span className="text-xs text-muted-foreground">
-                      {command.deviceName}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
+                    <SmallText>{command.deviceName}</SmallText>
+                    <SmallText>
                       {new Date(command.createdAt).toLocaleTimeString()}
-                    </span>
+                    </SmallText>
                     <CommandStatusBadge status={command.status} />
                   </div>
                 </Link>

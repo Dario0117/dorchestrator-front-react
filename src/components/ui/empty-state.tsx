@@ -1,3 +1,4 @@
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { cn } from '@lib/utils';
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -29,7 +30,7 @@ export function EmptyState({
       </div>
       <div className="space-y-1">
         <p className="font-medium">{title}</p>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <SecondaryParagraph>{description}</SecondaryParagraph>
       </div>
       {action}
     </div>

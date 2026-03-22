@@ -1,5 +1,6 @@
 import '@xterm/xterm/css/xterm.css';
 
+import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import {
   type FileEventData,
   RecordingFileMarker,
@@ -159,10 +160,10 @@ export function RecordingPlayer({
             </SelectContent>
           </Select>
 
-          <span className="ml-auto text-sm text-muted-foreground">
+          <SecondaryText className="ml-auto">
             Event {playbackState.currentEventIndex + 1} /{' '}
             {playbackState.totalEvents}
-          </span>
+          </SecondaryText>
         </div>
 
         <input

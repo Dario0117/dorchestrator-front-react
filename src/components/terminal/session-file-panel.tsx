@@ -1,3 +1,4 @@
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { Button } from '@components/ui/button';
 import {
   Dialog,
@@ -222,11 +223,11 @@ export function SessionFilePanel({
           data-testid="file-gallery"
         >
           {files.length === 0 ? (
-            <p className="py-4 text-center text-xs text-muted-foreground">
+            <SmallParagraph className="py-4 text-center">
               {readOnly
                 ? 'No files were uploaded during this session.'
                 : 'No files uploaded. Drag and drop or click Upload to add files.'}
-            </p>
+            </SmallParagraph>
           ) : (
             <div className="flex flex-wrap gap-2">
               {files.map((file) => (

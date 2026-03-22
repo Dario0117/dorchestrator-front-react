@@ -1,4 +1,5 @@
 import { CommandStatusBadge } from '@components/commands/command-status-badge';
+import { CodeText } from '@components/ds/atoms/code-text';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import { formatDurationBetween } from '@lib/format-duration';
 import type { GetCommandDetail } from '@services/commands/get-command.http-service';
@@ -46,7 +47,7 @@ export function CommandMetadata({ command }: CommandMetadataProps) {
           <div className="flex items-center gap-2 text-sm">
             <Monitor className="h-4 w-4 shrink-0 text-muted-foreground" />
             <span className="text-muted-foreground">Device:</span>
-            <span className="font-mono">{command.deviceName}</span>
+            <CodeText>{command.deviceName}</CodeText>
           </div>
 
           <div className="flex items-center gap-2 text-sm">

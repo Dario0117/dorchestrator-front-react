@@ -16,7 +16,8 @@
 ## Project Structure
 
 - `/src/components/` — Organized by domain (e.g., `org/`, `commands/`, `devices/`)
-  - `/ui/` — Base UI components from shadcn
+  - `/ui/` — shadcn-managed components only (never put custom components here)
+  - `/ds/` — Design system components (see Design System below)
   - `/layout/` — Layout components (sidebar, header, nav) with `/data/` for config
   - `/{domain}/forms/` — Form components following the form pattern (see Forms below)
   - `/{domain}/pages/` — Page-level components (`*.page.tsx`)
@@ -33,6 +34,35 @@
   - `router.types.ts`
 - `/src/lib/` — Utility functions (utils, cookies, logger, test utilities)
 - `/src/assets/` — Static assets
+
+## Design System (`components/ds/`)
+
+### Architecture: Atomic Design
+
+The design system uses [Atomic Design](https://bradfrost.com/blog/post/atomic-web-design/) to organize components:
+
+- **`ds/atoms/`** — Smallest, single-purpose components (SecondaryText, SmallText, CodeText, InlineCode, MetadataLabel, TableWrapper, DefinitionList, StatusDot wrappers, Button wrappers)
+- **`ds/molecules/`** — Small compositions of atoms (form field groups, card compositions, labeled data pairs, stat displays)
+- **`ds/organisms/`** — Larger compositions of molecules/atoms (page headers, data tables with filters, navigation bars)
+
+### Component Placement Rules
+
+| Directory | What goes here | Who manages it |
+|-----------|---------------|----------------|
+| `components/ui/` | shadcn-installed primitives | shadcn CLI — never manually add/edit |
+| `components/ds/` | Design system components (our wrappers + custom primitives) | Us — atomic design structure |
+| `components/layout/` | Page layout compositions (sidebar, header, nav) | Us |
+| `components/{domain}/` | Domain-specific components (commands/, terminal/, org/) | Us |
+
+### Design System Principles
+
+1. **Black-box components.** DS components expose semantic React props, not `className`. Consumers configure behavior through props (e.g., `centered`, `truncate`, `mono`), and the component maps those to CSS internally. This lets us change the internal implementation without affecting consumers.
+
+2. **shadcn stays untouched.** The `components/ui/` directory is managed by shadcn CLI. When shadcn components need to be constrained or extended, we create a wrapper in `ds/` that imports from `ui/` and exposes a controlled API.
+
+3. **Import boundary.** Pages and domain components import from `@components/ds/`, never directly from `@components/ui/`. Only `ds/` files may import from `ui/`. (Enforcement via lint rule — see story 2-3.)
+
+4. **Layout is the parent's job.** DS components handle presentation (typography, borders, colors). Spacing, positioning, and layout (margin, padding, flex alignment) are handled by the parent component or a layout primitive.
 
 ## Key Patterns
 

@@ -1,3 +1,5 @@
+import { DefinitionList } from '@components/ds/atoms/definition-list';
+import { MetadataLabel } from '@components/ds/atoms/metadata-label';
 import { PageDescription } from '@components/layout/page-description';
 import { PageSection } from '@components/layout/page-section';
 import { PageTitle } from '@components/layout/page-title';
@@ -32,20 +34,16 @@ export function ProfilePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <dl className="space-y-4">
+            <DefinitionList>
               <div>
-                <dt className="text-sm font-medium text-muted-foreground">
-                  Name
-                </dt>
+                <MetadataLabel>Name</MetadataLabel>
                 <dd className="text-base">{profile.name}</dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-muted-foreground">
-                  Email
-                </dt>
+                <MetadataLabel>Email</MetadataLabel>
                 <dd className="text-base">{profile.email}</dd>
               </div>
-            </dl>
+            </DefinitionList>
           </CardContent>
         </Card>
 

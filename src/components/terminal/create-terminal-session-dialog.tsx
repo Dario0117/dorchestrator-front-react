@@ -1,3 +1,4 @@
+import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { Button } from '@components/ui/button';
 import {
   Dialog,
@@ -148,14 +149,14 @@ export function CreateTerminalSessionDialog({
                   autoFocus
                 />
               )}
-              <p className="text-xs text-muted-foreground">
+              <SmallParagraph>
                 Maximum allowed: {formatDurationHuman(inactivityCeiling)}
                 {ceiling?.source === 'device'
                   ? ' (device policy)'
                   : ceiling?.source === 'org'
                     ? ' (organization policy)'
                     : ' (system default)'}
-              </p>
+              </SmallParagraph>
             </div>
 
             {hardCapCeiling != null && (
@@ -204,9 +205,9 @@ export function CreateTerminalSessionDialog({
                     }}
                   />
                 )}
-                <p className="text-xs text-muted-foreground">
+                <SmallParagraph>
                   Session terminates after this duration regardless of activity.
-                </p>
+                </SmallParagraph>
               </div>
             )}
 
@@ -222,12 +223,12 @@ export function CreateTerminalSessionDialog({
                   setError(null);
                 }}
               />
-              <p className="text-xs text-muted-foreground">
+              <SmallParagraph>
                 Absolute path for the session working directory. Leave empty to
                 use device default
                 {defaultWorkingDirectory ? ` (${defaultWorkingDirectory})` : ''}
                 .
-              </p>
+              </SmallParagraph>
             </div>
 
             {error && (

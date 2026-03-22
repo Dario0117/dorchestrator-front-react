@@ -1,3 +1,4 @@
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { FontSizeControls } from '@components/terminal/font-size-controls';
 import { useFontSize } from '@components/terminal/hooks/use-font-size';
 import { SuggestionSidebar } from '@components/terminal/suggestion-sidebar';
@@ -70,9 +71,9 @@ export function SharedSessionPage({
             <Terminal className="h-6 w-6 text-muted-foreground" />
           </div>
           <h2 className="text-xl font-semibold">Session ended</h2>
-          <p className="text-sm text-muted-foreground">
+          <SecondaryParagraph>
             This shared terminal session has been terminated.
-          </p>
+          </SecondaryParagraph>
           <Button
             variant="outline"
             render={
@@ -98,9 +99,9 @@ export function SharedSessionPage({
             <AlertTriangle className="h-6 w-6 text-muted-foreground" />
           </div>
           <h2 className="text-xl font-semibold">Session not available</h2>
-          <p className="text-sm text-muted-foreground">
+          <SecondaryParagraph>
             This share link is invalid, expired, or you don&apos;t have access.
-          </p>
+          </SecondaryParagraph>
           <Button
             variant="outline"
             render={

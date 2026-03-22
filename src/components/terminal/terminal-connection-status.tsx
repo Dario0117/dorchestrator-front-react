@@ -1,3 +1,4 @@
+import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { cn } from '@lib/utils';
 import { useTerminalConnectionStore } from '@stores/terminal-connection.store';
 import type { ConnectionState } from '@stores/terminal-connection.store.types';
@@ -43,12 +44,12 @@ export function TerminalConnectionStatus() {
         })}
         aria-hidden="true"
       />
-      <span className="text-sm text-muted-foreground">
+      <SecondaryText>
         {config.label}
         {connectionState === 'reconnecting' && reconnectAttempt > 0
           ? ` (attempt ${reconnectAttempt})`
           : null}
-      </span>
+      </SecondaryText>
     </output>
   );
 }
