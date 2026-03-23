@@ -13,6 +13,7 @@
 - [ ] On src/hooks/use-current-team.ts do the same as src/hooks/use-current-organization.ts, specifically this "// biome-ignore lint/style/noNonNullAssertion:" so we don't have to do it everywhere
 - [ ] http://localhost:9000/api/v1/organization/set-active is being called on every request
 - [ ] Review each folder and component and see if we can identify new patterns to implement through the whole app
+- [ ] Tie the real required fields to the form validation, if a field is required on the schema, it should be required on the form and it should happen automatically, that way we don't show invalid information to the user
 
 ## Auth
 

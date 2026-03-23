@@ -28,7 +28,7 @@ export function AddDeviceModal({
 }: AddDeviceModalProps) {
   const [token, setToken] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
-  const { hasCopied: copied, copy: copyToClipboard } = useCopyToClipboard();
+  const { copiedKey, copy: copyToClipboard } = useCopyToClipboard();
   const [errors, setError] = useState<string[] | null>(null);
 
   const generateTokenMutation = useGenerateTokenMutation();
@@ -128,9 +128,10 @@ export function AddDeviceModal({
                   <Button
                     size="icon"
                     variant="outline"
-                    onClick={() => copyToClipboard(token)}
+                    onClick={() => copyToClipboard(token, 'token')}
+                    aria-label="Copy registration token"
                   >
-                    {copied ? (
+                    {copiedKey === 'token' ? (
                       <CheckCircle className="h-4 w-4" />
                     ) : (
                       <Copy className="h-4 w-4" />
@@ -157,9 +158,14 @@ export function AddDeviceModal({
                   <Button
                     size="icon"
                     variant="outline"
-                    onClick={() => copyToClipboard(cliCommand)}
+                    onClick={() => copyToClipboard(cliCommand, 'cli')}
+                    aria-label="Copy CLI command"
                   >
-                    <Copy className="h-4 w-4" />
+                    {copiedKey === 'cli' ? (
+                      <CheckCircle className="h-4 w-4" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
               </div>

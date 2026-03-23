@@ -95,9 +95,9 @@ export function SuggestionNotificationPanel({
         </span>
         <Button
           variant="ghost"
-          size="sm"
+          size="icon-xs"
           onClick={invalidateSuggestions}
-          className="ml-auto h-5 w-5 p-0"
+          className="ml-auto"
           title="Refresh suggestions"
         >
           <RefreshCw className="h-3 w-3" />
@@ -121,20 +121,20 @@ export function SuggestionNotificationPanel({
                   <>
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="icon-xs"
                       onClick={() => handleRespond(s.id, 'accept')}
                       disabled={respondMutation.isPending}
-                      className="h-6 w-6 p-0 text-green-600 hover:text-green-700"
+                      className="text-green-600 hover:text-green-700"
                       title="Accept and paste"
                     >
                       <Check className="h-3.5 w-3.5" />
                     </Button>
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="icon-xs"
                       onClick={() => handleRespond(s.id, 'dismiss')}
                       disabled={respondMutation.isPending}
-                      className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+                      className="text-muted-foreground hover:text-destructive"
                       title="Dismiss"
                     >
                       <X className="h-3.5 w-3.5" />

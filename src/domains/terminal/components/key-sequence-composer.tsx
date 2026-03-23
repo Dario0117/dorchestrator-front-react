@@ -98,7 +98,7 @@ export function KeySequenceComposer({ onInsert }: KeySequenceComposerProps) {
               type="button"
               variant="ghost"
               size="sm"
-              className="h-7 p-0 font-mono text-xs"
+              className="font-mono"
               onClick={() => handleKeyClick(keyDef.key)}
               title={label}
               data-testid={`key-${keyDef.key}`}

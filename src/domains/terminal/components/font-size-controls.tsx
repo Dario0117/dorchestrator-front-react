@@ -20,7 +20,7 @@ export function FontSizeControls({
     <div className="flex items-center gap-0.5">
       <Button
         variant="ghost"
-        size="sm"
+        size="icon-sm"
         onClick={onDecrease}
         disabled={fontSize <= MIN_FONT_SIZE}
         aria-label="Decrease font size"
@@ -32,7 +32,7 @@ export function FontSizeControls({
       </span>
       <Button
         variant="ghost"
-        size="sm"
+        size="icon-sm"
         onClick={onIncrease}
         disabled={fontSize >= MAX_FONT_SIZE}
         aria-label="Increase font size"

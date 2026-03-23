@@ -46,8 +46,8 @@ export function CustomShortcutButton({
           render={
             <Button
               variant="ghost"
-              size="sm"
-              className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 opacity-0 group-hover:opacity-100"
+              size="icon-xs"
+              className="absolute -right-1 -top-1 rounded-full opacity-0 group-hover:opacity-100"
               aria-label={`Options for ${shortcut.label}`}
               data-testid={`custom-shortcut-menu-${shortcut.id}`}
             />

@@ -104,8 +104,8 @@ export function TerminalSessionsTable({
                     render={
                       <Button
                         variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
+                        size="icon-sm"
+                        aria-label="Close session"
                         disabled={
                           terminateMutation.isPending &&
                           terminateMutation.variables?.params?.path

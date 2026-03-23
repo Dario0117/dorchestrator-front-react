@@ -98,7 +98,10 @@ export function DevicesPage() {
             title="No devices registered"
             description='No devices registered yet. Click "Add Device" to get started.'
             action={
-              <Button onClick={() => setAddModalOpen(true)}>
+              <Button
+                size="lg"
+                onClick={() => setAddModalOpen(true)}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Device
               </Button>

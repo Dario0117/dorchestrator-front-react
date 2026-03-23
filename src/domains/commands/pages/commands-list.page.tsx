@@ -130,7 +130,10 @@ export function CommandsListPage() {
               title="No commands executed yet"
               description="Click 'Execute New Command' to get started."
               action={
-                <Button onClick={() => setModalOpen(true)}>
+                <Button
+                  size="lg"
+                  onClick={() => setModalOpen(true)}
+                >
                   <Play className="mr-2 h-4 w-4" />
                   Execute New Command
                 </Button>

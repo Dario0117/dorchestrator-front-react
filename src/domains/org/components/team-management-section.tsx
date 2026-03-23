@@ -125,8 +125,7 @@ export function TeamManagementSection({
                     <TableCell>
                       <Button
                         variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0"
+                        size="icon-xs"
                         title="Toggle members"
                         onClick={() => toggleExpand(team.id)}
                       >

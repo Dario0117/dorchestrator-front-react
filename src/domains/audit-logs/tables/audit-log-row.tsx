@@ -98,8 +98,7 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
           <span className="inline-flex items-center gap-1">
             <Button
               variant="ghost"
-              size="icon"
-              className="h-6 w-6"
+              size="icon-xs"
               onClick={(e) => handleCopy(e, actorDisplay, 'actor')}
               aria-label="Copy actor"
             >
@@ -116,8 +115,7 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
           <span className="inline-flex items-center gap-1">
             <Button
               variant="ghost"
-              size="icon"
-              className="h-6 w-6"
+              size="icon-xs"
               onClick={(e) => handleCopy(e, entry.resourceId, 'resourceId')}
               aria-label="Copy resource ID"
             >

@@ -98,9 +98,8 @@ export function SuggestionSidebar({
           <h3 className="text-sm font-medium">Suggest Commands</h3>
           <Button
             variant="ghost"
-            size="sm"
+            size="icon-xs"
             onClick={invalidateSuggestions}
-            className="h-6 w-6 p-0"
             title="Refresh suggestions"
           >
             <RefreshCw className="h-3 w-3" />
@@ -120,10 +119,11 @@ export function SuggestionSidebar({
         />
         <Button
           variant="ghost"
-          size="sm"
+          size="icon-sm"
           onClick={handleSubmit}
           disabled={text.trim().length === 0 || submitMutation.isPending}
-          className="h-8 w-8 shrink-0 p-0"
+          className="shrink-0"
+          aria-label="Send suggestion"
         >
           <Send className="h-3.5 w-3.5" />
         </Button>
