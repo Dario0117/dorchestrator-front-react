@@ -1,8 +1,13 @@
+import { Grid } from '@components/ds/atoms/grid';
+import { HStack } from '@components/ds/atoms/hstack';
 import { Input } from '@components/ds/atoms/input';
 import { Label } from '@components/ds/atoms/label';
+import { List, ListItem } from '@components/ds/atoms/list';
 import { PasswordInput } from '@components/ds/atoms/password-input';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import type { FormFieldProps } from '@domains/org/forms/components/app-form-field.types';
 import { normalizeFieldErrors } from '@domains/org/forms/components/normalize-field-errors';
+import { RequiredAsterisk } from '@domains/org/forms/components/required-asterisk';
 import { useFieldContext } from '@domains/org/forms/hooks/app-form';
 
 export function AppFormField({
@@ -19,14 +24,14 @@ export function AppFormField({
   const hasError = errorMessages.length > 0;
 
   return (
-    <div className="grid gap-3">
-      <div className="flex items-center">
+    <Grid>
+      <HStack>
         <Label htmlFor={field.name}>
           {label}
-          {required && <span className="ml-1 text-destructive">*</span>}
+          {required && <RequiredAsterisk />}
         </Label>
         {children}
-      </div>
+      </HStack>
       {type === 'password' ? (
         <PasswordInput
           id={field.name}
@@ -63,20 +68,18 @@ export function AppFormField({
           aria-describedby={hasError ? `${field.name}-error` : undefined}
         />
       )}
-      {helperText && (
-        <p className="text-sm text-muted-foreground">{helperText}</p>
-      )}
+      {helperText && <SecondaryParagraph>{helperText}</SecondaryParagraph>}
       {hasError && (
-        <ul
+        <List
           id={`${field.name}-error`}
-          className="text-sm text-destructive"
+          variant="error"
           role="alert"
         >
           {errorMessages.map((message) => (
-            <li key={message}>{message}</li>
+            <ListItem key={message}>{message}</ListItem>
           ))}
-        </ul>
+        </List>
       )}
-    </div>
+    </Grid>
   );
 }

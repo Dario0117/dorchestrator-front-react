@@ -62,12 +62,16 @@ run = "bun run preview"
 description = "Preview production build"
 
 [tasks.check]
-depends = ["checkTs", "formatAndLint", "checkImportBoundary"]
-description = "Run all quality checks (TypeScript, Biome, import boundary) — no tests"
+depends = ["checkTs", "formatAndLint", "checkImportBoundary", "checkNativeElements"]
+description = "Run all quality checks (TypeScript, Biome, import boundary, native elements) — no tests"
 
 [tasks.checkImportBoundary]
 run = "bun scripts/check-import-boundary.ts"
 description = "Enforce ds/ import boundary — no direct @components/ui/ imports outside ds/"
+
+[tasks.checkNativeElements]
+run = "bun scripts/check-native-elements.ts"
+description = "Enforce ds primitives — no native HTML elements outside ds/atoms/"
 
 [tasks.deadCode]
 run = "bun run dead-code"

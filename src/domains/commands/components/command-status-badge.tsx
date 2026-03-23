@@ -1,24 +1,24 @@
 import { Badge } from '@components/ds/atoms/badge';
 import type { CommandStatus } from '@domains/commands/services/list-commands.http-service.constants';
-import { badgeStyles } from '@lib/badge-styles';
+import type { BadgeStyle } from '@lib/badge-styles';
 import { CheckCircle2, Clock, Loader2, XCircle } from 'lucide-react';
 
 const STATUS_CONFIG = {
   pending: {
     label: 'Pending',
     icon: Clock,
-    className: `${badgeStyles.amber} border-transparent`,
+    colorScheme: 'warning' as BadgeStyle,
   },
   running: {
     label: 'Running',
     icon: Loader2,
-    className: 'bg-blue-500 text-white border-transparent animate-pulse',
+    colorScheme: 'info' as BadgeStyle,
     iconClassName: 'animate-spin',
   },
   completed: {
     label: 'Completed',
     icon: CheckCircle2,
-    className: 'bg-green-600 text-white border-transparent',
+    colorScheme: 'success' as BadgeStyle,
   },
   failed: {
     label: 'Failed',
@@ -30,7 +30,7 @@ const STATUS_CONFIG = {
   {
     label: string;
     icon: React.ElementType;
-    className?: string;
+    colorScheme?: BadgeStyle;
     iconClassName?: string;
     variant?: string;
   }
@@ -59,7 +59,7 @@ export function CommandStatusBadge({ status }: CommandStatusBadgeProps) {
   }
 
   return (
-    <Badge className={config.className}>
+    <Badge colorScheme={config.colorScheme}>
       <Icon
         className={`mr-1 h-3 w-3 ${'iconClassName' in config ? config.iconClassName : ''}`}
       />

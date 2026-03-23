@@ -45,6 +45,23 @@ describe('Button', () => {
     });
   });
 
+  describe('ds props', () => {
+    it('accepts color prop', () => {
+      render(<Button color="success">Success</Button>);
+      expect(screen.getByRole('button', { name: 'Success' })).toBeInTheDocument();
+    });
+
+    it('accepts grow prop', () => {
+      render(<Button grow>Grow</Button>);
+      expect(screen.getByRole('button', { name: 'Grow' })).toBeInTheDocument();
+    });
+
+    it('accepts font prop', () => {
+      render(<Button font="mono">Mono</Button>);
+      expect(screen.getByRole('button', { name: 'Mono' })).toBeInTheDocument();
+    });
+  });
+
   describe('additional props', () => {
     it('spreads additional props to the element', () => {
       render(<Button data-testid="custom-btn">text</Button>);

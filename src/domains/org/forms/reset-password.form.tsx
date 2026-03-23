@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { Stack } from '@components/ds/atoms/stack';
 import { useResetPasswordForm } from '@domains/org/forms/hooks/use-reset-password-form';
 import type { ResetPasswordFormProps } from '@domains/org/forms/reset-password.form.types';
 
@@ -13,7 +14,7 @@ export function ResetPasswordForm({
 }: ResetPasswordFormProps) {
   const form = useResetPasswordForm({ resetPasswordMutation, handleSuccess });
   return (
-    <div className="flex flex-col gap-6">
+    <Stack gap="xl">
       <Card>
         <CardHeader>
           <CardTitle>Reset your password</CardTitle>
@@ -26,7 +27,7 @@ export function ResetPasswordForm({
               form.handleSubmit();
             }}
           >
-            <div className="flex flex-col gap-6">
+            <Stack>
               <form.AppField name="email">
                 {(field) => (
                   <field.AppFormField
@@ -36,18 +37,18 @@ export function ResetPasswordForm({
                   />
                 )}
               </form.AppField>
-              <div className="flex flex-col gap-3">
+              <Stack>
                 <form.AppForm>
                   <form.AppSubscribeSubmitButton label="Send reset email" />
                 </form.AppForm>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
             <form.AppForm>
               <form.AppSubscribeErrorButton />
             </form.AppForm>
           </form>
         </CardContent>
       </Card>
-    </div>
+    </Stack>
   );
 }

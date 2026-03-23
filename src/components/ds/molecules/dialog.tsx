@@ -10,6 +10,7 @@ import {
   DialogTitle as ShadcnDialogTitle,
   DialogTrigger as ShadcnDialogTrigger,
 } from '@components/ui/dialog';
+import { cn } from '@lib/utils';
 
 type ShadcnDialogProps = React.ComponentProps<typeof ShadcnDialog>;
 interface DialogProps extends ShadcnDialogProps {}
@@ -33,13 +34,20 @@ interface DialogOverlayProps extends ShadcnDialogOverlayProps {}
 type ShadcnDialogContentProps = React.ComponentProps<
   typeof ShadcnDialogContent
 >;
-interface DialogContentProps extends ShadcnDialogContentProps {}
+type DialogContentSize = 'default' | 'wide' | 'narrow';
+interface DialogContentProps
+  extends Omit<ShadcnDialogContentProps, 'className' | 'style'> {
+  size?: DialogContentSize;
+}
 
 type ShadcnDialogHeaderProps = React.ComponentProps<typeof ShadcnDialogHeader>;
 interface DialogHeaderProps extends ShadcnDialogHeaderProps {}
 
 type ShadcnDialogFooterProps = React.ComponentProps<typeof ShadcnDialogFooter>;
-interface DialogFooterProps extends ShadcnDialogFooterProps {}
+interface DialogFooterProps
+  extends Omit<ShadcnDialogFooterProps, 'className' | 'style'> {
+  spaceAbove?: 'md';
+}
 
 type ShadcnDialogTitleProps = React.ComponentProps<typeof ShadcnDialogTitle>;
 interface DialogTitleProps extends ShadcnDialogTitleProps {}
@@ -69,16 +77,30 @@ function DialogOverlay(props: DialogOverlayProps) {
   return <ShadcnDialogOverlay {...props} />;
 }
 
-function DialogContent(props: DialogContentProps) {
-  return <ShadcnDialogContent {...props} />;
+function DialogContent({ size = 'default', ...props }: DialogContentProps) {
+  return (
+    <ShadcnDialogContent
+      className={cn(
+        size === 'default' && 'sm:max-w-lg',
+        size === 'wide' && 'max-w-3xl',
+        size === 'narrow' && 'sm:max-w-sm',
+      )}
+      {...props}
+    />
+  );
 }
 
 function DialogHeader(props: DialogHeaderProps) {
   return <ShadcnDialogHeader {...props} />;
 }
 
-function DialogFooter(props: DialogFooterProps) {
-  return <ShadcnDialogFooter {...props} />;
+function DialogFooter({ spaceAbove, ...props }: DialogFooterProps) {
+  return (
+    <ShadcnDialogFooter
+      className={cn('sm:justify-between', spaceAbove === 'md' && 'mt-4')}
+      {...props}
+    />
+  );
 }
 
 function DialogTitle(props: DialogTitleProps) {

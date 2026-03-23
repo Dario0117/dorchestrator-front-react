@@ -1,7 +1,9 @@
 import { Alert, AlertDescription } from '@components/ds/atoms/alert';
 import { Button } from '@components/ds/atoms/button';
+import { HStack } from '@components/ds/atoms/hstack';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { PageTitle } from '@components/ds/atoms/page-title';
+import { Stack } from '@components/ds/atoms/stack';
 import { CommandMetadata } from '@domains/commands/components/command-metadata';
 import { CommandOutput } from '@domains/commands/components/command-output';
 import { useGetCommandSuspenseQuery } from '@domains/commands/services/get-command.http-service';
@@ -42,8 +44,8 @@ export function CommandDetailsPage() {
 
   return (
     <PageSection>
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
+      <Stack gap="xl">
+        <HStack gap="lg">
           <Button
             variant="ghost"
             size="icon"
@@ -53,7 +55,7 @@ export function CommandDetailsPage() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <PageTitle>Command #{command.id}</PageTitle>
-        </div>
+        </HStack>
 
         <CommandMetadata command={command} />
 
@@ -90,7 +92,7 @@ export function CommandDetailsPage() {
             commandId={command.id}
           />
         )}
-      </div>
+      </Stack>
     </PageSection>
   );
 }

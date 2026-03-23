@@ -1,5 +1,7 @@
 import { Button } from '@components/ds/atoms/button';
+import { HStack } from '@components/ds/atoms/hstack';
 import { Input } from '@components/ds/atoms/input';
+import { SmallText } from '@components/ds/atoms/small-text';
 import type { BookmarkItem } from '@domains/terminal/services/list-bookmarks.http-service';
 import { useUpdateBookmarkNoteMutation } from '@domains/terminal/services/update-bookmark-note.http-service';
 import { Pencil, X } from 'lucide-react';
@@ -34,11 +36,11 @@ export function InlineNoteEditor({
 
   if (isEditing) {
     return (
-      <div className="flex items-center gap-1">
+      <HStack gap="xs">
         <Input
           value={noteValue}
           onChange={(e) => setNoteValue(e.target.value)}
-          className="h-7 w-48 text-xs"
+          inputSize="sm"
           maxLength={500}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -53,8 +55,7 @@ export function InlineNoteEditor({
         />
         <Button
           variant="ghost"
-          size="sm"
-          className="h-7 px-1"
+          size="xs"
           onClick={handleSave}
           disabled={updateMutation.isPending}
         >
@@ -62,8 +63,7 @@ export function InlineNoteEditor({
         </Button>
         <Button
           variant="ghost"
-          size="sm"
-          className="h-7 px-1"
+          size="xs"
           onClick={() => {
             setIsEditing(false);
             setNoteValue(bookmark.note ?? '');
@@ -71,25 +71,36 @@ export function InlineNoteEditor({
         >
           <X className="h-3 w-3" />
         </Button>
-      </div>
+      </HStack>
     );
   }
 
   return (
-    <button
-      type="button"
-      className="flex items-center gap-1 text-left text-xs text-muted-foreground hover:text-foreground"
+    <Button
+      variant="ghost"
+      size="inline"
       onClick={(e) => {
         e.stopPropagation();
         setIsEditing(true);
       }}
     >
       {bookmark.note ? (
-        <span className="max-w-[200px] truncate">{bookmark.note}</span>
+        <SmallText
+          color="muted"
+          truncate
+          maxWidth="sm"
+        >
+          {bookmark.note}
+        </SmallText>
       ) : (
-        <span className="italic">Add note...</span>
+        <SmallText
+          color="muted"
+          italic
+        >
+          Add note...
+        </SmallText>
       )}
       <Pencil className="h-3 w-3 shrink-0" />
-    </button>
+    </Button>
   );
 }

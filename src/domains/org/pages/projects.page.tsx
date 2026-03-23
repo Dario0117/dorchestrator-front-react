@@ -1,3 +1,5 @@
+import { Box } from '@components/ds/atoms/box';
+
 export function ProjectsPage() {
-  return <div>Hello projects!</div>;
+  return <Box>Hello projects!</Box>;
 }

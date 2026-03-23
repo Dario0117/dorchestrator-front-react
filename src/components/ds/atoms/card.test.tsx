@@ -27,6 +27,50 @@ describe('Card', () => {
       render(<Card size="sm">Small card</Card>);
       expect(screen.getByText('Small card')).toBeInTheDocument();
     });
+
+    it('renders static card by default', () => {
+      render(<Card data-testid="card">content</Card>);
+      expect(screen.getByTestId('card')).toBeInTheDocument();
+    });
+
+    it('accepts interactive prop', () => {
+      render(
+        <Card
+          interactive
+          data-testid="card"
+        >
+          Clickable card
+        </Card>,
+      );
+      expect(screen.getByTestId('card')).toBeInTheDocument();
+      expect(screen.getByText('Clickable card')).toBeInTheDocument();
+    });
+
+    it('accepts variant prop', () => {
+      render(
+        <Card
+          variant="destructive"
+          data-testid="card"
+        >
+          Danger zone
+        </Card>,
+      );
+      expect(screen.getByTestId('card')).toBeInTheDocument();
+      expect(screen.getByText('Danger zone')).toBeInTheDocument();
+    });
+
+    it('accepts both interactive and variant props together', () => {
+      render(
+        <Card
+          interactive
+          variant="destructive"
+          data-testid="card"
+        >
+          content
+        </Card>,
+      );
+      expect(screen.getByTestId('card')).toBeInTheDocument();
+    });
   });
 
   describe('additional props', () => {
@@ -58,6 +102,18 @@ describe('CardTitle', () => {
     it('renders children', () => {
       render(<CardTitle>Title text</CardTitle>);
       expect(screen.getByText('Title text')).toBeInTheDocument();
+    });
+  });
+
+  describe('semantic props', () => {
+    it('accepts color="destructive"', () => {
+      render(<CardTitle color="destructive">Danger</CardTitle>);
+      expect(screen.getByText('Danger')).toBeInTheDocument();
+    });
+
+    it('accepts icon prop', () => {
+      render(<CardTitle icon>Icon title</CardTitle>);
+      expect(screen.getByText('Icon title')).toBeInTheDocument();
     });
   });
 

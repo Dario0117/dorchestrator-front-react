@@ -1,3 +1,4 @@
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
 import { EmptyState } from '@components/ds/atoms/empty-state';
 import { PageSection } from '@components/ds/atoms/page-section';
@@ -92,7 +93,7 @@ export function TerminalSessionsPage() {
 
   return (
     <PageSection>
-      <div className="py-6">
+      <Box innerSpaceY="lg">
         <PageHeadingBar>
           <SectionTitle>Terminal Sessions</SectionTitle>
           <Button
@@ -119,24 +120,15 @@ export function TerminalSessionsPage() {
           isEmpty={sessions.length === 0}
           filteredEmptyState={
             <EmptyState
-              icon={Monitor}
-              title="No sessions match your filters"
-              description="Try adjusting your filters to find sessions."
-              action={
-                <Button
-                  variant="outline"
-                  onClick={handleClearFilters}
-                >
-                  Clear Filters
-                </Button>
-              }
+              variant="filtered"
+              ctaAction={handleClearFilters}
             />
           }
           defaultEmptyState={
             <EmptyState
               icon={Monitor}
               title="No terminal sessions"
-              description="Terminal sessions will appear here when created from a device."
+              description="Open a terminal session from a device to get started."
             />
           }
           footer={
@@ -161,7 +153,7 @@ export function TerminalSessionsPage() {
             terminateMutation={terminateMutation}
           />
         </FilteredDataTable>
-      </div>
+      </Box>
     </PageSection>
   );
 }

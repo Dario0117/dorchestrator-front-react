@@ -1,5 +1,6 @@
 import '@xterm/xterm/css/xterm.css';
 
+import { Surface } from '@components/ds/atoms/surface';
 import type {
   TerminalEmulatorHandle,
   TerminalEmulatorProps,
@@ -279,9 +280,11 @@ export const TerminalEmulator = forwardRef<
   }, [fontSize]);
 
   return (
-    <div
+    <Surface
+      fullHeight
+      fullWidth
+      bg="black"
       ref={containerRef}
-      className="h-full w-full bg-black"
       data-testid="terminal-container"
     />
   );

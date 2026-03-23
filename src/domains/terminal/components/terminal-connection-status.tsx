@@ -1,28 +1,18 @@
+import { Output } from '@components/ds/atoms/output';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
+import type { StatusDotProps } from '@components/ds/atoms/status-dot';
+import { StatusDot } from '@components/ds/atoms/status-dot';
 import { useTerminalConnectionStore } from '@domains/terminal/stores/terminal-connection.store';
 import type { ConnectionState } from '@domains/terminal/stores/terminal-connection.store.types';
-import { cn } from '@lib/utils';
 
 const STATUS_CONFIG = {
-  connected: { label: 'Connected', dotClass: 'bg-green-500', animate: false },
-  connecting: {
-    label: 'Connecting...',
-    dotClass: 'bg-yellow-500',
-    animate: false,
-  },
-  reconnecting: {
-    label: 'Reconnecting...',
-    dotClass: 'bg-yellow-500',
-    animate: true,
-  },
-  disconnected: {
-    label: 'Disconnected',
-    dotClass: 'bg-red-500',
-    animate: false,
-  },
+  connected: { label: 'Connected', status: 'online' as const },
+  connecting: { label: 'Connecting...', status: 'pending' as const },
+  reconnecting: { label: 'Reconnecting...', status: 'pending' as const },
+  disconnected: { label: 'Disconnected', status: 'error' as const },
 } as const satisfies Record<
   ConnectionState,
-  { label: string; dotClass: string; animate: boolean }
+  { label: string; status: NonNullable<StatusDotProps['status']> }
 >;
 
 export function TerminalConnectionStatus() {
@@ -34,15 +24,14 @@ export function TerminalConnectionStatus() {
   const config = STATUS_CONFIG[connectionState];
 
   return (
-    <output
-      className="flex min-h-[44px] min-w-[44px] items-center gap-2 px-3 py-2"
+    <Output
+      variant="status"
       aria-live="polite"
     >
-      <span
-        className={cn('h-2.5 w-2.5 rounded-full', config.dotClass, {
-          'animate-pulse': config.animate,
-        })}
-        aria-hidden="true"
+      <StatusDot
+        size="lg"
+        status={config.status}
+        aria-label={`Connection status: ${config.label}`}
       />
       <SecondaryText>
         {config.label}
@@ -50,6 +39,6 @@ export function TerminalConnectionStatus() {
           ? ` (attempt ${reconnectAttempt})`
           : null}
       </SecondaryText>
-    </output>
+    </Output>
   );
 }

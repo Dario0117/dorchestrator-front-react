@@ -23,38 +23,65 @@ export function SessionTableSkeleton() {
             <TableHead>Terminated</TableHead>
             <TableHead>Duration</TableHead>
             <TableHead>Recording</TableHead>
-            <TableHead className="w-12" />
+            <TableHead width="sm" />
           </TableRow>
         </TableHeader>
         <TableBody>
           {['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5'].map((id) => (
             <TableRow key={id}>
               <TableCell>
-                <Skeleton className="h-4 w-24" />
+                <Skeleton
+                  h="1rem"
+                  w="6rem"
+                />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-4 w-28" />
+                <Skeleton
+                  h="1rem"
+                  w="7rem"
+                />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-5 w-16" />
+                <Skeleton
+                  h="1.25rem"
+                  w="4rem"
+                />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-4 w-16" />
+                <Skeleton
+                  h="1rem"
+                  w="4rem"
+                />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-4 w-16" />
+                <Skeleton
+                  h="1rem"
+                  w="4rem"
+                />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-4 w-16" />
+                <Skeleton
+                  h="1rem"
+                  w="4rem"
+                />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-4 w-14" />
+                <Skeleton
+                  h="1rem"
+                  w="3.5rem"
+                />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-4 w-14" />
+                <Skeleton
+                  h="1rem"
+                  w="3.5rem"
+                />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-8 w-8" />
+                <Skeleton
+                  h="2rem"
+                  w="2rem"
+                />
               </TableCell>
             </TableRow>
           ))}

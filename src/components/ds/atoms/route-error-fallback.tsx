@@ -1,5 +1,6 @@
 import { AlertTriangle } from 'lucide-react';
 import { Box } from './box';
+import { Button } from './button';
 import { EmptyState } from './empty-state';
 import { PageSection } from './page-section';
 import { SectionTitle } from './section-title';
@@ -28,13 +29,12 @@ export function RouteErrorFallback({
           title={errorTitle}
           description={errorDescription}
           action={
-            <button
-              type="button"
+            <Button
+              variant="outline"
               onClick={reset}
-              className="inline-flex h-11 items-center justify-center rounded-md border border-input bg-background px-4 text-base font-medium shadow-xs hover:bg-accent hover:text-accent-foreground md:text-sm"
             >
               Try again
-            </button>
+            </Button>
           }
         />
       </div>

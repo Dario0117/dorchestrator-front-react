@@ -442,13 +442,13 @@ describe('AppFormField', () => {
   });
 
   it('should render with proper structure', () => {
-    const { container } = render(<TestFormWrapper label="Field" />);
+    render(<TestFormWrapper label="Field" />);
 
-    const gridContainer = container.querySelector('.grid.gap-3');
-    expect(gridContainer).toBeInTheDocument();
+    const label = screen.getByText('Field');
+    const input = screen.getByLabelText('Field');
 
-    const flexContainer = container.querySelector('.flex.items-center');
-    expect(flexContainer).toBeInTheDocument();
+    expect(label).toBeInTheDocument();
+    expect(input).toBeInTheDocument();
   });
 
   it('should call custom onChange handler for password field', async () => {

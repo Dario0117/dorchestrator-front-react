@@ -141,13 +141,14 @@ describe('DevicesPage', () => {
     renderWithProviders(<DevicesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText(/No devices registered yet/)).toBeInTheDocument();
+      expect(screen.getByText(/No devices yet/)).toBeInTheDocument();
     });
 
-    // Click the "Add Device" button inside the empty state
-    const addButtons = screen.getAllByRole('button', { name: /Add Device/ });
-    // The empty state action button is the second one (first is in the header)
-    await user.click(addButtons[addButtons.length - 1] as HTMLElement);
+    // Click the "Add Your First Device" button inside the empty state
+    const addButton = screen.getByRole('button', {
+      name: /Add Your First Device/,
+    });
+    await user.click(addButton);
 
     await waitFor(() => {
       expect(screen.getByText('Add New Device')).toBeInTheDocument();
@@ -180,7 +181,7 @@ describe('DevicesPage', () => {
     renderWithProviders(<DevicesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText(/No devices registered yet/)).toBeInTheDocument();
+      expect(screen.getByText(/No devices yet/)).toBeInTheDocument();
     });
   });
 
@@ -527,9 +528,9 @@ describe('DevicesPage', () => {
       expect(screen.getByText('Test Server')).toBeInTheDocument();
     });
 
-    // Click the first "Execute Command" button
+    // Click the first "Command" button
     const executeButtons = screen.getAllByRole('button', {
-      name: /Execute Command/,
+      name: /^Command$/,
     });
     const firstExecuteButton = executeButtons[0];
     expect(firstExecuteButton).toBeDefined();
@@ -551,7 +552,7 @@ describe('DevicesPage', () => {
     });
 
     const terminalButtons = screen.getAllByRole('button', {
-      name: /Open Terminal/,
+      name: /^Terminal$/,
     });
     expect(terminalButtons[0]).toBeDefined();
     await user.click(terminalButtons[0] as HTMLElement);
@@ -624,7 +625,7 @@ describe('DevicesPage', () => {
 
     // Open terminal modal
     const terminalButtons = screen.getAllByRole('button', {
-      name: /Open Terminal/,
+      name: /^Terminal$/,
     });
     await user.click(terminalButtons[0] as HTMLElement);
 
@@ -653,7 +654,7 @@ describe('DevicesPage', () => {
 
     // Open terminal reauth modal
     const terminalButtons = screen.getAllByRole('button', {
-      name: /Open Terminal/,
+      name: /^Terminal$/,
     });
     await user.click(terminalButtons[0] as HTMLElement);
 
@@ -691,7 +692,7 @@ describe('DevicesPage', () => {
 
     // Open terminal reauth modal and authenticate
     const terminalButtons = screen.getAllByRole('button', {
-      name: /Open Terminal/,
+      name: /^Terminal$/,
     });
     await user.click(terminalButtons[0] as HTMLElement);
 
@@ -732,7 +733,7 @@ describe('DevicesPage', () => {
 
     // Open terminal reauth modal and authenticate
     const terminalButtons = screen.getAllByRole('button', {
-      name: /Open Terminal/,
+      name: /^Terminal$/,
     });
     await user.click(terminalButtons[0] as HTMLElement);
 
@@ -810,7 +811,7 @@ describe('DevicesPage', () => {
 
     // Open execute command modal
     const executeButtons = screen.getAllByRole('button', {
-      name: /Execute Command/,
+      name: /^Command$/,
     });
     await user.click(executeButtons[0] as HTMLElement);
 
@@ -850,7 +851,7 @@ describe('DevicesPage', () => {
 
     // When responseData is null, devices defaults to [] and empty state is shown
     await waitFor(() => {
-      expect(screen.getByText(/No devices registered yet/)).toBeInTheDocument();
+      expect(screen.getByText(/No devices yet/)).toBeInTheDocument();
     });
   });
 

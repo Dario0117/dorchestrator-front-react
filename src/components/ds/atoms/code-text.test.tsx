@@ -20,6 +20,11 @@ describe('CodeText', () => {
       render(<CodeText truncate>truncated code</CodeText>);
       expect(screen.getByText('truncated code')).toBeInTheDocument();
     });
+
+    it('accepts block prop', () => {
+      render(<CodeText block>block code</CodeText>);
+      expect(screen.getByText('block code')).toBeInTheDocument();
+    });
   });
 
   describe('ref forwarding', () => {

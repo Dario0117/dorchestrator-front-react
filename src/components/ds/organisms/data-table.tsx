@@ -1,16 +1,18 @@
+import { Surface } from '@components/ds/atoms/surface';
 import { Table } from '@components/ds/atoms/table';
-import { cn } from '@lib/utils';
 import type { ReactNode } from 'react';
 
 interface DataTableProps {
   children: ReactNode;
-  className?: string;
 }
 
-export function DataTable({ children, className }: DataTableProps) {
+export function DataTable({ children }: DataTableProps) {
   return (
-    <div className={cn('rounded-md border', className)}>
+    <Surface
+      rounded="md"
+      border="all"
+    >
       <Table>{children}</Table>
-    </div>
+    </Surface>
   );
 }

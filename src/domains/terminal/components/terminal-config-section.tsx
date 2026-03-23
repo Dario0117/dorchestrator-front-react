@@ -1,4 +1,5 @@
 import { Alert, AlertDescription } from '@components/ds/atoms/alert';
+import { Stack } from '@components/ds/atoms/stack';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
 import { TerminalConfigForm } from '@domains/terminal/forms/terminal-config.form';
 import { useGetTerminalConfigSuspenseQuery } from '@domains/terminal/services/get-terminal-config.http-service';
@@ -27,7 +28,7 @@ export function TerminalConfigSection() {
     config?.hardCapMs != null ? Math.round(config.hardCapMs / MS_PER_HOUR) : '';
 
   return (
-    <div className="space-y-4">
+    <Stack gap="lg">
       {showSuccess && (
         <Alert>
           <CheckCircle2 className="h-4 w-4" />
@@ -52,6 +53,6 @@ export function TerminalConfigSection() {
           );
         }}
       />
-    </div>
+    </Stack>
   );
 }

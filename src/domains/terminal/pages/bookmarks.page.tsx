@@ -1,3 +1,4 @@
+import { Box } from '@components/ds/atoms/box';
 import { EmptyState } from '@components/ds/atoms/empty-state';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { SectionTitle } from '@components/ds/atoms/section-title';
@@ -60,7 +61,7 @@ function BookmarksPage() {
 
   return (
     <PageSection>
-      <div className="py-6">
+      <Box innerSpaceY="lg">
         <PageHeadingBar>
           <SectionTitle>Bookmarked Sessions</SectionTitle>
         </PageHeadingBar>
@@ -97,7 +98,7 @@ function BookmarksPage() {
             />
           </>
         )}
-      </div>
+      </Box>
     </PageSection>
   );
 }

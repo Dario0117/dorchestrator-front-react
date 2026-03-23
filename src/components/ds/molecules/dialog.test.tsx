@@ -5,6 +5,7 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogOverlay,
   DialogPortal,
   DialogTitle,
@@ -86,6 +87,22 @@ describe('Dialog', () => {
     });
   });
 
+  describe('DialogContent size', () => {
+    it('accepts size="narrow"', async () => {
+      render(
+        <Dialog>
+          <DialogTrigger>Open</DialogTrigger>
+          <DialogContent size="narrow">
+            <DialogTitle>Narrow dialog</DialogTitle>
+          </DialogContent>
+        </Dialog>,
+      );
+
+      await clickTrigger(screen.getByText('Open'));
+      expect(screen.getByText('Narrow dialog')).toBeInTheDocument();
+    });
+  });
+
   describe('DialogPortal', () => {
     it('renders children through a portal', () => {
       render(
@@ -113,6 +130,20 @@ describe('Dialog', () => {
         </Dialog>,
       );
       expect(screen.getByText('Dismiss')).toBeInTheDocument();
+    });
+  });
+
+  describe('DialogFooter', () => {
+    it('renders footer with spaceAbove', () => {
+      render(
+        <Dialog open>
+          <DialogContent>
+            <DialogTitle>Title</DialogTitle>
+            <DialogFooter spaceAbove="md">Footer content</DialogFooter>
+          </DialogContent>
+        </Dialog>,
+      );
+      expect(screen.getByText('Footer content')).toBeInTheDocument();
     });
   });
 

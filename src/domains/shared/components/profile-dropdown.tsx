@@ -4,7 +4,9 @@ import {
   AvatarImage,
 } from '@components/ds/atoms/avatar';
 import { buttonVariants } from '@components/ds/atoms/button';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
+import { Stack } from '@components/ds/atoms/stack';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +39,7 @@ export function ProfileDropdown() {
             'relative h-8 w-8 rounded-full',
           )}
         >
-          <Avatar className="h-8 w-8">
+          <Avatar size="sm">
             <AvatarImage
               src="/avatars/01.png"
               alt="@shadcn"
@@ -46,19 +48,20 @@ export function ProfileDropdown() {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-56"
+          width="sm"
           align="end"
         >
           <DropdownMenuGroup>
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col gap-1.5">
-                <p className="text-sm leading-none font-medium">
+            <DropdownMenuLabel layout="normal">
+              <Stack gap="xs">
+                <SecondaryParagraph
+                  weight="medium"
+                  leading="none"
+                >
                   {profile?.name}
-                </p>
-                <SmallParagraph className="leading-none">
-                  {profile?.email}
-                </SmallParagraph>
-              </div>
+                </SecondaryParagraph>
+                <SmallParagraph leading="none">{profile?.email}</SmallParagraph>
+              </Stack>
             </DropdownMenuLabel>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

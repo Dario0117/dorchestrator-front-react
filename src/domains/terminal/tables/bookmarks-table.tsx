@@ -38,14 +38,14 @@ export function BookmarksTable({
           <TableHead>Bookmarked</TableHead>
           <TableHead>Note</TableHead>
           <TableHead>Recording</TableHead>
-          <TableHead className="w-[80px]" />
+          <TableHead width="lg" />
         </TableRow>
       </TableHeader>
       <TableBody>
         {bookmarks.map((bookmark) => (
           <TableRow
             key={bookmark.id}
-            className="cursor-pointer"
+            clickable
             onClick={() => onRowClick(bookmark.sessionId)}
             tabIndex={0}
             onKeyDown={(e) => {
@@ -55,7 +55,7 @@ export function BookmarksTable({
               }
             }}
           >
-            <TableCell className="font-medium">{bookmark.deviceName}</TableCell>
+            <TableCell weight="medium">{bookmark.deviceName}</TableCell>
             <TableCell>
               <BookmarkStatusBadge status={bookmark.sessionStatus} />
             </TableCell>
@@ -77,8 +77,8 @@ export function BookmarksTable({
             <TableCell>
               <Button
                 variant="ghost"
-                size="sm"
-                className="h-7 px-2 text-destructive hover:text-destructive"
+                size="compact"
+                color="danger"
                 onClick={(e) => onDelete(bookmark.id, e)}
                 disabled={isDeletePending}
               >

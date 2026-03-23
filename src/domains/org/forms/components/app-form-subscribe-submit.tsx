@@ -1,15 +1,16 @@
-import { Button } from '@components/ds/atoms/button';
+import { Button, type ButtonProps } from '@components/ds/atoms/button';
 import { useFormContext } from '@domains/org/forms/hooks/app-form';
-import { cn } from '@lib/utils';
 
 export function AppSubscribeSubmitButton({
   label,
   disabled = false,
-  className,
+  size,
+  fullWidth = true,
 }: {
   label: string;
   disabled?: boolean;
-  className?: string;
+  size?: ButtonProps['size'];
+  fullWidth?: boolean;
 }) {
   const form = useFormContext();
   return (
@@ -17,7 +18,8 @@ export function AppSubscribeSubmitButton({
       {(canSubmit) => (
         <Button
           type="submit"
-          className={cn('w-full', className)}
+          size={size}
+          fullWidth={fullWidth}
           disabled={!canSubmit || disabled}
         >
           {label}

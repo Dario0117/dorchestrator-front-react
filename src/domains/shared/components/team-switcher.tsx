@@ -1,3 +1,5 @@
+import { Box } from '@components/ds/atoms/box';
+import { Center } from '@components/ds/atoms/center';
 import { SmallText } from '@components/ds/atoms/small-text';
 import {
   DropdownMenu,
@@ -16,6 +18,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@components/ds/organisms/sidebar';
+import { SidebarItemDetail } from '@domains/shared/components/sidebar-item-detail';
 import type { TeamSwitcherProps } from '@domains/shared/components/team-switcher.types';
 import { useNavigate } from '@tanstack/react-router';
 import { ChevronsUpDown, Plus } from 'lucide-react';
@@ -54,33 +57,41 @@ export function TeamSwitcher({
               />
             }
           >
-            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+            <Center
+              size="sm"
+              rounded="md"
+              bg="primary"
+            >
               <activeTeam.logo className="size-4" />
-            </div>
-            <div className="grid flex-1 text-start text-sm leading-tight">
-              <span className="truncate font-semibold">{activeTeam.name}</span>
+            </Center>
+            <SidebarItemDetail>
+              <SmallText
+                size="sm"
+                weight="semibold"
+                truncate
+              >
+                {activeTeam.name}
+              </SmallText>
               {activeTeamName && (
                 <SmallText truncate>{activeTeamName}</SmallText>
               )}
-            </div>
+            </SidebarItemDetail>
             <ChevronsUpDown className="ms-auto" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--anchor-width) min-w-56 rounded-lg"
+            width="anchor"
             align="start"
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DropdownMenuLabel className="text-muted-foreground text-xs">
-                {label}
-              </DropdownMenuLabel>
+              <DropdownMenuLabel layout="muted-xs">{label}</DropdownMenuLabel>
             </DropdownMenuGroup>
             {teams.map((team) => {
               const isActive = team.slug === activeSlug;
               const orgTeams = teamsByOrgSlug?.[team.slug] ?? [];
               return (
-                <div key={team.slug}>
+                <Box key={team.slug}>
                   <DropdownMenuItem
                     onClick={() =>
                       navigate({
@@ -88,11 +99,15 @@ export function TeamSwitcher({
                         params: { organizationSlug: team.slug },
                       })
                     }
-                    className="gap-2 p-2"
+                    layout="spaced"
                   >
-                    <div className="flex size-6 items-center justify-center rounded-sm border">
+                    <Center
+                      size="sm"
+                      rounded="sm"
+                      border="all"
+                    >
                       <team.logo className="size-4 shrink-0" />
-                    </div>
+                    </Center>
                     {team.name}
                   </DropdownMenuItem>
                   {orgTeams.length > 0 && (
@@ -114,7 +129,7 @@ export function TeamSwitcher({
                     >
                       {orgTeams.map((teamOption) => (
                         <DropdownMenuRadioItem
-                          className="pl-10"
+                          indented
                           key={teamOption.id}
                           value={teamOption.slug}
                         >
@@ -123,20 +138,23 @@ export function TeamSwitcher({
                       ))}
                     </DropdownMenuRadioGroup>
                   )}
-                </div>
+                </Box>
               );
             })}
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="gap-2 p-2"
+              layout="spaced"
               onClick={onAdd}
             >
-              <div className="bg-background flex size-6 items-center justify-center rounded-md border">
+              <Center
+                size="sm"
+                rounded="md"
+                border="all"
+                bg="background"
+              >
                 <Plus className="size-4" />
-              </div>
-              <div className="text-muted-foreground font-medium">
-                {addButtonLabel}
-              </div>
+              </Center>
+              <SmallText weight="medium">{addButtonLabel}</SmallText>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

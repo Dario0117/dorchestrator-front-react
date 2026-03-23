@@ -60,6 +60,43 @@ describe('Flex', () => {
     });
   });
 
+  describe('decoration props', () => {
+    it('accepts shrink={false}', () => {
+      render(<Flex shrink={false}>text</Flex>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+
+    it('accepts fullHeight', () => {
+      render(<Flex fullHeight>text</Flex>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+
+    it('accepts grow', () => {
+      render(<Flex grow>text</Flex>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+
+    it('accepts minW0', () => {
+      render(<Flex minW0>text</Flex>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+
+    it('accepts border', () => {
+      render(<Flex border="all">text</Flex>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+
+    it('accepts rounded', () => {
+      render(<Flex rounded="md">text</Flex>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+
+    it('accepts bg', () => {
+      render(<Flex bg="muted">text</Flex>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+  });
+
   describe('additional props', () => {
     it('spreads additional props to the element', () => {
       render(<Flex data-testid="flex">content</Flex>);

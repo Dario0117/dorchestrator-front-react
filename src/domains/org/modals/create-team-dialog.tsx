@@ -1,3 +1,4 @@
+import { Stack } from '@components/ds/atoms/stack';
 import {
   Dialog,
   DialogContent,
@@ -52,7 +53,7 @@ export function CreateTeamDialog({
             form.handleSubmit();
           }}
         >
-          <div className="space-y-3">
+          <Stack gap="md">
             <form.AppField name="name">
               {(field) => (
                 <field.AppFormField
@@ -80,8 +81,8 @@ export function CreateTeamDialog({
                 />
               )}
             </form.AppField>
-          </div>
-          <DialogFooter className="mt-4">
+          </Stack>
+          <DialogFooter spaceAbove="md">
             <form.AppForm>
               <form.AppSubscribeSubmitButton label="Create" />
             </form.AppForm>

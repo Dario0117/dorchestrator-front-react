@@ -1,3 +1,5 @@
+import type { BgOption, GapSize } from '@components/ds/utils/tokens';
+import { BG, GAP } from '@components/ds/utils/tokens';
 import {
   Table as ShadcnTable,
   TableBody as ShadcnTableBody,
@@ -8,6 +10,7 @@ import {
   TableHeader as ShadcnTableHeader,
   TableRow as ShadcnTableRow,
 } from '@components/ui/table';
+import { cn } from '@lib/utils';
 
 type ShadcnTableProps = React.ComponentProps<typeof ShadcnTable>;
 interface TableProps extends ShadcnTableProps {}
@@ -22,13 +25,39 @@ type ShadcnTableFooterProps = React.ComponentProps<typeof ShadcnTableFooter>;
 interface TableFooterProps extends ShadcnTableFooterProps {}
 
 type ShadcnTableRowProps = React.ComponentProps<typeof ShadcnTableRow>;
-interface TableRowProps extends ShadcnTableRowProps {}
+interface TableRowProps
+  extends Omit<ShadcnTableRowProps, 'className' | 'style'> {
+  clickable?: boolean;
+  height?: 'default' | 'tall';
+}
 
 type ShadcnTableHeadProps = React.ComponentProps<typeof ShadcnTableHead>;
-interface TableHeadProps extends ShadcnTableHeadProps {}
+type TableHeadWidth = 'xs' | 'sm' | 'md' | 'lg';
+const TABLE_HEAD_WIDTH: Record<TableHeadWidth, string> = {
+  xs: 'w-8',
+  sm: 'w-12',
+  md: 'w-[40px]',
+  lg: 'w-[80px]',
+};
+interface TableHeadProps
+  extends Omit<ShadcnTableHeadProps, 'className' | 'style'> {
+  width?: TableHeadWidth;
+}
 
 type ShadcnTableCellProps = React.ComponentProps<typeof ShadcnTableCell>;
-interface TableCellProps extends ShadcnTableCellProps {}
+type TableCellPaddingX = 'none' | 'lg';
+const TABLE_CELL_PX: Record<TableCellPaddingX, string> = {
+  none: 'p-0',
+  lg: 'px-6',
+};
+
+interface TableCellProps
+  extends Omit<ShadcnTableCellProps, 'className' | 'style'> {
+  weight?: 'normal' | 'medium';
+  bg?: BgOption;
+  padding?: TableCellPaddingX;
+  gap?: GapSize;
+}
 
 type ShadcnTableCaptionProps = React.ComponentProps<typeof ShadcnTableCaption>;
 interface TableCaptionProps extends ShadcnTableCaptionProps {}
@@ -49,16 +78,39 @@ function TableFooter(props: TableFooterProps) {
   return <ShadcnTableFooter {...props} />;
 }
 
-function TableRow(props: TableRowProps) {
-  return <ShadcnTableRow {...props} />;
+function TableRow({ clickable, height, ...props }: TableRowProps) {
+  return (
+    <ShadcnTableRow
+      className={cn(
+        clickable && 'cursor-pointer hover:bg-muted/50 transition-colors',
+        height === 'tall' && 'h-14',
+      )}
+      {...props}
+    />
+  );
 }
 
-function TableHead(props: TableHeadProps) {
-  return <ShadcnTableHead {...props} />;
+function TableHead({ width, ...props }: TableHeadProps) {
+  return (
+    <ShadcnTableHead
+      className={cn(width && TABLE_HEAD_WIDTH[width])}
+      {...props}
+    />
+  );
 }
 
-function TableCell(props: TableCellProps) {
-  return <ShadcnTableCell {...props} />;
+function TableCell({ weight, bg, padding, gap, ...props }: TableCellProps) {
+  return (
+    <ShadcnTableCell
+      className={cn(
+        weight === 'medium' && 'font-medium',
+        bg && BG[bg],
+        padding && TABLE_CELL_PX[padding],
+        gap && `flex ${GAP[gap]}`,
+      )}
+      {...props}
+    />
+  );
 }
 
 function TableCaption(props: TableCaptionProps) {

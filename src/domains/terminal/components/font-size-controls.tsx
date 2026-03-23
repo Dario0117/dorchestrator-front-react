@@ -1,4 +1,6 @@
 import { Button } from '@components/ds/atoms/button';
+import { HStack } from '@components/ds/atoms/hstack';
+import { SmallText } from '@components/ds/atoms/small-text';
 import {
   MAX_FONT_SIZE,
   MIN_FONT_SIZE,
@@ -17,7 +19,7 @@ export function FontSizeControls({
   onDecrease,
 }: FontSizeControlsProps) {
   return (
-    <div className="flex items-center gap-0.5">
+    <HStack gap="none">
       <Button
         variant="ghost"
         size="icon-sm"
@@ -27,9 +29,14 @@ export function FontSizeControls({
       >
         <Minus className="h-4 w-4" />
       </Button>
-      <span className="min-w-[3ch] text-center text-xs tabular-nums">
+      <SmallText
+        color="muted"
+        centered
+        tabularNums
+        minWidth="3ch"
+      >
         {fontSize}
-      </span>
+      </SmallText>
       <Button
         variant="ghost"
         size="icon-sm"
@@ -39,6 +46,6 @@ export function FontSizeControls({
       >
         <Plus className="h-4 w-4" />
       </Button>
-    </div>
+    </HStack>
   );
 }

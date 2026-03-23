@@ -1,22 +1,24 @@
 import { Badge } from '@components/ds/atoms/badge';
-import { badgeStyles } from '@lib/badge-styles';
+import type { BadgeStyle } from '@lib/badge-styles';
 
-const TIER_BADGE_STYLES = {
-  hot: badgeStyles.green,
-  cold: badgeStyles.blue,
-  restoring: badgeStyles.yellow,
-} as const;
+type StorageTier = 'hot' | 'cold' | 'restoring';
 
-export function StorageTierBadge({ tier }: { tier: string | null }) {
-  const style =
-    TIER_BADGE_STYLES[tier as keyof typeof TIER_BADGE_STYLES] ??
-    badgeStyles.gray;
+const TIER_COLOR_SCHEMES: Record<StorageTier, BadgeStyle> = {
+  hot: 'success',
+  cold: 'info',
+  restoring: 'warning',
+};
+
+export function StorageTierBadge({ tier }: { tier: StorageTier | null }) {
+  const colorScheme = tier ? TIER_COLOR_SCHEMES[tier] : 'neutral';
   return (
     <Badge
       variant="outline"
-      className={style}
+      colorScheme={colorScheme}
     >
       {tier ?? 'unknown'}
     </Badge>
   );
 }
+
+export type { StorageTier };

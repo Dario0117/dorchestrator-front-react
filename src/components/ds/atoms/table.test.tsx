@@ -89,6 +89,47 @@ describe('Table', () => {
     });
   });
 
+  describe('semantic props', () => {
+    it('accepts clickable on TableRow', () => {
+      render(
+        <Table>
+          <TableBody>
+            <TableRow clickable>
+              <TableCell>cell</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>,
+      );
+      expect(screen.getByText('cell')).toBeInTheDocument();
+    });
+
+    it('accepts height="tall" on TableRow', () => {
+      render(
+        <Table>
+          <TableBody>
+            <TableRow height="tall">
+              <TableCell>cell</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>,
+      );
+      expect(screen.getByText('cell')).toBeInTheDocument();
+    });
+
+    it('accepts gap on TableCell', () => {
+      render(
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell gap="sm">cell</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>,
+      );
+      expect(screen.getByText('cell')).toBeInTheDocument();
+    });
+  });
+
   describe('additional props', () => {
     it('spreads additional props to the table element', () => {
       render(

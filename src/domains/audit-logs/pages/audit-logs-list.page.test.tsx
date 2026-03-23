@@ -244,7 +244,7 @@ describe('AuditLogsListPage', () => {
     renderWithProviders(<AuditLogsListPage />);
 
     await waitFor(() => {
-      expect(screen.getByText(/No audit logs yet/)).toBeInTheDocument();
+      expect(screen.getByText(/No audit logs/)).toBeInTheDocument();
     });
   });
 
@@ -254,7 +254,7 @@ describe('AuditLogsListPage', () => {
     renderWithProviders(<AuditLogsListPage />);
 
     await waitFor(() => {
-      expect(screen.getByText(/No audit logs yet/)).toBeInTheDocument();
+      expect(screen.getByText(/No audit logs/)).toBeInTheDocument();
     });
   });
 
@@ -266,7 +266,7 @@ describe('AuditLogsListPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/No audit logs match your filters/),
+        screen.getByText(/No results match your filters/),
       ).toBeInTheDocument();
     });
   });
@@ -279,7 +279,7 @@ describe('AuditLogsListPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/Use the filters above to adjust your search/),
+        screen.getByText(/Try adjusting your search criteria/),
       ).toBeInTheDocument();
     });
   });
@@ -293,7 +293,7 @@ describe('AuditLogsListPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/No audit logs match your filters/),
+        screen.getByText(/No results match your filters/),
       ).toBeInTheDocument();
     });
 
@@ -559,7 +559,7 @@ describe('AuditLogsListPage', () => {
       renderWithProviders(<AuditLogsListPage />);
 
       await waitFor(() => {
-        expect(screen.getByText(/No audit logs yet/)).toBeInTheDocument();
+        expect(screen.getByText(/No audit logs/)).toBeInTheDocument();
       });
     });
   });
@@ -622,7 +622,7 @@ describe('AuditLogsListPage', () => {
       renderWithProviders(<AuditLogsListPage />);
 
       await waitFor(() => {
-        expect(screen.getByText(/No audit logs yet/)).toBeInTheDocument();
+        expect(screen.getByText(/No audit logs/)).toBeInTheDocument();
       });
     });
   });

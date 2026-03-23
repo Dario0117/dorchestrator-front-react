@@ -1,3 +1,4 @@
+import { Box } from '@components/ds/atoms/box';
 import { DataTable } from '@components/ds/organisms/data-table';
 import { TableFilters } from '@components/ds/organisms/table-filters';
 import type { ReactNode } from 'react';
@@ -11,7 +12,6 @@ interface FilteredDataTableProps {
   defaultEmptyState: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
-  className?: string;
 }
 
 export function FilteredDataTable({
@@ -23,10 +23,9 @@ export function FilteredDataTable({
   defaultEmptyState,
   children,
   footer,
-  className,
 }: FilteredDataTableProps) {
   return (
-    <div className={className}>
+    <Box>
       <TableFilters
         activeFilterCount={activeFilterCount}
         onClearFilters={onClearFilters}
@@ -43,6 +42,6 @@ export function FilteredDataTable({
           {footer}
         </>
       )}
-    </div>
+    </Box>
   );
 }

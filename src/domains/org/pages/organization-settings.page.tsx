@@ -1,5 +1,6 @@
 import { Alert, AlertDescription } from '@components/ds/atoms/alert';
 import { Badge } from '@components/ds/atoms/badge';
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
 import {
   Card,
@@ -8,11 +9,16 @@ import {
   CardTitle,
 } from '@components/ds/atoms/card';
 import { DefinitionList } from '@components/ds/atoms/definition-list';
+import { DefinitionValue } from '@components/ds/atoms/definition-value';
+import { Grid } from '@components/ds/atoms/grid';
 import { MetadataLabel } from '@components/ds/atoms/metadata-label';
 import { PageDescription } from '@components/ds/atoms/page-description';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { PageTitle } from '@components/ds/atoms/page-title';
+import { ResponsiveRow } from '@components/ds/atoms/responsive-row';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SectionTitle } from '@components/ds/atoms/section-title';
+import { Stack } from '@components/ds/atoms/stack';
 import {
   Table,
   TableBody,
@@ -137,55 +143,53 @@ export function OrganizationSettingsPage() {
 
   return (
     <PageSection>
-      <div>
+      <Box>
         <PageTitle>Organization Settings</PageTitle>
         <PageDescription>
           View your organization configuration and billing settings
         </PageDescription>
-      </div>
+      </Box>
 
-      <div className="grid gap-6 md:grid-cols-1">
+      <Grid gap="xl">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle icon>
               <Building2 className="h-5 w-5 text-muted-foreground" />
               Organization Details
             </CardTitle>
           </CardHeader>
           <CardContent>
             <DefinitionList>
-              <div>
+              <Box>
                 <MetadataLabel>Organization Name</MetadataLabel>
-                <dd className="text-base">{currentOrganization.name}</dd>
-              </div>
+                <DefinitionValue>{currentOrganization.name}</DefinitionValue>
+              </Box>
 
-              <div>
+              <Box>
                 <MetadataLabel>Organization ID</MetadataLabel>
-                <dd className="text-base font-mono">
-                  {currentOrganization.id}
-                </dd>
-              </div>
+                <DefinitionValue mono>{currentOrganization.id}</DefinitionValue>
+              </Box>
 
-              <div>
+              <Box>
                 <MetadataLabel>Created</MetadataLabel>
-                <dd className="text-base">
+                <DefinitionValue>
                   {details?.createdAt
                     ? new Date(details.createdAt).toLocaleDateString()
                     : 'N/A'}
-                </dd>
-              </div>
+                </DefinitionValue>
+              </Box>
             </DefinitionList>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle icon>
               <Star className="h-5 w-5 text-muted-foreground" />
               Default Organization
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent gap="lg">
             {isDefault ? (
               <Alert>
                 <CheckCircle2 className="h-4 w-4" />
@@ -228,24 +232,26 @@ export function OrganizationSettingsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle icon>
               <CreditCard className="h-5 w-5 text-muted-foreground" />
               Subscription & Billing
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent gap="lg">
             <DefinitionList>
-              <div>
+              <Box>
                 <MetadataLabel>Current Tier</MetadataLabel>
-                <dd className="text-base">{details?.tier ?? 'Free Tier'}</dd>
-              </div>
+                <DefinitionValue>
+                  {details?.tier ?? 'Free Tier'}
+                </DefinitionValue>
+              </Box>
 
-              <div>
+              <Box>
                 <MetadataLabel>Device Limit</MetadataLabel>
-                <dd className="text-base">
+                <DefinitionValue>
                   {details?.deviceLimit ?? 'Unlimited'}
-                </dd>
-              </div>
+                </DefinitionValue>
+              </Box>
             </DefinitionList>
 
             <Alert>
@@ -267,13 +273,13 @@ export function OrganizationSettingsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle icon>
               <Users className="h-5 w-5 text-muted-foreground" />
               Members
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-col gap-2 md:flex-row">
+          <CardContent gap="lg">
+            <ResponsiveRow gap="sm">
               <SearchInput
                 value={search}
                 onSearch={handleSearch}
@@ -288,15 +294,21 @@ export function OrganizationSettingsPage() {
                 placeholder="Filter by role"
                 ariaLabel="Filter members by role"
               />
-            </div>
+            </ResponsiveRow>
 
             {members.length === 0 ? (
               search !== undefined || role !== undefined ? (
-                <SecondaryParagraph className="py-6 text-center">
+                <SecondaryParagraph
+                  centered
+                  innerSpaceY="lg"
+                >
                   No members match your filters
                 </SecondaryParagraph>
               ) : (
-                <SecondaryParagraph className="py-6 text-center">
+                <SecondaryParagraph
+                  centered
+                  innerSpaceY="lg"
+                >
                   No members found
                 </SecondaryParagraph>
               )
@@ -315,11 +327,9 @@ export function OrganizationSettingsPage() {
                     {members.map((member) => (
                       <TableRow
                         key={member.id}
-                        className="h-14"
+                        height="tall"
                       >
-                        <TableCell className="font-medium">
-                          {member.name}
-                        </TableCell>
+                        <TableCell weight="medium">{member.name}</TableCell>
                         <TableCell>{member.email}</TableCell>
                         <TableCell>
                           <Badge
@@ -331,7 +341,7 @@ export function OrganizationSettingsPage() {
                           </Badge>
                         </TableCell>
                         {canManageMembers && (
-                          <TableCell className="flex gap-1">
+                          <TableCell gap="xs">
                             {currentOrganization.role === 'owner' &&
                               member.role !== 'owner' && (
                                 <Button
@@ -384,16 +394,19 @@ export function OrganizationSettingsPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-destructive">
+        <Card variant="destructive">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
+            <CardTitle
+              icon
+              color="destructive"
+            >
               <AlertTriangle className="h-5 w-5" />
               Danger Zone
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium">Leave Organization</h3>
+          <CardContent gap="xl">
+            <Stack gap="lg">
+              <SectionTitle size="sm">Leave Organization</SectionTitle>
               {currentOrganization.role === 'owner' ? (
                 <Alert>
                   <Info className="h-4 w-4" />
@@ -436,10 +449,10 @@ export function OrganizationSettingsPage() {
                   </AlertDescription>
                 </Alert>
               )}
-            </div>
+            </Stack>
 
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium">Delete Organization</h3>
+            <Stack gap="lg">
+              <SectionTitle size="sm">Delete Organization</SectionTitle>
               {currentOrganization.role === 'owner' ? (
                 <>
                   <SecondaryParagraph>
@@ -474,10 +487,10 @@ export function OrganizationSettingsPage() {
                   </AlertDescription>
                 </Alert>
               )}
-            </div>
+            </Stack>
           </CardContent>
         </Card>
-      </div>
+      </Grid>
 
       {confirmRemove && (
         <ConfirmDialog

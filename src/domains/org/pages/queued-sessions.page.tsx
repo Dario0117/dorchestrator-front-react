@@ -1,3 +1,5 @@
+import { Box } from '@components/ds/atoms/box';
+
 export function QueuedSessionsPage() {
-  return <div>Hello Queued Sessions!</div>;
+  return <Box>Hello Queued Sessions!</Box>;
 }

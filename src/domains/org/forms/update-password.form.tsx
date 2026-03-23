@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { Stack } from '@components/ds/atoms/stack';
 import { useUpdatePasswordForm } from '@domains/org/forms/hooks/use-update-password-form';
 import type { UpdatePasswordFormProps } from '@domains/org/forms/update-password.form.types';
 
@@ -13,7 +14,7 @@ export function UpdatePasswordForm({
 }: UpdatePasswordFormProps) {
   const form = useUpdatePasswordForm({ updatePasswordMutation, handleSuccess });
   return (
-    <div className="flex flex-col gap-6">
+    <Stack gap="xl">
       <Card>
         <CardHeader>
           <CardTitle>Update your password</CardTitle>
@@ -26,7 +27,7 @@ export function UpdatePasswordForm({
               form.handleSubmit();
             }}
           >
-            <div className="flex flex-col gap-6">
+            <Stack>
               <form.AppField name="password">
                 {(field) => (
                   <field.AppFormField
@@ -47,12 +48,12 @@ export function UpdatePasswordForm({
                   />
                 )}
               </form.AppField>
-              <div className="flex flex-col gap-3">
+              <Stack>
                 <form.AppForm>
                   <form.AppSubscribeSubmitButton label="Update password" />
                 </form.AppForm>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
 
             <form.AppForm>
               <form.AppSubscribeErrorButton />
@@ -60,6 +61,6 @@ export function UpdatePasswordForm({
           </form>
         </CardContent>
       </Card>
-    </div>
+    </Stack>
   );
 }

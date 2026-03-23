@@ -1,6 +1,7 @@
 import { Button } from '@components/ds/atoms/button';
 import { Input } from '@components/ds/atoms/input';
 import { Label } from '@components/ds/atoms/label';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import {
   Select,
   SelectContent,
@@ -10,6 +11,7 @@ import {
 } from '@components/ds/atoms/select';
 import { Skeleton } from '@components/ds/atoms/skeleton';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
+import { Stack } from '@components/ds/atoms/stack';
 import {
   Dialog,
   DialogContent,
@@ -86,7 +88,7 @@ export function CreateTerminalSessionDialog({
       open={open}
       onOpenChange={handleOpenChange}
     >
-      <DialogContent className="sm:max-w-md">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>New Terminal Session</DialogTitle>
           <DialogDescription>
@@ -95,13 +97,22 @@ export function CreateTerminalSessionDialog({
         </DialogHeader>
 
         {isLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
+          <Stack gap="lg">
+            <Skeleton
+              h="2.5rem"
+              w="100%"
+            />
+            <Skeleton
+              h="2.5rem"
+              w="100%"
+            />
+          </Stack>
         ) : (
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
+          <Stack
+            gap="lg"
+            innerSpaceY="sm"
+          >
+            <Stack gap="sm">
               <Label htmlFor="inactivity-timeout">Inactivity Timeout</Label>
               <Select
                 value={inactivitySelection}
@@ -155,10 +166,10 @@ export function CreateTerminalSessionDialog({
                     ? ' (organization policy)'
                     : ' (system default)'}
               </SmallParagraph>
-            </div>
+            </Stack>
 
             {hardCapCeiling != null && (
-              <div className="space-y-2">
+              <Stack gap="sm">
                 <Label htmlFor="hard-cap">Hard Cap</Label>
                 <Select
                   value={hardCapSelection}
@@ -206,10 +217,10 @@ export function CreateTerminalSessionDialog({
                 <SmallParagraph>
                   Session terminates after this duration regardless of activity.
                 </SmallParagraph>
-              </div>
+              </Stack>
             )}
 
-            <div className="space-y-2">
+            <Stack gap="sm">
               <Label htmlFor="working-directory">Working Directory</Label>
               <Input
                 id="working-directory"
@@ -227,17 +238,17 @@ export function CreateTerminalSessionDialog({
                 {defaultWorkingDirectory ? ` (${defaultWorkingDirectory})` : ''}
                 .
               </SmallParagraph>
-            </div>
+            </Stack>
 
             {error && (
-              <p
-                className="text-sm text-destructive"
+              <SecondaryParagraph
+                color="destructive"
                 role="alert"
               >
                 {error}
-              </p>
+              </SecondaryParagraph>
             )}
-          </div>
+          </Stack>
         )}
 
         <DialogFooter>

@@ -10,17 +10,43 @@ import {
   SelectTrigger as ShadcnSelectTrigger,
   SelectValue as ShadcnSelectValue,
 } from '@components/ui/select';
+import { cn } from '@lib/utils';
 
 const Select = ShadcnSelect;
 const SelectGroup = ShadcnSelectGroup;
 const SelectValue = ShadcnSelectValue;
-const SelectTrigger = ShadcnSelectTrigger;
 const SelectContent = ShadcnSelectContent;
 const SelectLabel = ShadcnSelectLabel;
 const SelectItem = ShadcnSelectItem;
 const SelectSeparator = ShadcnSelectSeparator;
 const SelectScrollUpButton = ShadcnSelectScrollUpButton;
 const SelectScrollDownButton = ShadcnSelectScrollDownButton;
+
+type ShadcnSelectTriggerProps = React.ComponentProps<
+  typeof ShadcnSelectTrigger
+>;
+
+type SelectTriggerWidth = 'auto' | 'full' | 'compact';
+
+interface SelectTriggerProps
+  extends Omit<ShadcnSelectTriggerProps, 'className' | 'style'> {
+  width?: SelectTriggerWidth;
+  grow?: boolean;
+}
+
+function SelectTrigger({ width, grow, ...props }: SelectTriggerProps) {
+  return (
+    <ShadcnSelectTrigger
+      className={cn(
+        width === 'auto' && 'w-auto',
+        width === 'full' && 'w-full',
+        width === 'compact' && 'h-9 w-20',
+        grow && 'flex-1',
+      )}
+      {...props}
+    />
+  );
+}
 
 export {
   Select,
@@ -50,7 +76,6 @@ export type {
 type SelectProps = React.ComponentProps<typeof ShadcnSelect>;
 type SelectGroupProps = React.ComponentProps<typeof ShadcnSelectGroup>;
 type SelectValueProps = React.ComponentProps<typeof ShadcnSelectValue>;
-type SelectTriggerProps = React.ComponentProps<typeof ShadcnSelectTrigger>;
 type SelectContentProps = React.ComponentProps<typeof ShadcnSelectContent>;
 type SelectLabelProps = React.ComponentProps<typeof ShadcnSelectLabel>;
 type SelectItemProps = React.ComponentProps<typeof ShadcnSelectItem>;

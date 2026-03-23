@@ -1,3 +1,5 @@
+import { Output } from '@components/ds/atoms/output';
+import { ResponsiveRow } from '@components/ds/atoms/responsive-row';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import {
   Select,
@@ -14,7 +16,6 @@ import {
   PaginationPrevious,
 } from '@components/ds/molecules/pagination';
 import { PAGE_SIZE_OPTIONS } from '@lib/pagination.constants';
-import { cn } from '@lib/utils';
 
 interface PaginatedFooterProps {
   totalResults: number;
@@ -27,7 +28,6 @@ interface PaginatedFooterProps {
   size: number;
   onPageChange: (page: number) => void;
   onSizeChange: (size: number) => void;
-  className?: string;
 }
 
 function PaginatedFooter({
@@ -41,20 +41,22 @@ function PaginatedFooter({
   size,
   onPageChange,
   onSizeChange,
-  className,
 }: PaginatedFooterProps) {
   return (
-    <div
-      className={cn(
-        'mt-8 flex flex-col items-center gap-4 md:flex-row md:justify-between',
-        className,
-      )}
+    <ResponsiveRow
+      align="center"
+      justify="between"
+      gap="lg"
+      spaceAbove="xl"
     >
       <SecondaryText>
         {totalResults} total {totalResults === 1 ? singularLabel : pluralLabel}
       </SecondaryText>
 
-      <div className="flex flex-col items-center gap-4 md:flex-row">
+      <ResponsiveRow
+        align="center"
+        gap="lg"
+      >
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -66,9 +68,9 @@ function PaginatedFooter({
             </PaginationItem>
 
             <PaginationItem>
-              <output className="px-2 text-sm">
+              <Output>
                 Page {page} of {totalPages}
-              </output>
+              </Output>
             </PaginationItem>
 
             <PaginationItem>
@@ -93,7 +95,7 @@ function PaginatedFooter({
         >
           <SelectTrigger
             aria-label="Page size"
-            className="h-11 w-auto text-base md:text-sm"
+            width="auto"
           >
             <SelectValue />
           </SelectTrigger>
@@ -108,8 +110,8 @@ function PaginatedFooter({
             ))}
           </SelectContent>
         </Select>
-      </div>
-    </div>
+      </ResponsiveRow>
+    </ResponsiveRow>
   );
 }
 

@@ -1,5 +1,7 @@
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
 import { EmptyState } from '@components/ds/atoms/empty-state';
+import { Grid } from '@components/ds/atoms/grid';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { SectionTitle } from '@components/ds/atoms/section-title';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
@@ -12,7 +14,7 @@ import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organi
 import { useCurrentTeam } from '@domains/shared/hooks/use-current-team';
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index';
 import { useNavigate } from '@tanstack/react-router';
-import { Play, Search, Terminal } from 'lucide-react';
+import { Play, Terminal } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export function CommandsListPage() {
@@ -91,13 +93,10 @@ export function CommandsListPage() {
 
   return (
     <PageSection>
-      <div className="py-6">
+      <Box innerSpaceY="lg">
         <PageHeadingBar>
           <SectionTitle>Command History</SectionTitle>
-          <Button
-            className="w-full md:w-auto"
-            onClick={() => setModalOpen(true)}
-          >
+          <Button onClick={() => setModalOpen(true)}>
             <Play className="mr-2 h-4 w-4" />
             Execute New Command
           </Button>
@@ -108,41 +107,29 @@ export function CommandsListPage() {
         {commands.length === 0 ? (
           hasActiveFilters ? (
             <EmptyState
-              icon={Search}
-              title="No commands match your filters"
-              description="Try adjusting your search criteria."
-              action={
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    navigate({
-                      search: (prev) => ({ page: 1, size: prev.size }),
-                    })
-                  }
-                >
-                  Clear Filters
-                </Button>
+              variant="filtered"
+              ctaAction={() =>
+                navigate({
+                  search: (prev) => ({ page: 1, size: prev.size }),
+                })
               }
             />
           ) : (
             <EmptyState
               icon={Terminal}
-              title="No commands executed yet"
-              description="Click 'Execute New Command' to get started."
-              action={
-                <Button
-                  size="lg"
-                  onClick={() => setModalOpen(true)}
-                >
-                  <Play className="mr-2 h-4 w-4" />
-                  Execute New Command
-                </Button>
-              }
+              title="No commands yet"
+              description="Execute your first command to get started."
+              ctaLabel="Execute Command"
+              ctaAction={() => setModalOpen(true)}
+              ctaIcon={Play}
             />
           )
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Grid
+              cols={2}
+              gap="lg"
+            >
               {commands.map((command) => (
                 <CommandCard
                   key={command.id}
@@ -159,7 +146,7 @@ export function CommandsListPage() {
                   }
                 />
               ))}
-            </div>
+            </Grid>
 
             <PaginatedFooter
               totalResults={totalResults}
@@ -184,7 +171,7 @@ export function CommandsListPage() {
             teamId={teamId}
           />
         )}
-      </div>
+      </Box>
     </PageSection>
   );
 }

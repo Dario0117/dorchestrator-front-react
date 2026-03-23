@@ -1,5 +1,8 @@
 import { Button } from '@components/ds/atoms/button';
+import { Grid } from '@components/ds/atoms/grid';
+import { HStack } from '@components/ds/atoms/hstack';
 import { Label } from '@components/ds/atoms/label';
+import { ProgressBar } from '@components/ds/atoms/progress-bar';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import {
   Select,
@@ -9,6 +12,7 @@ import {
   SelectValue,
 } from '@components/ds/atoms/select';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
+import { SmallText } from '@components/ds/atoms/small-text';
 import {
   Dialog,
   DialogContent,
@@ -230,7 +234,7 @@ export function SessionHistoryExportDialog({
       open={open}
       onOpenChange={onOpenChange}
     >
-      <DialogContent className="sm:max-w-md">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Export Session History</DialogTitle>
           <DialogDescription>
@@ -241,9 +245,12 @@ export function SessionHistoryExportDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
+        <Grid
+          gap="lg"
+          innerSpaceY="md"
+        >
           {!exportId && (
-            <div className="grid gap-2">
+            <Grid gap="sm">
               <Label htmlFor="export-format">Format</Label>
               <Select
                 value={format}
@@ -262,18 +269,21 @@ export function SessionHistoryExportDialog({
                   ? 'Comma-separated values, compatible with Excel and Google Sheets.'
                   : 'Structured JSON format for programmatic use.'}
               </SecondaryParagraph>
-            </div>
+            </Grid>
           )}
 
           {(isExporting || isPaused) && (
-            <div className="grid gap-2">
-              <div className="flex items-center gap-2">
+            <Grid gap="sm">
+              <HStack gap="sm">
                 {isPaused ? (
                   <Pause className="h-4 w-4 text-muted-foreground" />
                 ) : (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 )}
-                <span className="text-sm">
+                <SmallText
+                  color="muted"
+                  size="sm"
+                >
                   {currentStatus === 'pending'
                     ? 'Starting export...'
                     : currentStatus === 'pause_requested'
@@ -283,18 +293,13 @@ export function SessionHistoryExportDialog({
                         : isPaused
                           ? `Paused at ${progress}%`
                           : `Exporting... ${progress}%`}
-                </span>
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full bg-primary transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
+                </SmallText>
+              </HStack>
+              <ProgressBar value={progress} />
               <SmallParagraph>
                 {rowsProcessed} of {totalRows} rows processed
               </SmallParagraph>
-            </div>
+            </Grid>
           )}
 
           {isCancelled && (
@@ -305,14 +310,14 @@ export function SessionHistoryExportDialog({
           )}
 
           {error && (
-            <p
-              className="text-sm text-destructive"
+            <SecondaryParagraph
+              color="destructive"
               role="alert"
             >
               {error}
-            </p>
+            </SecondaryParagraph>
           )}
-        </div>
+        </Grid>
 
         <DialogFooter>
           {isExporting && (

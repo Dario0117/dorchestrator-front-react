@@ -179,7 +179,7 @@ describe('TerminalShortcutPanel', () => {
       ).toBeInTheDocument();
     });
 
-    test('applies custom color as inline style when color is set', () => {
+    test('applies custom color via data attribute when color is set', () => {
       renderWithProviders(
         <TerminalShortcutPanel
           {...defaultProps}
@@ -188,13 +188,10 @@ describe('TerminalShortcutPanel', () => {
       );
 
       const button = screen.getByTestId('custom-shortcut-btn-2');
-      expect(button).toHaveStyle({
-        borderColor: '#ff0000',
-        color: '#ff0000',
-      });
+      expect(button).toHaveStyle({ '--accent': '#ff0000' });
     });
 
-    test('does not apply inline style when color is null', () => {
+    test('does not apply accent color when color is null', () => {
       renderWithProviders(
         <TerminalShortcutPanel
           {...defaultProps}
@@ -203,8 +200,7 @@ describe('TerminalShortcutPanel', () => {
       );
 
       const button = screen.getByTestId('custom-shortcut-btn-1');
-      expect(button.style.borderColor).toBe('');
-      expect(button.style.color).toBe('');
+      expect(button).not.toHaveAttribute('style');
     });
 
     test('clicking custom shortcut button calls onCustomShortcutPress with the shortcut', async () => {

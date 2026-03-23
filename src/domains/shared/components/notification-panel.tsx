@@ -1,6 +1,14 @@
+import { Badge } from '@components/ds/atoms/badge';
 import { Button } from '@components/ds/atoms/button';
+import { Center } from '@components/ds/atoms/center';
+import { CounterBadge } from '@components/ds/atoms/counter-badge';
+import { HStack } from '@components/ds/atoms/hstack';
+import { Positioned } from '@components/ds/atoms/positioned';
 import { ScrollArea } from '@components/ds/atoms/scroll-area';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { SmallText } from '@components/ds/atoms/small-text';
+import { Stack } from '@components/ds/atoms/stack';
+import { StatusDot } from '@components/ds/atoms/status-dot';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +26,6 @@ import {
   useMarkNotificationReadMutation,
 } from '@domains/notifications/services/mark-notification-read.http-service';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
-import { badgeStyles } from '@lib/badge-styles';
 import { formatRelativeTime } from '@lib/format-relative-time';
 import { cn } from '@lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -27,13 +34,6 @@ import { Bell, BellOff, CheckCheck } from 'lucide-react';
 import { useState } from 'react';
 
 type NotificationSeverity = NotificationEntry['severity'];
-
-const SEVERITY_STYLES: Record<NotificationSeverity, string> = {
-  success: badgeStyles.green,
-  error: badgeStyles.red,
-  warning: badgeStyles.amber,
-  info: badgeStyles.blue,
-};
 
 const SEVERITY_LABELS: Record<NotificationSeverity, string> = {
   success: 'Success',
@@ -137,37 +137,33 @@ export function NotificationPanel() {
       open={isOpen}
       onOpenChange={setIsOpen}
     >
-      <DropdownMenuTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative"
-            aria-label="Notifications"
+      <Positioned position="relative">
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Notifications"
+            />
+          }
+        >
+          <Bell
+            className={cn('h-5 w-5', unreadCount > 0 && 'animate-bell-shake')}
           />
-        }
-      >
-        <Bell
-          className={cn('h-5 w-5', unreadCount > 0 && 'animate-bell-shake')}
-        />
-        {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
-            {unreadCount > 99 ? '99+' : unreadCount}
-          </span>
-        )}
-      </DropdownMenuTrigger>
+        </DropdownMenuTrigger>
+        {unreadCount > 0 && <CounterBadge count={unreadCount} />}
+      </Positioned>
       <DropdownMenuContent
-        className="w-80 md:w-96"
+        width="md"
         align="end"
       >
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="flex items-center justify-between">
-            <span>Notifications</span>
+          <DropdownMenuLabel layout="between">
+            <SmallText color="muted">Notifications</SmallText>
             {unreadCount > 0 && (
               <Button
                 variant="ghost"
-                size="sm"
-                className="h-auto p-1 text-xs"
+                size="inline"
                 onClick={handleMarkAllRead}
               >
                 <CheckCheck className="mr-1 h-3 w-3" />
@@ -178,50 +174,74 @@ export function NotificationPanel() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {notifications.length === 0 ? (
-          <div className="flex flex-col items-center gap-2 p-6 text-center">
+          <Stack
+            gap="sm"
+            align="center"
+            innerSpaceX="xl"
+            innerSpaceY="xl"
+            textAlign="center"
+          >
             <BellOff className="h-8 w-8 text-muted-foreground/50" />
-            <p className="text-sm font-medium text-muted-foreground">
+            <SecondaryParagraph weight="medium">
               All caught up
-            </p>
-            <p className="text-xs text-muted-foreground/70">
+            </SecondaryParagraph>
+            <SecondaryParagraph size="xs">
               No notifications to show
-            </p>
-          </div>
+            </SecondaryParagraph>
+          </Stack>
         ) : (
-          <ScrollArea className="max-h-80">
+          <ScrollArea maxHeight="80">
             <DropdownMenuGroup>
               {notifications.map((notification) => (
                 <DropdownMenuItem
                   key={notification.id}
-                  className={cn(
-                    'flex cursor-pointer flex-col items-start gap-1 p-3',
-                    notification.read && 'opacity-60',
-                  )}
+                  layout="notification"
+                  muted={notification.read}
                   onClick={() => handleNotificationClick(notification)}
                 >
-                  <div className="flex w-full items-start gap-2">
-                    <div className="mt-1.5 flex h-2 w-2 shrink-0 items-center justify-center">
+                  <HStack
+                    gap="sm"
+                    align="stretch"
+                    fullWidth
+                  >
+                    <Center
+                      size="xs"
+                      shrink={false}
+                      spaceAbove="xs"
+                    >
                       {!notification.read && (
-                        <div className="h-2 w-2 rounded-full bg-green-500" />
+                        <StatusDot
+                          status="online"
+                          size="sm"
+                          aria-label="Unread"
+                        />
                       )}
-                    </div>
-                    <span className="text-sm font-medium text-wrap">
+                    </Center>
+                    <SmallText
+                      color="muted"
+                      size="sm"
+                      weight="medium"
+                      wrap
+                    >
                       {notification.message}
-                    </span>
-                  </div>
-                  <div className="flex w-full items-center gap-2 ml-4">
-                    <SmallText>
+                    </SmallText>
+                  </HStack>
+                  <HStack
+                    gap="sm"
+                    fullWidth
+                    spaceLeft="md"
+                  >
+                    <SmallText color="muted">
                       {formatRelativeTime(notification.createdAt)}
                     </SmallText>
-                    <span
-                      className={cn(
-                        'rounded px-1.5 py-0.5 text-[10px] font-medium',
-                        SEVERITY_STYLES[notification.severity],
-                      )}
+                    <Badge
+                      variant="outline"
+                      colorScheme={notification.severity}
+                      tiny
                     >
                       {SEVERITY_LABELS[notification.severity]}
-                    </span>
-                  </div>
+                    </Badge>
+                  </HStack>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuGroup>

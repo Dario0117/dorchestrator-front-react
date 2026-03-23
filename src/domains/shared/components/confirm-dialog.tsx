@@ -1,3 +1,4 @@
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
 import {
   AlertDialog,
@@ -9,14 +10,13 @@ import {
   AlertDialogTitle,
 } from '@components/ds/molecules/alert-dialog';
 import type { ConfirmDialogProps } from '@domains/shared/components/confirm-dialog.types';
-import { cn } from '@lib/utils';
 
 export function ConfirmDialog(props: ConfirmDialogProps) {
   const {
     title,
     desc,
     children,
-    className,
+    size: _size,
     confirmText,
     cancelBtnText,
     destructive,
@@ -27,10 +27,10 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
   } = props;
   return (
     <AlertDialog {...actions}>
-      <AlertDialogContent className={cn(className && className)}>
-        <AlertDialogHeader className="text-start">
+      <AlertDialogContent>
+        <AlertDialogHeader textAlign="start">
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription render={<div />}>
+          <AlertDialogDescription render={<Box />}>
             {desc}
           </AlertDialogDescription>
         </AlertDialogHeader>

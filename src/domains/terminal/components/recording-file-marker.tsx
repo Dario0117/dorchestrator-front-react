@@ -1,3 +1,9 @@
+import { Box } from '@components/ds/atoms/box';
+import { Center } from '@components/ds/atoms/center';
+import { HStack } from '@components/ds/atoms/hstack';
+import { Image } from '@components/ds/atoms/image';
+import { LinkBox } from '@components/ds/atoms/link-box';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { getFileDownloadUrl } from '@domains/terminal/services/get-file-download-url.http-service';
 import { DownloadIcon, FileIcon, ImageIcon } from 'lucide-react';
@@ -51,49 +57,70 @@ export function RecordingFileMarker({
   }, [organizationId, sessionId, fileId]);
 
   return (
-    <div
-      className="flex items-center gap-3 rounded-md border bg-muted/30 p-2"
+    <HStack
+      gap="md"
+      border="all"
+      rounded="md"
+      innerSpaceX="xs"
+      innerSpaceY="xs"
+      bg="muted/30"
       data-testid="recording-file-marker"
     >
       {downloadUrl && isImage ? (
-        <a
+        <LinkBox
+          variant="thumbnail"
           href={downloadUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="block h-10 w-10 shrink-0 overflow-hidden rounded border hover:ring-2 hover:ring-primary"
         >
-          <img
+          <Image
             src={downloadUrl}
             alt={event.filename}
-            className="h-full w-full object-cover"
+            fit="cover"
+            fullWidth
+            fullHeight
           />
-        </a>
+        </LinkBox>
       ) : downloadUrl ? (
-        <a
+        <LinkBox
+          variant="icon"
           href={downloadUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded border bg-muted hover:ring-2 hover:ring-primary"
         >
           <DownloadIcon className="h-4 w-4 text-muted-foreground" />
-        </a>
+        </LinkBox>
       ) : (
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded border bg-muted">
+        <Center
+          size="md"
+          shrink={false}
+          rounded="sm"
+          border="all"
+          bg="muted"
+        >
           {isImage ? (
             <ImageIcon className="h-4 w-4 text-muted-foreground" />
           ) : (
             <FileIcon className="h-4 w-4 text-muted-foreground" />
           )}
-        </div>
+        </Center>
       )}
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{event.filename}</p>
+      <Box
+        minW0
+        grow
+      >
+        <SecondaryParagraph
+          weight="medium"
+          truncate
+        >
+          {event.filename}
+        </SecondaryParagraph>
         <SmallParagraph>
           {formatSize(event.sizeBytes)} &middot; {event.mimeType} &middot;{' '}
           {new Date(timestamp).toLocaleTimeString()}
         </SmallParagraph>
-      </div>
-    </div>
+      </Box>
+    </HStack>
   );
 }
 

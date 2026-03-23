@@ -1,9 +1,30 @@
+import { Center } from '@components/ds/atoms/center';
+import { HStack } from '@components/ds/atoms/hstack';
+
 export function TerminalHeader() {
   return (
-    <div className="flex items-center gap-1.5 rounded-t-md bg-gray-800 px-3 py-2">
-      <div className="h-3 w-3 rounded-full bg-red-500" />
-      <div className="h-3 w-3 rounded-full bg-yellow-500" />
-      <div className="h-3 w-3 rounded-full bg-green-500" />
-    </div>
+    <HStack
+      gap="xs"
+      innerSpaceX="sm"
+      innerSpaceY="xs"
+      bg="black"
+      rounded="md"
+    >
+      <Center
+        size="xs"
+        rounded="full"
+        bg="destructive"
+      />
+      <Center
+        size="xs"
+        rounded="full"
+        bg="muted"
+      />
+      <Center
+        size="xs"
+        rounded="full"
+        bg="primary"
+      />
+    </HStack>
   );
 }

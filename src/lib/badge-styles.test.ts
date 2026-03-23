@@ -1,16 +1,16 @@
 import { badgeStyles } from '@lib/badge-styles';
 
 describe('badgeStyles', () => {
-  const expectedKeys = ['green', 'blue', 'yellow', 'amber', 'red', 'gray'];
+  const expectedKeys = ['success', 'info', 'warning', 'error', 'neutral'];
 
-  it('should contain all expected color keys', () => {
+  it('should contain all expected semantic color keys', () => {
     for (const key of expectedKeys) {
       expect(badgeStyles).toHaveProperty(key);
     }
   });
 
-  it('should have exactly 6 entries', () => {
-    expect(Object.keys(badgeStyles)).toHaveLength(6);
+  it('should have exactly 5 semantic entries', () => {
+    expect(Object.keys(badgeStyles)).toHaveLength(5);
   });
 
   it('should have non-empty string values for all keys', () => {

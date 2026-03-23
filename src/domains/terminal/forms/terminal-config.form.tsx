@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { Stack } from '@components/ds/atoms/stack';
 import { useTerminalConfigForm } from '@domains/terminal/forms/hooks/use-terminal-config-form';
 import type { TerminalConfigFormProps } from '@domains/terminal/forms/terminal-config.form.types';
 
@@ -33,7 +34,7 @@ export function TerminalConfigForm({
             form.handleSubmit();
           }}
         >
-          <div className="flex flex-col gap-6">
+          <Stack>
             <form.AppField name="inactivityTimeoutMinutes">
               {(field) => (
                 <field.AppFormField
@@ -57,12 +58,12 @@ export function TerminalConfigForm({
               )}
             </form.AppField>
 
-            <div className="flex flex-col gap-3">
+            <Stack>
               <form.AppForm>
                 <form.AppSubscribeSubmitButton label="Save Configuration" />
               </form.AppForm>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
 
           <form.AppForm>
             <form.AppSubscribeErrorButton />

@@ -1,4 +1,9 @@
+import { AlertBanner } from '@components/ds/atoms/alert-banner';
+import { Center } from '@components/ds/atoms/center';
+import { FlexFill } from '@components/ds/atoms/flex-fill';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SmallText } from '@components/ds/atoms/small-text';
+import { Stack } from '@components/ds/atoms/stack';
 import { SessionFilePanel } from '@domains/terminal/components/session-file-panel';
 import { SuggestionNotificationPanel } from '@domains/terminal/components/suggestion-notification-panel';
 import { TerminalEmulator } from '@domains/terminal/components/terminal-emulator';
@@ -65,7 +70,10 @@ export function TerminalPage({
   });
 
   return (
-    <div className="flex h-full flex-col pb-[env(safe-area-inset-bottom)]">
+    <Stack
+      fullHeight
+      safeAreaBottom
+    >
       <TerminalToolbar
         sessionId={sessionId}
         fontSizeControls={fontSizeControls}
@@ -76,16 +84,14 @@ export function TerminalPage({
         onExtendClick={() => lifecycle.setShowExtendReauth(true)}
         onCloseSession={lifecycle.handleCloseSession}
       />
-      <div className="shrink-0 border-b">
-        <TerminalShortcutPanel
-          onShortcutPress={shortcuts.handleShortcutPress}
-          onCustomShortcutPress={shortcuts.handleCustomShortcutPress}
-          customShortcuts={shortcuts.customShortcuts}
-          onAddShortcut={shortcuts.handleAddShortcut}
-          onEditShortcut={shortcuts.handleEditShortcut}
-          onDeleteShortcut={shortcuts.handleDeleteShortcut}
-        />
-      </div>
+      <TerminalShortcutPanel
+        onShortcutPress={shortcuts.handleShortcutPress}
+        onCustomShortcutPress={shortcuts.handleCustomShortcutPress}
+        customShortcuts={shortcuts.customShortcuts}
+        onAddShortcut={shortcuts.handleAddShortcut}
+        onEditShortcut={shortcuts.handleEditShortcut}
+        onDeleteShortcut={shortcuts.handleDeleteShortcut}
+      />
       <ShortcutBuilderDialog
         open={shortcuts.shortcutDialogOpen}
         onOpenChange={shortcuts.setShortcutDialogOpen}
@@ -93,25 +99,27 @@ export function TerminalPage({
         isSaving={shortcuts.isSavingShortcut}
         editingShortcut={shortcuts.editingShortcut}
       />
-      <div className="shrink-0 border-b">
-        <SessionFilePanel
-          organizationId={organizationId}
-          sessionId={sessionIdNum}
-        />
-      </div>
+      <SessionFilePanel
+        organizationId={organizationId}
+        sessionId={sessionIdNum}
+      />
       <SuggestionNotificationPanel
         sessionId={sessionId}
         organizationId={organizationId}
       />
       {lifecycle.warningMessage && (
-        <div className="shrink-0 border-b bg-destructive/10 px-3 py-2 text-center text-sm text-destructive">
-          {lifecycle.warningMessage}
+        <AlertBanner inline>
+          <SmallText color="destructive">{lifecycle.warningMessage}</SmallText>
           {lifecycle.isExtendError && (
-            <span className="ml-2 font-medium">
+            <SmallText
+              weight="medium"
+              color="destructive"
+              spaceLeft="sm"
+            >
               Failed to extend session. Please try again.
-            </span>
+            </SmallText>
           )}
-        </div>
+        </AlertBanner>
       )}
       <TerminalReauthModal
         open={lifecycle.showExtendReauth}
@@ -119,7 +127,7 @@ export function TerminalPage({
         organizationId={organizationId}
         onSuccess={lifecycle.handleExtendSuccess}
       />
-      <div className="relative min-h-0 flex-1">
+      <FlexFill>
         <TerminalEmulator
           ref={terminalRef}
           sessionId={sessionId}
@@ -130,11 +138,15 @@ export function TerminalPage({
           onSessionTerminated={onSessionTerminated}
         />
         {lifecycle.isClosing && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+          <Center
+            fullHeight
+            fullWidth
+            bg="muted/50"
+          >
             <SecondaryParagraph>Closing session&hellip;</SecondaryParagraph>
-          </div>
+          </Center>
         )}
-      </div>
-    </div>
+      </FlexFill>
+    </Stack>
   );
 }

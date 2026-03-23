@@ -71,12 +71,12 @@ function TerminalSessionsRoute() {
     <Suspense
       fallback={
         <PageSection>
-          <div className="py-6">
+          <Box innerSpaceY="lg">
             <Box spaceBelow="lg">
               <SectionTitle>Terminal Sessions</SectionTitle>
             </Box>
             <SessionTableSkeleton />
-          </div>
+          </Box>
         </PageSection>
       }
     >

@@ -1,3 +1,4 @@
+import { HStack } from '@components/ds/atoms/hstack';
 import {
   SidebarInset,
   SidebarProvider,
@@ -60,11 +61,14 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
             )}
           >
             <Header fixed>
-              <div className="ms-auto flex items-center space-x-4">
+              <HStack
+                gap="md"
+                spaceInlineStart="auto"
+              >
                 <ThemeSwitch />
                 <NotificationPanel />
                 <ProfileDropdown />
-              </div>
+              </HStack>
             </Header>
             {children ?? <Outlet />}
           </SidebarInset>

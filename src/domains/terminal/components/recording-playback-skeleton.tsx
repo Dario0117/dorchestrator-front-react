@@ -1,15 +1,33 @@
+import { Box } from '@components/ds/atoms/box';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { Skeleton } from '@components/ds/atoms/skeleton';
 
 export function RecordingPlaybackSkeleton() {
   return (
     <PageSection>
-      <div className="py-6">
-        <Skeleton className="mb-6 h-8 w-32" />
-        <Skeleton className="mb-6 h-8 w-64" />
-        <Skeleton className="h-[500px] w-full rounded-md" />
-        <Skeleton className="mt-4 h-20 w-full rounded-md" />
-      </div>
+      <Box innerSpaceY="lg">
+        <Skeleton
+          spaceBelow="lg"
+          h="2rem"
+          w="8rem"
+        />
+        <Skeleton
+          spaceBelow="lg"
+          h="2rem"
+          w="16rem"
+        />
+        <Skeleton
+          rounded
+          h="500px"
+          w="100%"
+        />
+        <Skeleton
+          spaceAbove="md"
+          rounded
+          h="5rem"
+          w="100%"
+        />
+      </Box>
     </PageSection>
   );
 }

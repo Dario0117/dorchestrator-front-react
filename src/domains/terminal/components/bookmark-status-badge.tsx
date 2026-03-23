@@ -1,18 +1,18 @@
 import { Badge } from '@components/ds/atoms/badge';
-import { badgeStyles } from '@lib/badge-styles';
+import type { BadgeStyle } from '@lib/badge-styles';
 
-const STATUS_BADGE_STYLES: Record<string, string> = {
-  active: badgeStyles.green,
-  created: badgeStyles.blue,
-  locked: badgeStyles.yellow,
-  terminated: badgeStyles.gray,
+const STATUS_COLOR_SCHEMES: Record<string, BadgeStyle> = {
+  active: 'success',
+  created: 'info',
+  locked: 'warning',
+  terminated: 'neutral',
 };
 
 export function BookmarkStatusBadge({ status }: { status: string }) {
   return (
     <Badge
       variant="outline"
-      className={STATUS_BADGE_STYLES[status] ?? badgeStyles.gray}
+      colorScheme={STATUS_COLOR_SCHEMES[status] ?? 'neutral'}
     >
       {status}
     </Badge>

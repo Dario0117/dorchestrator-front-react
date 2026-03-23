@@ -1,4 +1,4 @@
-import { Button } from '@components/ds/atoms/button';
+import { Box } from '@components/ds/atoms/box';
 import { EmptyState } from '@components/ds/atoms/empty-state';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { SectionTitle } from '@components/ds/atoms/section-title';
@@ -12,7 +12,7 @@ import { AuditLogsTable } from '@domains/audit-logs/tables/audit-logs-table';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
 import { Route } from '@routes/(authenticated)/$organizationSlug/audit-logs/index';
 import { useNavigate } from '@tanstack/react-router';
-import { ScrollText, Search } from 'lucide-react';
+import { ScrollText } from 'lucide-react';
 
 export function AuditLogsListPage() {
   const currentOrganization = useCurrentOrganization();
@@ -58,7 +58,7 @@ export function AuditLogsListPage() {
 
   return (
     <PageSection>
-      <div className="py-6">
+      <Box innerSpaceY="lg">
         <PageHeadingBar>
           <SectionTitle>Audit Logs</SectionTitle>
         </PageHeadingBar>
@@ -70,23 +70,14 @@ export function AuditLogsListPage() {
           isEmpty={entries.length === 0}
           filteredEmptyState={
             <EmptyState
-              icon={Search}
-              title="No audit logs match your filters"
-              description="Use the filters above to adjust your search."
-              action={
-                <Button
-                  variant="outline"
-                  onClick={handleClearFilters}
-                >
-                  Clear Filters
-                </Button>
-              }
+              variant="filtered"
+              ctaAction={handleClearFilters}
             />
           }
           defaultEmptyState={
             <EmptyState
               icon={ScrollText}
-              title="No audit logs yet"
+              title="No audit logs"
               description="Activity will appear here as actions are performed in your organization."
             />
           }
@@ -107,7 +98,7 @@ export function AuditLogsListPage() {
         >
           <AuditLogsTable entries={entries} />
         </FilteredDataTable>
-      </div>
+      </Box>
     </PageSection>
   );
 }

@@ -1,4 +1,5 @@
 import { Button } from '@components/ds/atoms/button';
+import { SmallText } from '@components/ds/atoms/small-text';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,13 +32,18 @@ export function ThemeSwitch() {
           <Button
             variant="ghost"
             size="icon"
-            className="scale-95 rounded-full"
+            rounded
           />
         }
       >
         <Sun className="size-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
         <Moon className="absolute size-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-        <span className="sr-only">Toggle theme</span>
+        <SmallText
+          color="muted"
+          srOnly
+        >
+          Toggle theme
+        </SmallText>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme('light')}>

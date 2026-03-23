@@ -26,10 +26,7 @@ export function CreateOrganizationModal({
       // biome-ignore lint/suspicious/noEmptyBlockStatements: intentionally prevent close
       onOpenChange={() => {}}
     >
-      <DialogContent
-        className="max-w-md"
-        showCloseButton={false}
-      >
+      <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>Welcome!</DialogTitle>
           <DialogDescription>

@@ -50,7 +50,7 @@ export function OrganizationSwitcher(
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
       >
-        <DialogContent className="max-w-md">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>New Organization</DialogTitle>
             <DialogDescription>

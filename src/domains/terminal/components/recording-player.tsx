@@ -2,6 +2,9 @@ import '@xterm/xterm/css/xterm.css';
 
 import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
+import { HStack } from '@components/ds/atoms/hstack';
+import { RangeSlider } from '@components/ds/atoms/range-slider';
+import { Scrollable } from '@components/ds/atoms/scrollable';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import {
   Select,
@@ -10,6 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@components/ds/atoms/select';
+import { SmallText } from '@components/ds/atoms/small-text';
+import { Stack } from '@components/ds/atoms/stack';
+import { Surface } from '@components/ds/atoms/surface';
 import {
   type FileEventData,
   RecordingFileMarker,
@@ -101,15 +107,30 @@ export function RecordingPlayer({
   const isPlaying = playbackState.status === 'playing';
 
   return (
-    <div className="flex flex-col gap-4">
-      <div
-        ref={containerRef}
-        className="min-h-[300px] w-full overflow-auto rounded-md border bg-black"
-        data-testid="recording-player-container"
-      />
+    <Stack gap="lg">
+      <Surface
+        rounded="md"
+        border="all"
+        bg="black"
+        fullWidth
+      >
+        <Scrollable
+          overflow="auto"
+          minH="md"
+          fullWidth
+          ref={containerRef}
+          data-testid="recording-player-container"
+        />
+      </Surface>
 
-      <div className="flex flex-col gap-2 rounded-md border p-4">
-        <div className="flex items-center gap-2">
+      <Stack
+        gap="sm"
+        border="all"
+        rounded="md"
+        innerSpaceX="md"
+        innerSpaceY="md"
+      >
+        <HStack gap="sm">
           {isPlaying ? (
             <Button
               variant="outline"
@@ -145,7 +166,7 @@ export function RecordingPlayer({
           >
             <SelectTrigger
               aria-label="Playback speed"
-              className="h-9 w-20"
+              width="compact"
             >
               <SelectValue />
             </SelectTrigger>
@@ -167,29 +188,32 @@ export function RecordingPlayer({
               {playbackState.totalEvents}
             </SecondaryText>
           </Box>
-        </div>
+        </HStack>
 
-        <input
-          type="range"
+        <RangeSlider
           min={0}
           max={Math.max(0, events.length - 1)}
           value={playbackState.currentEventIndex}
           onChange={scrub}
-          className="w-full"
           aria-label="Playback timeline"
         />
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>{currentTimestamp}</span>
-          <span>{endTimestamp}</span>
-        </div>
-      </div>
+        <HStack
+          justify="between"
+          textSize="xs"
+        >
+          <SmallText color="muted">{currentTimestamp}</SmallText>
+          <SmallText color="muted">{endTimestamp}</SmallText>
+        </HStack>
+      </Stack>
 
       {visibleFileEvents.length > 0 &&
         organizationId !== undefined &&
         sessionId !== undefined && (
-          <div
-            className="flex max-h-48 flex-col gap-2 overflow-y-auto"
+          <Stack
+            gap="sm"
+            maxH="sm"
+            overflowY="auto"
             data-testid="recording-file-events-panel"
           >
             {visibleFileEvents.map((fileEvent) => (
@@ -202,8 +226,8 @@ export function RecordingPlayer({
                 fileId={fileMap?.[fileEvent.event.filename] ?? null}
               />
             ))}
-          </div>
+          </Stack>
         )}
-    </div>
+    </Stack>
   );
 }

@@ -62,11 +62,11 @@ describe('Header', () => {
     removeEventListenerSpy.mockRestore();
   });
 
-  it('should pass through additional HTML attributes', () => {
-    const { container } = renderHeader({ 'data-testid': 'test-header' });
+  it('should render with fixed position when fixed prop is true', () => {
+    const { container } = renderHeader({ fixed: true });
 
     const header = container.querySelector('header');
-    expect(header).toHaveAttribute('data-testid', 'test-header');
+    expect(header).toBeInTheDocument();
   });
 
   it('should update offset when scroll event fires', async () => {

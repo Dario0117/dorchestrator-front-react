@@ -1,4 +1,7 @@
-type MetadataLabelProps = Omit<React.ComponentProps<'dt'>, 'className'>;
+type MetadataLabelProps = Omit<
+  React.ComponentProps<'dt'>,
+  'className' | 'style'
+>;
 
 function MetadataLabel({ ref, ...props }: MetadataLabelProps) {
   return (

@@ -1,3 +1,5 @@
+import { ResponsiveRow } from '@components/ds/atoms/responsive-row';
+import { Stack } from '@components/ds/atoms/stack';
 import { TableFilters } from '@components/ds/organisms/table-filters';
 import type { CommandStatus } from '@domains/commands/services/list-commands.http-service.constants';
 import { useDevicesSuspenseQuery } from '@domains/devices/services/list-devices.http-service';
@@ -79,7 +81,7 @@ export function CommandFilters() {
   };
 
   return (
-    <div className="space-y-3">
+    <Stack gap="md">
       <TableFilters
         activeFilterCount={activeFilterCount}
         onClearFilters={handleClearFilters}
@@ -90,8 +92,10 @@ export function CommandFilters() {
           placeholder="Search commands..."
           ariaLabel="Search commands"
         />
-        <div className="hidden h-6 w-px bg-border md:block" />
-        <div className="flex flex-col gap-3 md:flex-row md:items-center">
+        <ResponsiveRow
+          align="center"
+          gap="md"
+        >
           <SelectFilter
             value={status}
             onChange={(value) => navigateFilter({ status: value })}
@@ -116,8 +120,8 @@ export function CommandFilters() {
               navigateFilter({ startDate: s, endDate: e })
             }
           />
-        </div>
+        </ResponsiveRow>
       </TableFilters>
-    </div>
+    </Stack>
   );
 }

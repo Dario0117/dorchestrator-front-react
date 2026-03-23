@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { HStack } from '@components/ds/atoms/hstack';
 import { OutputSection } from '@domains/commands/components/output-section';
 import type { GetCommandDetail } from '@domains/commands/services/get-command.http-service';
 
@@ -22,22 +23,16 @@ export function CommandOutput({ results, commandId }: CommandOutputProps) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <HStack justify="between">
           <CardTitle>Execution Results</CardTitle>
           {result.exitCode !== null && (
-            <Badge
-              className={`text-sm px-3 py-1 ${
-                result.exitCode === 0
-                  ? 'bg-green-600 text-white border-transparent'
-                  : 'bg-red-600 text-white border-transparent'
-              }`}
-            >
+            <Badge colorScheme={result.exitCode === 0 ? 'success' : 'error'}>
               Exit code: {result.exitCode}
             </Badge>
           )}
-        </div>
+        </HStack>
       </CardHeader>
-      <CardContent className="space-y-2">
+      <CardContent gap="sm">
         <OutputSection
           title="Standard Output (stdout)"
           content={result.stdout}

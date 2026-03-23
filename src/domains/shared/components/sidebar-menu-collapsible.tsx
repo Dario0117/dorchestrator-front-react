@@ -3,6 +3,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@components/ds/atoms/collapsible';
+import { SmallText } from '@components/ds/atoms/small-text';
 import {
   SidebarMenuButton,
   SidebarMenuItem,
@@ -29,15 +30,15 @@ export function SidebarMenuCollapsible({
     <Collapsible
       render={<SidebarMenuItem />}
       defaultOpen={checkIsActive(href, item, true)}
-      className="group/collapsible"
+      group
     >
       <CollapsibleTrigger render={<SidebarMenuButton tooltip={item.title} />}>
         {item.icon && <item.icon />}
-        <span>{item.title}</span>
+        <SmallText>{item.title}</SmallText>
         {item.badge && <NavBadge>{item.badge}</NavBadge>}
         <ChevronRight className="ms-auto transition-transform duration-200 group-data-open/collapsible:rotate-90" />
       </CollapsibleTrigger>
-      <CollapsibleContent className="CollapsibleContent">
+      <CollapsibleContent animated>
         <SidebarMenuSub>
           {item.items.map((subItem) => (
             <SidebarMenuSubItem key={subItem.title}>
@@ -51,7 +52,7 @@ export function SidebarMenuCollapsible({
                 isActive={checkIsActive(href, subItem)}
               >
                 {subItem.icon && <subItem.icon />}
-                <span>{subItem.title}</span>
+                <SmallText>{subItem.title}</SmallText>
                 {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}
               </SidebarMenuSubButton>
             </SidebarMenuSubItem>

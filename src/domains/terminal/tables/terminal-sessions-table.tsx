@@ -1,3 +1,4 @@
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
 import { SmallText } from '@components/ds/atoms/small-text';
 import {
@@ -51,14 +52,14 @@ export function TerminalSessionsTable({
           <TableHead>Terminated</TableHead>
           <TableHead>Duration</TableHead>
           <TableHead>Recording</TableHead>
-          <TableHead className="w-12" />
+          <TableHead width="sm" />
         </TableRow>
       </TableHeader>
       <TableBody>
         {sessions.map((session) => (
           <TableRow
             key={session.id}
-            className="cursor-pointer"
+            clickable
             onClick={() => onRowClick(session.id)}
             tabIndex={0}
             onKeyDown={(e) => {
@@ -69,12 +70,18 @@ export function TerminalSessionsTable({
             }}
           >
             <TableCell>
-              <div>
-                <div className="font-medium">{session.userName}</div>
-                <SmallText>{session.userEmail}</SmallText>
-              </div>
+              <Box>
+                <SmallText
+                  color="muted"
+                  size="sm"
+                  weight="medium"
+                >
+                  {session.userName}
+                </SmallText>
+                <SmallText color="muted">{session.userEmail}</SmallText>
+              </Box>
             </TableCell>
-            <TableCell className="font-medium">{session.deviceName}</TableCell>
+            <TableCell weight="medium">{session.deviceName}</TableCell>
             <TableCell>
               <SessionStatusBadge status={session.status} />
             </TableCell>
@@ -117,7 +124,12 @@ export function TerminalSessionsTable({
                     }
                   >
                     <X className="h-4 w-4" />
-                    <span className="sr-only">Close session</span>
+                    <SmallText
+                      color="muted"
+                      srOnly
+                    >
+                      Close session
+                    </SmallText>
                   </AlertDialogTrigger>
                   <AlertDialogContent onClick={(e) => e.stopPropagation()}>
                     <AlertDialogHeader>

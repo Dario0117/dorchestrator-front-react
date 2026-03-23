@@ -1,10 +1,17 @@
 import { Badge } from '@components/ds/atoms/badge';
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
+import { CodeText } from '@components/ds/atoms/code-text';
+import { HStack } from '@components/ds/atoms/hstack';
+import { Scrollable } from '@components/ds/atoms/scrollable';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SmallText } from '@components/ds/atoms/small-text';
+import { Stack } from '@components/ds/atoms/stack';
+import { Surface } from '@components/ds/atoms/surface';
 import { queryClient } from '@domains/shared/context/query.provider';
 import { useListSessionSuggestionsQuery } from '@domains/terminal/services/list-session-suggestions.http-service';
 import { useRespondToSuggestionMutation } from '@domains/terminal/services/respond-to-suggestion.http-service';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
-import { badgeStyles } from '@lib/badge-styles';
 import { Check, Lightbulb, RefreshCw, X } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 
@@ -79,52 +86,79 @@ export function SuggestionNotificationPanel({
   ).length;
 
   return (
-    <div className="shrink-0 border-b">
-      <div className="flex items-center gap-2 px-3 py-1.5">
-        <Lightbulb className="h-4 w-4 text-muted-foreground" />
-        <span className="text-xs font-medium">
-          Suggestions
-          {pendingCount > 0 && (
-            <Badge
-              variant="outline"
-              className={`ml-1 ${badgeStyles.yellow}`}
-            >
-              {pendingCount}
-            </Badge>
-          )}
-        </span>
+    <Surface
+      shrink={false}
+      border="bottom"
+    >
+      <HStack
+        gap="sm"
+        justify="between"
+        innerSpaceX="sm"
+        innerSpaceY="xs"
+      >
+        <HStack gap="sm">
+          <Lightbulb className="h-4 w-4 text-muted-foreground" />
+          <SmallText
+            color="muted"
+            weight="medium"
+          >
+            Suggestions
+            {pendingCount > 0 && (
+              <Badge
+                variant="outline"
+                colorScheme="warning"
+              >
+                {pendingCount}
+              </Badge>
+            )}
+          </SmallText>
+        </HStack>
         <Button
           variant="ghost"
           size="icon-xs"
           onClick={invalidateSuggestions}
-          className="ml-auto"
           title="Refresh suggestions"
         >
           <RefreshCw className="h-3 w-3" />
         </Button>
-      </div>
-      <div className="max-h-40 overflow-y-auto px-3 pb-2">
-        <div className="space-y-1.5">
+      </HStack>
+      <Scrollable
+        innerSpaceX="sm"
+        innerSpaceBelow="sm"
+        maxH="xs"
+        overflowY="auto"
+      >
+        <Stack gap="xs">
           {suggestions.map((s) => (
-            <div
+            <HStack
+              gap="sm"
+              align="stretch"
+              border="all"
+              rounded="sm"
+              innerSpaceX="xs"
+              innerSpaceY="xs"
+              textSize="xs"
               key={s.id}
-              className="flex items-start gap-2 rounded border p-2 text-xs"
             >
-              <div className="min-w-0 flex-1">
-                <p className="text-muted-foreground">{s.suggesterName}</p>
-                <code className="mt-0.5 block break-all font-mono">
-                  {s.suggestionText}
-                </code>
-              </div>
-              <div className="flex shrink-0 items-center gap-1">
+              <Box
+                minW0
+                grow
+              >
+                <SecondaryParagraph>{s.suggesterName}</SecondaryParagraph>
+                <CodeText block>{s.suggestionText}</CodeText>
+              </Box>
+              <HStack
+                gap="xs"
+                shrink={false}
+              >
                 {s.response === 'pending' && (
                   <>
                     <Button
                       variant="ghost"
                       size="icon-xs"
+                      color="success"
                       onClick={() => handleRespond(s.id, 'accept')}
                       disabled={respondMutation.isPending}
-                      className="text-green-600 hover:text-green-700"
                       title="Accept and paste"
                     >
                       <Check className="h-3.5 w-3.5" />
@@ -132,9 +166,9 @@ export function SuggestionNotificationPanel({
                     <Button
                       variant="ghost"
                       size="icon-xs"
+                      color="danger"
                       onClick={() => handleRespond(s.id, 'dismiss')}
                       disabled={respondMutation.isPending}
-                      className="text-muted-foreground hover:text-destructive"
                       title="Dismiss"
                     >
                       <X className="h-3.5 w-3.5" />
@@ -144,7 +178,7 @@ export function SuggestionNotificationPanel({
                 {s.response === 'accepted' && (
                   <Badge
                     variant="outline"
-                    className={badgeStyles.green}
+                    colorScheme="success"
                   >
                     <Check className="mr-1 h-3 w-3" />
                     Accepted
@@ -153,16 +187,16 @@ export function SuggestionNotificationPanel({
                 {s.response === 'dismissed' && (
                   <Badge
                     variant="outline"
-                    className="text-muted-foreground"
+                    colorScheme="neutral"
                   >
                     Dismissed
                   </Badge>
                 )}
-              </div>
-            </div>
+              </HStack>
+            </HStack>
           ))}
-        </div>
-      </div>
-    </div>
+        </Stack>
+      </Scrollable>
+    </Surface>
   );
 }

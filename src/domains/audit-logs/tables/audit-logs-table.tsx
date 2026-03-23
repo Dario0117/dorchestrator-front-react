@@ -23,7 +23,7 @@ export function AuditLogsTable({ entries }: AuditLogsTableProps) {
           <TableHead>Actor</TableHead>
           <TableHead>Resource ID</TableHead>
           <TableHead>Request ID</TableHead>
-          <TableHead className="w-[40px]" />
+          <TableHead width="md" />
         </TableRow>
       </TableHeader>
       <TableBody>

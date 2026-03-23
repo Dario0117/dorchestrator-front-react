@@ -1,4 +1,5 @@
 import { Button } from '@components/ds/atoms/button';
+import { HStack } from '@components/ds/atoms/hstack';
 import { Separator } from '@components/ds/atoms/separator';
 import { CustomShortcutButton } from '@domains/terminal/components/custom-shortcut-button';
 import type {
@@ -29,8 +30,15 @@ export function TerminalShortcutPanel({
   const hasCustomShortcuts = customShortcuts.length > 0;
 
   return (
-    <div
-      className="flex flex-nowrap gap-2 overflow-x-auto bg-muted/50 p-2 md:flex-wrap md:gap-1 md:overflow-visible md:p-1.5"
+    <HStack
+      gap="sm"
+      align="stretch"
+      shrink={false}
+      border="bottom"
+      overflowX="auto"
+      bg="muted/50"
+      innerSpaceX="sm"
+      innerSpaceY="sm"
       role="toolbar"
       aria-label="Terminal shortcuts"
       data-testid="shortcut-panel"
@@ -39,8 +47,7 @@ export function TerminalShortcutPanel({
         <Button
           key={shortcut.label}
           variant="outline"
-          size="sm"
-          className="min-w-11 shrink-0 text-base md:h-9 md:min-h-9 md:min-w-9 md:px-2 md:text-sm"
+          size="toolbar"
           aria-label={shortcut.ariaLabel}
           data-testid={`shortcut-btn-${shortcut.label}`}
           onClick={() => onShortcutPress(shortcut.sequence)}
@@ -53,7 +60,7 @@ export function TerminalShortcutPanel({
         <>
           <Separator
             orientation="vertical"
-            className="mx-1 h-auto self-stretch"
+            stretch
           />
           {customShortcuts.map((shortcut) => (
             <CustomShortcutButton
@@ -70,13 +77,12 @@ export function TerminalShortcutPanel({
       {!hasCustomShortcuts && (
         <Separator
           orientation="vertical"
-          className="mx-1 h-auto self-stretch"
+          stretch
         />
       )}
       <Button
         variant="ghost"
-        size="sm"
-        className="min-w-11 shrink-0 text-base text-muted-foreground md:h-9 md:min-h-9 md:min-w-9 md:px-2 md:text-sm"
+        size="toolbar"
         aria-label="Add custom shortcut"
         data-testid="add-shortcut-btn"
         onClick={onAddShortcut}
@@ -84,6 +90,6 @@ export function TerminalShortcutPanel({
         <Plus className="mr-1 h-4 w-4" />
         Add
       </Button>
-    </div>
+    </HStack>
   );
 }

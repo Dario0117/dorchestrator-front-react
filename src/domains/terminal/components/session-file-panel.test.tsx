@@ -426,15 +426,15 @@ describe('SessionFilePanel', () => {
         preventDefault: vi.fn(),
       });
 
-      // After dragOver, the gallery should have the highlight ring class
+      // After dragOver, the gallery should have the drag-over indicator
       await waitFor(() => {
-        expect(gallery.className).toContain('ring-2');
+        expect(gallery).toHaveAttribute('data-drag-over', '');
       });
 
       fireEvent.dragLeave(gallery);
 
       await waitFor(() => {
-        expect(gallery.className).not.toContain('ring-2');
+        expect(gallery).not.toHaveAttribute('data-drag-over');
       });
     });
 

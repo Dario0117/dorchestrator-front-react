@@ -2,9 +2,27 @@ import {
   ScrollArea as UiScrollArea,
   ScrollBar as UiScrollBar,
 } from '@components/ui/scroll-area';
+import { cn } from '@lib/utils';
 
-function ScrollArea(props: React.ComponentProps<typeof UiScrollArea>) {
-  return <UiScrollArea {...props} />;
+type UiScrollAreaProps = React.ComponentProps<typeof UiScrollArea>;
+
+type ScrollAreaMaxH = '80';
+const SCROLL_MAX_H: Record<ScrollAreaMaxH, string> = {
+  '80': 'max-h-80',
+};
+
+interface ScrollAreaProps
+  extends Omit<UiScrollAreaProps, 'className' | 'style'> {
+  maxHeight?: ScrollAreaMaxH;
+}
+
+function ScrollArea({ maxHeight, ...props }: ScrollAreaProps) {
+  return (
+    <UiScrollArea
+      className={cn(maxHeight && SCROLL_MAX_H[maxHeight])}
+      {...props}
+    />
+  );
 }
 
 function ScrollBar({

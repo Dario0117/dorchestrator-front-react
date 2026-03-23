@@ -1,3 +1,5 @@
+import { Box } from '@components/ds/atoms/box';
+import { PageSection } from '@components/ds/atoms/page-section';
 import { RegisterForm } from '@domains/org/forms/register.form';
 import { useRegisterMutation } from '@domains/org/services/users/register.http-service';
 import { useNavigate } from '@tanstack/react-router';
@@ -7,8 +9,11 @@ export function RegisterPage() {
 
   const register = useRegisterMutation();
   return (
-    <section className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
+    <PageSection centered>
+      <Box
+        fullWidth
+        maxWidth="sm"
+      >
         <RegisterForm
           registerMutation={register}
           handleSuccess={() => {
@@ -18,7 +23,7 @@ export function RegisterPage() {
             });
           }}
         />
-      </div>
-    </section>
+      </Box>
+    </PageSection>
   );
 }

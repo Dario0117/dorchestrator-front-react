@@ -1,4 +1,7 @@
-type DefinitionListProps = Omit<React.ComponentProps<'dl'>, 'className'>;
+type DefinitionListProps = Omit<
+  React.ComponentProps<'dl'>,
+  'className' | 'style'
+>;
 
 function DefinitionList({ ref, ...props }: DefinitionListProps) {
   return (

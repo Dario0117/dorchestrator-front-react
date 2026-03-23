@@ -1,5 +1,9 @@
 import { Button } from '@components/ds/atoms/button';
+import { Center } from '@components/ds/atoms/center';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SectionTitle } from '@components/ds/atoms/section-title';
+import { Stack } from '@components/ds/atoms/stack';
+import { IconCircle } from '@domains/shared/components/icon-circle';
 import { Link } from '@tanstack/react-router';
 import { AlertTriangle, ArrowLeft } from 'lucide-react';
 
@@ -11,12 +15,18 @@ export function SessionNotFound({
   teamSlug: string;
 }) {
   return (
-    <div className="flex h-full items-center justify-center p-6">
-      <div className="space-y-4 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+    <Center
+      fullHeight
+      padding="md"
+    >
+      <Stack
+        gap="lg"
+        textAlign="center"
+      >
+        <IconCircle>
           <AlertTriangle className="h-6 w-6 text-muted-foreground" />
-        </div>
-        <h2 className="text-xl font-semibold">Session not found</h2>
+        </IconCircle>
+        <SectionTitle size="xl">Session not found</SectionTitle>
         <SecondaryParagraph>
           This session does not exist or you don&apos;t have access to it.
         </SecondaryParagraph>
@@ -32,7 +42,7 @@ export function SessionNotFound({
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to sessions
         </Button>
-      </div>
-    </div>
+      </Stack>
+    </Center>
   );
 }

@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { Stack } from '@components/ds/atoms/stack';
 import type { ChangePasswordFormProps } from '@domains/org/forms/change-password.form.types';
 import { useChangePasswordForm } from '@domains/org/forms/hooks/use-change-password-form';
 
@@ -25,7 +26,7 @@ export function ChangePasswordForm({
             form.handleSubmit();
           }}
         >
-          <div className="flex flex-col gap-6">
+          <Stack>
             <form.AppField name="currentPassword">
               {(field) => (
                 <field.AppFormField
@@ -56,12 +57,12 @@ export function ChangePasswordForm({
                 />
               )}
             </form.AppField>
-            <div className="flex flex-col gap-3">
+            <Stack>
               <form.AppForm>
                 <form.AppSubscribeSubmitButton label="Change password" />
               </form.AppForm>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
 
           <form.AppForm>
             <form.AppSubscribeErrorButton />

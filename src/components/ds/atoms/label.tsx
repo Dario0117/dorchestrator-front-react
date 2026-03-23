@@ -2,7 +2,7 @@ import { Label as ShadcnLabel } from '@components/ui/label';
 
 type ShadcnLabelProps = React.ComponentProps<typeof ShadcnLabel>;
 
-interface LabelProps extends ShadcnLabelProps {}
+interface LabelProps extends Omit<ShadcnLabelProps, 'className' | 'style'> {}
 
 function Label(props: LabelProps) {
   return <ShadcnLabel {...props} />;

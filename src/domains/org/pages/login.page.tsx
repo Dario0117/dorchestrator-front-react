@@ -1,4 +1,7 @@
 import { Alert, AlertDescription } from '@components/ds/atoms/alert';
+import { Box } from '@components/ds/atoms/box';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { Stack } from '@components/ds/atoms/stack';
 import { LoginForm } from '@domains/org/forms/login.form';
 import { useLoginMutation } from '@domains/org/services/users/login.http-service';
 import { Route } from '@routes/(unauthenticated)/login';
@@ -11,11 +14,14 @@ export function LoginPage() {
 
   const login = useLoginMutation();
   return (
-    <section className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-4">
+    <PageSection centered>
+      <Box
+        fullWidth
+        maxWidth="sm"
+      >
+        <Stack gap="lg">
           {registered && (
-            <Alert className="border-green-500 bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-200">
+            <Alert colorVariant="success">
               <CheckCircle2 className="size-4" />
               <AlertDescription>
                 Account created successfully. Please log in.
@@ -28,8 +34,8 @@ export function LoginPage() {
               navigate({ to: '/' });
             }}
           />
-        </div>
-      </div>
-    </section>
+        </Stack>
+      </Box>
+    </PageSection>
   );
 }

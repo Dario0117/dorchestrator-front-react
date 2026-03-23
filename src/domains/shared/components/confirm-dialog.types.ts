@@ -9,6 +9,6 @@ export type ConfirmDialogProps = {
   destructive?: boolean;
   handleConfirm: () => void;
   isLoading?: boolean;
-  className?: string;
+  size?: 'default' | 'wide' | 'narrow';
   children?: React.ReactNode;
 };

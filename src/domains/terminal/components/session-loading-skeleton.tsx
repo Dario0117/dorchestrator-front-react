@@ -1,12 +1,25 @@
+import { Center } from '@components/ds/atoms/center';
 import { Skeleton } from '@components/ds/atoms/skeleton';
+import { Stack } from '@components/ds/atoms/stack';
 
 export function SessionLoadingSkeleton() {
   return (
-    <div className="flex h-full items-center justify-center">
-      <div className="space-y-4 text-center">
-        <Skeleton className="mx-auto h-8 w-48" />
-        <Skeleton className="mx-auto h-4 w-64" />
-      </div>
-    </div>
+    <Center fullHeight>
+      <Stack
+        gap="lg"
+        textAlign="center"
+      >
+        <Skeleton
+          centered
+          h="2rem"
+          w="12rem"
+        />
+        <Skeleton
+          centered
+          h="1rem"
+          w="16rem"
+        />
+      </Stack>
+    </Center>
   );
 }

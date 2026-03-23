@@ -7,19 +7,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
-import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { HStack } from '@components/ds/atoms/hstack';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
+import { StatusDot } from '@components/ds/atoms/status-dot';
 import type { ListDevicesDevice } from '@domains/devices/services/list-devices.http-service';
-import { cn } from '@lib/utils';
-import {
-  Laptop,
-  Monitor,
-  Play,
-  Settings,
-  Terminal,
-  Trash2,
-} from 'lucide-react';
+import { formatRelativeTime } from '@lib/format-relative-time';
+import { Play, Settings, Terminal, Trash2 } from 'lucide-react';
+
+const ONLINE_THRESHOLD_MS = 30_000;
 
 interface DeviceCardProps {
   device: ListDevicesDevice;
@@ -29,6 +25,38 @@ interface DeviceCardProps {
   onConfigure?: (deviceId: number) => void;
 }
 
+function getDeviceStatus(lastSeenAt: string | null) {
+  if (!lastSeenAt) {
+    return {
+      status: 'offline' as const,
+      text: 'Never connected',
+      isOnline: false,
+    };
+  }
+
+  const lastSeen = new Date(lastSeenAt);
+  const diffMs = Date.now() - lastSeen.getTime();
+
+  if (diffMs < ONLINE_THRESHOLD_MS) {
+    return { status: 'online' as const, text: 'Online', isOnline: true };
+  }
+
+  return { status: 'offline' as const, text: 'Offline', isOnline: false };
+}
+
+function getPlatformLabel(platform: string) {
+  switch (platform) {
+    case 'linux':
+      return 'Linux';
+    case 'macos':
+      return 'macOS';
+    case 'windows':
+      return 'Windows';
+    default:
+      return platform;
+  }
+}
+
 export function DeviceCard({
   device,
   onRemove,
@@ -36,119 +64,52 @@ export function DeviceCard({
   onOpenTerminal,
   onConfigure,
 }: DeviceCardProps) {
-  const getStatusIndicator = () => {
-    if (!device.lastSeenAt) {
-      return {
-        color: 'bg-red-500',
-        borderColor: 'border-l-red-500',
-        text: 'Never connected',
-      };
-    }
-
-    const lastSeen = new Date(device.lastSeenAt);
-    const now = new Date();
-    const diffSeconds = (now.getTime() - lastSeen.getTime()) / 1000;
-
-    if (diffSeconds < 30) {
-      return {
-        color: 'bg-green-500',
-        borderColor: 'border-l-green-500',
-        text: 'Online',
-      };
-    }
-
-    return {
-      color: 'bg-gray-500',
-      borderColor: 'border-l-gray-400',
-      text: 'Offline',
-    };
-  };
-
-  const formatLastSeen = () => {
-    if (!device.lastSeenAt) {
-      return 'Never';
-    }
-
-    const lastSeen = new Date(device.lastSeenAt);
-    const now = new Date();
-    const diffMinutes = Math.floor(
-      (now.getTime() - lastSeen.getTime()) / 60000,
-    );
-
-    if (diffMinutes < 1) {
-      return 'Just now';
-    }
-    if (diffMinutes < 60) {
-      return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
-    }
-
-    // Format as "Dec 21, 10:30 AM"
-    return lastSeen.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-  };
-
-  const getPlatformIcon = () => {
-    switch (device.platform) {
-      case 'macos':
-        return Laptop;
-      default:
-        return Monitor;
-    }
-  };
-
-  const getPlatformLabel = () => {
-    switch (device.platform) {
-      case 'linux':
-        return 'Linux';
-      case 'macos':
-        return 'macOS';
-      case 'windows':
-        return 'Windows';
-      default:
-        return device.platform;
-    }
-  };
-
-  const status = getStatusIndicator();
-  const PlatformIcon = getPlatformIcon();
+  const deviceStatus = getDeviceStatus(device.lastSeenAt);
 
   return (
-    <Card className={cn('border-l-4 hover:shadow-md', status.borderColor)}>
+    <Card interactive>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-lg">{device.deviceName}</CardTitle>
-            <SmallParagraph className="font-mono mt-0.5">
-              ID: {device.id}
-            </SmallParagraph>
-          </div>
-          <Badge>
-            <PlatformIcon className="mr-1 h-3 w-3" />
-            {getPlatformLabel()}
+        <HStack justify="between">
+          <HStack gap="sm">
+            <StatusDot
+              status={deviceStatus.status}
+              aria-label={deviceStatus.text}
+            />
+            <CardTitle size="lg">{device.deviceName}</CardTitle>
+          </HStack>
+          <Badge colorScheme="neutral">
+            {getPlatformLabel(device.platform)}
           </Badge>
-        </div>
+        </HStack>
+        <SmallParagraph
+          mono
+          spaceAbove="xs"
+        >
+          ID: {device.id}
+        </SmallParagraph>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center gap-2">
-          <div className={`h-2 w-2 rounded-full ${status.color}`} />
-          <SecondaryText>{status.text}</SecondaryText>
-        </div>
-        <SecondaryParagraph className="mt-2">
-          Last seen: {formatLastSeen()}
-        </SecondaryParagraph>
+        <HStack gap="sm">
+          <SecondaryText>{deviceStatus.text}</SecondaryText>
+        </HStack>
+        {!deviceStatus.isOnline && device.lastSeenAt && (
+          <SmallParagraph spaceAbove="sm">
+            Last seen: {formatRelativeTime(device.lastSeenAt)}
+          </SmallParagraph>
+        )}
+        {!device.lastSeenAt && (
+          <SmallParagraph spaceAbove="sm">Last seen: Never</SmallParagraph>
+        )}
       </CardContent>
-      <CardFooter className="flex gap-2">
+      <CardFooter gap="sm">
         <Button
           variant="outline"
           size="sm"
+          disabled={!deviceStatus.isOnline}
           onClick={() => onOpenTerminal(device.id)}
         >
           <Terminal className="mr-2 h-4 w-4" />
-          Open Terminal
+          Terminal
         </Button>
         <Button
           variant="outline"
@@ -156,13 +117,14 @@ export function DeviceCard({
           onClick={() => onExecuteCommand(device.id)}
         >
           <Play className="mr-2 h-4 w-4" />
-          Execute Command
+          Command
         </Button>
         {onConfigure && (
           <Button
             variant="outline"
             size="sm"
             onClick={() => onConfigure(device.id)}
+            aria-label="Configure device"
           >
             <Settings className="h-4 w-4" />
           </Button>
@@ -171,6 +133,7 @@ export function DeviceCard({
           variant="outline"
           size="sm"
           onClick={() => onRemove(device.id)}
+          aria-label="Remove device"
         >
           <Trash2 className="h-4 w-4" />
         </Button>

@@ -1,6 +1,7 @@
 import { Alert, AlertDescription } from '@components/ds/atoms/alert';
 import { Badge } from '@components/ds/atoms/badge';
 import { Button } from '@components/ds/atoms/button';
+import { HStack } from '@components/ds/atoms/hstack';
 import { Input } from '@components/ds/atoms/input';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import {
@@ -10,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@components/ds/atoms/select';
+import { Stack } from '@components/ds/atoms/stack';
 import {
   Table,
   TableBody,
@@ -109,10 +111,13 @@ export function TeamMembersPanel({
   };
 
   return (
-    <div className="space-y-3 border-t pt-3">
+    <Stack
+      border="top"
+      innerSpaceY="sm"
+    >
       {canManage && availableMembers.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
+        <Stack gap="sm">
+          <HStack gap="sm">
             <Select
               value={selectedUserId}
               onValueChange={(value) =>
@@ -120,7 +125,7 @@ export function TeamMembersPanel({
               }
             >
               <SelectTrigger
-                className="flex-1"
+                grow
                 aria-label="Select member to add"
               >
                 <SelectValue placeholder="Select a member to add..." />
@@ -144,14 +149,14 @@ export function TeamMembersPanel({
               <Plus className="mr-1 h-4 w-4" />
               Add
             </Button>
-          </div>
-          <div className="flex items-center gap-2">
+          </HStack>
+          <HStack gap="sm">
             <Clock className="h-4 w-4 text-muted-foreground" />
             <Input
               type="datetime-local"
               value={expiresAt}
               onChange={(e) => setExpiresAt(e.target.value)}
-              className="flex-1"
+              grow
               aria-label="Access expiration date"
               placeholder="Optional expiration"
               min={new Date().toISOString().slice(0, 16)}
@@ -166,12 +171,15 @@ export function TeamMembersPanel({
                 Clear
               </Button>
             )}
-          </div>
-        </div>
+          </HStack>
+        </Stack>
       )}
 
       {teamMembers.length === 0 ? (
-        <SecondaryParagraph className="py-2 text-center">
+        <SecondaryParagraph
+          centered
+          innerSpaceY="sm"
+        >
           No members in this team yet.
         </SecondaryParagraph>
       ) : (
@@ -187,9 +195,7 @@ export function TeamMembersPanel({
           <TableBody>
             {teamMembers.map((tm) => (
               <TableRow key={tm.id}>
-                <TableCell className="font-medium">
-                  {tm.name ?? tm.userId}
-                </TableCell>
+                <TableCell weight="medium">{tm.name ?? tm.userId}</TableCell>
                 <TableCell>{tm.email ?? '-'}</TableCell>
                 <TableCell>
                   {tm.expiresAt ? (
@@ -244,6 +250,6 @@ export function TeamMembersPanel({
           destructive
         />
       )}
-    </div>
+    </Stack>
   );
 }

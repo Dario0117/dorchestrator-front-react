@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { HStack } from '@components/ds/atoms/hstack';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import {
   Table,
@@ -87,8 +88,8 @@ export function TeamManagementSection({
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
+        <HStack justify="between">
+          <CardTitle icon>
             <Users2 className="h-5 w-5 text-muted-foreground" />
             Teams
           </CardTitle>
@@ -101,18 +102,21 @@ export function TeamManagementSection({
               Create Team
             </Button>
           )}
-        </div>
+        </HStack>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent gap="lg">
         {teams.length === 0 ? (
-          <SecondaryParagraph className="py-6 text-center">
+          <SecondaryParagraph
+            centered
+            innerSpaceY="lg"
+          >
             No teams yet. Create a team to organize device access.
           </SecondaryParagraph>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-8" />
+                <TableHead width="xs" />
                 <TableHead>Name</TableHead>
                 <TableHead>Created</TableHead>
                 <TableHead>Actions</TableHead>
@@ -136,11 +140,11 @@ export function TeamManagementSection({
                         )}
                       </Button>
                     </TableCell>
-                    <TableCell className="font-medium">{team.name}</TableCell>
+                    <TableCell weight="medium">{team.name}</TableCell>
                     <TableCell>
                       {new Date(team.createdAt).toLocaleDateString()}
                     </TableCell>
-                    <TableCell className="flex gap-1">
+                    <TableCell gap="xs">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -185,11 +189,15 @@ export function TeamManagementSection({
                     <TableRow key={`${team.id}-members`}>
                       <TableCell
                         colSpan={4}
-                        className="bg-muted/30 px-6"
+                        bg="muted/30"
+                        padding="lg"
                       >
                         <Suspense
                           fallback={
-                            <SecondaryParagraph className="py-4 text-center">
+                            <SecondaryParagraph
+                              centered
+                              innerSpaceY="md"
+                            >
                               Loading members...
                             </SecondaryParagraph>
                           }

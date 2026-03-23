@@ -1,3 +1,4 @@
+import { Stack } from '@components/ds/atoms/stack';
 import type { DeviceConfigFormProps } from '@domains/devices/forms/device-config.form.types';
 import { useDeviceConfigForm } from '@domains/devices/forms/hooks/use-device-config-form';
 
@@ -25,7 +26,7 @@ export function DeviceConfigForm({
         form.handleSubmit();
       }}
     >
-      <div className="flex flex-col gap-6">
+      <Stack>
         <form.AppField name="inactivityTimeoutMinutes">
           {(field) => (
             <field.AppFormField
@@ -68,12 +69,12 @@ export function DeviceConfigForm({
           )}
         </form.AppField>
 
-        <div className="flex flex-col gap-3">
+        <Stack>
           <form.AppForm>
             <form.AppSubscribeSubmitButton label="Save Device Configuration" />
           </form.AppForm>
-        </div>
-      </div>
+        </Stack>
+      </Stack>
 
       <form.AppForm>
         <form.AppSubscribeErrorButton />

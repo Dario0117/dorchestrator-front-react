@@ -1,5 +1,15 @@
 import { Button } from '@components/ds/atoms/button';
+import { Center } from '@components/ds/atoms/center';
+import { ClickableArea } from '@components/ds/atoms/clickable-area';
+import { DownloadLink } from '@components/ds/atoms/download-link';
+import { FileThumbOverlay } from '@components/ds/atoms/file-thumb-overlay';
+import { HiddenFileInput } from '@components/ds/atoms/hidden-file-input';
+import { HStack } from '@components/ds/atoms/hstack';
+import { Image } from '@components/ds/atoms/image';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
+import { SmallText } from '@components/ds/atoms/small-text';
+import { Stack } from '@components/ds/atoms/stack';
+import { Surface } from '@components/ds/atoms/surface';
 import {
   Dialog,
   DialogContent,
@@ -157,93 +167,111 @@ export function SessionFilePanel({
 
   return (
     <>
-      <div
-        className="flex items-center gap-2 bg-muted/30 px-2 py-1"
-        data-testid="file-panel"
+      <Surface
+        shrink={false}
+        border="bottom"
       >
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-7 gap-1 px-2 text-xs"
-          onClick={() => setExpanded(!expanded)}
-          data-testid="toggle-file-panel"
+        <HStack
+          gap="sm"
+          innerSpaceX="xs"
+          innerSpaceY="xs"
+          bg="muted/30"
+          data-testid="file-panel"
         >
-          <ImageIcon className="h-3 w-3" />
-          Files{files.length > 0 && ` (${files.length})`}
-        </Button>
-        {!readOnly && (
-          <>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 gap-1 px-2 text-xs"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadMutation.isPending}
-              data-testid="upload-file-btn"
-            >
-              {uploadMutation.isPending ? (
-                <Loader2 className="h-3 w-3 animate-spin" />
-              ) : (
-                <Upload className="h-3 w-3" />
-              )}
-              Upload
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              className="hidden"
-              onChange={handleFileChange}
-              data-testid="file-input"
-            />
-            {uploadError && (
-              <div className="flex items-center gap-1 text-xs text-destructive">
-                <AlertCircle className="h-3 w-3" />
-                {uploadError}
-                <button
-                  type="button"
-                  className="ml-1"
-                  onClick={() => setUploadError(null)}
+          <Button
+            variant="ghost"
+            size="compact"
+            onClick={() => setExpanded(!expanded)}
+            data-testid="toggle-file-panel"
+          >
+            <ImageIcon className="h-3 w-3" />
+            Files{files.length > 0 && ` (${files.length})`}
+          </Button>
+          {!readOnly && (
+            <>
+              <Button
+                variant="ghost"
+                size="compact"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadMutation.isPending}
+                data-testid="upload-file-btn"
+              >
+                {uploadMutation.isPending ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <Upload className="h-3 w-3" />
+                )}
+                Upload
+              </Button>
+              <HiddenFileInput
+                ref={fileInputRef}
+                multiple
+                onChange={handleFileChange}
+                data-testid="file-input"
+              />
+              {uploadError && (
+                <HStack
+                  gap="xs"
+                  textSize="xs"
                 >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {expanded && (
-        <section
-          aria-label={readOnly ? 'Session files' : 'File upload drop zone'}
-          className={`border-b p-2 ${!readOnly && isDragOver ? 'bg-primary/5 ring-2 ring-inset ring-primary/20' : ''}`}
-          onDrop={readOnly ? undefined : handleDrop}
-          onDragOver={readOnly ? undefined : handleDragOver}
-          onDragLeave={readOnly ? undefined : handleDragLeave}
-          data-testid="file-gallery"
-        >
-          {files.length === 0 ? (
-            <SmallParagraph className="py-4 text-center">
-              {readOnly
-                ? 'No files were uploaded during this session.'
-                : 'No files uploaded. Drag and drop or click Upload to add files.'}
-            </SmallParagraph>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {files.map((file) => (
-                <FileThumb
-                  key={file.id}
-                  file={file}
-                  thumbnailUrl={thumbnailUrls[file.id]}
-                  onView={() => handleViewFile(file)}
-                  onLoadUrl={() => fetchDownloadUrl(file.id)}
-                  formatSize={formatSize}
-                />
-              ))}
-            </div>
+                  <AlertCircle className="h-3 w-3 text-destructive" />
+                  <SmallText color="destructive">{uploadError}</SmallText>
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={() => setUploadError(null)}
+                    aria-label="Dismiss error"
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </HStack>
+              )}
+            </>
           )}
-        </section>
-      )}
+        </HStack>
+
+        {expanded && (
+          <Surface
+            aria-label={readOnly ? 'Session files' : 'File upload drop zone'}
+            border="bottom"
+            innerSpaceX="sm"
+            innerSpaceY="sm"
+            data-drag-over={!readOnly && isDragOver ? '' : undefined}
+            onDrop={readOnly ? undefined : handleDrop}
+            onDragOver={readOnly ? undefined : handleDragOver}
+            onDragLeave={readOnly ? undefined : handleDragLeave}
+            data-testid="file-gallery"
+          >
+            {files.length === 0 ? (
+              <SmallParagraph
+                centered
+                innerSpaceY="md"
+              >
+                {readOnly
+                  ? 'No files were uploaded during this session.'
+                  : 'No files uploaded. Drag and drop or click Upload to add files.'}
+              </SmallParagraph>
+            ) : (
+              <HStack
+                gap="sm"
+                align="stretch"
+                wrap
+              >
+                {files.map((file) => (
+                  <FileThumb
+                    key={file.id}
+                    file={file}
+                    thumbnailUrl={thumbnailUrls[file.id]}
+                    onView={() => handleViewFile(file)}
+                    onLoadUrl={() => fetchDownloadUrl(file.id)}
+                    formatSize={formatSize}
+                  />
+                ))}
+              </HStack>
+            )}
+          </Surface>
+        )}
+      </Surface>
 
       <Dialog
         open={viewingFile != null}
@@ -256,38 +284,46 @@ export function SessionFilePanel({
           }
         }}
       >
-        <DialogContent className="max-w-3xl">
+        <DialogContent size="wide">
           <DialogHeader>
             <DialogTitle>{viewingFile?.filename}</DialogTitle>
           </DialogHeader>
           {viewingFile && (
-            <div className="space-y-2">
+            <Stack gap="sm">
               {viewingFileUrl && isImageMime(viewingFile.mimeType) ? (
-                <img
+                <Image
                   src={viewingFileUrl}
                   alt={viewingFile.filename}
-                  className="max-h-[70vh] w-full object-contain"
+                  fit="contain"
+                  fullWidth
                 />
               ) : (
-                <div className="flex items-center justify-center py-8">
+                <Center innerSpaceY="xl">
                   <FileIcon className="h-16 w-16 text-muted-foreground" />
-                </div>
+                </Center>
               )}
-              <div className="flex gap-4 text-xs text-muted-foreground">
-                <span>{viewingFile.mimeType}</span>
-                <span>{formatSize(viewingFile.sizeBytes)}</span>
-                <span>{new Date(viewingFile.createdAt).toLocaleString()}</span>
-              </div>
+              <HStack
+                gap="lg"
+                align="stretch"
+                textSize="xs"
+              >
+                <SmallText color="muted">{viewingFile.mimeType}</SmallText>
+                <SmallText color="muted">
+                  {formatSize(viewingFile.sizeBytes)}
+                </SmallText>
+                <SmallText color="muted">
+                  {new Date(viewingFile.createdAt).toLocaleString()}
+                </SmallText>
+              </HStack>
               {viewingFileUrl && (
-                <a
+                <DownloadLink
                   href={viewingFileUrl}
                   download={viewingFile.filename}
-                  className="text-xs text-primary hover:underline"
                 >
                   Download
-                </a>
+                </DownloadLink>
               )}
-            </div>
+            </Stack>
           )}
         </DialogContent>
       </Dialog>
@@ -316,26 +352,31 @@ function FileThumb({
   }
 
   return (
-    <button
-      type="button"
-      className="group relative h-16 w-16 overflow-hidden rounded border hover:ring-2 hover:ring-primary"
+    <ClickableArea
+      size="md"
       onClick={onView}
       data-testid={`file-thumb-${file.id}`}
     >
       {isImage && thumbnailUrl ? (
-        <img
+        <Image
           src={thumbnailUrl}
           alt={file.filename}
-          className="h-full w-full object-cover"
+          fit="cover"
+          fullHeight
+          fullWidth
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center bg-muted">
+        <Center
+          fullHeight
+          fullWidth
+          bg="muted"
+        >
           <FileIcon className="h-6 w-6 text-muted-foreground" />
-        </div>
+        </Center>
       )}
-      <div className="absolute inset-x-0 bottom-0 bg-black/50 px-1 py-0.5 text-[9px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+      <FileThumbOverlay data-slot="file-size">
         {formatSize(file.sizeBytes)}
-      </div>
-    </button>
+      </FileThumbOverlay>
+    </ClickableArea>
   );
 }

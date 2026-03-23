@@ -1,4 +1,6 @@
+import { Grid } from '@components/ds/atoms/grid';
 import { Label } from '@components/ds/atoms/label';
+import { List, ListItem } from '@components/ds/atoms/list';
 import {
   Select,
   SelectContent,
@@ -7,6 +9,7 @@ import {
   SelectValue,
 } from '@components/ds/atoms/select';
 import { normalizeFieldErrors } from '@domains/org/forms/components/normalize-field-errors';
+import { RequiredAsterisk } from '@domains/org/forms/components/required-asterisk';
 import { useFieldContext } from '@domains/org/forms/hooks/app-form';
 
 export interface SelectOption {
@@ -49,10 +52,10 @@ export function AppFormSelect({
   };
 
   return (
-    <div className="grid gap-3">
+    <Grid>
       <Label htmlFor={field.name}>
         {label}
-        {required && <span className="ml-1 text-destructive">*</span>}
+        {required && <RequiredAsterisk />}
       </Label>
       <Select
         value={currentValue}
@@ -64,7 +67,7 @@ export function AppFormSelect({
           onBlur={field.handleBlur}
           aria-invalid={hasError}
           aria-describedby={hasError ? `${field.name}-error` : undefined}
-          className="h-11 w-full text-base md:text-sm"
+          width="full"
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
@@ -80,16 +83,16 @@ export function AppFormSelect({
         </SelectContent>
       </Select>
       {hasError && (
-        <ul
+        <List
           id={`${field.name}-error`}
-          className="text-sm text-destructive"
+          variant="error"
           role="alert"
         >
           {errorMessages.map((message) => (
-            <li key={message}>{message}</li>
+            <ListItem key={message}>{message}</ListItem>
           ))}
-        </ul>
+        </List>
       )}
-    </div>
+    </Grid>
   );
 }

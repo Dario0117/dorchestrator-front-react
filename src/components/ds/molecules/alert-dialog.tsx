@@ -12,6 +12,7 @@ import {
   AlertDialogTitle as ShadcnAlertDialogTitle,
   AlertDialogTrigger as ShadcnAlertDialogTrigger,
 } from '@components/ui/alert-dialog';
+import { cn } from '@lib/utils';
 
 type ShadcnAlertDialogProps = React.ComponentProps<typeof ShadcnAlertDialog>;
 interface AlertDialogProps extends ShadcnAlertDialogProps {}
@@ -39,12 +40,16 @@ interface AlertDialogContentProps extends ShadcnAlertDialogContentProps {}
 type ShadcnAlertDialogHeaderProps = React.ComponentProps<
   typeof ShadcnAlertDialogHeader
 >;
-interface AlertDialogHeaderProps extends ShadcnAlertDialogHeaderProps {}
+interface AlertDialogHeaderProps
+  extends Omit<ShadcnAlertDialogHeaderProps, 'className' | 'style'> {
+  textAlign?: 'start';
+}
 
 type ShadcnAlertDialogFooterProps = React.ComponentProps<
   typeof ShadcnAlertDialogFooter
 >;
-interface AlertDialogFooterProps extends ShadcnAlertDialogFooterProps {}
+interface AlertDialogFooterProps
+  extends Omit<ShadcnAlertDialogFooterProps, 'className' | 'style'> {}
 
 type ShadcnAlertDialogMediaProps = React.ComponentProps<
   typeof ShadcnAlertDialogMedia
@@ -89,15 +94,30 @@ function AlertDialogOverlay(props: AlertDialogOverlayProps) {
 }
 
 function AlertDialogContent(props: AlertDialogContentProps) {
-  return <ShadcnAlertDialogContent {...props} />;
+  return (
+    <ShadcnAlertDialogContent
+      className={cn('sm:max-w-lg')}
+      {...props}
+    />
+  );
 }
 
-function AlertDialogHeader(props: AlertDialogHeaderProps) {
-  return <ShadcnAlertDialogHeader {...props} />;
+function AlertDialogHeader({ textAlign, ...props }: AlertDialogHeaderProps) {
+  return (
+    <ShadcnAlertDialogHeader
+      className={cn(textAlign === 'start' && 'text-start')}
+      {...props}
+    />
+  );
 }
 
 function AlertDialogFooter(props: AlertDialogFooterProps) {
-  return <ShadcnAlertDialogFooter {...props} />;
+  return (
+    <ShadcnAlertDialogFooter
+      className="sm:justify-between"
+      {...props}
+    />
+  );
 }
 
 function AlertDialogMedia(props: AlertDialogMediaProps) {

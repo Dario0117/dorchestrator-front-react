@@ -1,5 +1,7 @@
 import { Alert, AlertDescription } from '@components/ds/atoms/alert';
 import { Skeleton } from '@components/ds/atoms/skeleton';
+import { SmallText } from '@components/ds/atoms/small-text';
+import { Stack } from '@components/ds/atoms/stack';
 import {
   Dialog,
   DialogContent,
@@ -66,16 +68,20 @@ export function DeviceConfigDialog({
       open={open}
       onOpenChange={onOpenChange}
     >
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Device Configuration: {deviceName}</DialogTitle>
           <DialogDescription>
             Configure terminal session timeouts and defaults for this device.
             {inherited && config && (
-              <span className="block mt-1 text-xs">
+              <SmallText
+                color="muted"
+                block
+                spaceAbove="xs"
+              >
                 Currently using inherited settings. Saving will create a
                 device-specific configuration.
-              </span>
+              </SmallText>
             )}
           </DialogDescription>
         </DialogHeader>
@@ -90,11 +96,20 @@ export function DeviceConfigDialog({
         )}
 
         {isLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
+          <Stack gap="lg">
+            <Skeleton
+              h="2.5rem"
+              w="100%"
+            />
+            <Skeleton
+              h="2.5rem"
+              w="100%"
+            />
+            <Skeleton
+              h="2.5rem"
+              w="100%"
+            />
+          </Stack>
         ) : (
           <DeviceConfigForm
             key={`${config?.inactivityTimeoutMs}-${config?.hardCapMs}-${config?.defaultWorkingDirectory}`}

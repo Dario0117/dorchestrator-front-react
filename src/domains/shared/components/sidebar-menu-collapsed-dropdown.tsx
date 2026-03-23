@@ -1,3 +1,4 @@
+import { SmallText } from '@components/ds/atoms/small-text';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +37,7 @@ export function SidebarMenuCollapsedDropdown({
           }
         >
           {item.icon && <item.icon />}
-          <span>{item.title}</span>
+          <SmallText>{item.title}</SmallText>
           {item.badge && <NavBadge>{item.badge}</NavBadge>}
           <ChevronRight className="ms-auto transition-transform duration-200 group-data-open/collapsible:rotate-90" />
         </DropdownMenuTrigger>
@@ -54,17 +55,18 @@ export function SidebarMenuCollapsedDropdown({
           {item.items.map((sub) => (
             <DropdownMenuItem
               key={`${sub.title}-${sub.url}`}
-              render={
-                <Link
-                  to={sub.url}
-                  className={`${checkIsActive(href, sub) ? 'bg-secondary' : ''}`}
-                />
-              }
+              active={checkIsActive(href, sub)}
+              render={<Link to={sub.url} />}
             >
               {sub.icon && <sub.icon />}
-              <span className="max-w-52 text-wrap">{sub.title}</span>
+              <SmallText
+                wrap
+                maxWidth="xs"
+              >
+                {sub.title}
+              </SmallText>
               {sub.badge && (
-                <span className="ms-auto text-xs">{sub.badge}</span>
+                <SmallText spaceInlineStart="auto">{sub.badge}</SmallText>
               )}
             </DropdownMenuItem>
           ))}

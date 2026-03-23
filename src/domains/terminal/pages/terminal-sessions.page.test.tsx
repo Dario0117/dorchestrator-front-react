@@ -246,7 +246,7 @@ describe('TerminalSessionsPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/No sessions match your filters/),
+        screen.getByText(/No results match your filters/),
       ).toBeInTheDocument();
     });
   });
@@ -908,7 +908,7 @@ describe('TerminalSessionsPage', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(/No sessions match your filters/),
+          screen.getByText(/No results match your filters/),
         ).toBeInTheDocument();
       });
 

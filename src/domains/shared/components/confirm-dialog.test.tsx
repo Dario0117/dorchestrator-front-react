@@ -96,14 +96,13 @@ describe('ConfirmDialog', () => {
     expect(screen.getByText('JSX description')).toBeInTheDocument();
   });
 
-  it('should apply custom className', () => {
+  it('should accept size prop without error', () => {
     render(
       <ConfirmDialog
         {...defaultProps}
-        className="custom-class"
+        size="narrow"
       />,
     );
-    const customElement = document.querySelector('.custom-class');
-    expect(customElement).not.toBeNull();
+    expect(screen.getByText(defaultProps.title)).toBeInTheDocument();
   });
 });

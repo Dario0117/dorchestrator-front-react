@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { SectionTitle } from '@components/ds/atoms/section-title';
 
 export function StatCard({
   title,
@@ -18,12 +19,16 @@ export function StatCard({
 }) {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+      <CardHeader
+        direction="row"
+        align="center"
+        paddingBottom="sm"
+      >
+        <CardTitle size="sm">{title}</CardTitle>
         <Icon className={`h-5 w-5 ${iconClassName}`} />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold tabular-nums">{value}</div>
+        <SectionTitle size="2xl">{value}</SectionTitle>
       </CardContent>
     </Card>
   );

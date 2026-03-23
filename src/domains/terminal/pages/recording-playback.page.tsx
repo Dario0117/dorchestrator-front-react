@@ -1,7 +1,10 @@
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
 import { EmptyState } from '@components/ds/atoms/empty-state';
+import { HStack } from '@components/ds/atoms/hstack';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { SectionTitle } from '@components/ds/atoms/section-title';
+import { SmallText } from '@components/ds/atoms/small-text';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
 import { RecordingContent } from '@domains/terminal/components/recording-content';
@@ -27,8 +30,11 @@ function RecordingPlaybackPage() {
 
   return (
     <PageSection>
-      <div className="py-6">
-        <div className="mb-6 flex items-center gap-4">
+      <Box innerSpaceY="lg">
+        <HStack
+          gap="lg"
+          innerSpaceBelow="xl"
+        >
           <Button
             variant="ghost"
             size="sm"
@@ -45,19 +51,26 @@ function RecordingPlaybackPage() {
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Sessions
           </Button>
-        </div>
+        </HStack>
 
         <PageHeadingBar>
           <SectionTitle>Session Recording — #{sessionId}</SectionTitle>
           {recording && (
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <HStack
+              gap="md"
+              textSize="sm"
+            >
               <StorageTierBadge tier={recording.recordingStorageTier} />
-              <span>{recording.totalChunks} chunks</span>
-              <span>{formatBytes(recording.totalSizeBytes)}</span>
-              <span>
+              <SmallText color="muted">
+                {recording.totalChunks} chunks
+              </SmallText>
+              <SmallText color="muted">
+                {formatBytes(recording.totalSizeBytes)}
+              </SmallText>
+              <SmallText color="muted">
                 {formatDurationCompact(recording.durationSeconds * 1000)}
-              </span>
-            </div>
+              </SmallText>
+            </HStack>
           )}
         </PageHeadingBar>
 
@@ -74,7 +87,7 @@ function RecordingPlaybackPage() {
             description="Could not load the recording for this session."
           />
         )}
-      </div>
+      </Box>
     </PageSection>
   );
 }

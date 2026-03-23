@@ -1,4 +1,4 @@
-export type HeaderProps = React.HTMLAttributes<HTMLElement> & {
+export interface HeaderProps {
   fixed?: boolean;
-  ref?: React.Ref<HTMLElement>;
-};
+  children?: React.ReactNode;
+}

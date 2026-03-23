@@ -5,7 +5,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { Flex } from '@components/ds/atoms/flex';
+import { HStack } from '@components/ds/atoms/hstack';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SmallText } from '@components/ds/atoms/small-text';
+import { Stack } from '@components/ds/atoms/stack';
+import { OrgInitialsAvatar } from '@domains/org/forms/components/org-initials-avatar';
 import { useCreateOrganizationForm } from '@domains/org/forms/hooks/use-create-organization-form';
 import {
   SlugStatus,
@@ -58,7 +63,7 @@ export function CreateOrganizationForm({
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <Stack gap="xl">
       <Card>
         <CardHeader>
           <CardTitle>Create Your Organization</CardTitle>
@@ -71,15 +76,13 @@ export function CreateOrganizationForm({
               form.handleSubmit();
             }}
           >
-            <div className="flex flex-col gap-6">
+            <Stack>
               {/* Logo Preview */}
-              <div className="flex justify-center">
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-4xl font-bold text-primary-foreground">
-                  {initials || '?'}
-                </div>
-              </div>
+              <Flex justify="center">
+                <OrgInitialsAvatar initials={initials || '?'} />
+              </Flex>
 
-              <SecondaryParagraph className="text-center">
+              <SecondaryParagraph centered>
                 Your organization logo will display the initials above
               </SecondaryParagraph>
 
@@ -108,7 +111,7 @@ export function CreateOrganizationForm({
               {/* Organization Slug Field */}
               <form.AppField name="slug">
                 {(field) => (
-                  <div className="space-y-2">
+                  <Stack gap="sm">
                     <field.AppFormField
                       label="Organization Slug"
                       placeholder="acme-corporation"
@@ -118,7 +121,7 @@ export function CreateOrganizationForm({
                         resetValidation(e.target.value);
                       }}
                     />
-                    <div className="flex items-center gap-2">
+                    <HStack gap="sm">
                       <Button
                         type="button"
                         variant="outline"
@@ -129,35 +132,41 @@ export function CreateOrganizationForm({
                         {isChecking ? 'Checking...' : 'Check Availability'}
                       </Button>
                       {slugStatus === SlugStatus.AVAILABLE && (
-                        <span className="text-sm text-green-600">
+                        <SmallText
+                          size="sm"
+                          color="success"
+                        >
                           ✓ Slug is available
-                        </span>
+                        </SmallText>
                       )}
                       {slugStatus === SlugStatus.TAKEN && (
-                        <span className="text-sm text-red-600">
+                        <SmallText
+                          size="sm"
+                          color="destructive"
+                        >
                           ✗ Slug is already taken
-                        </span>
+                        </SmallText>
                       )}
-                    </div>
-                  </div>
+                    </HStack>
+                  </Stack>
                 )}
               </form.AppField>
 
-              <div className="flex flex-col gap-3">
+              <Stack>
                 <form.AppForm>
                   <form.AppSubscribeSubmitButton
                     label="Create Organization"
                     disabled={!isSlugValid}
                   />
                 </form.AppForm>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
             <form.AppForm>
               <form.AppSubscribeErrorButton />
             </form.AppForm>
           </form>
         </CardContent>
       </Card>
-    </div>
+    </Stack>
   );
 }

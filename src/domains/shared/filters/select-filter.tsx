@@ -18,7 +18,6 @@ interface SelectFilterProps {
   allLabel?: string;
   placeholder?: string;
   ariaLabel?: string;
-  className?: string;
 }
 
 const ALL_VALUE = '__all__';
@@ -30,7 +29,6 @@ export function SelectFilter({
   allLabel = 'All',
   placeholder,
   ariaLabel,
-  className = 'h-11 w-full text-base md:w-auto md:text-sm',
 }: SelectFilterProps) {
   const handleChange = (selected: string | null) => {
     /* v8 ignore start -- Base UI types onValueChange as string | null but never emits null */
@@ -46,10 +44,7 @@ export function SelectFilter({
       value={value ?? null}
       onValueChange={handleChange}
     >
-      <SelectTrigger
-        aria-label={ariaLabel}
-        className={className}
-      >
+      <SelectTrigger aria-label={ariaLabel}>
         <SelectValue placeholder={placeholder ?? allLabel} />
       </SelectTrigger>
       <SelectContent>

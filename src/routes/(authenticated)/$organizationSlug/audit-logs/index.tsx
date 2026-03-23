@@ -1,3 +1,4 @@
+import { Box } from '@components/ds/atoms/box';
 import { AuditLogsListPage } from '@domains/audit-logs/pages/audit-logs-list.page';
 import { useAuditLogsQueryOptions } from '@domains/audit-logs/services/list-audit-logs.http-service';
 import {
@@ -45,7 +46,14 @@ export const Route = createFileRoute(
 function AuditLogsRoute() {
   return (
     <Suspense
-      fallback={<div className="p-6 md:p-10">Loading audit logs...</div>}
+      fallback={
+        <Box
+          innerSpaceX="xl"
+          innerSpaceY="xl"
+        >
+          Loading audit logs...
+        </Box>
+      }
     >
       <AuditLogsListPage />
     </Suspense>

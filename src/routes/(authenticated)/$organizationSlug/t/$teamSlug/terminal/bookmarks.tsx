@@ -46,12 +46,12 @@ function BookmarksRoute() {
     <Suspense
       fallback={
         <PageSection>
-          <div className="py-6">
+          <Box innerSpaceY="lg">
             <Box spaceBelow="lg">
               <SectionTitle>Bookmarked Sessions</SectionTitle>
             </Box>
             <BookmarksTableSkeleton />
-          </div>
+          </Box>
         </PageSection>
       }
     >

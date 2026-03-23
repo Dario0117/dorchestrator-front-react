@@ -1,3 +1,5 @@
+import { Box } from '@components/ds/atoms/box';
+
 export function APIPage() {
-  return <div>Hello API!</div>;
+  return <Box>Hello API!</Box>;
 }

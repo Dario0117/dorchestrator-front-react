@@ -1,7 +1,13 @@
+import { Box } from '@components/ds/atoms/box';
+import { Grid } from '@components/ds/atoms/grid';
+import { HStack } from '@components/ds/atoms/hstack';
 import { Label } from '@components/ds/atoms/label';
+import { List, ListItem } from '@components/ds/atoms/list';
+import { SmallText } from '@components/ds/atoms/small-text';
+import { Textarea } from '@components/ds/atoms/textarea';
 import { normalizeFieldErrors } from '@domains/org/forms/components/normalize-field-errors';
+import { RequiredAsterisk } from '@domains/org/forms/components/required-asterisk';
 import { useFieldContext } from '@domains/org/forms/hooks/app-form';
-import { cn } from '@lib/utils';
 
 interface AppFormTextareaProps {
   label: string;
@@ -26,12 +32,12 @@ export function AppFormTextarea({
   const isOverLimit = maxLength !== undefined && charCount > maxLength;
 
   return (
-    <div className="grid gap-3">
+    <Grid>
       <Label htmlFor={field.name}>
         {label}
-        {required && <span className="ml-1 text-destructive">*</span>}
+        {required && <RequiredAsterisk />}
       </Label>
-      <textarea
+      <Textarea
         id={field.name}
         name={field.name}
         value={field.state.value}
@@ -43,38 +49,30 @@ export function AppFormTextarea({
         rows={rows}
         aria-invalid={hasError}
         aria-describedby={hasError ? `${field.name}-error` : undefined}
-        className={cn(
-          'placeholder:text-muted-foreground border-input flex w-full min-w-0 rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none resize-y disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-          'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-          'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
-          'dark:bg-input/30',
-        )}
       />
-      <div className="flex items-center justify-between">
-        <div>
+      <HStack justify="between">
+        <Box>
           {hasError && (
-            <ul
+            <List
               id={`${field.name}-error`}
-              className="text-sm text-destructive"
+              variant="error"
               role="alert"
             >
               {errorMessages.map((message) => (
-                <li key={message}>{message}</li>
+                <ListItem key={message}>{message}</ListItem>
               ))}
-            </ul>
+            </List>
           )}
-        </div>
+        </Box>
         {maxLength !== undefined && (
-          <span
-            className={cn(
-              'text-sm text-muted-foreground',
-              isOverLimit && 'text-destructive',
-            )}
+          <SmallText
+            size="sm"
+            color={isOverLimit ? 'destructive' : 'muted'}
           >
             {charCount.toLocaleString()}/{maxLength.toLocaleString()}
-          </span>
+          </SmallText>
         )}
-      </div>
-    </div>
+      </HStack>
+    </Grid>
   );
 }

@@ -102,6 +102,22 @@ describe('DropdownMenu', () => {
     });
   });
 
+  describe('DropdownMenuItem custom props', () => {
+    it('accepts indent prop', async () => {
+      render(
+        <DropdownMenu>
+          <DropdownMenuTrigger>Options</DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem indent>Indented Item</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>,
+      );
+
+      await clickTrigger(screen.getByText('Options'));
+      expect(screen.getByText('Indented Item')).toBeInTheDocument();
+    });
+  });
+
   describe('DropdownMenuPortal', () => {
     it('renders content through a portal', async () => {
       render(

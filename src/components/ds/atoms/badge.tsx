@@ -2,25 +2,21 @@ import { Badge as ShadcnBadge } from '@components/ui/badge';
 import { type BadgeStyle, badgeStyles } from '@lib/badge-styles';
 import { cn } from '@lib/utils';
 
-type ShadcnBadgeVariant =
-  | 'default'
-  | 'secondary'
-  | 'destructive'
-  | 'outline'
-  | 'ghost'
-  | 'link';
+type ShadcnBadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 
-interface BadgeProps extends React.ComponentProps<'span'> {
+interface BadgeProps
+  extends Omit<React.ComponentProps<'span'>, 'className' | 'style'> {
   variant?: ShadcnBadgeVariant;
   colorScheme?: BadgeStyle;
   compact?: boolean;
+  tiny?: boolean;
 }
 
 function Badge({
   variant = 'default',
   colorScheme,
   compact,
-  className,
+  tiny,
   ...props
 }: BadgeProps) {
   return (
@@ -29,7 +25,7 @@ function Badge({
       className={cn(
         colorScheme && badgeStyles[colorScheme],
         compact && 'rounded-full px-1 py-0 text-xs',
-        className,
+        tiny && 'px-1.5 py-0.5 text-[10px]',
       )}
       {...props}
     />

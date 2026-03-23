@@ -23,6 +23,28 @@ describe('SmallParagraph', () => {
     });
   });
 
+  describe('semantic props', () => {
+    it('accepts truncate', () => {
+      render(<SmallParagraph truncate>truncated text</SmallParagraph>);
+      expect(screen.getByText('truncated text')).toBeInTheDocument();
+    });
+
+    it('accepts mono', () => {
+      render(<SmallParagraph mono>monospace</SmallParagraph>);
+      expect(screen.getByText('monospace')).toBeInTheDocument();
+    });
+
+    it('accepts spaceBelow', () => {
+      render(<SmallParagraph spaceBelow="md">text</SmallParagraph>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+
+    it('accepts textAlign="right"', () => {
+      render(<SmallParagraph textAlign="right">right-aligned</SmallParagraph>);
+      expect(screen.getByText('right-aligned')).toBeInTheDocument();
+    });
+  });
+
   describe('additional props', () => {
     it('spreads additional props to the element', () => {
       render(<SmallParagraph data-testid="small-p">text</SmallParagraph>);

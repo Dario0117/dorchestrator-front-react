@@ -1,9 +1,14 @@
 import { Badge } from '@components/ds/atoms/badge';
 import { Button } from '@components/ds/atoms/button';
+import { Center } from '@components/ds/atoms/center';
+import { HStack } from '@components/ds/atoms/hstack';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SectionTitle } from '@components/ds/atoms/section-title';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
+import { SmallText } from '@components/ds/atoms/small-text';
+import { Stack } from '@components/ds/atoms/stack';
+import { IconCircle } from '@domains/shared/components/icon-circle';
 import type { TerminalSessionDetail } from '@domains/terminal/services/get-terminal-session.http-service';
-import { badgeStyles } from '@lib/badge-styles';
 import { Link } from '@tanstack/react-router';
 import { ArrowLeft, Play, Terminal } from 'lucide-react';
 
@@ -17,33 +22,42 @@ export function SessionTerminated({
   teamSlug: string;
 }) {
   return (
-    <div className="flex h-full items-center justify-center p-6">
-      <div className="space-y-4 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+    <Center
+      fullHeight
+      padding="md"
+    >
+      <Stack
+        gap="lg"
+        textAlign="center"
+      >
+        <IconCircle>
           <Terminal className="h-6 w-6 text-muted-foreground" />
-        </div>
-        <h2 className="text-xl font-semibold">Session terminated</h2>
+        </IconCircle>
+        <SectionTitle size="xl">Session terminated</SectionTitle>
         <SecondaryParagraph>
           This terminal session has been terminated and cannot be reconnected.
         </SecondaryParagraph>
-        <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground">
-          <span>{session.deviceName}</span>
-          <span>&middot;</span>
-          <span>{session.shell}</span>
-          <span>&middot;</span>
+        <Center textSize="sm">
+          <SmallText color="muted">{session.deviceName}</SmallText>
+          <SmallText color="muted">&middot;</SmallText>
+          <SmallText color="muted">{session.shell}</SmallText>
+          <SmallText color="muted">&middot;</SmallText>
           <Badge
             variant="outline"
-            className={badgeStyles.gray}
+            colorScheme="neutral"
           >
             terminated
           </Badge>
-        </div>
+        </Center>
         {session.terminatedAt && (
           <SmallParagraph>
             Terminated at {new Date(session.terminatedAt).toLocaleString()}
           </SmallParagraph>
         )}
-        <div className="flex items-center justify-center gap-2">
+        <HStack
+          gap="sm"
+          justify="center"
+        >
           <Button
             variant="outline"
             render={
@@ -72,8 +86,8 @@ export function SessionTerminated({
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to sessions
           </Button>
-        </div>
-      </div>
-    </div>
+        </HStack>
+      </Stack>
+    </Center>
   );
 }

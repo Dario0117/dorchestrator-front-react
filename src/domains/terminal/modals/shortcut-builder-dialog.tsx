@@ -1,6 +1,12 @@
 import { Button } from '@components/ds/atoms/button';
+import { Form } from '@components/ds/atoms/form';
+import { Grid } from '@components/ds/atoms/grid';
+import { HStack } from '@components/ds/atoms/hstack';
+import { InlineCode } from '@components/ds/atoms/inline-code';
 import { Input } from '@components/ds/atoms/input';
+import { InsetPanel } from '@components/ds/atoms/inset-panel';
 import { Label } from '@components/ds/atoms/label';
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import {
@@ -141,7 +147,7 @@ export function ShortcutBuilderDialog({
       open={open}
       onOpenChange={onOpenChange}
     >
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>
             {isEditing ? 'Edit Shortcut' : 'Add Custom Shortcut'}
@@ -153,11 +159,12 @@ export function ShortcutBuilderDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form
+        <Form
           onSubmit={handleSubmit}
-          className="grid gap-4 py-4"
+          gap="md"
+          innerSpaceY="sm"
         >
-          <div className="grid gap-2">
+          <Grid>
             <Label htmlFor="shortcut-label">Label</Label>
             <Input
               id="shortcut-label"
@@ -170,12 +177,13 @@ export function ShortcutBuilderDialog({
             <SmallParagraph>
               Displayed on the button (max 30 characters)
             </SmallParagraph>
-          </div>
+          </Grid>
 
-          <div className="grid gap-2">
+          <Grid>
             <Label>Mode</Label>
-            <div
-              className="flex gap-2"
+            <HStack
+              gap="sm"
+              align="stretch"
               role="radiogroup"
               aria-label="Shortcut mode"
               data-testid="mode-selector"
@@ -184,7 +192,7 @@ export function ShortcutBuilderDialog({
                 type="button"
                 variant={mode === 'keystroke' ? 'default' : 'outline'}
                 size="sm"
-                className="flex-1"
+                grow
                 onClick={() => {
                   setMode('keystroke');
                   setAutoSend(false);
@@ -199,7 +207,7 @@ export function ShortcutBuilderDialog({
                 type="button"
                 variant={mode === 'snippet' ? 'default' : 'outline'}
                 size="sm"
-                className="flex-1"
+                grow
                 onClick={() => setMode('snippet')}
                 aria-pressed={mode === 'snippet'}
                 data-testid="mode-snippet-btn"
@@ -207,27 +215,28 @@ export function ShortcutBuilderDialog({
                 <Send className="mr-1.5 h-3.5 w-3.5" />
                 Snippet
               </Button>
-            </div>
+            </HStack>
             <SmallParagraph>
               {mode === 'keystroke'
                 ? 'Sends a keyboard shortcut or escape sequence directly (e.g. Ctrl+C, Ctrl+L).'
                 : 'Pastes the command text into the terminal without executing, so you can review or edit before pressing Enter.'}
             </SmallParagraph>
-          </div>
+          </Grid>
 
           {mode === 'snippet' && (
-            <div className="flex items-center justify-between rounded-md border px-3 py-2">
-              <div className="grid gap-0.5">
-                <Label
-                  htmlFor="auto-send-toggle"
-                  className="text-sm font-medium"
-                >
-                  Auto-send
-                </Label>
+            <HStack
+              justify="between"
+              border="all"
+              rounded="md"
+              innerSpaceX="sm"
+              innerSpaceY="xs"
+            >
+              <Grid>
+                <Label htmlFor="auto-send-toggle">Auto-send</Label>
                 <SmallParagraph>
                   Automatically press Enter after pasting the command
                 </SmallParagraph>
-              </div>
+              </Grid>
               <Button
                 id="auto-send-toggle"
                 type="button"
@@ -240,10 +249,10 @@ export function ShortcutBuilderDialog({
                 <Play className="mr-1 h-3 w-3" />
                 {autoSend ? 'On' : 'Off'}
               </Button>
-            </div>
+            </HStack>
           )}
 
-          <div className="grid gap-2">
+          <Grid>
             <Label htmlFor="shortcut-sequence">
               {mode === 'keystroke' ? 'Key Sequence' : 'Command'}
             </Label>
@@ -259,21 +268,26 @@ export function ShortcutBuilderDialog({
               />
             ) : (
               <>
-                <div className="flex items-center gap-2">
-                  <div
-                    className="flex min-h-9 flex-1 items-center rounded-md border bg-muted/50 px-3 py-1"
+                <HStack gap="sm">
+                  <HStack
+                    grow
+                    border="all"
+                    rounded="md"
+                    innerSpaceX="sm"
+                    innerSpaceY="xs"
+                    bg="muted/50"
                     data-testid="shortcut-sequence-display"
                   >
                     {keySequence ? (
-                      <code className="text-sm">
+                      <InlineCode>
                         {parseSequenceForPreview(keySequence)}
-                      </code>
+                      </InlineCode>
                     ) : (
                       <SecondaryText>
                         Use the keys below to build a shortcut
                       </SecondaryText>
                     )}
-                  </div>
+                  </HStack>
                   {keySequence && (
                     <Button
                       type="button"
@@ -285,30 +299,33 @@ export function ShortcutBuilderDialog({
                       Clear
                     </Button>
                   )}
-                </div>
-                <div className="rounded-md border p-2">
+                </HStack>
+                <InsetPanel innerSpace="xs">
                   <KeySequenceComposer onInsert={handleInsertSequence} />
-                </div>
+                </InsetPanel>
               </>
             )}
-          </div>
+          </Grid>
 
-          <div className="grid gap-2">
+          <Grid>
             <Label htmlFor="shortcut-color">Color (optional)</Label>
-            <div className="flex gap-2">
+            <HStack
+              gap="sm"
+              align="stretch"
+            >
               <Input
                 id="shortcut-color"
                 type="color"
                 value={color || '#6366f1'}
                 onChange={(e) => setColor(e.target.value)}
-                className="h-10 w-14 cursor-pointer p-1"
+                colorPicker
                 data-testid="shortcut-color-input"
               />
               <Input
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
                 placeholder="#6366f1"
-                className="flex-1"
+                grow
               />
               {color && (
                 <Button
@@ -320,31 +337,30 @@ export function ShortcutBuilderDialog({
                   Clear
                 </Button>
               )}
-            </div>
-          </div>
+            </HStack>
+          </Grid>
 
           {error && (
-            <p
-              className="text-sm text-destructive"
+            <SecondaryParagraph
+              color="destructive"
               role="alert"
             >
               {error}
-            </p>
+            </SecondaryParagraph>
           )}
 
           {label && keySequence && (
-            <div className="rounded-md border p-3">
-              <SmallParagraph className="mb-2">Button preview:</SmallParagraph>
+            <InsetPanel>
+              <SmallParagraph spaceBelow="md">Button preview:</SmallParagraph>
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
-                className="min-w-11"
-                style={color ? { borderColor: color, color } : undefined}
+                size="toolbar"
+                accentColor={color || undefined}
               >
                 {label}
               </Button>
-            </div>
+            </InsetPanel>
           )}
 
           <DialogFooter>
@@ -370,7 +386,7 @@ export function ShortcutBuilderDialog({
               {isEditing ? 'Save Changes' : 'Add Shortcut'}
             </Button>
           </DialogFooter>
-        </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

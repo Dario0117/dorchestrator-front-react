@@ -17,7 +17,7 @@ describe('StorageTierBadge', () => {
   });
 
   it('should render unknown tier with fallback style', () => {
-    renderWithProviders(<StorageTierBadge tier="some-other-tier" />);
-    expect(screen.getByText('some-other-tier')).toBeInTheDocument();
+    renderWithProviders(<StorageTierBadge tier={null} />);
+    expect(screen.getByText('unknown')).toBeInTheDocument();
   });
 });

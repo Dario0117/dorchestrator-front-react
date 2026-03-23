@@ -1,12 +1,19 @@
 import { Badge } from '@components/ds/atoms/badge';
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
+import { HStack } from '@components/ds/atoms/hstack';
+import { InlineCode } from '@components/ds/atoms/inline-code';
 import { Input } from '@components/ds/atoms/input';
+import { InsetPanel } from '@components/ds/atoms/inset-panel';
+import { Scrollable } from '@components/ds/atoms/scrollable';
+import { SectionTitle } from '@components/ds/atoms/section-title';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
+import { Stack } from '@components/ds/atoms/stack';
+import { Surface } from '@components/ds/atoms/surface';
 import { queryClient } from '@domains/shared/context/query.provider';
 import { useListSessionSuggestionsQuery } from '@domains/terminal/services/list-session-suggestions.http-service';
 import { useSubmitSuggestionMutation } from '@domains/terminal/services/submit-suggestion.http-service';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
-import { badgeStyles } from '@lib/badge-styles';
 import { Check, RefreshCw, Send, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -92,10 +99,18 @@ export function SuggestionSidebar({
   }, [sessionId, invalidateSuggestions]);
 
   return (
-    <div className="flex h-full flex-col border-l">
-      <div className="shrink-0 border-b px-3 py-2">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium">Suggest Commands</h3>
+    <Stack
+      fullHeight
+      border="left"
+    >
+      <Surface
+        shrink={false}
+        border="bottom"
+        innerSpaceX="sm"
+        innerSpaceY="xs"
+      >
+        <HStack justify="between">
+          <SectionTitle size="sm">Suggest Commands</SectionTitle>
           <Button
             variant="ghost"
             size="icon-xs"
@@ -104,9 +119,16 @@ export function SuggestionSidebar({
           >
             <RefreshCw className="h-3 w-3" />
           </Button>
-        </div>
-      </div>
-      <div className="flex shrink-0 gap-1 border-b p-2">
+        </HStack>
+      </Surface>
+      <HStack
+        gap="xs"
+        align="stretch"
+        shrink={false}
+        border="bottom"
+        innerSpaceX="xs"
+        innerSpaceY="xs"
+      >
         <Input
           ref={inputRef}
           value={text}
@@ -115,46 +137,60 @@ export function SuggestionSidebar({
           }
           onKeyDown={handleKeyDown}
           placeholder="Type a command suggestion..."
-          className="h-8 text-xs"
+          inputSize="xs"
         />
         <Button
           variant="ghost"
           size="icon-sm"
           onClick={handleSubmit}
           disabled={text.trim().length === 0 || submitMutation.isPending}
-          className="shrink-0"
           aria-label="Send suggestion"
         >
           <Send className="h-3.5 w-3.5" />
         </Button>
-      </div>
-      <div className="flex-1 overflow-y-auto p-2">
+      </HStack>
+      <Scrollable
+        grow
+        innerSpaceX="xs"
+        innerSpaceY="xs"
+        overflowY="auto"
+      >
         {text.length > 0 && (
-          <SmallParagraph className="mb-1 text-right">
+          <SmallParagraph
+            spaceBelow="sm"
+            textAlign="right"
+          >
             {text.length}/{MAX_SUGGESTION_LENGTH}
           </SmallParagraph>
         )}
         {isLoading ? (
-          <SmallParagraph className="py-4 text-center">
+          <SmallParagraph
+            centered
+            innerSpaceY="md"
+          >
             Loading suggestions...
           </SmallParagraph>
         ) : suggestions.length === 0 ? (
-          <SmallParagraph className="py-4 text-center">
+          <SmallParagraph
+            centered
+            innerSpaceY="md"
+          >
             No suggestions sent yet
           </SmallParagraph>
         ) : (
-          <div className="space-y-2">
+          <Stack gap="sm">
             {suggestions.map((s) => (
-              <div
+              <InsetPanel
+                rounded="sm"
+                innerSpace="xs"
                 key={s.id}
-                className="rounded border p-2 text-xs"
               >
-                <code className="break-all">{s.suggestionText}</code>
-                <div className="mt-1">
+                <InlineCode>{s.suggestionText}</InlineCode>
+                <Box spaceAbove="xs">
                   {s.response === 'pending' && (
                     <Badge
                       variant="outline"
-                      className={badgeStyles.yellow}
+                      colorScheme="warning"
                     >
                       Pending
                     </Badge>
@@ -162,7 +198,7 @@ export function SuggestionSidebar({
                   {s.response === 'accepted' && (
                     <Badge
                       variant="outline"
-                      className={badgeStyles.green}
+                      colorScheme="success"
                     >
                       <Check className="mr-1 h-3 w-3" />
                       Accepted
@@ -171,18 +207,18 @@ export function SuggestionSidebar({
                   {s.response === 'dismissed' && (
                     <Badge
                       variant="outline"
-                      className={badgeStyles.red}
+                      colorScheme="error"
                     >
                       <X className="mr-1 h-3 w-3" />
                       Dismissed
                     </Badge>
                   )}
-                </div>
-              </div>
+                </Box>
+              </InsetPanel>
             ))}
-          </div>
+          </Stack>
         )}
-      </div>
-    </div>
+      </Scrollable>
+    </Stack>
   );
 }

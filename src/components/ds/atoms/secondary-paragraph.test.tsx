@@ -23,6 +23,18 @@ describe('SecondaryParagraph', () => {
     });
   });
 
+  describe('semantic props', () => {
+    it('accepts leading prop', () => {
+      render(<SecondaryParagraph leading="tight">text</SecondaryParagraph>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+
+    it('accepts innerSpaceY prop', () => {
+      render(<SecondaryParagraph innerSpaceY="sm">text</SecondaryParagraph>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+  });
+
   describe('additional props', () => {
     it('spreads additional props to the element', () => {
       render(<SecondaryParagraph data-testid="sec-p">text</SecondaryParagraph>);

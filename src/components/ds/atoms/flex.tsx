@@ -1,32 +1,28 @@
-import type { SpacingSize } from '@components/ds/atoms/box';
+import type {
+  AlignOption,
+  BgOption,
+  BorderOption,
+  GapSize,
+  JustifyOption,
+  RoundedOption,
+} from '@components/ds/utils/tokens';
+import {
+  ALIGN,
+  BG,
+  BORDER,
+  GAP,
+  JUSTIFY,
+  ROUNDED,
+} from '@components/ds/utils/tokens';
 import { cn } from '@lib/utils';
 
-type FlexDirection = 'row' | 'column';
-type FlexAlign = 'start' | 'center' | 'end' | 'stretch' | 'baseline';
-type FlexJustify = 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
+type FlexDirection = 'row' | 'column' | 'column-reverse';
 type FlexWrap = 'wrap' | 'nowrap' | 'reverse';
-type GapSize = Exclude<SpacingSize, 'auto'>;
 
 const DIRECTION: Record<FlexDirection, string> = {
   row: 'flex-row',
   column: 'flex-col',
-};
-
-const ALIGN: Record<FlexAlign, string> = {
-  start: 'items-start',
-  center: 'items-center',
-  end: 'items-end',
-  stretch: 'items-stretch',
-  baseline: 'items-baseline',
-};
-
-const JUSTIFY: Record<FlexJustify, string> = {
-  start: 'justify-start',
-  center: 'justify-center',
-  end: 'justify-end',
-  between: 'justify-between',
-  around: 'justify-around',
-  evenly: 'justify-evenly',
+  'column-reverse': 'flex-col-reverse',
 };
 
 const WRAP: Record<FlexWrap, string> = {
@@ -35,21 +31,21 @@ const WRAP: Record<FlexWrap, string> = {
   reverse: 'flex-wrap-reverse',
 };
 
-const GAP: Record<GapSize, string> = {
-  xs: 'gap-1',
-  sm: 'gap-2',
-  md: 'gap-4',
-  lg: 'gap-6',
-  xl: 'gap-8',
-};
-
-interface FlexProps extends Omit<React.ComponentProps<'div'>, 'className'> {
+interface FlexProps
+  extends Omit<React.ComponentProps<'div'>, 'className' | 'style'> {
   direction?: FlexDirection;
-  align?: FlexAlign;
-  justify?: FlexJustify;
+  align?: AlignOption;
+  justify?: JustifyOption;
   wrap?: FlexWrap;
   gap?: GapSize;
   inline?: boolean;
+  shrink?: boolean;
+  fullHeight?: boolean;
+  grow?: boolean;
+  minW0?: boolean;
+  border?: BorderOption;
+  rounded?: RoundedOption;
+  bg?: BgOption;
 }
 
 function Flex({
@@ -59,6 +55,13 @@ function Flex({
   wrap,
   gap,
   inline,
+  shrink,
+  fullHeight,
+  grow,
+  minW0,
+  border,
+  rounded,
+  bg,
   ...props
 }: FlexProps) {
   return (
@@ -70,6 +73,13 @@ function Flex({
         justify && JUSTIFY[justify],
         wrap && WRAP[wrap],
         gap && GAP[gap],
+        shrink === false && 'shrink-0',
+        fullHeight && 'h-full',
+        grow && 'flex-1',
+        minW0 && 'min-w-0',
+        border && BORDER[border],
+        rounded && ROUNDED[rounded],
+        bg && BG[bg],
       )}
       {...props}
     />
@@ -77,11 +87,4 @@ function Flex({
 }
 
 export { Flex };
-export type {
-  FlexProps,
-  FlexDirection,
-  FlexAlign,
-  FlexJustify,
-  FlexWrap,
-  GapSize,
-};
+export type { FlexProps, FlexDirection, FlexWrap };

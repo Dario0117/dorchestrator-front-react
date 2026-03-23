@@ -1,4 +1,6 @@
 import { Button } from '@components/ds/atoms/button';
+import { ResponsiveRow } from '@components/ds/atoms/responsive-row';
+import { Stack } from '@components/ds/atoms/stack';
 import {
   buildDeviceOptions,
   getDeviceStatus,
@@ -73,7 +75,7 @@ export function CommandFormInner({
           handleFormSubmit();
         }}
       >
-        <div className="space-y-4 md:space-y-6">
+        <Stack gap="lg">
           {/* Device Selector */}
           <form.AppField name="deviceId">
             {(field) => (
@@ -101,11 +103,14 @@ export function CommandFormInner({
           </form.AppField>
 
           {/* Action Buttons */}
-          <div className="flex flex-col-reverse gap-3 md:flex-row md:justify-end">
+          <ResponsiveRow
+            gap="md"
+            justify="end"
+          >
             <Button
               type="button"
               variant="outline"
-              className="h-11"
+              size="lg"
               onClick={handleCancel}
             >
               Cancel
@@ -113,15 +118,16 @@ export function CommandFormInner({
             <form.AppForm>
               <form.AppSubscribeSubmitButton
                 label="Execute Command"
-                className="h-11 w-auto"
+                size="lg"
+                fullWidth={false}
               />
             </form.AppForm>
-          </div>
+          </ResponsiveRow>
 
           <form.AppForm>
             <form.AppSubscribeErrorButton />
           </form.AppForm>
-        </div>
+        </Stack>
       </form>
 
       <ConfirmDialog

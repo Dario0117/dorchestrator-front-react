@@ -41,6 +41,28 @@ describe('Input', () => {
     });
   });
 
+  describe('ds props', () => {
+    it('accepts font="mono"', () => {
+      render(<Input font="mono" data-testid="input" />);
+      expect(screen.getByTestId('input')).toBeInTheDocument();
+    });
+
+    it('accepts inputSize="xs"', () => {
+      render(<Input inputSize="xs" data-testid="input" />);
+      expect(screen.getByTestId('input')).toBeInTheDocument();
+    });
+
+    it('accepts grow', () => {
+      render(<Input grow data-testid="input" />);
+      expect(screen.getByTestId('input')).toBeInTheDocument();
+    });
+
+    it('accepts colorPicker', () => {
+      render(<Input colorPicker data-testid="input" type="color" />);
+      expect(screen.getByTestId('input')).toBeInTheDocument();
+    });
+  });
+
   describe('additional props', () => {
     it('spreads additional props to the element', () => {
       render(

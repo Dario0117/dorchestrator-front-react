@@ -20,9 +20,29 @@ describe('Badge', () => {
       expect(screen.getByText('outlined')).toBeInTheDocument();
     });
 
-    it('accepts colorScheme prop', () => {
-      render(<Badge colorScheme="green">success</Badge>);
+    it('accepts colorScheme prop with semantic values', () => {
+      render(<Badge colorScheme="success">success</Badge>);
       expect(screen.getByText('success')).toBeInTheDocument();
+    });
+
+    it('accepts warning colorScheme', () => {
+      render(<Badge colorScheme="warning">warning</Badge>);
+      expect(screen.getByText('warning')).toBeInTheDocument();
+    });
+
+    it('accepts error colorScheme', () => {
+      render(<Badge colorScheme="error">error</Badge>);
+      expect(screen.getByText('error')).toBeInTheDocument();
+    });
+
+    it('accepts info colorScheme', () => {
+      render(<Badge colorScheme="info">info</Badge>);
+      expect(screen.getByText('info')).toBeInTheDocument();
+    });
+
+    it('accepts neutral colorScheme', () => {
+      render(<Badge colorScheme="neutral">neutral</Badge>);
+      expect(screen.getByText('neutral')).toBeInTheDocument();
     });
 
     it('accepts compact prop', () => {
@@ -34,7 +54,7 @@ describe('Badge', () => {
       render(
         <Badge
           variant="outline"
-          colorScheme="blue"
+          colorScheme="info"
           compact
         >
           info

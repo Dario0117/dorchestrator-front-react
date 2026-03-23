@@ -4,19 +4,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { CodeBlock } from '@components/ds/atoms/code-block';
+import { HStack } from '@components/ds/atoms/hstack';
+import { SmallText } from '@components/ds/atoms/small-text';
 import { CommandStatusBadge } from '@domains/commands/components/command-status-badge';
 import type { ListCommandsCommand } from '@domains/commands/services/list-commands.http-service';
 import { formatRelativeTime } from '@lib/format-relative-time';
-import { cn } from '@lib/utils';
 import { Clock, Monitor, User } from 'lucide-react';
 
 const MAX_COMMAND_LENGTH = 100;
-
-const STATUS_BORDER: Record<string, string> = {
-  failed: 'border-l-4 border-l-red-500',
-  running: 'border-l-4 border-l-blue-500',
-  pending: 'border-l-4 border-l-amber-500',
-};
 
 interface CommandCardProps {
   command: ListCommandsCommand;
@@ -31,11 +27,7 @@ export function CommandCard({ command, onClick }: CommandCardProps) {
 
   return (
     <Card
-      className={cn(
-        'transition-shadow',
-        onClick && 'cursor-pointer hover:shadow-md',
-        STATUS_BORDER[command.status],
-      )}
+      interactive={!!onClick}
       onClick={onClick}
       onKeyDown={
         onClick
@@ -52,37 +44,64 @@ export function CommandCard({ command, onClick }: CommandCardProps) {
       aria-label={onClick ? `View command #${command.id}` : undefined}
     >
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-sm text-muted-foreground font-mono">
+        <HStack justify="between">
+          <CardTitle
+            size="sm"
+            color="muted"
+            mono
+          >
             #{command.id}
           </CardTitle>
           <CommandStatusBadge status={command.status} />
-        </div>
+        </HStack>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
-          <Monitor className="h-4 w-4 shrink-0" />
-          <span className="truncate">{command.deviceName}</span>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
-          <User className="h-4 w-4 shrink-0" />
-          <span className="truncate">{command.userEmail}</span>
-        </div>
-        <p
-          className="break-words rounded-md bg-muted px-2.5 py-1.5 font-mono text-sm"
-          title={command.command}
+      <CardContent gap="md">
+        <HStack
+          gap="sm"
+          textSize="sm"
+          minW0
         >
-          {displayCommand}
-        </p>
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>{formatRelativeTime(command.createdAt)}</span>
+          <Monitor className="h-4 w-4 shrink-0" />
+          <SmallText
+            color="muted"
+            size="sm"
+            truncate
+          >
+            {command.deviceName}
+          </SmallText>
+        </HStack>
+        <HStack
+          gap="sm"
+          textSize="sm"
+          minW0
+        >
+          <User className="h-4 w-4 shrink-0" />
+          <SmallText
+            color="muted"
+            size="sm"
+            truncate
+          >
+            {command.userEmail}
+          </SmallText>
+        </HStack>
+        <CodeBlock title={command.command}>{displayCommand}</CodeBlock>
+        <HStack justify="between">
+          <SmallText color="muted">
+            {formatRelativeTime(command.createdAt)}
+          </SmallText>
           {command.duration && (
-            <span className="flex items-center gap-1 font-mono tabular-nums">
+            <HStack gap="xs">
               <Clock className="h-3 w-3" />
-              {command.duration}
-            </span>
+              <SmallText
+                color="muted"
+                mono
+                tabularNums
+              >
+                {command.duration}
+              </SmallText>
+            </HStack>
           )}
-        </div>
+        </HStack>
       </CardContent>
     </Card>
   );

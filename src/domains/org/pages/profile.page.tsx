@@ -1,4 +1,5 @@
 import { Alert, AlertDescription } from '@components/ds/atoms/alert';
+import { Box } from '@components/ds/atoms/box';
 import {
   Card,
   CardContent,
@@ -6,6 +7,8 @@ import {
   CardTitle,
 } from '@components/ds/atoms/card';
 import { DefinitionList } from '@components/ds/atoms/definition-list';
+import { DefinitionValue } from '@components/ds/atoms/definition-value';
+import { Grid } from '@components/ds/atoms/grid';
 import { MetadataLabel } from '@components/ds/atoms/metadata-label';
 import { PageDescription } from '@components/ds/atoms/page-description';
 import { PageSection } from '@components/ds/atoms/page-section';
@@ -23,31 +26,34 @@ export function ProfilePage() {
 
   return (
     <PageSection>
-      <div>
+      <Box>
         <PageTitle>Profile</PageTitle>
         <PageDescription>
           Manage your account and security settings
         </PageDescription>
-      </div>
+      </Box>
 
-      <div className="grid gap-6 md:grid-cols-1 max-w-2xl">
+      <Grid
+        gap="xl"
+        maxWidth="2xl"
+      >
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle icon>
               <User className="h-5 w-5 text-muted-foreground" />
               Account Details
             </CardTitle>
           </CardHeader>
           <CardContent>
             <DefinitionList>
-              <div>
+              <Box>
                 <MetadataLabel>Name</MetadataLabel>
-                <dd className="text-base">{profile.name}</dd>
-              </div>
-              <div>
+                <DefinitionValue>{profile.name}</DefinitionValue>
+              </Box>
+              <Box>
                 <MetadataLabel>Email</MetadataLabel>
-                <dd className="text-base">{profile.email}</dd>
-              </div>
+                <DefinitionValue>{profile.email}</DefinitionValue>
+              </Box>
             </DefinitionList>
           </CardContent>
         </Card>
@@ -67,7 +73,7 @@ export function ProfilePage() {
             setPasswordChanged(true);
           }}
         />
-      </div>
+      </Grid>
     </PageSection>
   );
 }

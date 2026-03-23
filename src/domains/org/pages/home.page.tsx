@@ -1,3 +1,5 @@
+import { APP_LINK_VARIANT } from '@components/ds/atoms/app-link';
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
 import {
   Card,
@@ -7,10 +9,14 @@ import {
 } from '@components/ds/atoms/card';
 import { CodeText } from '@components/ds/atoms/code-text';
 import { EmptyState } from '@components/ds/atoms/empty-state';
+import { Grid } from '@components/ds/atoms/grid';
+import { HStack } from '@components/ds/atoms/hstack';
 import { PageDescription } from '@components/ds/atoms/page-description';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { PageTitle } from '@components/ds/atoms/page-title';
+import { ResponsiveRow } from '@components/ds/atoms/responsive-row';
 import { SmallText } from '@components/ds/atoms/small-text';
+import { Stack } from '@components/ds/atoms/stack';
 import { CommandStatusBadge } from '@domains/commands/components/command-status-badge';
 import { StatCard } from '@domains/org/components/stat-card';
 import { useOrganizationDetailsSuspenseQuery } from '@domains/org/services/organizations/get-organization-details.http-service';
@@ -31,14 +37,17 @@ export function HomePage() {
 
   return (
     <PageSection>
-      <div>
+      <Box>
         <PageTitle>Welcome to {currentOrganization.name}</PageTitle>
         <PageDescription>
           Manage your devices and execute remote commands
         </PageDescription>
-      </div>
+      </Box>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <Grid
+        cols={3}
+        gap="lg"
+      >
         <StatCard
           title="Devices"
           value={stats.responseData?.results?.deviceCount ?? 0}
@@ -57,9 +66,9 @@ export function HomePage() {
           icon={Building2}
           iconClassName="text-purple-600 dark:text-purple-400"
         />
-      </div>
+      </Grid>
 
-      <div className="flex flex-col md:flex-row gap-4">
+      <ResponsiveRow gap="lg">
         <Button
           size="lg"
           render={
@@ -84,7 +93,7 @@ export function HomePage() {
         >
           Execute Command
         </Button>
-      </div>
+      </ResponsiveRow>
 
       <Card>
         <CardHeader>
@@ -93,7 +102,7 @@ export function HomePage() {
         <CardContent>
           {stats.responseData?.results?.recentCommands &&
           stats.responseData.results.recentCommands.length > 0 ? (
-            <div className="space-y-2">
+            <Stack gap="sm">
               {stats.responseData.results.recentCommands.map((command) => (
                 <Link
                   key={command.id}
@@ -103,22 +112,33 @@ export function HomePage() {
                     teamSlug,
                     commandId: String(command.id),
                   }}
-                  className="flex justify-between items-center p-2 rounded-md hover:bg-muted transition-colors"
+                  className={APP_LINK_VARIANT.card}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <SmallText mono>#{command.id}</SmallText>
+                  <HStack
+                    gap="md"
+                    minW0
+                  >
+                    <SmallText
+                      color="muted"
+                      mono
+                    >
+                      #{command.id}
+                    </SmallText>
                     <CodeText truncate>{command.command}</CodeText>
-                  </div>
-                  <div className="flex gap-2 items-center shrink-0">
-                    <SmallText>{command.deviceName}</SmallText>
-                    <SmallText>
+                  </HStack>
+                  <HStack
+                    gap="sm"
+                    shrink={false}
+                  >
+                    <SmallText color="muted">{command.deviceName}</SmallText>
+                    <SmallText color="muted">
                       {new Date(command.createdAt).toLocaleTimeString()}
                     </SmallText>
                     <CommandStatusBadge status={command.status} />
-                  </div>
+                  </HStack>
                 </Link>
               ))}
-            </div>
+            </Stack>
           ) : (
             <EmptyState
               icon={Terminal}

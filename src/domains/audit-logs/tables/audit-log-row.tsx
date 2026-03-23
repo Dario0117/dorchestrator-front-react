@@ -1,7 +1,11 @@
 import { Badge } from '@components/ds/atoms/badge';
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
+import { CodeBlock } from '@components/ds/atoms/code-block';
 import { Flex } from '@components/ds/atoms/flex';
+import { HStack } from '@components/ds/atoms/hstack';
 import { InlineCode } from '@components/ds/atoms/inline-code';
+import { Scrollable } from '@components/ds/atoms/scrollable';
 import { SmallText } from '@components/ds/atoms/small-text';
 import { TableCell, TableRow } from '@components/ds/atoms/table';
 import type { AuditLogEntry } from '@domains/audit-logs/services/list-audit-logs.http-service';
@@ -11,20 +15,19 @@ import {
 } from '@domains/audit-logs/services/list-audit-logs.http-service.constants';
 import { getAllTeamsFromCache } from '@domains/org/services/teams/list-teams.http-service';
 import { useCopyToClipboard } from '@domains/shared/hooks/use-copy-to-clipboard';
-import { badgeStyles } from '@lib/badge-styles';
+import type { BadgeStyle } from '@lib/badge-styles';
 import { formatRelativeTime } from '@lib/format-relative-time';
-import { cn } from '@lib/utils';
 import { Check, ChevronDown, ChevronUp, Copy } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 const ACTION_BADGE_CONFIG = {
-  created: { label: 'Created', className: badgeStyles.green },
-  updated: { label: 'Updated', className: badgeStyles.blue },
-  deleted: { label: 'Deleted', className: badgeStyles.red },
-  deactivated: { label: 'Deactivated', className: badgeStyles.amber },
+  created: { label: 'Created', colorScheme: 'success' },
+  updated: { label: 'Updated', colorScheme: 'info' },
+  deleted: { label: 'Deleted', colorScheme: 'error' },
+  deactivated: { label: 'Deactivated', colorScheme: 'warning' },
 } as const satisfies Record<
   AuditLogAction,
-  { label: string; className: string }
+  { label: string; colorScheme: BadgeStyle }
 >;
 
 interface AuditLogRowProps {
@@ -60,7 +63,7 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
   return (
     <>
       <TableRow
-        className="cursor-pointer hover:bg-muted/50 transition-colors"
+        clickable
         onClick={entry.metadata ? handleToggle : undefined}
         onKeyDown={
           entry.metadata
@@ -77,10 +80,15 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
         aria-expanded={entry.metadata ? expanded : undefined}
       >
         <TableCell>
-          <SmallText noWrap>{formatRelativeTime(entry.createdAt)}</SmallText>
+          <SmallText
+            color="muted"
+            noWrap
+          >
+            {formatRelativeTime(entry.createdAt)}
+          </SmallText>
         </TableCell>
         <TableCell>
-          <Badge className={cn('border-0', actionConfig.className)}>
+          <Badge colorScheme={actionConfig.colorScheme}>
             {actionConfig.label}
           </Badge>
         </TableCell>
@@ -89,13 +97,21 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
         </TableCell>
         <TableCell>
           {teamName ? (
-            <span className="text-sm">{teamName}</span>
+            <SmallText
+              color="muted"
+              size="sm"
+            >
+              {teamName}
+            </SmallText>
           ) : (
-            <SmallText>—</SmallText>
+            <SmallText color="muted">—</SmallText>
           )}
         </TableCell>
         <TableCell>
-          <span className="inline-flex items-center gap-1">
+          <HStack
+            gap="xs"
+            inline
+          >
             <Button
               variant="ghost"
               size="icon-xs"
@@ -103,16 +119,24 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
               aria-label="Copy actor"
             >
               {copiedKey === 'actor' ? (
-                <Check className="h-3 w-3 text-green-600" />
+                <Check className="h-3 w-3 text-success" />
               ) : (
                 <Copy className="h-3 w-3" />
               )}
             </Button>
-            <span className="text-sm">{actorDisplay}</span>
-          </span>
+            <SmallText
+              color="muted"
+              size="sm"
+            >
+              {actorDisplay}
+            </SmallText>
+          </HStack>
         </TableCell>
         <TableCell>
-          <span className="inline-flex items-center gap-1">
+          <HStack
+            gap="xs"
+            inline
+          >
             <Button
               variant="ghost"
               size="icon-xs"
@@ -120,36 +144,38 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
               aria-label="Copy resource ID"
             >
               {copiedKey === 'resourceId' ? (
-                <Check className="h-3 w-3 text-green-600" />
+                <Check className="h-3 w-3 text-success" />
               ) : (
                 <Copy className="h-3 w-3" />
               )}
             </Button>
             <InlineCode>{entry.resourceId}</InlineCode>
-          </span>
+          </HStack>
         </TableCell>
         <TableCell>
           {entry.requestId ? (
-            <span className="inline-flex items-center gap-1">
+            <HStack
+              gap="xs"
+              inline
+            >
               <Button
                 variant="ghost"
-                size="icon"
-                className="h-6 w-6"
+                size="icon-compact"
                 onClick={(e) =>
                   handleCopy(e, entry.requestId as string, 'requestId')
                 }
                 aria-label="Copy request ID"
               >
                 {copiedKey === 'requestId' ? (
-                  <Check className="h-3 w-3 text-green-600" />
+                  <Check className="h-3 w-3 text-success" />
                 ) : (
                   <Copy className="h-3 w-3" />
                 )}
               </Button>
               <InlineCode>{entry.requestId}</InlineCode>
-            </span>
+            </HStack>
           ) : (
-            <SmallText>—</SmallText>
+            <SmallText color="muted">—</SmallText>
           )}
         </TableCell>
         <TableCell>
@@ -171,35 +197,45 @@ export function AuditLogRow({ entry }: AuditLogRowProps) {
         <TableRow>
           <TableCell
             colSpan={8}
-            className="bg-muted/50 p-0"
+            bg="muted/50"
+            padding="none"
           >
-            <div className="p-4 text-xs font-mono overflow-auto max-h-64">
+            <Scrollable
+              innerSpaceX="md"
+              innerSpaceY="md"
+              overflow="auto"
+              maxH="md"
+            >
               {entry.metadata.before && (
-                <div className="mb-2">
-                  <span className="font-semibold text-muted-foreground">
+                <Box spaceBelow="sm">
+                  <SmallText
+                    color="muted"
+                    weight="semibold"
+                  >
                     Before:
-                  </span>
-                  <pre className="mt-1 whitespace-pre-wrap rounded-md border bg-muted p-3">
+                  </SmallText>
+                  <CodeBlock spaceAbove="sm">
                     {JSON.stringify(entry.metadata.before, null, 2)}
-                  </pre>
-                </div>
+                  </CodeBlock>
+                </Box>
               )}
               {entry.metadata.after && (
-                <div>
-                  <span className="font-semibold text-muted-foreground">
+                <Box>
+                  <SmallText
+                    color="muted"
+                    weight="semibold"
+                  >
                     After:
-                  </span>
-                  <pre className="mt-1 whitespace-pre-wrap rounded-md border bg-muted p-3">
+                  </SmallText>
+                  <CodeBlock spaceAbove="sm">
                     {JSON.stringify(entry.metadata.after, null, 2)}
-                  </pre>
-                </div>
+                  </CodeBlock>
+                </Box>
               )}
               {!entry.metadata.before && !entry.metadata.after && (
-                <pre className="whitespace-pre-wrap rounded-md border bg-muted p-3">
-                  {JSON.stringify(entry.metadata, null, 2)}
-                </pre>
+                <CodeBlock>{JSON.stringify(entry.metadata, null, 2)}</CodeBlock>
               )}
-            </div>
+            </Scrollable>
           </TableCell>
         </TableRow>
       )}

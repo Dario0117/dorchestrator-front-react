@@ -1,6 +1,13 @@
+import { AlertBanner } from '@components/ds/atoms/alert-banner';
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
+import { HStack } from '@components/ds/atoms/hstack';
 import { Input } from '@components/ds/atoms/input';
+import { Label } from '@components/ds/atoms/label';
+import { List, ListItem } from '@components/ds/atoms/list';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
+import { Stack } from '@components/ds/atoms/stack';
+import { TextLink } from '@components/ds/atoms/text-link';
 import {
   Dialog,
   DialogContent,
@@ -78,7 +85,7 @@ export function AddDeviceModal({
       open={open}
       onOpenChange={onOpenChange}
     >
-      <DialogContent className="sm:max-w-md">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add New Device</DialogTitle>
           <DialogDescription>
@@ -87,15 +94,15 @@ export function AddDeviceModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <Stack gap="lg">
           {errors && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">
-              <ul>
+            <AlertBanner variant="destructive">
+              <List>
                 {errors.map((error) => (
-                  <li key={error}>{error}</li>
+                  <ListItem key={error}>{error}</ListItem>
                 ))}
-              </ul>
-            </div>
+              </List>
+            </AlertBanner>
           )}
 
           {!token && (
@@ -111,19 +118,17 @@ export function AddDeviceModal({
 
           {token && (
             <>
-              <div className="space-y-2">
-                <label
-                  htmlFor="registration-token"
-                  className="text-sm font-medium"
+              <Stack gap="sm">
+                <Label htmlFor="registration-token">Registration Token</Label>
+                <HStack
+                  gap="sm"
+                  align="stretch"
                 >
-                  Registration Token
-                </label>
-                <div className="flex gap-2">
                   <Input
                     id="registration-token"
                     value={token}
                     readOnly
-                    className="font-mono text-xs"
+                    font="mono"
                   />
                   <Button
                     size="icon"
@@ -137,23 +142,21 @@ export function AddDeviceModal({
                       <Copy className="h-4 w-4" />
                     )}
                   </Button>
-                </div>
+                </HStack>
                 <SmallParagraph>{formatExpiration()}</SmallParagraph>
-              </div>
+              </Stack>
 
-              <div className="space-y-2">
-                <label
-                  htmlFor="cli-command"
-                  className="text-sm font-medium"
+              <Stack gap="sm">
+                <Label htmlFor="cli-command">CLI Command</Label>
+                <HStack
+                  gap="sm"
+                  align="stretch"
                 >
-                  CLI Command
-                </label>
-                <div className="flex gap-2">
                   <Input
                     id="cli-command"
                     value={cliCommand}
                     readOnly
-                    className="font-mono text-xs"
+                    font="mono"
                   />
                   <Button
                     size="icon"
@@ -167,22 +170,20 @@ export function AddDeviceModal({
                       <Copy className="h-4 w-4" />
                     )}
                   </Button>
-                </div>
-              </div>
+                </HStack>
+              </Stack>
 
-              <div>
-                <a
+              <Box>
+                <TextLink
                   href="https://github.com/dorchestrator/dorchestrator-agent/releases"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline"
+                  external
                 >
                   Download agent →
-                </a>
-              </div>
+                </TextLink>
+              </Box>
             </>
           )}
-        </div>
+        </Stack>
       </DialogContent>
     </Dialog>
   );

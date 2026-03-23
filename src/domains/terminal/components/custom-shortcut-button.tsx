@@ -1,4 +1,5 @@
 import { Button } from '@components/ds/atoms/button';
+import { Positioned } from '@components/ds/atoms/positioned';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,16 +21,14 @@ export function CustomShortcutButton({
   onDelete: (shortcutId: number) => void;
 }) {
   return (
-    <div className="group relative shrink-0">
+    <Positioned
+      shrink={false}
+      position="relative"
+    >
       <Button
         variant="outline"
-        size="sm"
-        className="min-w-11 shrink-0 text-base md:h-9 md:min-h-9 md:min-w-9 md:px-2 md:text-sm"
-        style={
-          shortcut.color
-            ? { borderColor: shortcut.color, color: shortcut.color }
-            : undefined
-        }
+        size="toolbar"
+        accentColor={shortcut.color || undefined}
         aria-label={`${shortcut.mode === 'snippet' ? 'Suggest' : 'Run'} shortcut: ${shortcut.label}`}
         data-testid={`custom-shortcut-btn-${shortcut.id}`}
         onClick={() => onPress(shortcut)}
@@ -42,26 +41,32 @@ export function CustomShortcutButton({
         {shortcut.label}
       </Button>
       <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <Button
-              variant="ghost"
-              size="icon-xs"
-              className="absolute -right-1 -top-1 rounded-full opacity-0 group-hover:opacity-100"
-              aria-label={`Options for ${shortcut.label}`}
-              data-testid={`custom-shortcut-menu-${shortcut.id}`}
-            />
-          }
+        <Positioned
+          position="absolute"
+          insetTopRight
+          showOnGroupHover
         >
-          <MoreVertical className="h-3 w-3" />
-        </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                rounded
+                aria-label={`Options for ${shortcut.label}`}
+                data-testid={`custom-shortcut-menu-${shortcut.id}`}
+              />
+            }
+          >
+            <MoreVertical className="h-3 w-3" />
+          </DropdownMenuTrigger>
+        </Positioned>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => onEdit(shortcut)}>
             <Pencil className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem
-            className="text-destructive"
+            color="destructive"
             onClick={() => onDelete(shortcut.id)}
           >
             <Trash2 className="mr-2 h-4 w-4" />
@@ -69,6 +74,6 @@ export function CustomShortcutButton({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
+    </Positioned>
   );
 }

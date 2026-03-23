@@ -1,6 +1,6 @@
 import { Badge } from '@components/ds/atoms/badge';
+import { HStack } from '@components/ds/atoms/hstack';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
-import { badgeStyles } from '@lib/badge-styles';
 import { Eye } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -87,14 +87,14 @@ export function SessionViewerList({ sessionId }: { sessionId: string }) {
   }
 
   return (
-    <div className="flex items-center gap-1">
+    <HStack gap="xs">
       <Badge
         variant="outline"
-        className={badgeStyles.blue}
+        colorScheme="info"
       >
         <Eye className="mr-1 h-3 w-3" />
         {viewers.length} {viewers.length === 1 ? 'viewer' : 'viewers'}
       </Badge>
-    </div>
+    </HStack>
   );
 }

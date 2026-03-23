@@ -1,4 +1,7 @@
-type PageDescriptionProps = Omit<React.ComponentProps<'p'>, 'className'>;
+type PageDescriptionProps = Omit<
+  React.ComponentProps<'p'>,
+  'className' | 'style'
+>;
 
 export function PageDescription({ children, ...props }: PageDescriptionProps) {
   return (

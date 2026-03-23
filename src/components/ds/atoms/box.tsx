@@ -1,113 +1,27 @@
+import type {
+  FixedSpacingSize,
+  MaxWidth,
+  SpacingSize,
+} from '@components/ds/utils/tokens';
+import {
+  INNER_BOTTOM,
+  INNER_LEFT,
+  INNER_RIGHT,
+  INNER_TOP,
+  INNER_X,
+  INNER_Y,
+  MAX_WIDTH,
+  SPACE_ABOVE,
+  SPACE_BELOW,
+  SPACE_LEFT,
+  SPACE_RIGHT,
+  SPACE_X,
+  SPACE_Y,
+} from '@components/ds/utils/tokens';
 import { cn } from '@lib/utils';
 
-type FixedSpacingSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-type SpacingSize = FixedSpacingSize | 'auto';
-
-// Margin (outer spacing)
-const SPACE_ABOVE: Record<SpacingSize, string> = {
-  xs: 'mt-1',
-  sm: 'mt-2',
-  md: 'mt-4',
-  lg: 'mt-6',
-  xl: 'mt-8',
-  auto: 'mt-auto',
-};
-
-const SPACE_BELOW: Record<SpacingSize, string> = {
-  xs: 'mb-1',
-  sm: 'mb-2',
-  md: 'mb-4',
-  lg: 'mb-6',
-  xl: 'mb-8',
-  auto: 'mb-auto',
-};
-
-const SPACE_LEFT: Record<SpacingSize, string> = {
-  xs: 'ml-1',
-  sm: 'ml-2',
-  md: 'ml-4',
-  lg: 'ml-6',
-  xl: 'ml-8',
-  auto: 'ml-auto',
-};
-
-const SPACE_RIGHT: Record<SpacingSize, string> = {
-  xs: 'mr-1',
-  sm: 'mr-2',
-  md: 'mr-4',
-  lg: 'mr-6',
-  xl: 'mr-8',
-  auto: 'mr-auto',
-};
-
-const SPACE_X: Record<SpacingSize, string> = {
-  xs: 'mx-1',
-  sm: 'mx-2',
-  md: 'mx-4',
-  lg: 'mx-6',
-  xl: 'mx-8',
-  auto: 'mx-auto',
-};
-
-const SPACE_Y: Record<SpacingSize, string> = {
-  xs: 'my-1',
-  sm: 'my-2',
-  md: 'my-4',
-  lg: 'my-6',
-  xl: 'my-8',
-  auto: 'my-auto',
-};
-
-// Padding (inner spacing)
-const INNER_TOP: Record<FixedSpacingSize, string> = {
-  xs: 'pt-1',
-  sm: 'pt-2',
-  md: 'pt-4',
-  lg: 'pt-6',
-  xl: 'pt-8',
-};
-
-const INNER_BOTTOM: Record<FixedSpacingSize, string> = {
-  xs: 'pb-1',
-  sm: 'pb-2',
-  md: 'pb-4',
-  lg: 'pb-6',
-  xl: 'pb-8',
-};
-
-const INNER_LEFT: Record<FixedSpacingSize, string> = {
-  xs: 'pl-1',
-  sm: 'pl-2',
-  md: 'pl-4',
-  lg: 'pl-6',
-  xl: 'pl-8',
-};
-
-const INNER_RIGHT: Record<FixedSpacingSize, string> = {
-  xs: 'pr-1',
-  sm: 'pr-2',
-  md: 'pr-4',
-  lg: 'pr-6',
-  xl: 'pr-8',
-};
-
-const INNER_X: Record<FixedSpacingSize, string> = {
-  xs: 'px-1',
-  sm: 'px-2',
-  md: 'px-4',
-  lg: 'px-6',
-  xl: 'px-8',
-};
-
-const INNER_Y: Record<FixedSpacingSize, string> = {
-  xs: 'py-1',
-  sm: 'py-2',
-  md: 'py-4',
-  lg: 'py-6',
-  xl: 'py-8',
-};
-
-interface BoxProps extends Omit<React.ComponentProps<'div'>, 'className'> {
+interface BoxProps
+  extends Omit<React.ComponentProps<'div'>, 'className' | 'style'> {
   spaceAbove?: SpacingSize;
   spaceBelow?: SpacingSize;
   spaceLeft?: SpacingSize;
@@ -120,6 +34,12 @@ interface BoxProps extends Omit<React.ComponentProps<'div'>, 'className'> {
   innerSpaceRight?: FixedSpacingSize;
   innerSpaceX?: FixedSpacingSize;
   innerSpaceY?: FixedSpacingSize;
+  fullWidth?: boolean;
+  fullHeight?: boolean;
+  maxWidth?: MaxWidth;
+  grow?: boolean;
+  shrink?: boolean;
+  minW0?: boolean;
 }
 
 function Box({
@@ -135,6 +55,12 @@ function Box({
   innerSpaceRight,
   innerSpaceX,
   innerSpaceY,
+  fullWidth,
+  fullHeight,
+  maxWidth,
+  grow,
+  shrink,
+  minW0,
   ...props
 }: BoxProps) {
   return (
@@ -152,6 +78,12 @@ function Box({
         innerSpaceRight && INNER_RIGHT[innerSpaceRight],
         innerSpaceX && INNER_X[innerSpaceX],
         innerSpaceY && INNER_Y[innerSpaceY],
+        fullWidth && 'w-full',
+        fullHeight && 'h-full',
+        maxWidth && MAX_WIDTH[maxWidth],
+        grow && 'flex-1',
+        shrink === false && 'shrink-0',
+        minW0 && 'min-w-0',
       )}
       {...props}
     />
@@ -159,4 +91,4 @@ function Box({
 }
 
 export { Box };
-export type { BoxProps, SpacingSize };
+export type { BoxProps };

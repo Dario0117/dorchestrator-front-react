@@ -1,4 +1,7 @@
-type TableWrapperProps = Omit<React.ComponentProps<'div'>, 'className'>;
+type TableWrapperProps = Omit<
+  React.ComponentProps<'div'>,
+  'className' | 'style'
+>;
 
 function TableWrapper({ ref, ...props }: TableWrapperProps) {
   return (

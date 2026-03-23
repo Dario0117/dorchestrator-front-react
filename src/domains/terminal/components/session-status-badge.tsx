@@ -1,13 +1,16 @@
 import { Badge } from '@components/ds/atoms/badge';
 import type { TerminalSessionListItem } from '@domains/terminal/services/list-terminal-sessions.http-service';
-import { badgeStyles } from '@lib/badge-styles';
+import type { BadgeStyle } from '@lib/badge-styles';
 
-const STATUS_BADGE_STYLES = {
-  active: badgeStyles.green,
-  created: badgeStyles.blue,
-  locked: badgeStyles.yellow,
-  terminated: badgeStyles.gray,
-} as const;
+const STATUS_COLOR_SCHEMES: Record<
+  TerminalSessionListItem['status'],
+  BadgeStyle
+> = {
+  active: 'success',
+  created: 'info',
+  locked: 'warning',
+  terminated: 'neutral',
+};
 
 export function SessionStatusBadge({
   status,
@@ -17,7 +20,7 @@ export function SessionStatusBadge({
   return (
     <Badge
       variant="outline"
-      className={STATUS_BADGE_STYLES[status]}
+      colorScheme={STATUS_COLOR_SCHEMES[status]}
     >
       {status}
     </Badge>

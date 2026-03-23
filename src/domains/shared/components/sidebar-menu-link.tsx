@@ -1,3 +1,4 @@
+import { SmallText } from '@components/ds/atoms/small-text';
 import {
   SidebarMenuButton,
   SidebarMenuItem,
@@ -29,7 +30,7 @@ export function SidebarMenuLink({
         tooltip={item.title}
       >
         {item.icon && <item.icon />}
-        <span>{item.title}</span>
+        <SmallText>{item.title}</SmallText>
         {item.badge && <NavBadge>{item.badge}</NavBadge>}
       </SidebarMenuButton>
     </SidebarMenuItem>

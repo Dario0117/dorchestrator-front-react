@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { Stack } from '@components/ds/atoms/stack';
 import { useRegisterForm } from '@domains/org/forms/hooks/use-register-form';
 import type { RegisterFormProps } from '@domains/org/forms/register.form.types';
 
@@ -14,7 +15,7 @@ export function RegisterForm({
   const form = useRegisterForm({ registerMutation, handleSuccess });
 
   return (
-    <div className="flex flex-col gap-6">
+    <Stack gap="xl">
       <Card>
         <CardHeader>
           <CardTitle>Create your account</CardTitle>
@@ -27,7 +28,7 @@ export function RegisterForm({
               form.handleSubmit();
             }}
           >
-            <div className="flex flex-col gap-6">
+            <Stack>
               <form.AppField name="name">
                 {(field) => (
                   <field.AppFormField
@@ -66,18 +67,18 @@ export function RegisterForm({
                   />
                 )}
               </form.AppField>
-              <div className="flex flex-col gap-3">
+              <Stack>
                 <form.AppForm>
                   <form.AppSubscribeSubmitButton label="Register" />
                 </form.AppForm>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
             <form.AppForm>
               <form.AppSubscribeErrorButton />
             </form.AppForm>
           </form>
         </CardContent>
       </Card>
-    </div>
+    </Stack>
   );
 }

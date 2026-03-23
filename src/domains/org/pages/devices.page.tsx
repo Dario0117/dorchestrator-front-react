@@ -1,5 +1,7 @@
+import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
 import { EmptyState } from '@components/ds/atoms/empty-state';
+import { Grid } from '@components/ds/atoms/grid';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { PageTitle } from '@components/ds/atoms/page-title';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
@@ -83,7 +85,7 @@ export function DevicesPage() {
 
   return (
     <PageSection>
-      <div className="py-6">
+      <Box innerSpaceY="lg">
         <PageHeadingBar>
           <PageTitle>Devices</PageTitle>
           <Button onClick={() => setAddModalOpen(true)}>
@@ -95,21 +97,18 @@ export function DevicesPage() {
         {devices.length === 0 ? (
           <EmptyState
             icon={HardDrive}
-            title="No devices registered"
-            description='No devices registered yet. Click "Add Device" to get started.'
-            action={
-              <Button
-                size="lg"
-                onClick={() => setAddModalOpen(true)}
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Device
-              </Button>
-            }
+            title="No devices yet"
+            description="Get started by registering your first device."
+            ctaLabel="Add Your First Device"
+            ctaAction={() => setAddModalOpen(true)}
+            ctaIcon={Plus}
           />
         ) : (
           <>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Grid
+              cols={3}
+              gap="lg"
+            >
               {devices.map((device) => (
                 <DeviceCard
                   key={device.id}
@@ -140,7 +139,7 @@ export function DevicesPage() {
                   }
                 />
               ))}
-            </div>
+            </Grid>
 
             <PaginatedFooter
               totalResults={totalResults}
@@ -247,7 +246,7 @@ export function DevicesPage() {
             destructive
           />
         )}
-      </div>
+      </Box>
     </PageSection>
   );
 }

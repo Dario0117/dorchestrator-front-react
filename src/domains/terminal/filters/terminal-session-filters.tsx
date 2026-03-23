@@ -106,7 +106,7 @@ export function TerminalSessionFilters() {
         aria-label="From date"
         value={dateFrom?.slice(0, 10) ?? ''}
         onChange={handleDateFromFilter}
-        className="h-11 w-auto text-base md:text-sm"
+        fullWidth={false}
         placeholder="From"
       />
       <Input
@@ -114,7 +114,7 @@ export function TerminalSessionFilters() {
         aria-label="To date"
         value={dateTo?.slice(0, 10) ?? ''}
         onChange={handleDateToFilter}
-        className="h-11 w-auto text-base md:text-sm"
+        fullWidth={false}
         placeholder="To"
       />
     </>

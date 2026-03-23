@@ -3,6 +3,8 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@components/ds/atoms/avatar';
+import { HStack } from '@components/ds/atoms/hstack';
+import { SmallText } from '@components/ds/atoms/small-text';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +21,7 @@ import {
   useSidebar,
 } from '@components/ds/organisms/sidebar';
 import type { NavUserProps } from '@domains/shared/components/nav-user.types';
+import { SidebarItemDetail } from '@domains/shared/components/sidebar-item-detail';
 import { SignOutDialog } from '@domains/shared/components/sign-out-dialog';
 import useDialogState from '@domains/shared/hooks/use-dialog-state';
 import { Link } from '@tanstack/react-router';
@@ -48,42 +51,64 @@ export function NavUser({ user }: NavUserProps) {
                 />
               }
             >
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar
+                size="sm"
+                rounded="lg"
+              >
                 <AvatarImage
                   src={user.avatar}
                   alt={user.name}
                 />
-                <AvatarFallback className="rounded-lg">SN</AvatarFallback>
+                <AvatarFallback rounded="lg">SN</AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-start text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
-              </div>
+              <SidebarItemDetail>
+                <SmallText
+                  size="sm"
+                  weight="semibold"
+                  truncate
+                >
+                  {user.name}
+                </SmallText>
+                <SmallText truncate>{user.email}</SmallText>
+              </SidebarItemDetail>
               <ChevronsUpDown className="ms-auto size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-(--anchor-width) min-w-56 rounded-lg"
+              width="anchor"
               side={isMobile ? 'bottom' : 'right'}
               align="end"
               sideOffset={4}
             >
               <DropdownMenuGroup>
-                <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
+                <DropdownMenuLabel layout="normal">
+                  <HStack
+                    gap="sm"
+                    innerSpaceX="xs"
+                    innerSpaceY="xs"
+                    textSize="sm"
+                    textAlign="left"
+                  >
+                    <Avatar
+                      size="sm"
+                      rounded="lg"
+                    >
                       <AvatarImage
                         src={user.avatar}
                         alt={user.name}
                       />
-                      <AvatarFallback className="rounded-lg">SN</AvatarFallback>
+                      <AvatarFallback rounded="lg">SN</AvatarFallback>
                     </Avatar>
-                    <div className="grid flex-1 text-start text-sm leading-tight">
-                      <span className="truncate font-semibold">
+                    <SidebarItemDetail>
+                      <SmallText
+                        size="sm"
+                        weight="semibold"
+                        truncate
+                      >
                         {user.name}
-                      </span>
-                      <span className="truncate text-xs">{user.email}</span>
-                    </div>
-                  </div>
+                      </SmallText>
+                      <SmallText truncate>{user.email}</SmallText>
+                    </SidebarItemDetail>
+                  </HStack>
                 </DropdownMenuLabel>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />

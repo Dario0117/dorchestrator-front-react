@@ -1,4 +1,12 @@
 import { Button } from '@components/ds/atoms/button';
+import { HStack } from '@components/ds/atoms/hstack';
+import { Surface } from '@components/ds/atoms/surface';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@components/ds/atoms/tooltip';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,6 +22,7 @@ import { FontSizeControls } from '@domains/terminal/components/font-size-control
 import { SessionViewerList } from '@domains/terminal/components/session-viewer-list';
 import { TerminalConnectionStatus } from '@domains/terminal/components/terminal-connection-status';
 import type { useFontSize } from '@domains/terminal/hooks/use-font-size';
+import { useTerminalConnectionStore } from '@domains/terminal/stores/terminal-connection.store';
 import {
   Bookmark,
   BookmarkCheck,
@@ -23,6 +32,7 @@ import {
   RefreshCw,
   X,
 } from 'lucide-react';
+import { useCallback, useRef } from 'react';
 
 interface TerminalToolbarProps {
   sessionId: string;
@@ -44,6 +54,7 @@ interface TerminalToolbarProps {
   warningMessage: string | null;
   onExtendClick: () => void;
   onCloseSession: () => void;
+  onReconnect?: () => void;
 }
 
 export function TerminalToolbar({
@@ -55,119 +66,257 @@ export function TerminalToolbar({
   warningMessage,
   onExtendClick,
   onCloseSession,
+  onReconnect,
 }: TerminalToolbarProps) {
+  const connectionState = useTerminalConnectionStore((s) => s.connectionState);
+  const isDisconnected = connectionState === 'disconnected';
+  const isConnecting =
+    connectionState === 'connecting' || connectionState === 'reconnecting';
+  const controlsDisabled = isClosing || isConnecting;
+  const toolbarRef = useRef<HTMLDivElement>(null);
+
+  const handleToolbarKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      const toolbar = toolbarRef.current;
+      if (!toolbar) {
+        return;
+      }
+
+      const focusableElements = Array.from(
+        toolbar.querySelectorAll<HTMLElement>(
+          'button:not(:disabled), [tabindex]:not([tabindex="-1"]):not(:disabled)',
+        ),
+      );
+
+      if (focusableElements.length === 0) {
+        return;
+      }
+
+      const currentIndex = focusableElements.indexOf(
+        document.activeElement as HTMLElement,
+      );
+
+      let nextIndex: number | null = null;
+
+      switch (e.key) {
+        case 'ArrowRight':
+          nextIndex =
+            currentIndex < focusableElements.length - 1 ? currentIndex + 1 : 0;
+          break;
+        case 'ArrowLeft':
+          nextIndex =
+            currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1;
+          break;
+        case 'Home':
+          nextIndex = 0;
+          break;
+        case 'End':
+          nextIndex = focusableElements.length - 1;
+          break;
+        default:
+          return;
+      }
+
+      e.preventDefault();
+      focusableElements[nextIndex]?.focus();
+    },
+    [],
+  );
+
   return (
-    <div className="flex shrink-0 items-center justify-between border-b">
-      <TerminalConnectionStatus />
-      <div className="flex items-center gap-1 px-2">
-        <FontSizeControls
-          fontSize={fontSizeControls.fontSize}
-          onIncrease={fontSizeControls.increase}
-          onDecrease={fontSizeControls.decrease}
-        />
-        {share.isShared && <SessionViewerList sessionId={sessionId} />}
-        {share.isShared && share.shareUrl && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={share.copyShareUrl}
-            disabled={isClosing}
-          >
-            {share.hasCopied ? (
-              <>
-                <Check className="mr-1 h-4 w-4" />
-                Copied
-              </>
-            ) : (
-              <>
-                <Link className="mr-1 h-4 w-4" />
-                Copy Link
-              </>
-            )}
-          </Button>
-        )}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={share.handleToggleShare}
-          disabled={isClosing || share.isSharePending}
-        >
-          {share.isShared ? (
-            <>
-              <Link2Off className="mr-1 h-4 w-4" />
-              Stop Sharing
-            </>
-          ) : share.hasCopied ? (
-            <>
-              <Check className="mr-1 h-4 w-4" />
-              Link Copied
-            </>
-          ) : (
-            <>
-              <Link className="mr-1 h-4 w-4" />
-              Share Session
-            </>
+    <TooltipProvider delay={300}>
+      <HStack
+        justify="between"
+        shrink={false}
+        border="bottom"
+        ref={toolbarRef}
+        role="toolbar"
+        aria-label="Terminal session controls"
+        onKeyDown={handleToolbarKeyDown}
+      >
+        {/* Left section: connection status */}
+        <HStack>
+          <TerminalConnectionStatus />
+          {share.isShared && (
+            <Surface
+              border="left"
+              innerSpaceLeft="xs"
+            >
+              <SessionViewerList sessionId={sessionId} />
+            </Surface>
           )}
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={bookmark.handleToggleBookmark}
-          disabled={isClosing || bookmark.isBookmarkPending}
+        </HStack>
+
+        {/* Center section: font size controls */}
+        <HStack
+          border="left"
+          innerSpaceX="md"
         >
-          {bookmark.bookmarkId !== null ? (
-            <>
-              <BookmarkCheck className="mr-1 h-4 w-4" />
-              Bookmarked
-            </>
-          ) : (
-            <>
-              <Bookmark className="mr-1 h-4 w-4" />
-              Bookmark
-            </>
+          <FontSizeControls
+            fontSize={fontSizeControls.fontSize}
+            onIncrease={fontSizeControls.increase}
+            onDecrease={fontSizeControls.decrease}
+          />
+        </HStack>
+
+        {/* Right section: actions */}
+        <HStack
+          gap="xs"
+          innerSpaceX="xs"
+        >
+          {share.isShared && share.shareUrl && (
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={share.copyShareUrl}
+                    disabled={controlsDisabled}
+                    aria-label={
+                      share.hasCopied ? 'Link copied' : 'Copy share link'
+                    }
+                    tabIndex={-1}
+                  />
+                }
+              >
+                {share.hasCopied ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Link className="h-4 w-4" />
+                )}
+              </TooltipTrigger>
+              <TooltipContent>
+                {share.hasCopied ? 'Link copied' : 'Copy share link'}
+              </TooltipContent>
+            </Tooltip>
           )}
-        </Button>
-        {warningMessage && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onExtendClick}
-            disabled={isClosing}
+
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={share.handleToggleShare}
+                  disabled={controlsDisabled || share.isSharePending}
+                  aria-label={share.isShared ? 'Stop sharing' : 'Share session'}
+                  tabIndex={-1}
+                />
+              }
+            >
+              {share.isShared ? (
+                <Link2Off className="h-4 w-4" />
+              ) : share.hasCopied ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Link className="h-4 w-4" />
+              )}
+            </TooltipTrigger>
+            <TooltipContent>
+              {share.isShared ? 'Stop sharing' : 'Share session'}
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={bookmark.handleToggleBookmark}
+                  disabled={controlsDisabled || bookmark.isBookmarkPending}
+                  aria-label={
+                    bookmark.bookmarkId !== null
+                      ? 'Remove bookmark'
+                      : 'Bookmark session'
+                  }
+                  tabIndex={-1}
+                />
+              }
+            >
+              {bookmark.bookmarkId !== null ? (
+                <BookmarkCheck className="h-4 w-4" />
+              ) : (
+                <Bookmark className="h-4 w-4" />
+              )}
+            </TooltipTrigger>
+            <TooltipContent>
+              {bookmark.bookmarkId !== null
+                ? 'Remove bookmark'
+                : 'Bookmark session'}
+            </TooltipContent>
+          </Tooltip>
+
+          {warningMessage && (
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onExtendClick}
+                    disabled={controlsDisabled}
+                    aria-label="Extend session"
+                    tabIndex={-1}
+                  />
+                }
+              >
+                <RefreshCw className="h-4 w-4" />
+              </TooltipTrigger>
+              <TooltipContent>Extend session</TooltipContent>
+            </Tooltip>
+          )}
+
+          <Surface
+            border="left"
+            innerSpaceLeft="xs"
           >
-            <RefreshCw className="mr-1 h-4 w-4" />
-            Extend Session
-          </Button>
-        )}
-        <AlertDialog>
-          <AlertDialogTrigger
-            render={
+            {isDisconnected && onReconnect ? (
               <Button
-                variant="ghost"
+                variant="default"
                 size="sm"
-                disabled={isClosing}
-              />
-            }
-          >
-            <X className="mr-1 h-4 w-4" />
-            Close Session
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Close terminal session?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This will terminate the terminal session and kill the underlying
-                process. This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={onCloseSession}>
-                Close Session
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </div>
+                onClick={onReconnect}
+                tabIndex={-1}
+              >
+                <RefreshCw className="mr-1 h-4 w-4" />
+                Reconnect
+              </Button>
+            ) : (
+              <AlertDialog>
+                <AlertDialogTrigger
+                  render={
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      disabled={isClosing}
+                      tabIndex={-1}
+                    />
+                  }
+                >
+                  <X className="mr-1 h-4 w-4" />
+                  End Session
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>End terminal session?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will terminate the terminal session and kill the
+                      underlying process. This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={onCloseSession}>
+                      End Session
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </Surface>
+        </HStack>
+      </HStack>
+    </TooltipProvider>
   );
 }

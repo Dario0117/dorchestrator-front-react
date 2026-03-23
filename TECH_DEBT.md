@@ -2,6 +2,7 @@
 
 ## UI Enhancements
 
+- [ ] If we go to a non-team page and try to go back to the team page, we get a 404 error, should we add this to the store?
 - [ ] On ResetPasswordPage, add a toast to show the user that the password has been reset and they need to check their email (a message is coming from the backend, we can use that one).
 - [ ] Adding a new device, when copying the command it changes the status of the token and not the command
 - [ ] Add the device id and user id on the command card

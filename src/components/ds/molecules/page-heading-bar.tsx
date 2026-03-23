@@ -1,13 +1,20 @@
-type PageHeadingBarProps = Omit<React.ComponentProps<'div'>, 'className'>;
+import { ResponsiveRow } from '@components/ds/atoms/responsive-row';
+
+type PageHeadingBarProps = Omit<
+  React.ComponentProps<'div'>,
+  'className' | 'style'
+>;
 
 export function PageHeadingBar({ children, ...props }: PageHeadingBarProps) {
   return (
-    <div
-      className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between"
+    <ResponsiveRow
+      justify="between"
+      align="center"
+      gap="sm"
       {...props}
     >
       {children}
-    </div>
+    </ResponsiveRow>
   );
 }
 

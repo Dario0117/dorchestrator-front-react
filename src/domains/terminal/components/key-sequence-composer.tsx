@@ -1,4 +1,6 @@
 import { Button } from '@components/ds/atoms/button';
+import { Grid } from '@components/ds/atoms/grid';
+import { HStack } from '@components/ds/atoms/hstack';
 import {
   buildKeyLabel,
   buildKeySequence,
@@ -13,12 +15,12 @@ interface KeySequenceComposerProps {
   onInsert: (sequence: string) => void;
 }
 
-const GRID_COLS: Record<KeyCategory, string> = {
-  letters: 'grid-cols-9',
-  common: 'grid-cols-3',
-  arrows: 'grid-cols-4',
-  navigation: 'grid-cols-3',
-  function: 'grid-cols-6',
+const GRID_COLS: Record<KeyCategory, 3 | 4 | 6 | 9> = {
+  letters: 9,
+  common: 3,
+  arrows: 4,
+  navigation: 3,
+  function: 6,
 };
 
 export function KeySequenceComposer({ onInsert }: KeySequenceComposerProps) {
@@ -46,11 +48,14 @@ export function KeySequenceComposer({ onInsert }: KeySequenceComposerProps) {
   );
 
   return (
-    <div
-      className="grid gap-2"
+    <Grid
+      gap="sm"
       data-testid="key-sequence-composer"
     >
-      <div className="flex gap-1.5">
+      <HStack
+        gap="xs"
+        align="stretch"
+      >
         {(
           [
             { key: 'ctrl', label: 'Ctrl' },
@@ -62,8 +67,7 @@ export function KeySequenceComposer({ onInsert }: KeySequenceComposerProps) {
             key={key}
             type="button"
             variant={mods[key] ? 'default' : 'outline'}
-            size="sm"
-            className="h-7 px-3 text-xs"
+            size="xs"
             onClick={() => toggleMod(key)}
             aria-pressed={mods[key]}
             data-testid={`mod-${key}`}
@@ -71,25 +75,33 @@ export function KeySequenceComposer({ onInsert }: KeySequenceComposerProps) {
             {label}
           </Button>
         ))}
-      </div>
+      </HStack>
 
-      <div className="flex gap-1 border-b pb-1">
+      <HStack
+        gap="xs"
+        align="stretch"
+        border="bottom"
+        innerSpaceBelow="xs"
+      >
         {KEY_CATEGORIES.map(({ id, label }) => (
           <Button
             key={id}
             type="button"
-            variant="ghost"
-            size="sm"
-            className={`h-6 px-2 text-xs ${activeCategory === id ? 'bg-muted font-medium' : 'text-muted-foreground'}`}
+            variant={activeCategory === id ? 'secondary' : 'ghost'}
+            size="compact"
+            color={activeCategory === id ? undefined : 'muted'}
             onClick={() => setActiveCategory(id)}
             data-testid={`category-${id}`}
           >
             {label}
           </Button>
         ))}
-      </div>
+      </HStack>
 
-      <div className={`grid ${GRID_COLS[activeCategory]} gap-1`}>
+      <Grid
+        fixedCols={GRID_COLS[activeCategory]}
+        gap="xs"
+      >
         {keysForCategory.map((keyDef) => {
           const label = buildKeyLabel(keyDef.key, mods);
           return (
@@ -98,7 +110,7 @@ export function KeySequenceComposer({ onInsert }: KeySequenceComposerProps) {
               type="button"
               variant="ghost"
               size="sm"
-              className="font-mono"
+              font="mono"
               onClick={() => handleKeyClick(keyDef.key)}
               title={label}
               data-testid={`key-${keyDef.key}`}
@@ -107,7 +119,7 @@ export function KeySequenceComposer({ onInsert }: KeySequenceComposerProps) {
             </Button>
           );
         })}
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 }

@@ -15,7 +15,7 @@ export function FormField({
     field.state.meta.errors?.[0]?.message || field.state.meta.errors?.[0];
 
   return (
-    <div className="grid gap-3">
+    <div className="grid gap-1.5">
       <div className="flex items-center">
         <Label htmlFor={field.name}>
           {label}

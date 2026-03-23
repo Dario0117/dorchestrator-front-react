@@ -1,3 +1,5 @@
+import { Box } from '@components/ds/atoms/box';
+
 export function DraftsPage() {
-  return <div>Hello Drafts!</div>;
+  return <Box>Hello Drafts!</Box>;
 }

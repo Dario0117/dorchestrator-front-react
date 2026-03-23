@@ -1,4 +1,6 @@
+import { Button } from '@components/ds/atoms/button';
 import { Input } from '@components/ds/atoms/input';
+import { Positioned } from '@components/ds/atoms/positioned';
 import { Search, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -58,25 +60,35 @@ export function SearchInput({
   };
 
   return (
-    <div className="relative min-w-0 flex-1">
+    <Positioned
+      position="relative"
+      minW0
+      grow
+    >
       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <Input
         value={localValue}
         onChange={handleChange}
         placeholder={placeholder}
         aria-label={ariaLabel}
-        className="h-11 pl-9 pr-9 text-base md:text-sm"
+        padding="search"
       />
       {localValue && (
-        <button
-          type="button"
-          onClick={handleClear}
-          aria-label="Clear search"
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground"
+        <Positioned
+          position="absolute"
+          insetRight="sm"
+          insetYCenter
         >
-          <X className="h-4 w-4" />
-        </button>
+          <Button
+            variant="ghost"
+            size="inline"
+            onClick={handleClear}
+            aria-label="Clear search"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </Positioned>
       )}
-    </div>
+    </Positioned>
   );
 }

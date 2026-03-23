@@ -24,6 +24,23 @@ describe('Select', () => {
       expect(screen.getByTestId('trigger')).toBeInTheDocument();
     });
 
+    it('renders trigger with grow prop', () => {
+      render(
+        <Select defaultValue="a">
+          <SelectTrigger
+            grow
+            data-testid="trigger"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="a">A</SelectItem>
+          </SelectContent>
+        </Select>,
+      );
+      expect(screen.getByTestId('trigger')).toBeInTheDocument();
+    });
+
     it('renders trigger with size prop', () => {
       render(
         <Select defaultValue="a">

@@ -199,7 +199,7 @@ describe('CommandsListPage', () => {
     renderWithProviders(<CommandsListPage />);
 
     await waitFor(() => {
-      expect(screen.getByText(/No commands executed yet/)).toBeInTheDocument();
+      expect(screen.getByText(/No commands yet/)).toBeInTheDocument();
     });
   });
 
@@ -231,7 +231,7 @@ describe('CommandsListPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/No commands match your filters/),
+        screen.getByText(/No results match your filters/),
       ).toBeInTheDocument();
     });
 
@@ -276,12 +276,13 @@ describe('CommandsListPage', () => {
     renderWithProviders(<CommandsListPage />);
 
     await waitFor(() => {
-      expect(screen.getByText(/No commands executed yet/)).toBeInTheDocument();
+      expect(screen.getByText(/No commands yet/)).toBeInTheDocument();
     });
 
-    const executeButtons = screen.getAllByText('Execute New Command');
-    // Click the one in the empty state (second button)
-    await user.click(executeButtons[executeButtons.length - 1] as HTMLElement);
+    const executeButton = screen.getByRole('button', {
+      name: /Execute Command/,
+    });
+    await user.click(executeButton);
 
     await waitFor(() => {
       expect(
@@ -389,7 +390,7 @@ describe('CommandsListPage', () => {
     renderWithProviders(<CommandsListPage />);
 
     await waitFor(() => {
-      expect(screen.getByText(/No commands executed yet/)).toBeInTheDocument();
+      expect(screen.getByText(/No commands yet/)).toBeInTheDocument();
     });
   });
 
@@ -705,9 +706,7 @@ describe('CommandsListPage', () => {
       renderWithProviders(<CommandsListPage />);
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/No commands executed yet/),
-        ).toBeInTheDocument();
+        expect(screen.getByText(/No commands yet/)).toBeInTheDocument();
       });
     });
   });
@@ -811,9 +810,7 @@ describe('CommandsListPage', () => {
       renderWithProviders(<CommandsListPage />);
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/No commands executed yet/),
-        ).toBeInTheDocument();
+        expect(screen.getByText(/No commands yet/)).toBeInTheDocument();
       });
     });
   });

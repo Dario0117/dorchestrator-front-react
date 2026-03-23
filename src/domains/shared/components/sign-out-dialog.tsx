@@ -21,7 +21,7 @@ export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
       desc="Are you sure you want to sign out? You will need to sign in again to access your account."
       confirmText="Sign out"
       handleConfirm={handleSignOut}
-      className="sm:max-w-sm"
+      size="narrow"
     />
   );
 }

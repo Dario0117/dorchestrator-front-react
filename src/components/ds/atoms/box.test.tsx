@@ -78,6 +78,18 @@ describe('Box', () => {
     });
   });
 
+  describe('sizing props', () => {
+    it('accepts fullHeight', () => {
+      render(<Box fullHeight>text</Box>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+
+    it('accepts shrink={false}', () => {
+      render(<Box shrink={false}>text</Box>);
+      expect(screen.getByText('text')).toBeInTheDocument();
+    });
+  });
+
   describe('combined props', () => {
     it('accepts margin and padding together', () => {
       render(

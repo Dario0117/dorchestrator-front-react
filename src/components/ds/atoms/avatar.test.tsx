@@ -24,7 +24,7 @@ describe('Avatar', () => {
     it('accepts size prop', () => {
       render(
         <Avatar
-          size="lg"
+          size="sm"
           data-testid="avatar"
         >
           <AvatarFallback>JD</AvatarFallback>

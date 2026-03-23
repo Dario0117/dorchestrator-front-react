@@ -1,4 +1,6 @@
 import { EmptyState } from '@components/ds/atoms/empty-state';
+import { HStack } from '@components/ds/atoms/hstack';
+import { Stack } from '@components/ds/atoms/stack';
 import { ColdStorageView } from '@domains/terminal/components/cold-storage-view';
 import { FontSizeControls } from '@domains/terminal/components/font-size-controls';
 import { RecordingPlayer } from '@domains/terminal/components/recording-player';
@@ -65,14 +67,14 @@ export function RecordingContent({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center">
+    <Stack gap="lg">
+      <HStack>
         <FontSizeControls
           fontSize={fontSize}
           onIncrease={increaseFontSize}
           onDecrease={decreaseFontSize}
         />
-      </div>
+      </HStack>
       <SessionFilePanel
         organizationId={organizationId}
         sessionId={sessionId}
@@ -86,6 +88,6 @@ export function RecordingContent({
         sessionId={sessionId}
         fileMap={fileMap}
       />
-    </div>
+    </Stack>
   );
 }

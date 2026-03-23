@@ -1,9 +1,21 @@
-type PageSectionProps = Omit<React.ComponentProps<'section'>, 'className'>;
+import { cn } from '@lib/utils';
 
-export function PageSection({ children, ...props }: PageSectionProps) {
+interface PageSectionProps
+  extends Omit<React.ComponentProps<'section'>, 'className' | 'style'> {
+  centered?: boolean;
+}
+
+export function PageSection({
+  children,
+  centered,
+  ...props
+}: PageSectionProps) {
   return (
     <section
-      className="space-y-6 p-6 md:p-10"
+      className={cn(
+        'space-y-6 p-6 md:p-10',
+        centered && 'flex min-h-svh w-full items-center justify-center',
+      )}
       {...props}
     >
       {children}

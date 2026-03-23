@@ -1,4 +1,4 @@
-type PageTitleProps = Omit<React.ComponentProps<'h1'>, 'className'>;
+type PageTitleProps = Omit<React.ComponentProps<'h1'>, 'className' | 'style'>;
 
 export function PageTitle({ children, ...props }: PageTitleProps) {
   return (

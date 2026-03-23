@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 
 interface SecondaryTextProps
-  extends Omit<React.ComponentProps<'span'>, 'className'> {
+  extends Omit<React.ComponentProps<'span'>, 'className' | 'style'> {
   centered?: boolean;
 }
 

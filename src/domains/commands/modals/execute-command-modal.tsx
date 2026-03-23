@@ -52,7 +52,7 @@ export function ExecuteCommandModal({
       open={open}
       onOpenChange={onOpenChange}
     >
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Execute Command</DialogTitle>
           <DialogDescription>

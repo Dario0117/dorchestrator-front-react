@@ -1,3 +1,5 @@
+import { HStack } from '@components/ds/atoms/hstack';
+import { Stack } from '@components/ds/atoms/stack';
 import { useTerminalReauthForm } from '@domains/terminal/forms/hooks/use-terminal-reauth-form';
 import type { TerminalReauthFormProps } from '@domains/terminal/forms/terminal-reauth.form.types';
 
@@ -20,7 +22,10 @@ export function TerminalReauthForm({
         form.handleSubmit();
       }}
     >
-      <div className="space-y-4 py-4">
+      <Stack
+        gap="lg"
+        innerSpaceY="md"
+      >
         <form.AppField name="password">
           {(field) => (
             <field.AppFormField
@@ -31,13 +36,17 @@ export function TerminalReauthForm({
             />
           )}
         </form.AppField>
-      </div>
+      </Stack>
 
-      <div className="flex justify-end gap-2">
+      <HStack
+        gap="sm"
+        align="stretch"
+        justify="end"
+      >
         <form.AppForm>
           <form.AppSubscribeSubmitButton label="Authenticate" />
         </form.AppForm>
-      </div>
+      </HStack>
 
       <form.AppForm>
         <form.AppSubscribeErrorButton />

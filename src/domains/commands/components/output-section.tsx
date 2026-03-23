@@ -1,9 +1,12 @@
 import { Button } from '@components/ds/atoms/button';
+import { CodeBlock } from '@components/ds/atoms/code-block';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@components/ds/atoms/collapsible';
+import { HStack } from '@components/ds/atoms/hstack';
+import { Surface } from '@components/ds/atoms/surface';
 import { TerminalHeader } from '@domains/commands/components/terminal-header';
 import { useCopyToClipboard } from '@domains/shared/hooks/use-copy-to-clipboard';
 import { Check, ChevronDown, Copy, Download } from 'lucide-react';
@@ -43,21 +46,22 @@ export function OutputSection({
     URL.revokeObjectURL(url);
   };
 
-  const textColor = outputType === 'stderr' ? 'text-red-400' : 'text-green-400';
-
   return (
     <Collapsible
       open={open}
       onOpenChange={setOpen}
     >
-      <div className="flex items-center justify-between">
-        <CollapsibleTrigger className="flex items-center gap-2 py-2 font-medium text-sm hover:underline">
+      <HStack justify="between">
+        <CollapsibleTrigger layout="inline">
           <ChevronDown
             className={`h-4 w-4 shrink-0 transition-transform ${open ? '' : '-rotate-90'}`}
           />
           {title}
         </CollapsibleTrigger>
-        <div className="flex gap-1">
+        <HStack
+          gap="xs"
+          align="stretch"
+        >
           <Button
             variant="ghost"
             size="sm"
@@ -80,17 +84,19 @@ export function OutputSection({
             <Download className="h-4 w-4" />
             Download
           </Button>
-        </div>
-      </div>
+        </HStack>
+      </HStack>
       <CollapsibleContent>
-        <div className="overflow-hidden rounded-md">
+        <Surface rounded="md">
           <TerminalHeader />
-          <pre
-            className={`max-h-[500px] overflow-auto bg-gray-950 p-4 font-mono text-sm whitespace-pre-wrap ${textColor}`}
+          <CodeBlock
+            variant="terminal"
+            color={outputType === 'stderr' ? 'danger' : 'success'}
+            maxH="md"
           >
             {content}
-          </pre>
-        </div>
+          </CodeBlock>
+        </Surface>
       </CollapsibleContent>
     </Collapsible>
   );
