@@ -1,4 +1,4 @@
-import { LoginPage } from '@components/org/pages/login.page';
+import { LoginPage } from '@domains/org/pages/login.page';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 

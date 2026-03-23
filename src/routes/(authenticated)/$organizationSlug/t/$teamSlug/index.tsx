@@ -1,6 +1,6 @@
-import { HomePage } from '@components/org/pages/home.page';
-import { useOrganizationDetailsQueryOptions } from '@services/organizations/get-organization-details.http-service';
-import { useOrganizationStatsQueryOptions } from '@services/organizations/get-organization-stats.http-service';
+import { HomePage } from '@domains/org/pages/home.page';
+import { useOrganizationDetailsQueryOptions } from '@domains/org/services/organizations/get-organization-details.http-service';
+import { useOrganizationStatsQueryOptions } from '@domains/org/services/organizations/get-organization-stats.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute(

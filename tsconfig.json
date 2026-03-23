@@ -7,13 +7,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@domains/*": ["./src/domains/*"],
       "@components/*": ["./src/components/*"],
-      "@services/*": ["./src/services/*"],
-      "@hooks/*": ["./src/hooks/*"],
       "@lib/*": ["./src/lib/*"],
-      "@context/*": ["./src/context/*"],
-      "@stores/*": ["./src/stores/*"],
-      "@myTypes/*": ["./src/types/*"],
       "@routes/*": ["./src/routes/*"],
       "@assets/*": ["./src/assets/*"],
       "@/*": ["./src/*"]

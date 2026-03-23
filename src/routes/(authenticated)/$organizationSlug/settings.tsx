@@ -1,8 +1,8 @@
-import { OrganizationSettingsPage } from '@components/org/pages/organization-settings.page';
-import { useOrganizationDetailsQueryOptions } from '@services/organizations/get-organization-details.http-service';
-import { useListMembersQueryOptions } from '@services/organizations/list-members.http-service';
-import { MEMBER_ROLES } from '@services/organizations/list-members.http-service.constants';
-import { useGetTerminalConfigQueryOptions } from '@services/terminal/get-terminal-config.http-service';
+import { OrganizationSettingsPage } from '@domains/org/pages/organization-settings.page';
+import { useOrganizationDetailsQueryOptions } from '@domains/org/services/organizations/get-organization-details.http-service';
+import { useListMembersQueryOptions } from '@domains/org/services/organizations/list-members.http-service';
+import { MEMBER_ROLES } from '@domains/org/services/organizations/list-members.http-service.constants';
+import { useGetTerminalConfigQueryOptions } from '@domains/terminal/services/get-terminal-config.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod/v4';
 

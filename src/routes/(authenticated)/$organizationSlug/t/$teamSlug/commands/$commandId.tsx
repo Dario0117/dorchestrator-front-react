@@ -1,5 +1,5 @@
-import { CommandDetailsPage } from '@components/commands/pages/command-details.page';
-import { useGetCommandQueryOptions } from '@services/commands/get-command.http-service';
+import { CommandDetailsPage } from '@domains/commands/pages/command-details.page';
+import { useGetCommandQueryOptions } from '@domains/commands/services/get-command.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute(

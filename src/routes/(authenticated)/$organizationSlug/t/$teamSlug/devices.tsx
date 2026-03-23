@@ -1,5 +1,5 @@
-import { DevicesPage } from '@components/org/pages/devices.page';
-import { useDevicesQueryOptions } from '@services/devices/list-devices.http-service';
+import { useDevicesQueryOptions } from '@domains/devices/services/list-devices.http-service';
+import { DevicesPage } from '@domains/org/pages/devices.page';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod/v4';
 

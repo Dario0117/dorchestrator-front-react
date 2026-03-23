@@ -1,0 +1,250 @@
+import { Button } from '@components/ds/atoms/button';
+import { EmptyState } from '@components/ds/atoms/empty-state';
+import { PageSection } from '@components/ds/atoms/page-section';
+import { PageTitle } from '@components/ds/atoms/page-title';
+import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
+import { PaginatedFooter } from '@components/ds/organisms/paginated-footer';
+import { ExecuteCommandModal } from '@domains/commands/modals/execute-command-modal';
+import { DeviceCard } from '@domains/devices/components/device-card';
+import { AddDeviceModal } from '@domains/devices/modals/add-device-modal';
+import { DeviceConfigDialog } from '@domains/devices/modals/device-config-dialog';
+import { useDevicesSuspenseQuery } from '@domains/devices/services/list-devices.http-service';
+import { useRemoveDeviceMutation } from '@domains/devices/services/remove-device.http-service';
+import { ConfirmDialog } from '@domains/shared/components/confirm-dialog';
+import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
+import { useCurrentTeam } from '@domains/shared/hooks/use-current-team';
+import { CreateTerminalSessionDialog } from '@domains/terminal/modals/create-terminal-session-dialog';
+import { TerminalReauthModal } from '@domains/terminal/modals/terminal-reauth-modal';
+import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/devices';
+import { useNavigate } from '@tanstack/react-router';
+import { HardDrive, Plus } from 'lucide-react';
+import { useState } from 'react';
+
+export function DevicesPage() {
+  const currentOrganization = useCurrentOrganization();
+  const currentTeam = useCurrentTeam();
+  const { page, size } = Route.useSearch();
+  const { teamSlug } = Route.useParams();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [executeCommandDevice, setExecuteCommandDevice] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [terminalDevice, setTerminalDevice] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [sessionConfigDevice, setSessionConfigDevice] = useState<{
+    id: number;
+    name: string;
+    terminalAuthToken: string;
+  } | null>(null);
+  const [configDevice, setConfigDevice] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+
+  const isAdmin =
+    currentOrganization.role === 'admin' ||
+    currentOrganization.role === 'owner';
+
+  const organizationId = currentOrganization.id;
+  // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
+  const teamId = currentTeam!.id;
+
+  // Fetch devices (pre-loaded by route loader)
+  const { data } = useDevicesSuspenseQuery(organizationId, teamId, page, size);
+
+  // Delete device mutation
+  const deleteMutation = useRemoveDeviceMutation();
+
+  const devices = data.responseData?.results || [];
+  const totalPages = data.responseData?.totalPages || 0;
+  const totalResults = data.responseData?.totalResults || 0;
+  const hasNext = data.responseData?.hasNext || false;
+  const hasPrevious = data.responseData?.hasPrevious || false;
+
+  const handlePageChange = (newPage: number) => {
+    navigate({
+      search: (prev) => ({ ...prev, page: newPage }),
+    });
+  };
+
+  const handleSizeChange = (newSize: number) => {
+    navigate({
+      search: (prev) => ({ ...prev, page: 1, size: newSize }),
+    });
+  };
+
+  return (
+    <PageSection>
+      <div className="py-6">
+        <PageHeadingBar>
+          <PageTitle>Devices</PageTitle>
+          <Button onClick={() => setAddModalOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Device
+          </Button>
+        </PageHeadingBar>
+
+        {devices.length === 0 ? (
+          <EmptyState
+            icon={HardDrive}
+            title="No devices registered"
+            description='No devices registered yet. Click "Add Device" to get started.'
+            action={
+              <Button onClick={() => setAddModalOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Device
+              </Button>
+            }
+          />
+        ) : (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {devices.map((device) => (
+                <DeviceCard
+                  key={device.id}
+                  device={device}
+                  onRemove={(id) =>
+                    setConfirmDelete({ id, name: device.deviceName })
+                  }
+                  onExecuteCommand={() => {
+                    setExecuteCommandDevice({
+                      id: device.id,
+                      name: device.deviceName,
+                    });
+                  }}
+                  onOpenTerminal={() => {
+                    setTerminalDevice({
+                      id: device.id,
+                      name: device.deviceName,
+                    });
+                  }}
+                  onConfigure={
+                    isAdmin
+                      ? () =>
+                          setConfigDevice({
+                            id: device.id,
+                            name: device.deviceName,
+                          })
+                      : undefined
+                  }
+                />
+              ))}
+            </div>
+
+            <PaginatedFooter
+              totalResults={totalResults}
+              singularLabel="device"
+              pluralLabel="devices"
+              page={page}
+              totalPages={totalPages}
+              hasNext={hasNext}
+              hasPrevious={hasPrevious}
+              size={size}
+              onPageChange={handlePageChange}
+              onSizeChange={handleSizeChange}
+            />
+          </>
+        )}
+
+        {addModalOpen && (
+          <AddDeviceModal
+            open={addModalOpen}
+            onOpenChange={setAddModalOpen}
+            organizationId={organizationId}
+            teamId={teamId}
+          />
+        )}
+
+        {executeCommandDevice && (
+          <ExecuteCommandModal
+            open={true}
+            onOpenChange={() => setExecuteCommandDevice(null)}
+            organizationId={organizationId}
+            teamId={teamId}
+            pinnedDevice={executeCommandDevice}
+          />
+        )}
+
+        {terminalDevice && (
+          <TerminalReauthModal
+            open={true}
+            onOpenChange={() => setTerminalDevice(null)}
+            organizationId={organizationId}
+            onSuccess={(terminalAuthToken) => {
+              setSessionConfigDevice({
+                id: terminalDevice.id,
+                name: terminalDevice.name,
+                terminalAuthToken,
+              });
+              setTerminalDevice(null);
+            }}
+          />
+        )}
+
+        {sessionConfigDevice && (
+          <CreateTerminalSessionDialog
+            open={true}
+            onOpenChange={() => setSessionConfigDevice(null)}
+            organizationId={organizationId}
+            teamId={teamId}
+            deviceId={sessionConfigDevice.id}
+            deviceName={sessionConfigDevice.name}
+            terminalAuthToken={sessionConfigDevice.terminalAuthToken}
+            onSessionCreated={(sessionId) => {
+              setSessionConfigDevice(null);
+              navigate({
+                to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
+                params: {
+                  organizationSlug: currentOrganization.slug,
+                  teamSlug,
+                  sessionId: String(sessionId),
+                },
+              });
+            }}
+          />
+        )}
+
+        {configDevice && (
+          <DeviceConfigDialog
+            open={true}
+            onOpenChange={() => setConfigDevice(null)}
+            organizationId={organizationId}
+            deviceId={configDevice.id}
+            deviceName={configDevice.name}
+          />
+        )}
+
+        {confirmDelete && (
+          <ConfirmDialog
+            open={!!confirmDelete}
+            onOpenChange={(open) => !open && setConfirmDelete(null)}
+            title="Remove Device"
+            desc={`Are you sure you want to remove ${confirmDelete.name}? This action cannot be undone.`}
+            handleConfirm={() => {
+              deleteMutation.mutate({
+                params: {
+                  path: {
+                    organizationId: organizationId,
+                    teamId: teamId,
+                    deviceId: confirmDelete.id,
+                  },
+                },
+              });
+              setConfirmDelete(null);
+            }}
+            confirmText="Remove"
+            destructive
+          />
+        )}
+      </div>
+    </PageSection>
+  );
+}

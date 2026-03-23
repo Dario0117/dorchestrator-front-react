@@ -1,5 +1,5 @@
+import { useUserOrganizationsSuspendedQuery } from '@domains/org/services/organizations/list-user-organizations.http-service';
 import { logWarning } from '@lib/logger.utils';
-import { useUserOrganizationsSuspendedQuery } from '@services/organizations/list-user-organizations.http-service';
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 
 function RedirectToOrganization() {

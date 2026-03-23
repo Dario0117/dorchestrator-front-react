@@ -1,4 +1,4 @@
-import { UpdatePasswordPage } from '@components/org/pages/update-pw.page';
+import { UpdatePasswordPage } from '@domains/org/pages/update-pw.page';
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 import { z } from 'zod/v4';
 

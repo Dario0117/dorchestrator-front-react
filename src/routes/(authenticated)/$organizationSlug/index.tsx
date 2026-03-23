@@ -1,8 +1,8 @@
-import { useDefaultTeamQueryOptions } from '@services/teams/get-default-team.http-service';
+import { useDefaultTeamQueryOptions } from '@domains/org/services/teams/get-default-team.http-service';
 import {
   getAllTeamsFromCache,
   getTeamsForOrg,
-} from '@services/teams/list-teams.http-service';
+} from '@domains/org/services/teams/list-teams.http-service';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(authenticated)/$organizationSlug/')({

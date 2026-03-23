@@ -1,7 +1,7 @@
 import { RouteErrorFallback } from '@components/ds/atoms/route-error-fallback';
-import { TerminalSessionPage } from '@components/terminal/pages/terminal-session.page';
-import { SessionLoadingSkeleton } from '@components/terminal/session-loading-skeleton';
-import { useTerminalSessionQueryOptions } from '@services/terminal/get-terminal-session.http-service';
+import { SessionLoadingSkeleton } from '@domains/terminal/components/session-loading-skeleton';
+import { TerminalSessionPage } from '@domains/terminal/pages/terminal-session.page';
+import { useTerminalSessionQueryOptions } from '@domains/terminal/services/get-terminal-session.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 import { Suspense } from 'react';
 

@@ -10,6 +10,9 @@
 - [ ] Some buttons don't have the hand cursor, we should add it
 - [ ] We might need to integrate the device status to the ws system, maybe also a notification to detect when the device list is updated
 - [ ] When we don't know where to redirect to in the frontend in terms of team, we should default to the default on the current organization so we don't have wrong states
+- [ ] On src/hooks/use-current-team.ts do the same as src/hooks/use-current-organization.ts, specifically this "// biome-ignore lint/style/noNonNullAssertion:" so we don't have to do it everywhere
+- [ ] http://localhost:9000/api/v1/organization/set-active is being called on every request
+- [ ] Review each folder and component and see if we can identify new patterns to implement through the whole app
 
 ## Auth
 

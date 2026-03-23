@@ -1,0 +1,42 @@
+import type { AuditLogsQueryParams } from '@domains/audit-logs/services/list-audit-logs.http-service';
+
+export type AuditLogAction = NonNullable<AuditLogsQueryParams['action']>;
+export type AuditLogResourceType = NonNullable<
+  AuditLogsQueryParams['resourceType']
+>;
+
+export const AUDIT_LOG_ACTIONS = [
+  'created',
+  'deleted',
+  'updated',
+] as const satisfies readonly AuditLogAction[];
+
+export const AUDIT_LOG_RESOURCE_TYPES = [
+  'device',
+  'registration_token',
+  'device_api_key',
+  'organization',
+  'member',
+  'command',
+  'session',
+  'user_account',
+  'auth_failure',
+  'terminal_session',
+  'terminal_config',
+  'batch_job',
+] as const satisfies readonly AuditLogResourceType[];
+
+export const AUDIT_LOG_RESOURCE_TYPE_LABELS = {
+  device: 'Device',
+  command: 'Command',
+  organization: 'Organization',
+  member: 'Member',
+  registration_token: 'Registration Token',
+  device_api_key: 'API Key',
+  session: 'Session',
+  user_account: 'User Account',
+  auth_failure: 'Auth Failure',
+  terminal_session: 'Terminal Session',
+  terminal_config: 'Terminal Config',
+  batch_job: 'Batch Job',
+} as const satisfies Record<AuditLogResourceType, string>;

@@ -17,9 +17,10 @@ const isPage = args.page === 'true';
 
 const pascal = kebabToPascal(name);
 
-const subdir = isPage ? `${domain}/pages` : domain;
+const subfolder = isPage ? 'pages' : (args.subfolder ?? 'components');
+const subdir = `${domain}/${subfolder}`;
 const fileName = isPage ? `${name}.page` : name;
-const componentBase = resolve(root, `src/components/${subdir}`);
+const componentBase = resolve(root, `src/domains/${subdir}`);
 
 const componentPath = resolve(componentBase, `${fileName}.tsx`);
 const typesPath = resolve(componentBase, `${fileName}.types.ts`);
@@ -37,7 +38,7 @@ for (const f of filesToCreate) {
   ensureDirectoryExists(f);
 }
 
-const componentImportAlias = `@components/${subdir}/${fileName}`;
+const componentImportAlias = `@domains/${subdir}/${fileName}`;
 
 // Component file
 const componentContent = isPage

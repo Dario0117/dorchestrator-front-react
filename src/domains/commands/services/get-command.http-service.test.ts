@@ -1,0 +1,45 @@
+import { useGetCommandQueryOptions } from '@domains/commands/services/get-command.http-service';
+import {
+  PENDING_REFETCH_INTERVAL_MS,
+  RUNNING_REFETCH_INTERVAL_MS,
+} from '@domains/commands/services/get-command.http-service.constants';
+
+const makeQueryState = (status?: string) => ({
+  state: {
+    data: status ? { responseData: { results: { status } } } : undefined,
+  },
+});
+
+describe('useGetCommandQueryOptions', () => {
+  describe('refetchInterval', () => {
+    it('should return fallback interval for pending status', () => {
+      const options = useGetCommandQueryOptions('org-1', 'team-1', 1);
+      const result = options.refetchInterval(makeQueryState('pending'));
+      expect(result).toBe(PENDING_REFETCH_INTERVAL_MS);
+    });
+
+    it('should return fallback interval for running status', () => {
+      const options = useGetCommandQueryOptions('org-1', 'team-1', 1);
+      const result = options.refetchInterval(makeQueryState('running'));
+      expect(result).toBe(RUNNING_REFETCH_INTERVAL_MS);
+    });
+
+    it('should return false for completed status', () => {
+      const options = useGetCommandQueryOptions('org-1', 'team-1', 1);
+      const result = options.refetchInterval(makeQueryState('completed'));
+      expect(result).toBe(false);
+    });
+
+    it('should return false for failed status', () => {
+      const options = useGetCommandQueryOptions('org-1', 'team-1', 1);
+      const result = options.refetchInterval(makeQueryState('failed'));
+      expect(result).toBe(false);
+    });
+
+    it('should return false when data is undefined', () => {
+      const options = useGetCommandQueryOptions('org-1', 'team-1', 1);
+      const result = options.refetchInterval(makeQueryState());
+      expect(result).toBe(false);
+    });
+  });
+});

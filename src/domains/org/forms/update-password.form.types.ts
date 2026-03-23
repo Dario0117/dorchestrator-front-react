@@ -1,0 +1,6 @@
+import type { useUpdatePasswordMutationType } from '@domains/org/services/users/update-password.http-service';
+
+export interface UpdatePasswordFormProps {
+  updatePasswordMutation: useUpdatePasswordMutationType;
+  handleSuccess(data: useUpdatePasswordMutationType['data']): void;
+}

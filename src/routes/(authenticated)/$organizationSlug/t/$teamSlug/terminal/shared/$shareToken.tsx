@@ -1,5 +1,5 @@
-import { SharedSessionPage } from '@components/terminal/pages/shared-session.page';
-import { useCurrentOrganization } from '@hooks/use-current-organization';
+import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
+import { SharedSessionPage } from '@domains/terminal/pages/shared-session.page';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute(

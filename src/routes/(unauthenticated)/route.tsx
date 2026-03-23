@@ -1,5 +1,5 @@
+import { profileQueryOptions } from '@domains/org/services/users/get-profile.http-service';
 import { logDebug, logInfo } from '@lib/logger.utils';
-import { profileQueryOptions } from '@services/users/get-profile.http-service';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(unauthenticated)')({

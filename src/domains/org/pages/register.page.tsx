@@ -1,0 +1,24 @@
+import { RegisterForm } from '@domains/org/forms/register.form';
+import { useRegisterMutation } from '@domains/org/services/users/register.http-service';
+import { useNavigate } from '@tanstack/react-router';
+
+export function RegisterPage() {
+  const navigate = useNavigate({ from: '/register' });
+
+  const register = useRegisterMutation();
+  return (
+    <section className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <RegisterForm
+          registerMutation={register}
+          handleSuccess={() => {
+            navigate({
+              to: '/login',
+              search: { registered: true },
+            });
+          }}
+        />
+      </div>
+    </section>
+  );
+}

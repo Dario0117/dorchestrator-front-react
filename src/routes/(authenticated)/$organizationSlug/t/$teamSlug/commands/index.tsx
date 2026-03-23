@@ -1,7 +1,7 @@
-import { CommandsListPage } from '@components/commands/pages/commands-list.page';
-import { useCommandsQueryOptions } from '@services/commands/list-commands.http-service';
-import { COMMAND_STATUSES } from '@services/commands/list-commands.http-service.constants';
-import { useDevicesQueryOptions } from '@services/devices/list-devices.http-service';
+import { CommandsListPage } from '@domains/commands/pages/commands-list.page';
+import { useCommandsQueryOptions } from '@domains/commands/services/list-commands.http-service';
+import { COMMAND_STATUSES } from '@domains/commands/services/list-commands.http-service.constants';
+import { useDevicesQueryOptions } from '@domains/devices/services/list-devices.http-service';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod/v4';
 

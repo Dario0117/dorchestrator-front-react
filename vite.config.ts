@@ -85,13 +85,9 @@ export default defineConfig(({ mode }) => {
     ] as PluginOption[],
     resolve: {
       alias: {
+        '@domains': path.resolve(__dirname, './src/domains'),
         '@components': path.resolve(__dirname, './src/components'),
-        '@services': path.resolve(__dirname, './src/services'),
-        '@hooks': path.resolve(__dirname, './src/hooks'),
         '@lib': path.resolve(__dirname, './src/lib'),
-        '@context': path.resolve(__dirname, './src/context'),
-        '@stores': path.resolve(__dirname, './src/stores'),
-        '@myTypes': path.resolve(__dirname, './src/types'),
         '@routes': path.resolve(__dirname, './src/routes'),
         '@assets': path.resolve(__dirname, './src/assets'),
         '@': path.resolve(__dirname, './src'),

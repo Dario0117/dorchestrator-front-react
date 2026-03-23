@@ -1,9 +1,9 @@
-import { AuditLogsListPage } from '@components/audit-logs/pages/audit-logs-list.page';
-import { useAuditLogsQueryOptions } from '@services/audit-logs/list-audit-logs.http-service';
+import { AuditLogsListPage } from '@domains/audit-logs/pages/audit-logs-list.page';
+import { useAuditLogsQueryOptions } from '@domains/audit-logs/services/list-audit-logs.http-service';
 import {
   AUDIT_LOG_ACTIONS,
   AUDIT_LOG_RESOURCE_TYPES,
-} from '@services/audit-logs/list-audit-logs.http-service.constants';
+} from '@domains/audit-logs/services/list-audit-logs.http-service.constants';
 import { createFileRoute } from '@tanstack/react-router';
 import { Suspense } from 'react';
 import { z } from 'zod/v4';

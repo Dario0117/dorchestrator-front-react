@@ -1,9 +1,9 @@
-import { queryClient } from '@context/query.provider';
 import {
   useUserOrganizationsQueryOptions,
   type useUserOrganizationsQueryReturnType,
-} from '@services/organizations/list-user-organizations.http-service';
-import { getAllTeamsFromCache } from '@services/teams/list-teams.http-service';
+} from '@domains/org/services/organizations/list-user-organizations.http-service';
+import { getAllTeamsFromCache } from '@domains/org/services/teams/list-teams.http-service';
+import { queryClient } from '@domains/shared/context/query.provider';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from '@/routeTree.gen';
 

@@ -1,0 +1,140 @@
+import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
+import { SessionFilePanel } from '@domains/terminal/components/session-file-panel';
+import { SuggestionNotificationPanel } from '@domains/terminal/components/suggestion-notification-panel';
+import { TerminalEmulator } from '@domains/terminal/components/terminal-emulator';
+import type { TerminalEmulatorHandle } from '@domains/terminal/components/terminal-emulator.types';
+import { TerminalShortcutPanel } from '@domains/terminal/components/terminal-shortcut-panel';
+import { TerminalToolbar } from '@domains/terminal/components/terminal-toolbar';
+import { useFontSize } from '@domains/terminal/hooks/use-font-size';
+import { useTerminalBookmark } from '@domains/terminal/hooks/use-terminal-bookmark';
+import { useTerminalSessionLifecycle } from '@domains/terminal/hooks/use-terminal-session-lifecycle';
+import { useTerminalShare } from '@domains/terminal/hooks/use-terminal-share';
+import { useTerminalShortcuts } from '@domains/terminal/hooks/use-terminal-shortcuts';
+import { ShortcutBuilderDialog } from '@domains/terminal/modals/shortcut-builder-dialog';
+import { TerminalReauthModal } from '@domains/terminal/modals/terminal-reauth-modal';
+import { useParams } from '@tanstack/react-router';
+import { useRef } from 'react';
+
+export function TerminalPage({
+  organizationId,
+  sessionId: sessionIdNum,
+  isShared: initialIsShared,
+  shareToken: initialShareToken,
+  onSessionLocked,
+  onSessionTerminated,
+}: {
+  organizationId: string;
+  sessionId: number;
+  isShared: boolean;
+  shareToken: string | null;
+  onSessionLocked?: () => void;
+  onSessionTerminated?: () => void;
+}) {
+  const { sessionId, organizationSlug, teamSlug } = useParams({
+    strict: false,
+  }) as { sessionId: string; organizationSlug: string; teamSlug: string };
+  const terminalRef = useRef<TerminalEmulatorHandle>(null);
+
+  const fontSizeControls = useFontSize();
+
+  const lifecycle = useTerminalSessionLifecycle({
+    organizationId,
+    organizationSlug,
+    teamSlug,
+    sessionId,
+  });
+
+  const share = useTerminalShare({
+    organizationId,
+    organizationSlug,
+    sessionId: sessionIdNum,
+    initialIsShared,
+    initialShareToken,
+  });
+
+  const bookmark = useTerminalBookmark({
+    organizationId,
+    sessionId: sessionIdNum,
+  });
+
+  const shortcuts = useTerminalShortcuts({
+    organizationId,
+    sessionId,
+    terminalRef,
+    isClosing: lifecycle.isClosing,
+  });
+
+  return (
+    <div className="flex h-full flex-col pb-[env(safe-area-inset-bottom)]">
+      <TerminalToolbar
+        sessionId={sessionId}
+        fontSizeControls={fontSizeControls}
+        share={share}
+        bookmark={bookmark}
+        isClosing={lifecycle.isClosing}
+        warningMessage={lifecycle.warningMessage}
+        onExtendClick={() => lifecycle.setShowExtendReauth(true)}
+        onCloseSession={lifecycle.handleCloseSession}
+      />
+      <div className="shrink-0 border-b">
+        <TerminalShortcutPanel
+          onShortcutPress={shortcuts.handleShortcutPress}
+          onCustomShortcutPress={shortcuts.handleCustomShortcutPress}
+          customShortcuts={shortcuts.customShortcuts}
+          onAddShortcut={shortcuts.handleAddShortcut}
+          onEditShortcut={shortcuts.handleEditShortcut}
+          onDeleteShortcut={shortcuts.handleDeleteShortcut}
+        />
+      </div>
+      <ShortcutBuilderDialog
+        open={shortcuts.shortcutDialogOpen}
+        onOpenChange={shortcuts.setShortcutDialogOpen}
+        onSave={shortcuts.handleSaveShortcut}
+        isSaving={shortcuts.isSavingShortcut}
+        editingShortcut={shortcuts.editingShortcut}
+      />
+      <div className="shrink-0 border-b">
+        <SessionFilePanel
+          organizationId={organizationId}
+          sessionId={sessionIdNum}
+        />
+      </div>
+      <SuggestionNotificationPanel
+        sessionId={sessionId}
+        organizationId={organizationId}
+      />
+      {lifecycle.warningMessage && (
+        <div className="shrink-0 border-b bg-destructive/10 px-3 py-2 text-center text-sm text-destructive">
+          {lifecycle.warningMessage}
+          {lifecycle.isExtendError && (
+            <span className="ml-2 font-medium">
+              Failed to extend session. Please try again.
+            </span>
+          )}
+        </div>
+      )}
+      <TerminalReauthModal
+        open={lifecycle.showExtendReauth}
+        onOpenChange={lifecycle.setShowExtendReauth}
+        organizationId={organizationId}
+        onSuccess={lifecycle.handleExtendSuccess}
+      />
+      <div className="relative min-h-0 flex-1">
+        <TerminalEmulator
+          ref={terminalRef}
+          sessionId={sessionId}
+          fontSize={fontSizeControls.fontSize}
+          onSessionEnd={lifecycle.handleSessionEnd}
+          onSessionLocked={onSessionLocked}
+          onSessionWarning={lifecycle.handleSessionWarning}
+          onSessionTerminated={onSessionTerminated}
+        />
+        {lifecycle.isClosing && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+            <SecondaryParagraph>Closing session&hellip;</SecondaryParagraph>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

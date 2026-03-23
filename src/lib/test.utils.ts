@@ -1,32 +1,37 @@
-import { env } from '@lib/env.utils';
-import type { paths } from '@myTypes/api.generated.types';
-import { listAuditLogsHandler } from '@services/audit-logs/list-audit-logs.http-service.handlers';
-import { getCommandHandler } from '@services/commands/get-command.http-service.handlers';
-import { listCommandsHandler } from '@services/commands/list-commands.http-service.handlers';
-import { submitCommandHandler } from '@services/commands/submit-command.http-service.handlers';
-import { generateDeviceTokenHandler } from '@services/devices/generate-device-token.http-service.handlers';
-import { listDevicesHandler } from '@services/devices/list-devices.http-service.handlers';
-import { removeDeviceHandler } from '@services/devices/remove-device.http-service.handlers';
-import { getUnreadCountHandler } from '@services/notifications/get-unread-count.http-service.handlers';
-import { listNotificationsHandler } from '@services/notifications/list-notifications.http-service.handlers';
+import { listAuditLogsHandler } from '@domains/audit-logs/services/list-audit-logs.http-service.handlers';
+import { getCommandHandler } from '@domains/commands/services/get-command.http-service.handlers';
+import { listCommandsHandler } from '@domains/commands/services/list-commands.http-service.handlers';
+import { submitCommandHandler } from '@domains/commands/services/submit-command.http-service.handlers';
+import { generateDeviceTokenHandler } from '@domains/devices/services/generate-device-token.http-service.handlers';
+import { listDevicesHandler } from '@domains/devices/services/list-devices.http-service.handlers';
+import { removeDeviceHandler } from '@domains/devices/services/remove-device.http-service.handlers';
+import { getUnreadCountHandler } from '@domains/notifications/services/get-unread-count.http-service.handlers';
+import { listNotificationsHandler } from '@domains/notifications/services/list-notifications.http-service.handlers';
 import {
   markAllNotificationsReadHandler,
   markNotificationReadHandler,
-} from '@services/notifications/mark-notification-read.http-service.handlers';
-import { checkSlugAvailabilityHandler } from '@services/organizations/check-slug-availability.http-service.handlers';
-import { createOrganizationHandler } from '@services/organizations/create-organization.http-service.handlers';
-import { deleteOrganizationHandler } from '@services/organizations/delete-organization.http-service.handlers';
-import { getOrganizationDetailsHandler } from '@services/organizations/get-organization-details.http-service.handlers';
-import { getOrganizationStatsHandler } from '@services/organizations/get-organization-stats.http-service.handlers';
-import { leaveOrganizationHandler } from '@services/organizations/leave-organization.http-service.handlers';
-import { listMembersHandler } from '@services/organizations/list-members.http-service.handlers';
-import { listUserOrganizationsHandler } from '@services/organizations/list-user-organizations.http-service.handlers';
-import { removeMemberHandler } from '@services/organizations/remove-member.http-service.handlers';
-import { setDefaultOrganizationHandler } from '@services/organizations/set-default-organization.http-service.handlers';
-import { transferOwnershipHandler } from '@services/organizations/transfer-ownership.http-service.handlers';
-import { createBookmarkHandler } from '@services/terminal/create-bookmark.http-service.handlers';
-import { createTerminalSessionHandler } from '@services/terminal/create-terminal-session.http-service.handlers';
-import { deleteBookmarkHandler } from '@services/terminal/delete-bookmark.http-service.handlers';
+} from '@domains/notifications/services/mark-notification-read.http-service.handlers';
+import { checkSlugAvailabilityHandler } from '@domains/org/services/organizations/check-slug-availability.http-service.handlers';
+import { createOrganizationHandler } from '@domains/org/services/organizations/create-organization.http-service.handlers';
+import { deleteOrganizationHandler } from '@domains/org/services/organizations/delete-organization.http-service.handlers';
+import { getOrganizationDetailsHandler } from '@domains/org/services/organizations/get-organization-details.http-service.handlers';
+import { getOrganizationStatsHandler } from '@domains/org/services/organizations/get-organization-stats.http-service.handlers';
+import { leaveOrganizationHandler } from '@domains/org/services/organizations/leave-organization.http-service.handlers';
+import { listMembersHandler } from '@domains/org/services/organizations/list-members.http-service.handlers';
+import { listUserOrganizationsHandler } from '@domains/org/services/organizations/list-user-organizations.http-service.handlers';
+import { removeMemberHandler } from '@domains/org/services/organizations/remove-member.http-service.handlers';
+import { setDefaultOrganizationHandler } from '@domains/org/services/organizations/set-default-organization.http-service.handlers';
+import { transferOwnershipHandler } from '@domains/org/services/organizations/transfer-ownership.http-service.handlers';
+import { getProfileHandler } from '@domains/org/services/users/get-profile.http-service.handlers';
+import { loginHandler } from '@domains/org/services/users/login.http-service.handlers';
+import { logoutHandler } from '@domains/org/services/users/logout.http-service.handlers';
+import { logoutAllSessionsHandler } from '@domains/org/services/users/logout-all-sessions.http-service.handlers';
+import { registerHandler } from '@domains/org/services/users/register.http-service.handlers';
+import { resetPasswordHandler } from '@domains/org/services/users/reset-password.http-service.handlers';
+import { updatePasswordHandler } from '@domains/org/services/users/update-password.http-service.handlers';
+import { createBookmarkHandler } from '@domains/terminal/services/create-bookmark.http-service.handlers';
+import { createTerminalSessionHandler } from '@domains/terminal/services/create-terminal-session.http-service.handlers';
+import { deleteBookmarkHandler } from '@domains/terminal/services/delete-bookmark.http-service.handlers';
 import {
   cancelExportHandler,
   downloadExportFileHandler,
@@ -35,36 +40,20 @@ import {
   initiateExportHandler,
   pauseExportHandler,
   resumeExportHandler,
-} from '@services/terminal/export-session-history.http-service.handlers';
-import { extendTerminalSessionHandler } from '@services/terminal/extend-terminal-session.http-service.handlers';
-import { getDeviceConfigHandler } from '@services/terminal/get-device-config.http-service.handlers';
-import { getEffectiveCeilingHandler } from '@services/terminal/get-effective-ceiling.http-service.handlers';
-import { getTerminalConfigHandler } from '@services/terminal/get-terminal-config.http-service.handlers';
-import { getTerminalSessionHandler } from '@services/terminal/get-terminal-session.http-service.handlers';
-import { listTerminalSessionsHandler } from '@services/terminal/list-terminal-sessions.http-service.handlers';
-import { shareTerminalSessionHandler } from '@services/terminal/share-terminal-session.http-service.handlers';
-import { terminalAuthHandler } from '@services/terminal/terminal-auth.http-service.handlers';
-import { terminateTerminalSessionHandler } from '@services/terminal/terminate-terminal-session.http-service.handlers';
-import { unlockTerminalSessionHandler } from '@services/terminal/unlock-terminal-session.http-service.handlers';
-import { unshareTerminalSessionHandler } from '@services/terminal/unshare-terminal-session.http-service.handlers';
-import { updateDeviceConfigHandler } from '@services/terminal/update-device-config.http-service.handlers';
-import { updateTerminalConfigHandler } from '@services/terminal/update-terminal-config.http-service.handlers';
-import { getProfileHandler } from '@services/users/get-profile.http-service.handlers';
-import { loginHandler } from '@services/users/login.http-service.handlers';
-import { logoutHandler } from '@services/users/logout.http-service.handlers';
-import { logoutAllSessionsHandler } from '@services/users/logout-all-sessions.http-service.handlers';
-import { registerHandler } from '@services/users/register.http-service.handlers';
-import { resetPasswordHandler } from '@services/users/reset-password.http-service.handlers';
-import { updatePasswordHandler } from '@services/users/update-password.http-service.handlers';
-
-type OpenAPIPath = keyof paths & string;
-
-function openApiPathToMSW(path: OpenAPIPath) {
-  return path.replace(/\{([^}]+)\}/g, ':$1');
-}
-export function buildBackendUrl(path: OpenAPIPath) {
-  return `${env.BACKEND_BASE_URL}${openApiPathToMSW(path)}`;
-}
+} from '@domains/terminal/services/export-session-history.http-service.handlers';
+import { extendTerminalSessionHandler } from '@domains/terminal/services/extend-terminal-session.http-service.handlers';
+import { getDeviceConfigHandler } from '@domains/terminal/services/get-device-config.http-service.handlers';
+import { getEffectiveCeilingHandler } from '@domains/terminal/services/get-effective-ceiling.http-service.handlers';
+import { getTerminalConfigHandler } from '@domains/terminal/services/get-terminal-config.http-service.handlers';
+import { getTerminalSessionHandler } from '@domains/terminal/services/get-terminal-session.http-service.handlers';
+import { listTerminalSessionsHandler } from '@domains/terminal/services/list-terminal-sessions.http-service.handlers';
+import { shareTerminalSessionHandler } from '@domains/terminal/services/share-terminal-session.http-service.handlers';
+import { terminalAuthHandler } from '@domains/terminal/services/terminal-auth.http-service.handlers';
+import { terminateTerminalSessionHandler } from '@domains/terminal/services/terminate-terminal-session.http-service.handlers';
+import { unlockTerminalSessionHandler } from '@domains/terminal/services/unlock-terminal-session.http-service.handlers';
+import { unshareTerminalSessionHandler } from '@domains/terminal/services/unshare-terminal-session.http-service.handlers';
+import { updateDeviceConfigHandler } from '@domains/terminal/services/update-device-config.http-service.handlers';
+import { updateTerminalConfigHandler } from '@domains/terminal/services/update-terminal-config.http-service.handlers';
 
 export function MSWSuccessHandlers() {
   return [

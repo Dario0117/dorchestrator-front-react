@@ -1,5 +1,5 @@
-import type { OrganizationItem } from '@services/organizations/list-user-organizations.http-service';
-import type { TeamItem } from '@services/teams/list-teams.http-service';
+import type { OrganizationItem } from '@domains/org/services/organizations/list-user-organizations.http-service';
+import type { TeamItem } from '@domains/org/services/teams/list-teams.http-service';
 import type { QueryClient } from '@tanstack/react-query';
 
 export interface RouterContext {

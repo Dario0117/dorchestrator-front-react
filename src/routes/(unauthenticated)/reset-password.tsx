@@ -1,4 +1,4 @@
-import { ResetPasswordPage } from '@components/org/pages/reset-pw.page';
+import { ResetPasswordPage } from '@domains/org/pages/reset-pw.page';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(unauthenticated)/reset-password')({

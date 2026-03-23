@@ -1,4 +1,4 @@
-import { buildBackendUrl } from '@lib/test.utils';
+import { buildBackendUrl } from '@lib/test-backend-url.utils';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
 

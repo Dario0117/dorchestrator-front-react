@@ -1,4 +1,4 @@
-import type { Theme } from '@context/theme.provider.types';
+import type { Theme } from '@domains/shared/context/theme.provider.types';
 
 export interface ProviderWrapperOptions {
   storageKey?: string;

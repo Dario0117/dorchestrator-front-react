@@ -1,7 +1,7 @@
-import { AuthenticatedLayout } from '@components/layout/authenticated-layout';
+import { useUserOrganizationsQueryOptions } from '@domains/org/services/organizations/list-user-organizations.http-service';
+import { profileQueryOptions } from '@domains/org/services/users/get-profile.http-service';
+import { AuthenticatedLayout } from '@domains/shared/components/authenticated-layout';
 import { logWarning } from '@lib/logger.utils';
-import { useUserOrganizationsQueryOptions } from '@services/organizations/list-user-organizations.http-service';
-import { profileQueryOptions } from '@services/users/get-profile.http-service';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/(authenticated)')({

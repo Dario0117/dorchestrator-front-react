@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@context/theme.provider';
+import { ThemeProvider } from '@domains/shared/context/theme.provider';
 import type { ProviderWrapperOptions } from '@lib/test-wrappers.utils.types';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, fireEvent, render } from '@testing-library/react';
