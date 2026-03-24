@@ -26,6 +26,14 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
     ...actual,
     useNavigate: () => mockNavigate,
     useParams: () => mockUseParams(),
+    useRouterState: ({
+      select,
+    }: {
+      select?: (s: { location: { pathname: string } }) => string;
+    } = {}) => {
+      const state = { location: { pathname: '/test-org/t/default/' } };
+      return select ? select(state) : state;
+    },
   };
 });
 

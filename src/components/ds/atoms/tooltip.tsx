@@ -1,3 +1,4 @@
+import { ShortcutHint } from '@components/ds/atoms/shortcut-hint';
 import {
   Tooltip as UiTooltip,
   TooltipContent as UiTooltipContent,
@@ -32,8 +33,10 @@ function TooltipContent({
   sideOffset,
   align,
   alignOffset,
+  shortcut,
+  children,
   ...props
-}: React.ComponentProps<typeof UiTooltipContent>) {
+}: React.ComponentProps<typeof UiTooltipContent> & { shortcut?: string }) {
   return (
     <UiTooltipContent
       side={side}
@@ -41,7 +44,10 @@ function TooltipContent({
       align={align}
       alignOffset={alignOffset}
       {...props}
-    />
+    >
+      {children}
+      {shortcut && <ShortcutHint keys={shortcut} />}
+    </UiTooltipContent>
   );
 }
 

@@ -1,4 +1,4 @@
-import { AuditLogFilters } from '@domains/audit-logs/filters/audit-log-filters';
+import { AuditLogFilterControls } from '@domains/audit-logs/filters/audit-log-filters';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -33,14 +33,14 @@ vi.mock(
   },
 );
 
-describe('AuditLogFilters', () => {
+describe('AuditLogFilterControls', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     mockSearchParams = { page: 1, size: 25 };
   });
 
   it('should render all filter controls', () => {
-    renderWithProviders(<AuditLogFilters />);
+    renderWithProviders(<AuditLogFilterControls />);
 
     expect(screen.getByLabelText('Filter by action')).toBeInTheDocument();
     expect(
@@ -51,7 +51,7 @@ describe('AuditLogFilters', () => {
 
   it('should allow selecting an action filter', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<AuditLogFilters />);
+    renderWithProviders(<AuditLogFilterControls />);
 
     await user.click(screen.getByLabelText('Filter by action'));
 
@@ -73,7 +73,7 @@ describe('AuditLogFilters', () => {
 
   it('should allow selecting a resource type filter', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<AuditLogFilters />);
+    renderWithProviders(<AuditLogFilterControls />);
 
     await user.click(screen.getByLabelText('Filter by resource type'));
 
@@ -95,7 +95,7 @@ describe('AuditLogFilters', () => {
 
   it('should allow selecting a date range filter', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<AuditLogFilters />);
+    renderWithProviders(<AuditLogFilterControls />);
 
     await user.click(screen.getByLabelText('Filter by date range'));
 

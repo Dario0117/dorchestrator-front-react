@@ -29,9 +29,9 @@ import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organi
 import { formatRelativeTime } from '@lib/format-relative-time';
 import { cn } from '@lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useParams } from '@tanstack/react-router';
+import { useNavigate, useParams, useRouterState } from '@tanstack/react-router';
 import { Bell, BellOff, CheckCheck } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type NotificationSeverity = NotificationEntry['severity'];
 
@@ -50,6 +50,15 @@ export function NotificationPanel() {
   const currentOrganization = useCurrentOrganization();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const prevPathnameRef = useRef(pathname);
+
+  useEffect(() => {
+    if (prevPathnameRef.current !== pathname && isOpen) {
+      setIsOpen(false);
+    }
+    prevPathnameRef.current = pathname;
+  }, [pathname, isOpen]);
 
   const organizationId = currentOrganization?.id ?? '';
 
@@ -76,6 +85,7 @@ export function NotificationPanel() {
   }
 
   function handleNotificationClick(notification: NotificationEntry) {
+    setIsOpen(false);
     if (!notification.read) {
       markReadMutation.mutate({
         params: {

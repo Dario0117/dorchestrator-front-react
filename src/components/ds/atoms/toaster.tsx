@@ -1,0 +1,11 @@
+import { Toaster as SonnerToaster } from '@components/ui/sonner';
+
+export function Toaster() {
+  return (
+    <SonnerToaster
+      position="bottom-right"
+      richColors
+      closeButton
+    />
+  );
+}

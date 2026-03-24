@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import './main.css';
+import { Toaster } from '@components/ds/atoms/toaster';
 import { QueryProvider } from '@domains/shared/context/query.provider';
 import { ThemeProvider } from '@domains/shared/context/theme.provider';
 import App from '@/app';
@@ -20,6 +21,7 @@ if (!rootElement.innerHTML) {
       >
         <QueryProvider>
           <App />
+          <Toaster />
           <ReactQueryDevtools />
         </QueryProvider>
       </ThemeProvider>

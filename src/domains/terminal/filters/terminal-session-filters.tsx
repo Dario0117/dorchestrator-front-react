@@ -1,4 +1,5 @@
 import { Input } from '@components/ds/atoms/input';
+import { Stack } from '@components/ds/atoms/stack';
 import { useDevicesQueryOptions } from '@domains/devices/services/list-devices.http-service';
 import { useListMembersQueryOptions } from '@domains/org/services/organizations/list-members.http-service';
 import { SelectFilter } from '@domains/shared/filters/select-filter';
@@ -16,7 +17,7 @@ const STATUS_OPTIONS = [
   { value: 'terminated', label: 'Terminated' },
 ];
 
-export function TerminalSessionFilters() {
+export function TerminalSessionFilterControls() {
   const currentOrganization = useCurrentOrganization();
   const currentTeam = useCurrentTeam();
   const { status, deviceId, userId, dateFrom, dateTo } = Route.useSearch();
@@ -75,13 +76,14 @@ export function TerminalSessionFilters() {
   };
 
   return (
-    <>
+    <Stack gap="md">
       <SelectFilter
         value={status}
         onChange={(value) => navigateFilter({ status: value })}
         options={STATUS_OPTIONS}
         allLabel="All statuses"
         ariaLabel="Filter by status"
+        fullWidth
       />
       <SelectFilter
         value={deviceId !== undefined ? String(deviceId) : undefined}
@@ -93,6 +95,7 @@ export function TerminalSessionFilters() {
         options={deviceOptions}
         allLabel="All devices"
         ariaLabel="Filter by device"
+        fullWidth
       />
       <SelectFilter
         value={userId}
@@ -100,13 +103,13 @@ export function TerminalSessionFilters() {
         options={memberOptions}
         allLabel="All users"
         ariaLabel="Filter by user"
+        fullWidth
       />
       <Input
         type="date"
         aria-label="From date"
         value={dateFrom?.slice(0, 10) ?? ''}
         onChange={handleDateFromFilter}
-        fullWidth={false}
         placeholder="From"
       />
       <Input
@@ -114,9 +117,8 @@ export function TerminalSessionFilters() {
         aria-label="To date"
         value={dateTo?.slice(0, 10) ?? ''}
         onChange={handleDateToFilter}
-        fullWidth={false}
         placeholder="To"
       />
-    </>
+    </Stack>
   );
 }

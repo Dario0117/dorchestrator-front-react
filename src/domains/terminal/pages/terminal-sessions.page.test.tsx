@@ -272,7 +272,14 @@ describe('TerminalSessionsPage', () => {
   });
 
   it('should render status filter', async () => {
+    const user = userEvent.setup();
     renderWithProviders(<TerminalSessionsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Filter')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText('Filter'));
 
     await waitFor(() => {
       expect(screen.getByLabelText('Filter by status')).toBeInTheDocument();
@@ -595,6 +602,12 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
+        expect(screen.getByText('Filter')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText('Filter'));
+
+      await waitFor(() => {
         expect(screen.getByLabelText('Filter by status')).toBeInTheDocument();
       });
 
@@ -628,6 +641,12 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
+        expect(screen.getByText(/^Filter/)).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText(/^Filter/));
+
+      await waitFor(() => {
         expect(screen.getByLabelText('Filter by status')).toBeInTheDocument();
       });
 
@@ -654,6 +673,12 @@ describe('TerminalSessionsPage', () => {
     it('should call navigate with deviceId when selecting a device', async () => {
       const user = userEvent.setup();
       renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Filter')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText('Filter'));
 
       await waitFor(() => {
         expect(screen.getByLabelText('Filter by device')).toBeInTheDocument();
@@ -689,6 +714,12 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
+        expect(screen.getByText(/^Filter/)).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText(/^Filter/));
+
+      await waitFor(() => {
         expect(screen.getByLabelText('Filter by device')).toBeInTheDocument();
       });
 
@@ -715,6 +746,12 @@ describe('TerminalSessionsPage', () => {
     it('should call navigate with userId when selecting a user', async () => {
       const user = userEvent.setup();
       renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Filter')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText('Filter'));
 
       await waitFor(() => {
         expect(screen.getByLabelText('Filter by user')).toBeInTheDocument();
@@ -750,6 +787,12 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
+        expect(screen.getByText(/^Filter/)).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText(/^Filter/));
+
+      await waitFor(() => {
         expect(screen.getByLabelText('Filter by user')).toBeInTheDocument();
       });
 
@@ -778,6 +821,12 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
+        expect(screen.getByText('Filter')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText('Filter'));
+
+      await waitFor(() => {
         expect(screen.getByLabelText('From date')).toBeInTheDocument();
       });
 
@@ -795,6 +844,7 @@ describe('TerminalSessionsPage', () => {
     });
 
     it('should clear dateFrom when clearing from date input', async () => {
+      const user = userEvent.setup();
       mockSearchParams = {
         page: 1,
         size: 25,
@@ -802,6 +852,12 @@ describe('TerminalSessionsPage', () => {
       };
 
       renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/^Filter/)).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText(/^Filter/));
 
       await waitFor(() => {
         expect(screen.getByLabelText('From date')).toBeInTheDocument();
@@ -831,6 +887,12 @@ describe('TerminalSessionsPage', () => {
       renderWithProviders(<TerminalSessionsPage />);
 
       await waitFor(() => {
+        expect(screen.getByText('Filter')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText('Filter'));
+
+      await waitFor(() => {
         expect(screen.getByLabelText('To date')).toBeInTheDocument();
       });
 
@@ -848,6 +910,7 @@ describe('TerminalSessionsPage', () => {
     });
 
     it('should clear dateTo when clearing to date input', async () => {
+      const user = userEvent.setup();
       mockSearchParams = {
         page: 1,
         size: 25,
@@ -855,6 +918,12 @@ describe('TerminalSessionsPage', () => {
       };
 
       renderWithProviders(<TerminalSessionsPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/^Filter/)).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText(/^Filter/));
 
       await waitFor(() => {
         expect(screen.getByLabelText('To date')).toBeInTheDocument();
@@ -916,12 +985,18 @@ describe('TerminalSessionsPage', () => {
 
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
-          search: { page: 1, size: 25 },
+          search: expect.any(Function),
         }),
       );
+
+      const call = mockNavigate.mock.calls[0] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = call[0].search({ page: 2, size: 25, status: 'active' });
+      expect(result).toEqual({ page: 1, size: 25 });
     });
 
-    it('should show "Clear Filters" button in filter bar when filters are active and sessions exist', async () => {
+    it('should show "Clear all" link in filter chips when filters are active and sessions exist', async () => {
       const user = userEvent.setup();
       mockSearchParams = { page: 1, size: 25, status: 'active' };
 
@@ -929,17 +1004,23 @@ describe('TerminalSessionsPage', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('button', { name: /clear filters/i }),
+          screen.getByRole('button', { name: /clear all/i }),
         ).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: /clear filters/i }));
+      await user.click(screen.getByRole('button', { name: /clear all/i }));
 
       expect(mockNavigate).toHaveBeenCalledWith(
         expect.objectContaining({
-          search: { page: 1, size: 25 },
+          search: expect.any(Function),
         }),
       );
+
+      const call = mockNavigate.mock.calls[0] as [
+        { search: (prev: Record<string, unknown>) => Record<string, unknown> },
+      ];
+      const result = call[0].search({ page: 2, size: 25, status: 'active' });
+      expect(result).toEqual({ page: 1, size: 25 });
     });
   });
 

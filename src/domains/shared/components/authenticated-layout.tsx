@@ -1,4 +1,7 @@
+import { CommandPaletteTrigger } from '@components/ds/atoms/command-palette-trigger';
 import { HStack } from '@components/ds/atoms/hstack';
+import { CommandPalette } from '@components/ds/molecules/command-palette';
+import { BottomNav } from '@components/ds/organisms/bottom-nav';
 import {
   SidebarInset,
   SidebarProvider,
@@ -12,10 +15,10 @@ import { ProfileDropdown } from '@domains/shared/components/profile-dropdown';
 import { SkipToMain } from '@domains/shared/components/skip-to-main';
 import { ThemeSwitch } from '@domains/shared/components/theme-switch';
 import { LayoutProvider } from '@domains/shared/context/layout.provider';
+import { useCommandPalette } from '@domains/shared/hooks/use-command-palette';
 import { useEventsWebSocket } from '@domains/shared/hooks/use-events-websocket';
 import { useWebSocketEvents } from '@domains/shared/hooks/use-websocket-events';
 import { getCookie } from '@lib/cookies.utils';
-import { cn } from '@lib/utils';
 import { Outlet, useParams } from '@tanstack/react-router';
 import { _getNullableCurrentOrganizationFromSlug } from '@/app';
 
@@ -43,37 +46,55 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   return (
     <LayoutProvider>
       <OrganizationCheckWrapper>
-        <SidebarProvider defaultOpen={defaultOpen}>
-          <SkipToMain />
-          <AppSidebar />
-          <SidebarInset
-            className={cn(
-              // Set content container, so we can use container queries
-              '@container/content',
-
-              // If layout is fixed, set the height
-              // to 100svh to prevent overflow
-              'has-[[data-layout=fixed]]:h-svh',
-
-              // If layout is fixed and sidebar is inset,
-              // set the height to 100svh - spacing (total margins) to prevent overflow
-              'peer-data-[variant=inset]:has-[[data-layout=fixed]]:h-[calc(100svh-(var(--spacing)*4))]',
-            )}
-          >
-            <Header fixed>
-              <HStack
-                gap="md"
-                spaceInlineStart="auto"
-              >
-                <ThemeSwitch />
-                <NotificationPanel />
-                <ProfileDropdown />
-              </HStack>
-            </Header>
-            {children ?? <Outlet />}
-          </SidebarInset>
-        </SidebarProvider>
+        <AuthenticatedLayoutInner defaultOpen={defaultOpen}>
+          {children}
+        </AuthenticatedLayoutInner>
       </OrganizationCheckWrapper>
     </LayoutProvider>
+  );
+}
+
+function AuthenticatedLayoutInner({
+  defaultOpen,
+  children,
+}: {
+  defaultOpen: boolean;
+  children?: React.ReactNode;
+}) {
+  const { open, setOpen, handleSelect } = useCommandPalette();
+  const params = useParams({ strict: false });
+  const organizationSlug =
+    'organizationSlug' in params ? (params.organizationSlug as string) : '';
+  const teamSlug =
+    'teamSlug' in params ? (params.teamSlug as string) : undefined;
+  const basePath = teamSlug
+    ? `/${organizationSlug}/t/${teamSlug}`
+    : `/${organizationSlug}`;
+
+  return (
+    <SidebarProvider defaultOpen={defaultOpen}>
+      <SkipToMain />
+      <AppSidebar />
+      <SidebarInset>
+        <Header fixed>
+          <CommandPaletteTrigger onClick={() => setOpen(true)} />
+          <HStack
+            gap="md"
+            spaceInlineStart="auto"
+          >
+            <ThemeSwitch />
+            <NotificationPanel />
+            <ProfileDropdown />
+          </HStack>
+        </Header>
+        {children ?? <Outlet />}
+      </SidebarInset>
+      <BottomNav basePath={basePath} />
+      <CommandPalette
+        open={open}
+        onOpenChange={setOpen}
+        onSelect={handleSelect}
+      />
+    </SidebarProvider>
   );
 }

@@ -63,6 +63,7 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
     Outlet: () => <div data-testid="outlet">Outlet</div>,
     useParams: () => mockUseParams(),
     useRouterState: () => ({
+      location: { pathname: '/test-org/t/test-team/' },
       matches: [
         {
           context: {

@@ -2,14 +2,22 @@ import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
 import { EmptyState } from '@components/ds/atoms/empty-state';
 import { Grid } from '@components/ds/atoms/grid';
+import { HStack } from '@components/ds/atoms/hstack';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { PageTitle } from '@components/ds/atoms/page-title';
+import { FilterChips } from '@components/ds/molecules/filter-chips';
+import { FilterPanel } from '@components/ds/molecules/filter-panel';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
 import { PaginatedFooter } from '@components/ds/organisms/paginated-footer';
 import { ExecuteCommandModal } from '@domains/commands/modals/execute-command-modal';
 import { DeviceCard } from '@domains/devices/components/device-card';
+import {
+  DeviceFilterControls,
+  useDeviceFilterState,
+} from '@domains/devices/filters/device-filters';
 import { AddDeviceModal } from '@domains/devices/modals/add-device-modal';
 import { DeviceConfigDialog } from '@domains/devices/modals/device-config-dialog';
+import type { ListDevicesDevice } from '@domains/devices/services/list-devices.http-service';
 import { useDevicesSuspenseQuery } from '@domains/devices/services/list-devices.http-service';
 import { useRemoveDeviceMutation } from '@domains/devices/services/remove-device.http-service';
 import { ConfirmDialog } from '@domains/shared/components/confirm-dialog';
@@ -20,15 +28,28 @@ import { TerminalReauthModal } from '@domains/terminal/modals/terminal-reauth-mo
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/devices';
 import { useNavigate } from '@tanstack/react-router';
 import { HardDrive, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+
+const ONLINE_THRESHOLD_MS = 60_000;
+
+function isDeviceOnline(device: ListDevicesDevice) {
+  if (!device.lastSeenAt) {
+    return false;
+  }
+  return (
+    Date.now() - new Date(device.lastSeenAt).getTime() < ONLINE_THRESHOLD_MS
+  );
+}
 
 export function DevicesPage() {
   const currentOrganization = useCurrentOrganization();
   const currentTeam = useCurrentTeam();
-  const { page, size } = Route.useSearch();
+  const { page, size, status, platform } = Route.useSearch();
   const { teamSlug } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+
   const [executeCommandDevice, setExecuteCommandDevice] = useState<{
     id: number;
     name: string;
@@ -51,6 +72,9 @@ export function DevicesPage() {
     name: string;
   } | null>(null);
 
+  const { activeFilterCount, chips, clearFilters, removeFilter } =
+    useDeviceFilterState();
+
   const isAdmin =
     currentOrganization.role === 'admin' ||
     currentOrganization.role === 'owner';
@@ -59,17 +83,28 @@ export function DevicesPage() {
   // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
   const teamId = currentTeam!.id;
 
-  // Fetch devices (pre-loaded by route loader)
   const { data } = useDevicesSuspenseQuery(organizationId, teamId, page, size);
 
-  // Delete device mutation
   const deleteMutation = useRemoveDeviceMutation();
 
-  const devices = data.responseData?.results || [];
+  const allDevices = data.responseData?.results || [];
   const totalPages = data.responseData?.totalPages || 0;
   const totalResults = data.responseData?.totalResults || 0;
   const hasNext = data.responseData?.hasNext || false;
   const hasPrevious = data.responseData?.hasPrevious || false;
+
+  const devices = useMemo(() => {
+    let filtered = allDevices;
+    if (status !== undefined) {
+      filtered = filtered.filter((d) =>
+        status === 'online' ? isDeviceOnline(d) : !isDeviceOnline(d),
+      );
+    }
+    if (platform !== undefined) {
+      filtered = filtered.filter((d) => d.platform === platform);
+    }
+    return filtered;
+  }, [allDevices, status, platform]);
 
   const handlePageChange = (newPage: number) => {
     navigate({
@@ -88,21 +123,44 @@ export function DevicesPage() {
       <Box innerSpaceY="lg">
         <PageHeadingBar>
           <PageTitle>Devices</PageTitle>
-          <Button onClick={() => setAddModalOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Device
-          </Button>
+          <HStack gap="sm">
+            <FilterPanel
+              activeFilterCount={activeFilterCount}
+              onClear={clearFilters}
+              open={filterOpen}
+              onOpenChange={setFilterOpen}
+            >
+              <DeviceFilterControls />
+            </FilterPanel>
+            <Button onClick={() => setAddModalOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Device
+            </Button>
+          </HStack>
         </PageHeadingBar>
 
+        <FilterChips
+          filters={chips}
+          onRemove={removeFilter}
+          onClearAll={clearFilters}
+        />
+
         {devices.length === 0 ? (
-          <EmptyState
-            icon={HardDrive}
-            title="No devices yet"
-            description="Get started by registering your first device."
-            ctaLabel="Add Your First Device"
-            ctaAction={() => setAddModalOpen(true)}
-            ctaIcon={Plus}
-          />
+          activeFilterCount > 0 ? (
+            <EmptyState
+              variant="filtered"
+              ctaAction={clearFilters}
+            />
+          ) : (
+            <EmptyState
+              icon={HardDrive}
+              title="No devices yet"
+              description="Get started by registering your first device."
+              ctaLabel="Add Your First Device"
+              ctaAction={() => setAddModalOpen(true)}
+              ctaIcon={Plus}
+            />
+          )
         ) : (
           <>
             <Grid

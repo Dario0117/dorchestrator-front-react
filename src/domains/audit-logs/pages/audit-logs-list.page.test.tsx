@@ -196,8 +196,15 @@ describe('AuditLogsListPage', () => {
     });
   });
 
-  it('should render filter controls', async () => {
+  it('should render filter button and show controls when opened', async () => {
+    const user = userEvent.setup();
     renderWithProviders(<AuditLogsListPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Filter')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText('Filter'));
 
     await waitFor(() => {
       expect(screen.getByLabelText('Filter by action')).toBeInTheDocument();

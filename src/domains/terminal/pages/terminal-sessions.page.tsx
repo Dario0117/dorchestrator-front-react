@@ -1,15 +1,18 @@
 import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
 import { EmptyState } from '@components/ds/atoms/empty-state';
+import { HStack } from '@components/ds/atoms/hstack';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { SectionTitle } from '@components/ds/atoms/section-title';
+import { FilterChips } from '@components/ds/molecules/filter-chips';
+import { FilterPanel } from '@components/ds/molecules/filter-panel';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
-import { FilteredDataTable } from '@components/ds/organisms/filtered-data-table';
+import { DataTable } from '@components/ds/organisms/data-table';
 import { PaginatedFooter } from '@components/ds/organisms/paginated-footer';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
 import { useCurrentTeam } from '@domains/shared/hooks/use-current-team';
-import { TerminalSessionFilters } from '@domains/terminal/filters/terminal-session-filters';
-import { useTerminalSessionActiveFilterCount } from '@domains/terminal/hooks/use-terminal-session-active-filter-count';
+import { TerminalSessionFilterControls } from '@domains/terminal/filters/terminal-session-filters';
+import { useTerminalFilterState } from '@domains/terminal/hooks/use-terminal-filter-state';
 import { SessionHistoryExportDialog } from '@domains/terminal/modals/session-history-export-dialog';
 import { useTerminalSessionsSuspenseQuery } from '@domains/terminal/services/list-terminal-sessions.http-service';
 import { useTerminateTerminalSessionMutation } from '@domains/terminal/services/terminate-terminal-session.http-service';
@@ -27,7 +30,10 @@ export function TerminalSessionsPage() {
   const { teamSlug } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const activeFilterCount = useTerminalSessionActiveFilterCount();
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  const { activeFilterCount, chips, clearFilters, removeFilter } =
+    useTerminalFilterState();
 
   const organizationId = currentOrganization.id;
   // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
@@ -63,12 +69,6 @@ export function TerminalSessionsPage() {
     });
   };
 
-  const handleClearFilters = () => {
-    navigate({
-      search: { page: 1, size },
-    });
-  };
-
   const handleRowClick = (sessionId: number) => {
     navigate({
       to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
@@ -96,14 +96,24 @@ export function TerminalSessionsPage() {
       <Box innerSpaceY="lg">
         <PageHeadingBar>
           <SectionTitle>Terminal Sessions</SectionTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setExportDialogOpen(true)}
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Export
-          </Button>
+          <HStack gap="sm">
+            <FilterPanel
+              activeFilterCount={activeFilterCount}
+              onClear={clearFilters}
+              open={filterOpen}
+              onOpenChange={setFilterOpen}
+            >
+              <TerminalSessionFilterControls />
+            </FilterPanel>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setExportDialogOpen(true)}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Export
+            </Button>
+          </HStack>
         </PageHeadingBar>
 
         <SessionHistoryExportDialog
@@ -113,25 +123,36 @@ export function TerminalSessionsPage() {
           filters={{ status, deviceId, userId, dateFrom, dateTo }}
         />
 
-        <FilteredDataTable
-          filters={<TerminalSessionFilters />}
-          activeFilterCount={activeFilterCount}
-          onClearFilters={handleClearFilters}
-          isEmpty={sessions.length === 0}
-          filteredEmptyState={
+        <FilterChips
+          filters={chips}
+          onRemove={removeFilter}
+          onClearAll={clearFilters}
+        />
+
+        {sessions.length === 0 ? (
+          activeFilterCount > 0 ? (
             <EmptyState
               variant="filtered"
-              ctaAction={handleClearFilters}
+              ctaAction={clearFilters}
             />
-          }
-          defaultEmptyState={
+          ) : (
             <EmptyState
               icon={Monitor}
               title="No terminal sessions"
               description="Open a terminal session from a device to get started."
             />
-          }
-          footer={
+          )
+        ) : (
+          <>
+            <DataTable>
+              <TerminalSessionsTable
+                sessions={sessions}
+                onRowClick={handleRowClick}
+                onCloseSession={handleCloseSession}
+                terminateMutation={terminateMutation}
+              />
+            </DataTable>
+
             <PaginatedFooter
               totalResults={totalResults}
               singularLabel="session"
@@ -144,15 +165,8 @@ export function TerminalSessionsPage() {
               onPageChange={handlePageChange}
               onSizeChange={handleSizeChange}
             />
-          }
-        >
-          <TerminalSessionsTable
-            sessions={sessions}
-            onRowClick={handleRowClick}
-            onCloseSession={handleCloseSession}
-            terminateMutation={terminateMutation}
-          />
-        </FilteredDataTable>
+          </>
+        )}
       </Box>
     </PageSection>
   );

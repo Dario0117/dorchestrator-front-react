@@ -10,9 +10,14 @@ const ACTION_OPTIONS = [
 interface ActionFilterProps {
   value?: string;
   onChange: (value: string | undefined) => void;
+  fullWidth?: boolean;
 }
 
-export function ActionFilter({ value, onChange }: ActionFilterProps) {
+export function ActionFilter({
+  value,
+  onChange,
+  fullWidth,
+}: ActionFilterProps) {
   return (
     <SelectFilter
       value={value}
@@ -20,6 +25,7 @@ export function ActionFilter({ value, onChange }: ActionFilterProps) {
       options={[...ACTION_OPTIONS]}
       allLabel="All Actions"
       ariaLabel="Filter by action"
+      fullWidth={fullWidth}
     />
   );
 }

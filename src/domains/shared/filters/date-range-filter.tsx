@@ -18,6 +18,7 @@ interface DateRangeFilterProps {
   presets?: DatePreset[];
   allLabel?: string;
   ariaLabel?: string;
+  fullWidth?: boolean;
 }
 
 function getDateRange(preset: string, presets: DatePreset[]) {
@@ -58,6 +59,7 @@ export function DateRangeFilter({
   presets = DEFAULT_PRESETS,
   allLabel = 'Any Time',
   ariaLabel = 'Filter by date range',
+  fullWidth,
 }: DateRangeFilterProps) {
   const currentPreset = getCurrentPreset(startDate, presets);
 
@@ -81,6 +83,7 @@ export function DateRangeFilter({
       options={options}
       allLabel={allLabel}
       ariaLabel={ariaLabel}
+      fullWidth={fullWidth}
     />
   );
 }

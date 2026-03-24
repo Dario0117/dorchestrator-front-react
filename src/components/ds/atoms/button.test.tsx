@@ -48,7 +48,9 @@ describe('Button', () => {
   describe('ds props', () => {
     it('accepts color prop', () => {
       render(<Button color="success">Success</Button>);
-      expect(screen.getByRole('button', { name: 'Success' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Success' }),
+      ).toBeInTheDocument();
     });
 
     it('accepts grow prop', () => {

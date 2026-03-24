@@ -6,19 +6,25 @@ describe('ClickableArea', () => {
   describe('rendering', () => {
     it('renders as a button', () => {
       render(<ClickableArea>Click me</ClickableArea>);
-      expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Click me' }),
+      ).toBeInTheDocument();
     });
   });
 
   describe('semantic props', () => {
     it('renders with rounded prop', () => {
       render(<ClickableArea rounded>Rounded</ClickableArea>);
-      expect(screen.getByRole('button', { name: 'Rounded' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Rounded' }),
+      ).toBeInTheDocument();
     });
 
     it('renders without rounded prop', () => {
       render(<ClickableArea rounded={false}>Not rounded</ClickableArea>);
-      expect(screen.getByRole('button', { name: 'Not rounded' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Not rounded' }),
+      ).toBeInTheDocument();
     });
 
     it('renders with a size prop', () => {

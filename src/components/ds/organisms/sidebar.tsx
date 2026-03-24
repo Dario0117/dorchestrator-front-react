@@ -24,6 +24,7 @@ import {
   SidebarTrigger as UiSidebarTrigger,
   useSidebar,
 } from '@components/ui/sidebar';
+import { cn } from '@lib/utils';
 
 function SidebarProvider({
   defaultOpen,
@@ -65,8 +66,20 @@ function SidebarRail(props: React.ComponentProps<typeof UiSidebarRail>) {
   return <UiSidebarRail {...props} />;
 }
 
-function SidebarInset(props: React.ComponentProps<typeof UiSidebarInset>) {
-  return <UiSidebarInset {...props} />;
+function SidebarInset(
+  props: Omit<React.ComponentProps<typeof UiSidebarInset>, 'className'>,
+) {
+  return (
+    <UiSidebarInset
+      className={cn(
+        '@container/content',
+        'pb-14 md:pb-0',
+        'has-[[data-layout=fixed]]:h-svh',
+        'peer-data-[variant=inset]:has-[[data-layout=fixed]]:h-[calc(100svh-(var(--spacing)*4))]',
+      )}
+      {...props}
+    />
+  );
 }
 
 function SidebarInput(props: React.ComponentProps<typeof UiSidebarInput>) {

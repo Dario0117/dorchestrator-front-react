@@ -14,11 +14,13 @@ const RESOURCE_TYPE_OPTIONS = (
 interface ResourceTypeFilterProps {
   value?: string;
   onChange: (value: string | undefined) => void;
+  fullWidth?: boolean;
 }
 
 export function ResourceTypeFilter({
   value,
   onChange,
+  fullWidth,
 }: ResourceTypeFilterProps) {
   return (
     <SelectFilter
@@ -27,6 +29,7 @@ export function ResourceTypeFilter({
       options={RESOURCE_TYPE_OPTIONS}
       allLabel="All Resources"
       ariaLabel="Filter by resource type"
+      fullWidth={fullWidth}
     />
   );
 }

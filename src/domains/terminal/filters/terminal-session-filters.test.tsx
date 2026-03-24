@@ -1,6 +1,6 @@
 import { useUserOrganizationsQueryOptions } from '@domains/org/services/organizations/list-user-organizations.http-service';
 import { queryClient } from '@domains/shared/context/query.provider';
-import { TerminalSessionFilters } from '@domains/terminal/filters/terminal-session-filters';
+import { TerminalSessionFilterControls } from '@domains/terminal/filters/terminal-session-filters';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -63,7 +63,7 @@ const mockOrganization = {
   isDefault: true,
 };
 
-describe('TerminalSessionFilters', () => {
+describe('TerminalSessionFilterControls', () => {
   beforeEach(() => {
     mockSearchParams = { page: 1, size: 25 };
     mockNavigate.mockClear();
@@ -82,7 +82,7 @@ describe('TerminalSessionFilters', () => {
   });
 
   it('should render status filter', async () => {
-    renderWithProviders(<TerminalSessionFilters />);
+    renderWithProviders(<TerminalSessionFilterControls />);
 
     await waitFor(() => {
       expect(screen.getByLabelText('Filter by status')).toBeInTheDocument();
@@ -90,7 +90,7 @@ describe('TerminalSessionFilters', () => {
   });
 
   it('should render device filter', async () => {
-    renderWithProviders(<TerminalSessionFilters />);
+    renderWithProviders(<TerminalSessionFilterControls />);
 
     await waitFor(() => {
       expect(screen.getByLabelText('Filter by device')).toBeInTheDocument();
@@ -98,7 +98,7 @@ describe('TerminalSessionFilters', () => {
   });
 
   it('should render user filter', async () => {
-    renderWithProviders(<TerminalSessionFilters />);
+    renderWithProviders(<TerminalSessionFilterControls />);
 
     await waitFor(() => {
       expect(screen.getByLabelText('Filter by user')).toBeInTheDocument();
@@ -106,7 +106,7 @@ describe('TerminalSessionFilters', () => {
   });
 
   it('should render date range inputs', async () => {
-    renderWithProviders(<TerminalSessionFilters />);
+    renderWithProviders(<TerminalSessionFilterControls />);
 
     await waitFor(() => {
       expect(screen.getByLabelText('From date')).toBeInTheDocument();
@@ -116,7 +116,7 @@ describe('TerminalSessionFilters', () => {
 
   it('should navigate when from date changes', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<TerminalSessionFilters />);
+    renderWithProviders(<TerminalSessionFilterControls />);
 
     const fromInput = await screen.findByLabelText('From date');
     await user.type(fromInput, '2026-01-15');
