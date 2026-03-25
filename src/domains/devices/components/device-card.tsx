@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@components/ds/atoms/card';
+import { Grid } from '@components/ds/atoms/grid';
 import { HStack } from '@components/ds/atoms/hstack';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
@@ -101,42 +102,54 @@ export function DeviceCard({
           <SmallParagraph spaceAbove="sm">Last seen: Never</SmallParagraph>
         )}
       </CardContent>
-      <CardFooter gap="sm">
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={!deviceStatus.isOnline}
-          onClick={() => onOpenTerminal(device.id)}
+      <CardFooter>
+        <Grid
+          autoFill="sm"
+          gap="sm"
+          fullWidth
         >
-          <Terminal className="mr-2 h-4 w-4" />
-          Terminal
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onExecuteCommand(device.id)}
-        >
-          <Play className="mr-2 h-4 w-4" />
-          Command
-        </Button>
-        {onConfigure && (
           <Button
             variant="outline"
             size="sm"
-            onClick={() => onConfigure(device.id)}
-            aria-label="Configure device"
+            fullWidth
+            disabled={!deviceStatus.isOnline}
+            onClick={() => onOpenTerminal(device.id)}
           >
-            <Settings className="h-4 w-4" />
+            <Terminal className="mr-2 h-4 w-4" />
+            Terminal
           </Button>
-        )}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onRemove(device.id)}
-          aria-label="Remove device"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            fullWidth
+            onClick={() => onExecuteCommand(device.id)}
+          >
+            <Play className="mr-2 h-4 w-4" />
+            Command
+          </Button>
+          <HStack gap="sm">
+            {onConfigure && (
+              <Button
+                variant="outline"
+                size="sm"
+                grow
+                onClick={() => onConfigure(device.id)}
+                aria-label="Configure device"
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              grow
+              onClick={() => onRemove(device.id)}
+              aria-label="Remove device"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </HStack>
+        </Grid>
       </CardFooter>
     </Card>
   );

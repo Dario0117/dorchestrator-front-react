@@ -24,7 +24,7 @@ export function AppFormField({
   const hasError = errorMessages.length > 0;
 
   return (
-    <Grid>
+    <Grid gap="xs">
       <HStack>
         <Label htmlFor={field.name}>
           {label}

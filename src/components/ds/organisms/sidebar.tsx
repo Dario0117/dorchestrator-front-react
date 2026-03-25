@@ -143,6 +143,7 @@ function SidebarMenuButton({
   size,
   isActive,
   tooltip,
+  className,
   ...props
 }: React.ComponentProps<typeof UiSidebarMenuButton>) {
   return (
@@ -151,6 +152,7 @@ function SidebarMenuButton({
       size={size}
       isActive={isActive}
       tooltip={tooltip}
+      className={cn('cursor-pointer', className)}
       {...props}
     />
   );

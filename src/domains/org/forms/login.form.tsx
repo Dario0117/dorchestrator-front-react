@@ -21,7 +21,7 @@ export function LoginForm({ loginMutation, handleSuccess }: LoginFormProps) {
           form.handleSubmit();
         }}
       >
-        <Stack>
+        <Stack gap="xl">
           <form.AppField name="email">
             {(field) => (
               <field.AppFormField

@@ -17,26 +17,35 @@ import {
 import { cn } from '@lib/utils';
 
 type ColCount = 1 | 2 | 3 | 4;
-type FixedColCount = 3 | 4 | 6 | 9;
+type FixedColCount = 2 | 3 | 4 | 6 | 9;
+type AutoFillMin = 'xs' | 'sm' | 'md';
 
 const RESPONSIVE_COLS: Record<ColCount, string> = {
   1: 'grid-cols-1',
   2: 'grid-cols-1 md:grid-cols-2',
-  3: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
-  4: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+  3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+  4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
 };
 
 const FIXED_COLS: Record<FixedColCount, string> = {
+  2: 'grid-cols-2',
   3: 'grid-cols-3',
   4: 'grid-cols-4',
   6: 'grid-cols-6',
   9: 'grid-cols-9',
 };
 
+const AUTO_FILL: Record<AutoFillMin, string> = {
+  xs: 'grid-cols-[repeat(auto-fill,minmax(5rem,1fr))]',
+  sm: 'grid-cols-[repeat(auto-fill,minmax(7.5rem,1fr))]',
+  md: 'grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]',
+};
+
 interface GridProps
   extends Omit<React.ComponentProps<'div'>, 'className' | 'style'> {
   cols?: ColCount;
   fixedCols?: FixedColCount;
+  autoFill?: AutoFillMin;
   gap?: GapSize;
   shrink?: boolean;
   fullHeight?: boolean;
@@ -53,6 +62,7 @@ interface GridProps
 function Grid({
   cols = 1,
   fixedCols,
+  autoFill,
   gap,
   shrink,
   fullHeight,
@@ -70,7 +80,11 @@ function Grid({
     <div
       className={cn(
         'grid',
-        fixedCols ? FIXED_COLS[fixedCols] : RESPONSIVE_COLS[cols],
+        autoFill
+          ? AUTO_FILL[autoFill]
+          : fixedCols
+            ? FIXED_COLS[fixedCols]
+            : RESPONSIVE_COLS[cols],
         gap && GAP[gap],
         shrink === false && 'shrink-0',
         fullHeight && 'h-full',

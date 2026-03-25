@@ -43,6 +43,7 @@ interface PositionedProps
   insetYCenter?: boolean;
   insetRight?: FixedSpacingSize;
   zIndex?: 'behind';
+  group?: boolean;
   showOnGroupHover?: boolean;
   spaceAbove?: SpacingSize;
   spaceBelow?: SpacingSize;
@@ -71,6 +72,7 @@ function Positioned({
   insetYCenter,
   insetRight,
   zIndex,
+  group,
   showOnGroupHover,
   spaceAbove,
   spaceBelow,
@@ -101,7 +103,9 @@ function Positioned({
         insetYCenter && 'top-1/2 -translate-y-1/2',
         insetRight && INSET_RIGHT[insetRight],
         zIndex === 'behind' && '-z-10',
-        showOnGroupHover && 'opacity-0 group-hover:opacity-100',
+        group && 'group',
+        showOnGroupHover &&
+          'md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100',
         spaceAbove && SPACE_ABOVE[spaceAbove],
         spaceBelow && SPACE_BELOW[spaceBelow],
         spaceLeft && SPACE_LEFT[spaceLeft],

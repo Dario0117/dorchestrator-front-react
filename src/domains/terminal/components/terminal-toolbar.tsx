@@ -20,9 +20,7 @@ import {
 } from '@components/ds/molecules/alert-dialog';
 import { FontSizeControls } from '@domains/terminal/components/font-size-controls';
 import { SessionViewerList } from '@domains/terminal/components/session-viewer-list';
-import { TerminalConnectionStatus } from '@domains/terminal/components/terminal-connection-status';
 import type { useFontSize } from '@domains/terminal/hooks/use-font-size';
-import { useTerminalConnectionStore } from '@domains/terminal/stores/terminal-connection.store';
 import {
   Bookmark,
   BookmarkCheck,
@@ -54,7 +52,6 @@ interface TerminalToolbarProps {
   warningMessage: string | null;
   onExtendClick: () => void;
   onCloseSession: () => void;
-  onReconnect?: () => void;
 }
 
 export function TerminalToolbar({
@@ -66,13 +63,8 @@ export function TerminalToolbar({
   warningMessage,
   onExtendClick,
   onCloseSession,
-  onReconnect,
 }: TerminalToolbarProps) {
-  const connectionState = useTerminalConnectionStore((s) => s.connectionState);
-  const isDisconnected = connectionState === 'disconnected';
-  const isConnecting =
-    connectionState === 'connecting' || connectionState === 'reconnecting';
-  const controlsDisabled = isClosing || isConnecting;
+  const controlsDisabled = isClosing;
   const toolbarRef = useRef<HTMLDivElement>(null);
 
   const handleToolbarKeyDown = useCallback(
@@ -134,9 +126,13 @@ export function TerminalToolbar({
         aria-label="Terminal session controls"
         onKeyDown={handleToolbarKeyDown}
       >
-        {/* Left section: connection status */}
-        <HStack>
-          <TerminalConnectionStatus />
+        {/* Left section: font size controls + session viewers */}
+        <HStack innerSpaceX="md">
+          <FontSizeControls
+            fontSize={fontSizeControls.fontSize}
+            onIncrease={fontSizeControls.increase}
+            onDecrease={fontSizeControls.decrease}
+          />
           {share.isShared && (
             <Surface
               border="left"
@@ -145,18 +141,6 @@ export function TerminalToolbar({
               <SessionViewerList sessionId={sessionId} />
             </Surface>
           )}
-        </HStack>
-
-        {/* Center section: font size controls */}
-        <HStack
-          border="left"
-          innerSpaceX="md"
-        >
-          <FontSizeControls
-            fontSize={fontSizeControls.fontSize}
-            onIncrease={fontSizeControls.increase}
-            onDecrease={fontSizeControls.decrease}
-          />
         </HStack>
 
         {/* Right section: actions */}
@@ -272,48 +256,36 @@ export function TerminalToolbar({
             border="left"
             innerSpaceLeft="xs"
           >
-            {isDisconnected && onReconnect ? (
-              <Button
-                variant="default"
-                size="sm"
-                onClick={onReconnect}
-                tabIndex={-1}
+            <AlertDialog>
+              <AlertDialogTrigger
+                render={
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    disabled={isClosing}
+                    tabIndex={-1}
+                  />
+                }
               >
-                <RefreshCw className="mr-1 h-4 w-4" />
-                Reconnect
-              </Button>
-            ) : (
-              <AlertDialog>
-                <AlertDialogTrigger
-                  render={
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      disabled={isClosing}
-                      tabIndex={-1}
-                    />
-                  }
-                >
-                  <X className="mr-1 h-4 w-4" />
-                  End Session
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>End terminal session?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will terminate the terminal session and kill the
-                      underlying process. This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={onCloseSession}>
-                      End Session
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
+                <X className="mr-1 h-4 w-4" />
+                End Session
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>End terminal session?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will terminate the terminal session and kill the
+                    underlying process. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={onCloseSession}>
+                    End Session
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </Surface>
         </HStack>
       </HStack>

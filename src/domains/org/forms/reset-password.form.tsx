@@ -27,7 +27,7 @@ export function ResetPasswordForm({
               form.handleSubmit();
             }}
           >
-            <Stack>
+            <Stack gap="xl">
               <form.AppField name="email">
                 {(field) => (
                   <field.AppFormField

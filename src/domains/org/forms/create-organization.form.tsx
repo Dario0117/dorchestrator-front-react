@@ -76,7 +76,7 @@ export function CreateOrganizationForm({
               form.handleSubmit();
             }}
           >
-            <Stack>
+            <Stack gap="xl">
               {/* Logo Preview */}
               <Flex justify="center">
                 <OrgInitialsAvatar initials={initials || '?'} />

@@ -127,7 +127,7 @@ function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
 function DropdownMenuContent({ width, ...props }: DropdownMenuContentProps) {
   return (
     <ShadcnDropdownMenuContent
-      className={cn(width && DD_CONTENT_WIDTH[width])}
+      className={cn('p-1', width && DD_CONTENT_WIDTH[width])}
       {...props}
     />
   );
@@ -142,7 +142,7 @@ function DropdownMenuLabel({ layout, ...props }: DropdownMenuLabelProps) {
     <ShadcnDropdownMenuLabel
       className={cn(
         layout === 'between' && 'flex items-center justify-between',
-        layout === 'normal' && 'p-0 font-normal',
+        layout === 'normal' && 'px-2 py-1.5 font-normal',
         layout === 'muted-xs' && 'text-muted-foreground text-xs',
       )}
       {...props}
@@ -161,10 +161,10 @@ function DropdownMenuItem({
   return (
     <ShadcnDropdownMenuItem
       className={cn(
+        'cursor-pointer',
         color === 'destructive' && 'text-destructive',
         layout === 'spaced' && 'gap-2 p-2',
-        layout === 'notification' &&
-          'flex cursor-pointer flex-col items-start gap-1 p-3',
+        layout === 'notification' && 'flex flex-col items-start gap-1 p-3',
         indent && 'pl-10',
         active && 'bg-secondary',
         muted && 'opacity-60',
@@ -188,7 +188,7 @@ function DropdownMenuRadioItem({
 }: DropdownMenuRadioItemProps) {
   return (
     <ShadcnDropdownMenuRadioItem
-      className={cn(indented && 'pl-10')}
+      className={cn('cursor-pointer', indented && 'pl-10')}
       {...props}
     />
   );

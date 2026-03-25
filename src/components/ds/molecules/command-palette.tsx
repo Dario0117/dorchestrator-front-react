@@ -147,6 +147,8 @@ export function CommandPalette({
             <HStack
               gap="sm"
               align="center"
+              innerSpaceX="sm"
+              innerSpaceY="sm"
             >
               <MagnifyingGlass className="size-4 shrink-0 text-muted-foreground" />
               <Input
@@ -159,6 +161,7 @@ export function CommandPalette({
                 placeholder="Search devices, actions, pages…"
                 aria-label="Search"
                 inputSize="sm"
+                grow
               />
             </HStack>
           )}
@@ -166,7 +169,8 @@ export function CommandPalette({
           <Scrollable
             overflowY="auto"
             maxH="lg"
-            innerSpaceX="xs"
+            innerSpaceX="sm"
+            innerSpaceY="sm"
           >
             {submenuDevice ? (
               <CommandPaletteDeviceSubmenu

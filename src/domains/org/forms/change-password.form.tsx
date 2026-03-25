@@ -26,7 +26,7 @@ export function ChangePasswordForm({
             form.handleSubmit();
           }}
         >
-          <Stack>
+          <Stack gap="xl">
             <form.AppField name="currentPassword">
               {(field) => (
                 <field.AppFormField

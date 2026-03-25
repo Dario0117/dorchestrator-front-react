@@ -6,6 +6,7 @@ import { SmallText } from '@components/ds/atoms/small-text';
 import { Stack } from '@components/ds/atoms/stack';
 import { SessionFilePanel } from '@domains/terminal/components/session-file-panel';
 import { SuggestionNotificationPanel } from '@domains/terminal/components/suggestion-notification-panel';
+import { TerminalConnectionOverlay } from '@domains/terminal/components/terminal-connection-overlay';
 import { TerminalEmulator } from '@domains/terminal/components/terminal-emulator';
 import type { TerminalEmulatorHandle } from '@domains/terminal/components/terminal-emulator.types';
 import { TerminalShortcutPanel } from '@domains/terminal/components/terminal-shortcut-panel';
@@ -146,6 +147,7 @@ export function TerminalPage({
             <SecondaryParagraph>Closing session&hellip;</SecondaryParagraph>
           </Center>
         )}
+        {!lifecycle.isClosing && <TerminalConnectionOverlay />}
       </FlexFill>
     </Stack>
   );

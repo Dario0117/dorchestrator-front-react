@@ -6,6 +6,7 @@ import type {
   TerminalEmulatorProps,
 } from '@domains/terminal/components/terminal-emulator.types';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
+import { useTerminalConnectionStore } from '@domains/terminal/stores/terminal-connection.store';
 import { logError, logInfo } from '@lib/logger.utils';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
@@ -278,6 +279,18 @@ export const TerminalEmulator = forwardRef<
     terminal.options.fontSize = fontSize;
     fitAddonRef.current?.fit();
   }, [fontSize]);
+
+  const connectionState = useTerminalConnectionStore((s) => s.connectionState);
+
+  useEffect(() => {
+    const terminal = terminalInstanceRef.current;
+    /* v8 ignore start */
+    if (!terminal) {
+      return;
+    }
+    /* v8 ignore stop */
+    terminal.options.cursorBlink = connectionState === 'connected';
+  }, [connectionState]);
 
   return (
     <Surface

@@ -27,7 +27,7 @@ export function UpdatePasswordForm({
               form.handleSubmit();
             }}
           >
-            <Stack>
+            <Stack gap="xl">
               <form.AppField name="password">
                 {(field) => (
                   <field.AppFormField

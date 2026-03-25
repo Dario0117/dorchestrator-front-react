@@ -54,7 +54,7 @@ function Button({
     <ShadcnButton
       size={isDsSize ? undefined : (size as ShadcnButtonProps['size'])}
       className={cn(
-        'text-base md:text-sm',
+        'cursor-pointer text-base md:text-sm',
         color && BUTTON_COLOR[color],
         accentColor && 'border-[var(--accent)] text-[var(--accent)]',
         isDsSize && DS_BUTTON_SIZE[size as DsButtonSize],

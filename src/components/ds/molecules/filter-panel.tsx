@@ -46,10 +46,7 @@ export function FilterPanel({
     >
       <PopoverTrigger
         render={
-          <Button
-            variant="outline"
-            size="sm"
-          >
+          <Button variant="outline">
             <SlidersHorizontal />
             Filter
             {hasActiveFilters && (

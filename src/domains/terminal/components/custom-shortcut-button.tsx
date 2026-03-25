@@ -24,6 +24,7 @@ export function CustomShortcutButton({
     <Positioned
       shrink={false}
       position="relative"
+      group
     >
       <Button
         variant="outline"

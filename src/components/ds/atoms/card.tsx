@@ -13,18 +13,31 @@ import { cn } from '@lib/utils';
 
 type ShadcnCardProps = React.ComponentProps<typeof ShadcnCard>;
 
+type CardMinWidth = 'xs' | 'sm';
+const CARD_MIN_WIDTH: Record<CardMinWidth, string> = {
+  xs: 'min-w-64',
+  sm: 'min-w-80',
+};
+
 interface CardProps extends Omit<ShadcnCardProps, 'className' | 'style'> {
   interactive?: boolean;
   variant?: 'default' | 'destructive';
+  minWidth?: CardMinWidth;
 }
 
-function Card({ interactive, variant = 'default', ...props }: CardProps) {
+function Card({
+  interactive,
+  variant = 'default',
+  minWidth,
+  ...props
+}: CardProps) {
   return (
     <ShadcnCard
       className={cn(
         interactive &&
           'cursor-pointer transition-all duration-200 hover:-translate-y-px hover:ring-foreground/25 motion-reduce:hover:translate-y-0',
         variant === 'destructive' && 'ring-destructive',
+        minWidth && CARD_MIN_WIDTH[minWidth],
       )}
       {...props}
     />
@@ -126,7 +139,7 @@ const SPACE_Y_MAP: Record<GapSize, string> = {
 function CardContent({ gap, ...props }: CardContentProps) {
   return (
     <ShadcnCardContent
-      className={cn(gap && SPACE_Y_MAP[gap])}
+      className={cn('flex-1', gap && SPACE_Y_MAP[gap])}
       {...props}
     />
   );
@@ -136,12 +149,13 @@ type ShadcnCardFooterProps = React.ComponentProps<typeof ShadcnCardFooter>;
 interface CardFooterProps
   extends Omit<ShadcnCardFooterProps, 'className' | 'style'> {
   gap?: GapSize;
+  wrap?: boolean;
 }
 
-function CardFooter({ gap, ...props }: CardFooterProps) {
+function CardFooter({ gap, wrap, ...props }: CardFooterProps) {
   return (
     <ShadcnCardFooter
-      className={cn(gap && GAP[gap])}
+      className={cn(gap && GAP[gap], wrap && 'flex-wrap')}
       {...props}
     />
   );

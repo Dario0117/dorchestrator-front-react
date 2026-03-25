@@ -28,7 +28,7 @@ export function RegisterForm({
               form.handleSubmit();
             }}
           >
-            <Stack>
+            <Stack gap="xl">
               <form.AppField name="name">
                 {(field) => (
                   <field.AppFormField

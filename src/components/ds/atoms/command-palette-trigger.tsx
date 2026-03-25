@@ -16,7 +16,7 @@ function CommandPaletteTrigger({ onClick }: CommandPaletteTriggerProps) {
         size="icon"
         onClick={onClick}
         aria-label="Search"
-        className="inline-flex text-muted-foreground md:hidden"
+        className="inline-flex cursor-pointer text-muted-foreground md:hidden"
       >
         <Search className="size-4" />
       </Button>
@@ -26,7 +26,7 @@ function CommandPaletteTrigger({ onClick }: CommandPaletteTriggerProps) {
         variant="outline"
         onClick={onClick}
         aria-label="Search"
-        className="hidden items-center gap-2 text-muted-foreground md:inline-flex"
+        className="hidden cursor-pointer items-center gap-2 text-muted-foreground md:inline-flex"
       >
         <Search className="size-4" />
         <SmallText>Search...</SmallText>

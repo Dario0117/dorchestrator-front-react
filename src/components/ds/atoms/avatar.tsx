@@ -68,7 +68,10 @@ function AvatarImage(props: AvatarImageProps) {
 function AvatarFallback({ rounded, ...props }: AvatarFallbackProps) {
   return (
     <ShadcnAvatarFallback
-      className={cn(rounded && AVATAR_ROUNDED[rounded])}
+      className={cn(
+        'dark:bg-foreground/15 dark:text-foreground',
+        rounded && AVATAR_ROUNDED[rounded],
+      )}
       {...props}
     />
   );

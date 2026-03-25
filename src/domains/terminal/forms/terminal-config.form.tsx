@@ -34,7 +34,7 @@ export function TerminalConfigForm({
             form.handleSubmit();
           }}
         >
-          <Stack>
+          <Stack gap="xl">
             <form.AppField name="inactivityTimeoutMinutes">
               {(field) => (
                 <field.AppFormField

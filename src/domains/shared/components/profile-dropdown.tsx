@@ -36,7 +36,7 @@ export function ProfileDropdown() {
         <DropdownMenuTrigger
           className={cn(
             buttonVariants({ variant: 'ghost' }),
-            'relative h-8 w-8 rounded-full',
+            'relative h-8 w-8 cursor-pointer rounded-full',
           )}
         >
           <Avatar size="sm">
