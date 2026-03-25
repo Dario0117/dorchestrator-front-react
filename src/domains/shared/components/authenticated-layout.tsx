@@ -63,8 +63,7 @@ function AuthenticatedLayoutInner({
 }) {
   const { open, setOpen, handleSelect } = useCommandPalette();
   const params = useParams({ strict: false });
-  const organizationSlug =
-    'organizationSlug' in params ? (params.organizationSlug as string) : '';
+  const organizationSlug = params.organizationSlug as string;
   const teamSlug =
     'teamSlug' in params ? (params.teamSlug as string) : undefined;
   const basePath = teamSlug

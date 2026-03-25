@@ -4,12 +4,13 @@ import { EmptyState } from '@components/ds/atoms/empty-state';
 import { Grid } from '@components/ds/atoms/grid';
 import { HStack } from '@components/ds/atoms/hstack';
 import { PageSection } from '@components/ds/atoms/page-section';
-import { SectionTitle } from '@components/ds/atoms/section-title';
+import { PageTitle } from '@components/ds/atoms/page-title';
 import { FilterChips } from '@components/ds/molecules/filter-chips';
 import { FilterPanel } from '@components/ds/molecules/filter-panel';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
 import { PaginatedFooter } from '@components/ds/organisms/paginated-footer';
 import { CommandCard } from '@domains/commands/components/command-card';
+import { CommandsTable } from '@domains/commands/components/commands-table';
 import {
   CommandFilterControls,
   CommandSearchInput,
@@ -96,13 +97,26 @@ export function CommandsListPage() {
     }
   };
 
+  const handleCommandClick = (commandId: number) => {
+    navigate({
+      to: '/$organizationSlug/t/$teamSlug/commands/$commandId',
+      params: {
+        organizationSlug: currentOrganization.slug,
+        teamSlug,
+        commandId: String(commandId),
+      },
+    });
+  };
+
   return (
     <PageSection>
       <Box innerSpaceY="lg">
         <PageHeadingBar>
-          <SectionTitle>Command History</SectionTitle>
+          <PageTitle>Commands</PageTitle>
           <HStack gap="sm">
-            <CommandSearchInput />
+            <Box hideBelow="md">
+              <CommandSearchInput />
+            </Box>
             <FilterPanel
               activeFilterCount={activeFilterCount}
               onClear={clearFilters}
@@ -113,7 +127,7 @@ export function CommandsListPage() {
             </FilterPanel>
             <Button onClick={() => setModalOpen(true)}>
               <Play className="mr-2 h-4 w-4" />
-              Execute New Command
+              New Command
             </Button>
           </HStack>
         </PageHeadingBar>
@@ -142,27 +156,29 @@ export function CommandsListPage() {
           )
         ) : (
           <>
-            <Grid
-              cols={2}
-              gap="lg"
-            >
-              {commands.map((command) => (
-                <CommandCard
-                  key={command.id}
-                  command={command}
-                  onClick={() =>
-                    navigate({
-                      to: '/$organizationSlug/t/$teamSlug/commands/$commandId',
-                      params: {
-                        organizationSlug: currentOrganization.slug,
-                        teamSlug,
-                        commandId: String(command.id),
-                      },
-                    })
-                  }
-                />
-              ))}
-            </Grid>
+            {/* Desktop: Table view */}
+            <Box hideBelow="md">
+              <CommandsTable
+                commands={commands}
+                onRowClick={handleCommandClick}
+              />
+            </Box>
+
+            {/* Mobile: Card view */}
+            <Box hideAbove="md">
+              <Grid
+                cols={1}
+                gap="lg"
+              >
+                {commands.map((command) => (
+                  <CommandCard
+                    key={command.id}
+                    command={command}
+                    onClick={() => handleCommandClick(command.id)}
+                  />
+                ))}
+              </Grid>
+            </Box>
 
             <PaginatedFooter
               totalResults={totalResults}

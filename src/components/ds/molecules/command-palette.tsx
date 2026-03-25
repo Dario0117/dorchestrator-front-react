@@ -9,6 +9,7 @@ import type {
   CommandPaletteProps,
   CommandPaletteResult,
   DeviceActionId,
+  DeviceResult,
 } from '@components/ds/molecules/command-palette.types';
 import {
   CommandPaletteDeviceSubmenu,
@@ -27,8 +28,7 @@ export function CommandPalette({
 }: CommandPaletteProps) {
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
-  const [submenuDevice, setSubmenuDevice] =
-    useState<CommandPaletteResult | null>(null);
+  const [submenuDevice, setSubmenuDevice] = useState<DeviceResult | null>(null);
   const [submenuActiveIndex, setSubmenuActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const addRecentItem = useRecentItemsStore((s) => s.addRecentItem);
@@ -65,24 +65,18 @@ export function CommandPalette({
   );
 
   const handleDeviceAction = useCallback(
-    (actionId: DeviceActionId) => {
-      if (!submenuDevice) {
-        return;
-      }
-      addRecentItem(submenuDevice);
+    (device: DeviceResult, actionId: DeviceActionId) => {
+      addRecentItem(device);
       onSelect({
         type: 'device',
-        id: submenuDevice.id,
-        label: submenuDevice.label,
-        lastSeenAt:
-          submenuDevice.type === 'device'
-            ? submenuDevice.lastSeenAt
-            : undefined,
+        id: device.id,
+        label: device.label,
+        lastSeenAt: device.lastSeenAt,
         action: actionId,
       });
       onOpenChange(false);
     },
-    [submenuDevice, addRecentItem, onSelect, onOpenChange],
+    [addRecentItem, onSelect, onOpenChange],
   );
 
   const handleKeyDown = useCallback(
@@ -101,10 +95,8 @@ export function CommandPalette({
         } else if (e.key === 'Enter') {
           e.preventDefault();
           const actions: DeviceActionId[] = ['terminal', 'command', 'settings'];
-          const actionId = actions[submenuActiveIndex];
-          if (actionId) {
-            handleDeviceAction(actionId);
-          }
+          // biome-ignore lint/style/noNonNullAssertion: submenuActiveIndex is always 0-2, constrained by ArrowUp/Down logic
+          handleDeviceAction(submenuDevice, actions[submenuActiveIndex]!);
         } else if (e.key === 'Escape' || e.key === 'Backspace') {
           e.preventDefault();
           e.stopPropagation();
@@ -180,7 +172,9 @@ export function CommandPalette({
               <CommandPaletteDeviceSubmenu
                 deviceLabel={submenuDevice.label}
                 activeIndex={submenuActiveIndex}
-                onSelectAction={handleDeviceAction}
+                onSelectAction={(actionId) =>
+                  handleDeviceAction(submenuDevice, actionId)
+                }
               />
             ) : allResults.length === 0 ? (
               <Box

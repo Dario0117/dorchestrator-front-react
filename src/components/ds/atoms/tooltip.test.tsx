@@ -64,4 +64,22 @@ describe('TooltipContent', () => {
 
     expect(await screen.findByText('Content')).toBeInTheDocument();
   });
+
+  it('renders shortcut hint when shortcut prop is provided', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>Trigger</TooltipTrigger>
+          <TooltipContent shortcut="Mod+K">Content</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>,
+    );
+
+    await user.hover(screen.getByText('Trigger'));
+
+    expect(await screen.findByText('Content')).toBeInTheDocument();
+    expect(document.querySelector('kbd')).toBeInTheDocument();
+  });
 });

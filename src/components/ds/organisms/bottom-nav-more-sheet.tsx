@@ -18,7 +18,7 @@ interface MoreSheetItem {
 }
 
 function getMoreItems(basePath: string): MoreSheetItem[] {
-  const orgBase = basePath.split('/t/')[0] ?? basePath;
+  const orgBase = basePath.split('/t/')[0] || basePath;
   return [
     {
       id: 'audit-logs',

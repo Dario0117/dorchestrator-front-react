@@ -1,0 +1,233 @@
+import { useCommandPaletteSearch } from '@domains/shared/hooks/use-command-palette-search';
+import { useRecentItemsStore } from '@domains/shared/stores/recent-items.store';
+import { MSWSuccessHandlers } from '@lib/test.utils';
+import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
+import { renderHook, waitFor } from '@testing-library/react';
+import { setupServer } from 'msw/node';
+
+vi.mock('@domains/shared/hooks/use-current-organization', () => ({
+  useCurrentOrganization: () => ({
+    id: 'org-1',
+    name: 'Test Organization',
+    slug: 'test-org',
+  }),
+}));
+
+vi.mock('@domains/shared/hooks/use-current-team', () => ({
+  useCurrentTeam: () => ({
+    id: 'team-1',
+    name: 'Test Team',
+    slug: 'test-team',
+  }),
+}));
+
+const server = setupServer(...MSWSuccessHandlers());
+
+beforeAll(() => server.listen());
+afterEach(() => {
+  server.resetHandlers();
+  useRecentItemsStore.getState().clearRecent();
+});
+afterAll(() => server.close());
+
+describe('useCommandPaletteSearch', () => {
+  describe('when query is empty and no recent items', () => {
+    it('returns Navigation and Actions groups', () => {
+      const { result } = renderHook(() => useCommandPaletteSearch('', true), {
+        wrapper: createQueryThemeWrapper(),
+      });
+
+      const { groups } = result.current;
+      expect(groups).toHaveLength(2);
+      expect(groups.map((g) => g.label)).toEqual(['Navigation', 'Actions']);
+    });
+
+    it('returns all navigation items', () => {
+      const { result } = renderHook(() => useCommandPaletteSearch('', true), {
+        wrapper: createQueryThemeWrapper(),
+      });
+
+      const navGroup = result.current.groups.find(
+        (g) => g.label === 'Navigation',
+      );
+      expect(navGroup).toBeDefined();
+      expect(navGroup?.results).toHaveLength(7);
+      expect(navGroup?.results.map((r) => r.label)).toEqual([
+        'Dashboard',
+        'Devices',
+        'Commands',
+        'Terminal Sessions',
+        'Terminal Bookmarks',
+        'Audit Logs',
+        'Organization Settings',
+      ]);
+    });
+
+    it('returns all action items', () => {
+      const { result } = renderHook(() => useCommandPaletteSearch('', true), {
+        wrapper: createQueryThemeWrapper(),
+      });
+
+      const actionGroup = result.current.groups.find(
+        (g) => g.label === 'Actions',
+      );
+      expect(actionGroup).toBeDefined();
+      expect(actionGroup?.results).toHaveLength(2);
+      expect(actionGroup?.results.map((r) => r.label)).toEqual([
+        'New Command',
+        'New Terminal Session',
+      ]);
+    });
+  });
+
+  describe('when query is empty and recent items exist', () => {
+    it('returns Recent group with recent items', () => {
+      useRecentItemsStore.getState().addRecentItem({
+        id: 'nav-dashboard',
+        type: 'navigation',
+        label: 'Dashboard',
+      });
+
+      const { result } = renderHook(() => useCommandPaletteSearch('', true), {
+        wrapper: createQueryThemeWrapper(),
+      });
+
+      const { groups } = result.current;
+      expect(groups).toHaveLength(1);
+      expect(groups.map((g) => g.label)).toEqual(['Recent']);
+
+      const recentGroup = groups.find((g) => g.label === 'Recent');
+      expect(recentGroup?.results).toHaveLength(1);
+      expect(recentGroup?.results.map((r) => r.label)).toEqual(['Dashboard']);
+    });
+  });
+
+  describe('when query is provided', () => {
+    it('filters navigation items by fuzzy match', () => {
+      const { result } = renderHook(
+        () => useCommandPaletteSearch('Dash', true),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      const navGroup = result.current.groups.find(
+        (g) => g.label === 'Navigation',
+      );
+      expect(navGroup).toBeDefined();
+      expect(navGroup?.results).toHaveLength(1);
+      expect(navGroup?.results.map((r) => r.label)).toEqual(['Dashboard']);
+    });
+
+    it('filters action items by fuzzy match', () => {
+      const { result } = renderHook(
+        () => useCommandPaletteSearch('New', true),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      const actionGroup = result.current.groups.find(
+        (g) => g.label === 'Actions',
+      );
+      expect(actionGroup).toBeDefined();
+      expect(actionGroup?.results).toHaveLength(2);
+    });
+
+    it('returns empty groups when no items match', () => {
+      const { result } = renderHook(
+        () => useCommandPaletteSearch('xyznonexistent', true),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      expect(result.current.groups).toHaveLength(0);
+    });
+
+    it('filters devices from MSW response by fuzzy match', async () => {
+      const { result } = renderHook(
+        () => useCommandPaletteSearch('Test Server', true),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      await waitFor(() => {
+        const deviceGroup = result.current.groups.find(
+          (g) => g.label === 'Devices',
+        );
+        expect(deviceGroup).toBeDefined();
+        expect(
+          deviceGroup?.results.some((r) => r.label === 'Test Server'),
+        ).toBe(true);
+      });
+    });
+
+    it('maps device lastSeenAt to undefined when null', async () => {
+      const { result } = renderHook(
+        () => useCommandPaletteSearch('Build Agent', true),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      await waitFor(() => {
+        const deviceGroup = result.current.groups.find(
+          (g) => g.label === 'Devices',
+        );
+        expect(deviceGroup).toBeDefined();
+        const buildAgent = deviceGroup?.results.find(
+          (r) => r.label === 'Build Agent',
+        );
+        expect(buildAgent).toBeDefined();
+        expect(
+          buildAgent?.type === 'device' ? buildAgent.lastSeenAt : 'has value',
+        ).toBeUndefined();
+      });
+    });
+
+    it('excludes groups with zero matching results', () => {
+      const { result } = renderHook(
+        () => useCommandPaletteSearch('Dashboard', true),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      const actionGroup = result.current.groups.find(
+        (g) => g.label === 'Actions',
+      );
+      expect(actionGroup).toBeUndefined();
+    });
+
+    it('performs fuzzy matching (non-contiguous characters)', () => {
+      const { result } = renderHook(
+        () => useCommandPaletteSearch('Dbd', true),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      const navGroup = result.current.groups.find(
+        (g) => g.label === 'Navigation',
+      );
+      expect(navGroup).toBeDefined();
+      expect(navGroup?.results.some((r) => r.label === 'Dashboard')).toBe(true);
+    });
+
+    it('fuzzy match rejects when character is not found', () => {
+      const { result } = renderHook(
+        () => useCommandPaletteSearch('Dashz', true),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      const navGroup = result.current.groups.find(
+        (g) => g.label === 'Navigation',
+      );
+      expect(
+        navGroup?.results.some((r) => r.label === 'Dashboard'),
+      ).toBeFalsy();
+    });
+  });
+
+  describe('when disabled', () => {
+    it('does not fetch devices when enabled is false', () => {
+      const { result } = renderHook(
+        () => useCommandPaletteSearch('Test', false),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      const deviceGroup = result.current.groups.find(
+        (g) => g.label === 'Devices',
+      );
+      expect(deviceGroup).toBeUndefined();
+    });
+  });
+});

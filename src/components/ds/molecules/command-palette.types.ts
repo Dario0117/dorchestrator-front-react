@@ -23,7 +23,7 @@ interface ActionResult {
   label: string;
 }
 
-interface DeviceResult {
+export interface DeviceResult {
   type: 'device';
   id: string;
   label: string;

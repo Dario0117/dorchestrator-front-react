@@ -20,6 +20,22 @@ import {
 } from '@components/ds/utils/tokens';
 import { cn } from '@lib/utils';
 
+type Breakpoint = 'sm' | 'md' | 'lg' | 'xl';
+
+const HIDE_BELOW: Record<Breakpoint, string> = {
+  sm: 'hidden sm:block',
+  md: 'hidden md:block',
+  lg: 'hidden lg:block',
+  xl: 'hidden xl:block',
+};
+
+const HIDE_ABOVE: Record<Breakpoint, string> = {
+  sm: 'sm:hidden',
+  md: 'md:hidden',
+  lg: 'lg:hidden',
+  xl: 'xl:hidden',
+};
+
 interface BoxProps
   extends Omit<React.ComponentProps<'div'>, 'className' | 'style'> {
   spaceAbove?: SpacingSize;
@@ -40,6 +56,8 @@ interface BoxProps
   grow?: boolean;
   shrink?: boolean;
   minW0?: boolean;
+  hideBelow?: Breakpoint;
+  hideAbove?: Breakpoint;
 }
 
 function Box({
@@ -61,6 +79,8 @@ function Box({
   grow,
   shrink,
   minW0,
+  hideBelow,
+  hideAbove,
   ...props
 }: BoxProps) {
   return (
@@ -84,6 +104,8 @@ function Box({
         grow && 'flex-1',
         shrink === false && 'shrink-0',
         minW0 && 'min-w-0',
+        hideBelow && HIDE_BELOW[hideBelow],
+        hideAbove && HIDE_ABOVE[hideAbove],
       )}
       {...props}
     />

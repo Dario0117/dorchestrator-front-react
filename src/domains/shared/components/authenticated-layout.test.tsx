@@ -1,6 +1,7 @@
 import { AuthenticatedLayout } from '@domains/shared/components/authenticated-layout';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Suspense } from 'react';
 
 vi.mock('@lib/cookies.utils', () => ({
@@ -25,6 +26,12 @@ const mockOrganization = {
   name: 'Test Organization',
   slug: 'test-org',
   createdAt: new Date('2025-12-21T10:00:00.000Z'),
+};
+
+const mockTeam = {
+  id: 'team-1',
+  name: 'Test Team',
+  slug: 'test-team',
 };
 
 const mockUseParams = vi.fn<() => Record<string, string>>(() => ({
@@ -77,6 +84,7 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
 
 vi.mock('@/app', () => ({
   _getNullableCurrentOrganizationFromSlug: () => mockOrganization,
+  _getNullableCurrentTeamFromSlug: () => mockTeam,
 }));
 
 async function renderAuthenticatedLayout(children?: React.ReactNode) {
@@ -256,5 +264,29 @@ describe('AuthenticatedLayout', () => {
     });
 
     expect(screen.getByTestId('outlet')).toBeInTheDocument();
+  });
+
+  it('should open command palette when search trigger is clicked', async () => {
+    const user = userEvent.setup();
+    await renderAuthenticatedLayout();
+
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — element is guaranteed by getAllByRole
+    const searchButton = screen.getAllByRole('button', { name: /search/i })[0]!;
+    await user.click(searchButton);
+
+    expect(
+      screen.getByPlaceholderText(/search devices, actions, pages/i),
+    ).toBeInTheDocument();
+  });
+
+  it('should build basePath with teamSlug when present in params', async () => {
+    mockUseParams.mockReturnValue({
+      organizationSlug: 'test-org',
+      teamSlug: 'test-team',
+    });
+
+    await renderAuthenticatedLayout();
+
+    expect(screen.getByTestId('child-content')).toBeInTheDocument();
   });
 });

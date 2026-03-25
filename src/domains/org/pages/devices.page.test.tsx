@@ -3,6 +3,7 @@ import { useUserOrganizationsQueryOptions } from '@domains/org/services/organiza
 import { queryClient } from '@domains/shared/context/query.provider';
 import { buildBackendUrl } from '@lib/test-backend-url.utils';
 import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
+import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/devices';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
@@ -64,6 +65,7 @@ const mockOrganization = {
 describe('DevicesPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    vi.mocked(Route.useSearch).mockReturnValue({ page: 1, size: 25 });
     queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
       responseData: {
         results: [mockOrganization],
@@ -852,6 +854,111 @@ describe('DevicesPage', () => {
     // When responseData is null, devices defaults to [] and empty state is shown
     await waitFor(() => {
       expect(screen.getByText(/No devices yet/)).toBeInTheDocument();
+    });
+  });
+
+  it('should filter devices by status=online', async () => {
+    vi.mocked(Route.useSearch).mockReturnValue({
+      page: 1,
+      size: 25,
+      status: 'online',
+    });
+
+    renderWithProviders(<DevicesPage />);
+
+    // Test Server has lastSeenAt = now, so it should be online
+    await waitFor(() => {
+      expect(screen.getByText('Test Server')).toBeInTheDocument();
+    });
+
+    // Build Agent has lastSeenAt = null so it should NOT appear when filtering online
+    expect(screen.queryByText('Build Agent')).not.toBeInTheDocument();
+  });
+
+  it('should filter devices by status=offline', async () => {
+    vi.mocked(Route.useSearch).mockReturnValue({
+      page: 1,
+      size: 25,
+      status: 'offline',
+    });
+
+    renderWithProviders(<DevicesPage />);
+
+    // Build Agent has lastSeenAt = null, should be offline
+    await waitFor(() => {
+      expect(screen.getByText('Build Agent')).toBeInTheDocument();
+    });
+
+    // Test Server has lastSeenAt = now, so it should NOT appear when filtering offline
+    expect(screen.queryByText('Test Server')).not.toBeInTheDocument();
+  });
+
+  it('should filter devices by platform', async () => {
+    vi.mocked(Route.useSearch).mockReturnValue({
+      page: 1,
+      size: 25,
+      platform: 'linux',
+    });
+
+    renderWithProviders(<DevicesPage />);
+
+    // Test Server and Test Device 4 are linux
+    await waitFor(() => {
+      expect(screen.getByText('Test Server')).toBeInTheDocument();
+    });
+    expect(screen.getByText('Test Device 4')).toBeInTheDocument();
+
+    // Dev Laptop is macos, should not appear
+    expect(screen.queryByText('Dev Laptop')).not.toBeInTheDocument();
+    // Build Agent is windows, should not appear
+    expect(screen.queryByText('Build Agent')).not.toBeInTheDocument();
+  });
+
+  it('should show filtered empty state when filters yield no results', async () => {
+    type ListDevicesSuccessResponse =
+      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
+    server.use(
+      http.get<never, never, ListDevicesSuccessResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
+        () => {
+          return HttpResponse.json({
+            responseData: {
+              results: [
+                {
+                  id: 1,
+                  deviceName: 'Only Linux Device',
+                  platform: 'linux',
+                  lastSeenAt: new Date().toISOString(),
+                  createdAt: new Date().toISOString(),
+                },
+              ],
+              hasNext: false,
+              hasPrevious: false,
+              totalResults: 1,
+              totalPages: 1,
+              page: 1,
+              size: 25,
+            },
+            responseErrors: null,
+          });
+        },
+      ),
+    );
+
+    // Filter by windows platform - the only device is linux, so filtered list is empty
+    vi.mocked(Route.useSearch).mockReturnValue({
+      page: 1,
+      size: 25,
+      platform: 'windows',
+    });
+
+    renderWithProviders(<DevicesPage />);
+
+    // Should show the filtered empty state (variant="filtered")
+    await waitFor(() => {
+      expect(
+        screen.getByText('No results match your filters'),
+      ).toBeInTheDocument();
     });
   });
 

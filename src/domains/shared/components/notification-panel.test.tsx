@@ -19,6 +19,8 @@ const mockUseParams = vi.fn<() => Record<string, string>>(() => ({
   teamSlug: 'default',
 }));
 
+let mockPathname = '/test-org/t/default/';
+
 vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual =
     await importOriginal<typeof import('@tanstack/react-router')>();
@@ -31,7 +33,7 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
     }: {
       select?: (s: { location: { pathname: string } }) => string;
     } = {}) => {
-      const state = { location: { pathname: '/test-org/t/default/' } };
+      const state = { location: { pathname: mockPathname } };
       return select ? select(state) : state;
     },
   };
@@ -97,6 +99,7 @@ async function openNotificationPanel() {
 describe('NotificationPanel', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    mockPathname = '/test-org/t/default/';
     mockUseParams.mockReturnValue({ organizationSlug: 'test-org' });
     mockUseCurrentOrganization.mockReturnValue({
       id: 'org-1',
@@ -382,6 +385,36 @@ describe('NotificationPanel', () => {
         }),
       }),
     );
+  });
+
+  it('should close the panel when the route pathname changes', async () => {
+    overrideNotificationsHandler([
+      {
+        id: 50,
+        message: 'Some notification',
+        resourceId: '500',
+        resourceType: 'command',
+        severity: 'info',
+        read: true,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+
+    const { rerender } = renderWithProviders(<NotificationPanel />);
+
+    await openNotificationPanel();
+
+    await waitFor(() => {
+      expect(screen.getByText('Notifications')).toBeInTheDocument();
+    });
+
+    // Simulate a route change while the panel is open
+    mockPathname = '/test-org/t/default/commands';
+    rerender(<NotificationPanel />);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Notifications')).not.toBeInTheDocument();
+    });
   });
 
   it('should show empty state when no notifications exist', async () => {

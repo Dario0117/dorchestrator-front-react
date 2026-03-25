@@ -9,16 +9,30 @@ interface CommandPaletteTriggerProps {
 
 function CommandPaletteTrigger({ onClick }: CommandPaletteTriggerProps) {
   return (
-    <Button
-      variant="outline"
-      onClick={onClick}
-      aria-label="Search"
-      className="hidden items-center gap-2 text-muted-foreground md:inline-flex"
-    >
-      <Search className="size-4" />
-      <SmallText>Search...</SmallText>
-      <ShortcutHint keys="Mod+K" />
-    </Button>
+    <>
+      {/* Mobile: icon-only search button */}
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={onClick}
+        aria-label="Search"
+        className="inline-flex text-muted-foreground md:hidden"
+      >
+        <Search className="size-4" />
+      </Button>
+
+      {/* Desktop: full search trigger with text and shortcut hint */}
+      <Button
+        variant="outline"
+        onClick={onClick}
+        aria-label="Search"
+        className="hidden items-center gap-2 text-muted-foreground md:inline-flex"
+      >
+        <Search className="size-4" />
+        <SmallText>Search...</SmallText>
+        <ShortcutHint keys="Mod+K" />
+      </Button>
+    </>
   );
 }
 

@@ -1,170 +1,141 @@
-import { APP_LINK_VARIANT } from '@components/ds/atoms/app-link';
 import { Box } from '@components/ds/atoms/box';
 import { Button } from '@components/ds/atoms/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@components/ds/atoms/card';
-import { CodeText } from '@components/ds/atoms/code-text';
 import { EmptyState } from '@components/ds/atoms/empty-state';
-import { Grid } from '@components/ds/atoms/grid';
-import { HStack } from '@components/ds/atoms/hstack';
-import { PageDescription } from '@components/ds/atoms/page-description';
 import { PageSection } from '@components/ds/atoms/page-section';
 import { PageTitle } from '@components/ds/atoms/page-title';
-import { ResponsiveRow } from '@components/ds/atoms/responsive-row';
-import { SmallText } from '@components/ds/atoms/small-text';
+import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { Stack } from '@components/ds/atoms/stack';
-import { CommandStatusBadge } from '@domains/commands/components/command-status-badge';
-import { StatCard } from '@domains/org/components/stat-card';
-import { useOrganizationDetailsSuspenseQuery } from '@domains/org/services/organizations/get-organization-details.http-service';
+import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
+import {
+  DashboardDeviceGrid,
+  isDeviceOnline,
+} from '@domains/devices/components/dashboard-device-grid';
+import { useDevicesSuspenseQuery } from '@domains/devices/services/list-devices.http-service';
 import { useOrganizationStatsSuspenseQuery } from '@domains/org/services/organizations/get-organization-stats.http-service';
+import { StatCards } from '@domains/shared/components/stat-cards';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
-import { Link, useParams } from '@tanstack/react-router';
-import { Building2, HardDrive, Terminal } from 'lucide-react';
+import { useCurrentTeam } from '@domains/shared/hooks/use-current-team';
+import { useTerminalSessionsSuspenseQuery } from '@domains/terminal/services/list-terminal-sessions.http-service';
+import { Link, useNavigate, useParams } from '@tanstack/react-router';
+import { HardDrive, Plus } from 'lucide-react';
+import { useMemo } from 'react';
+
+export const DASHBOARD_DEVICE_PAGE_SIZE = 50;
 
 export function HomePage() {
   const currentOrganization = useCurrentOrganization();
+  const currentTeam = useCurrentTeam();
   const params = useParams({ strict: false });
   const teamSlug = 'teamSlug' in params ? (params.teamSlug as string) : '';
-  const organizationId = currentOrganization.id;
+  const navigate = useNavigate();
 
-  const { data: orgDetails } =
-    useOrganizationDetailsSuspenseQuery(organizationId);
+  const organizationId = currentOrganization.id;
+  // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
+  const teamId = currentTeam!.id;
+
   const { data: stats } = useOrganizationStatsSuspenseQuery(organizationId);
+  const { data: devicesData } = useDevicesSuspenseQuery(
+    organizationId,
+    teamId,
+    1,
+    DASHBOARD_DEVICE_PAGE_SIZE,
+  );
+  const { data: sessionsData } = useTerminalSessionsSuspenseQuery(
+    organizationId,
+    teamId,
+    { status: 'active', size: 1 },
+  );
+
+  const devices = devicesData.responseData?.results ?? [];
+  const totalDevices = devicesData.responseData?.totalResults ?? 0;
+  const activeSessions = sessionsData.responseData?.totalResults ?? 0;
+
+  const onlineCount = useMemo(
+    () => devices.filter(isDeviceOnline).length,
+    [devices],
+  );
+
+  const hasDevices = totalDevices > 0;
+
+  const navigateToDevices = () => {
+    navigate({
+      to: '/$organizationSlug/t/$teamSlug/devices',
+      params: { organizationSlug: currentOrganization.slug, teamSlug },
+    });
+  };
+
+  const navigateToCommands = (deviceId: number) => {
+    navigate({
+      to: '/$organizationSlug/t/$teamSlug/commands',
+      params: { organizationSlug: currentOrganization.slug, teamSlug },
+      search: { executeModal: 'open', deviceId },
+    });
+  };
+
+  const navigateToTerminal = (deviceId: number) => {
+    navigate({
+      to: '/$organizationSlug/t/$teamSlug/terminal',
+      params: { organizationSlug: currentOrganization.slug, teamSlug },
+      search: { deviceId },
+    });
+  };
 
   return (
     <PageSection>
-      <Box>
-        <PageTitle>Welcome to {currentOrganization.name}</PageTitle>
-        <PageDescription>
-          Manage your devices and execute remote commands
-        </PageDescription>
-      </Box>
+      <Stack gap="lg">
+        <PageHeadingBar>
+          <Box>
+            <PageTitle>Dashboard</PageTitle>
+          </Box>
+        </PageHeadingBar>
 
-      <Grid
-        cols={3}
-        gap="lg"
-      >
-        <StatCard
-          title="Devices"
-          value={stats.responseData?.results?.deviceCount ?? 0}
-          icon={HardDrive}
-          iconClassName="text-teal-600 dark:text-teal-400"
+        <StatCards
+          devicesOnline={onlineCount}
+          devicesTotal={totalDevices}
+          commandsIn24h={stats.responseData?.results?.recentCommandCount ?? 0}
+          activeSessions={activeSessions}
         />
-        <StatCard
-          title="Commands (24h)"
-          value={stats.responseData?.results?.recentCommandCount ?? 0}
-          icon={Terminal}
-          iconClassName="text-blue-600 dark:text-blue-400"
-        />
-        <StatCard
-          title="Tier"
-          value={orgDetails.responseData?.results?.tier ?? 'free'}
-          icon={Building2}
-          iconClassName="text-purple-600 dark:text-purple-400"
-        />
-      </Grid>
 
-      <ResponsiveRow gap="lg">
-        <Button
-          size="lg"
-          render={
-            <Link
-              to="/$organizationSlug/t/$teamSlug/devices"
-              params={{ organizationSlug: currentOrganization.slug, teamSlug }}
-            />
-          }
-        >
-          Add Device
-        </Button>
-        <Button
-          size="lg"
-          variant="outline"
-          render={
-            <Link
-              to="/$organizationSlug/t/$teamSlug/commands"
-              params={{ organizationSlug: currentOrganization.slug, teamSlug }}
-              search={{ executeModal: 'open' }}
-            />
-          }
-        >
-          Execute Command
-        </Button>
-      </ResponsiveRow>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {stats.responseData?.results?.recentCommands &&
-          stats.responseData.results.recentCommands.length > 0 ? (
-            <Stack gap="sm">
-              {stats.responseData.results.recentCommands.map((command) => (
-                <Link
-                  key={command.id}
-                  to="/$organizationSlug/t/$teamSlug/commands/$commandId"
-                  params={{
-                    organizationSlug: currentOrganization.slug,
-                    teamSlug,
-                    commandId: String(command.id),
-                  }}
-                  className={APP_LINK_VARIANT.card}
-                >
-                  <HStack
-                    gap="md"
-                    minW0
-                  >
-                    <SmallText
-                      color="muted"
-                      mono
-                    >
-                      #{command.id}
-                    </SmallText>
-                    <CodeText truncate>{command.command}</CodeText>
-                  </HStack>
-                  <HStack
-                    gap="sm"
-                    shrink={false}
-                  >
-                    <SmallText color="muted">{command.deviceName}</SmallText>
-                    <SmallText color="muted">
-                      {new Date(command.createdAt).toLocaleTimeString()}
-                    </SmallText>
-                    <CommandStatusBadge status={command.status} />
-                  </HStack>
-                </Link>
-              ))}
-            </Stack>
-          ) : (
-            <EmptyState
-              icon={Terminal}
-              title="No recent commands"
-              description="Execute your first command to see activity here."
-              action={
+        {hasDevices ? (
+          <DashboardDeviceGrid
+            devices={devices}
+            onRemove={navigateToDevices}
+            onExecuteCommand={navigateToCommands}
+            onOpenTerminal={navigateToTerminal}
+          />
+        ) : (
+          <EmptyState
+            icon={HardDrive}
+            title="Add Your First Device"
+            description="Get started by registering a device to manage remotely."
+            action={
+              <Stack
+                gap="sm"
+                align="center"
+              >
                 <Button
-                  variant="outline"
+                  size="lg"
                   render={
                     <Link
-                      to="/$organizationSlug/t/$teamSlug/commands"
+                      to="/$organizationSlug/t/$teamSlug/devices"
                       params={{
                         organizationSlug: currentOrganization.slug,
                         teamSlug,
                       }}
-                      search={{ executeModal: 'open' }}
                     />
                   }
                 >
-                  Execute your first command
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Device
                 </Button>
-              }
-            />
-          )}
-        </CardContent>
-      </Card>
+                <SecondaryText>
+                  Try Cmd+K to search and navigate quickly
+                </SecondaryText>
+              </Stack>
+            }
+          />
+        )}
+      </Stack>
     </PageSection>
   );
 }

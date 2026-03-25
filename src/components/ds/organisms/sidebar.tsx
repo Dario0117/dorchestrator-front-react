@@ -50,6 +50,7 @@ function Sidebar({
 }: React.ComponentProps<typeof UiSidebar>) {
   return (
     <UiSidebar
+      aria-label="Main navigation"
       side={side}
       variant={variant}
       collapsible={collapsible}
@@ -71,6 +72,7 @@ function SidebarInset(
 ) {
   return (
     <UiSidebarInset
+      id="content"
       className={cn(
         '@container/content',
         'pb-14 md:pb-0',

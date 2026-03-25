@@ -35,7 +35,7 @@ let mockSearchParams: {
   startDate?: string;
   endDate?: string;
   search?: string;
-} = { page: 1, size: 25 };
+} = { page: 1, size: 10 };
 
 vi.mock(
   '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index',
@@ -128,7 +128,7 @@ function useMultiPageHandler(options?: {
             totalResults,
             totalPages,
             page,
-            size: 25,
+            size: 10,
           },
           responseErrors: null,
         });
@@ -140,7 +140,7 @@ function useMultiPageHandler(options?: {
 describe('CommandsListPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
-    mockSearchParams = { page: 1, size: 25 };
+    mockSearchParams = { page: 1, size: 10 };
     queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
       responseData: {
         results: [mockOrganization],
@@ -159,7 +159,7 @@ describe('CommandsListPage', () => {
     renderWithProviders(<CommandsListPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('Command History')).toBeInTheDocument();
+      expect(screen.getByText('Commands')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -171,7 +171,7 @@ describe('CommandsListPage', () => {
     renderWithProviders(<CommandsListPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('Execute New Command')).toBeInTheDocument();
+      expect(screen.getByText('New Command')).toBeInTheDocument();
     });
   });
 
@@ -188,7 +188,7 @@ describe('CommandsListPage', () => {
               totalResults: 0,
               totalPages: 0,
               page: 1,
-              size: 25,
+              size: 10,
             },
             responseErrors: null,
           });
@@ -205,7 +205,7 @@ describe('CommandsListPage', () => {
 
   it('should show filtered empty state with "Clear Filters" when filters are active', async () => {
     const user = userEvent.setup();
-    mockSearchParams = { page: 1, size: 25, status: 'completed' };
+    mockSearchParams = { page: 1, size: 10, status: 'completed' };
 
     server.use(
       http.get<never, never, ListCommandsSuccessResponse>(
@@ -219,7 +219,7 @@ describe('CommandsListPage', () => {
               totalResults: 0,
               totalPages: 0,
               page: 1,
-              size: 25,
+              size: 10,
             },
             responseErrors: null,
           });
@@ -246,8 +246,8 @@ describe('CommandsListPage', () => {
     const call = mockNavigate.mock.calls[0] as [
       { search: (prev: Record<string, unknown>) => Record<string, unknown> },
     ];
-    const result = call[0].search({ page: 2, size: 25, status: 'completed' });
-    expect(result).toEqual({ page: 1, size: 25 });
+    const result = call[0].search({ page: 2, size: 10, status: 'completed' });
+    expect(result).toEqual({ page: 1, size: 10 });
   });
 
   it('should open modal from empty state Execute button', async () => {
@@ -265,7 +265,7 @@ describe('CommandsListPage', () => {
               totalResults: 0,
               totalPages: 0,
               page: 1,
-              size: 25,
+              size: 10,
             },
             responseErrors: null,
           });
@@ -296,10 +296,10 @@ describe('CommandsListPage', () => {
     renderWithProviders(<CommandsListPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('Execute New Command')).toBeInTheDocument();
+      expect(screen.getByText('New Command')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByText('Execute New Command'));
+    await user.click(screen.getByText('New Command'));
 
     await waitFor(() => {
       expect(
@@ -312,27 +312,33 @@ describe('CommandsListPage', () => {
     renderWithProviders(<CommandsListPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('Completed')).toBeInTheDocument();
-      expect(screen.getByText('Running')).toBeInTheDocument();
-      expect(screen.getByText('Pending')).toBeInTheDocument();
-      expect(screen.getByText('Failed')).toBeInTheDocument();
+      // Both table and card views render (CSS media queries not applied in jsdom)
+      expect(screen.getAllByText('Completed').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Running').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Pending').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Failed').length).toBeGreaterThanOrEqual(1);
     });
   });
 
-  it('should display device names on command cards', async () => {
+  it('should display device names in command views', async () => {
     renderWithProviders(<CommandsListPage />);
 
     await waitFor(() => {
+      // Both table and card views render (CSS media queries not applied in jsdom)
       expect(screen.getAllByText('Test Server').length).toBeGreaterThanOrEqual(
         1,
       );
-      expect(screen.getByText('Dev Laptop')).toBeInTheDocument();
-      expect(screen.getByText('Build Agent')).toBeInTheDocument();
+      expect(screen.getAllByText('Dev Laptop').length).toBeGreaterThanOrEqual(
+        1,
+      );
+      expect(screen.getAllByText('Build Agent').length).toBeGreaterThanOrEqual(
+        1,
+      );
     });
   });
 
   it('should open modal when executeModal search param is "open"', async () => {
-    mockSearchParams = { page: 1, size: 25, executeModal: 'open' };
+    mockSearchParams = { page: 1, size: 10, executeModal: 'open' };
 
     renderWithProviders(<CommandsListPage />);
 
@@ -345,15 +351,15 @@ describe('CommandsListPage', () => {
 
   it('should not navigate when modal is closed without executeModal search param', async () => {
     const user = userEvent.setup();
-    mockSearchParams = { page: 1, size: 25 };
+    mockSearchParams = { page: 1, size: 10 };
 
     renderWithProviders(<CommandsListPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('Execute New Command')).toBeInTheDocument();
+      expect(screen.getByText('New Command')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByText('Execute New Command'));
+    await user.click(screen.getByText('New Command'));
 
     await waitFor(() => {
       expect(
@@ -396,7 +402,7 @@ describe('CommandsListPage', () => {
 
   it('should clear executeModal param when modal is closed via search param', async () => {
     const user = userEvent.setup();
-    mockSearchParams = { page: 1, size: 25, executeModal: 'open' };
+    mockSearchParams = { page: 1, size: 10, executeModal: 'open' };
 
     renderWithProviders(<CommandsListPage />);
 
@@ -420,7 +426,7 @@ describe('CommandsListPage', () => {
       { search: (prev: Record<string, unknown>) => Record<string, unknown> },
     ];
     const searchFn = call[0].search;
-    const result = searchFn({ page: 1, size: 25, executeModal: 'open' });
+    const result = searchFn({ page: 1, size: 10, executeModal: 'open' });
     expect(result.executeModal).toBeUndefined();
   });
 
@@ -481,7 +487,7 @@ describe('CommandsListPage', () => {
 
       await waitFor(() => {
         expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-        expect(screen.getByLabelText('Page size')).toHaveTextContent('25');
+        expect(screen.getByLabelText('Page size')).toHaveTextContent('10');
       });
     });
 
@@ -516,7 +522,7 @@ describe('CommandsListPage', () => {
         { search: (prev: Record<string, unknown>) => Record<string, unknown> },
       ];
       const searchFn = call[0].search;
-      const result = searchFn({ page: 3, size: 25, executeModal: undefined });
+      const result = searchFn({ page: 3, size: 10, executeModal: undefined });
       expect(result).toEqual({
         page: 1,
         size: 50,
@@ -645,7 +651,7 @@ describe('CommandsListPage', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('heading', { name: 'Command History' }),
+          screen.getByRole('heading', { name: 'Commands' }),
         ).toBeInTheDocument();
       });
     });
@@ -654,7 +660,7 @@ describe('CommandsListPage', () => {
       renderWithProviders(<CommandsListPage />);
 
       await waitFor(() => {
-        expect(screen.getByText('Execute New Command')).toBeInTheDocument();
+        expect(screen.getByText('New Command')).toBeInTheDocument();
       });
     });
 
@@ -695,7 +701,7 @@ describe('CommandsListPage', () => {
                 totalResults: 0,
                 totalPages: 0,
                 page: 1,
-                size: 25,
+                size: 10,
               },
               responseErrors: null,
             });
@@ -719,9 +725,9 @@ describe('CommandsListPage', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('heading', { name: 'Command History' }),
+          screen.getByRole('heading', { name: 'Commands' }),
         ).toBeInTheDocument();
-        expect(screen.getByText('Execute New Command')).toBeInTheDocument();
+        expect(screen.getByText('New Command')).toBeInTheDocument();
       });
     });
 
@@ -754,9 +760,9 @@ describe('CommandsListPage', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('heading', { name: 'Command History' }),
+          screen.getByRole('heading', { name: 'Commands' }),
         ).toBeInTheDocument();
-        expect(screen.getByText('Execute New Command')).toBeInTheDocument();
+        expect(screen.getByText('New Command')).toBeInTheDocument();
       });
     });
 
@@ -799,7 +805,7 @@ describe('CommandsListPage', () => {
                 totalResults: 0,
                 totalPages: 0,
                 page: 1,
-                size: 25,
+                size: 10,
               },
               responseErrors: null,
             });

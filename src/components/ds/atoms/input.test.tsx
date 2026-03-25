@@ -1,5 +1,5 @@
+import { Input } from '@components/ds/atoms/input';
 import { render, screen } from '@testing-library/react';
-import { Input } from './input';
 
 describe('Input', () => {
   describe('rendering', () => {
@@ -56,6 +56,36 @@ describe('Input', () => {
       render(
         <Input
           inputSize="xs"
+          data-testid="input"
+        />,
+      );
+      expect(screen.getByTestId('input')).toBeInTheDocument();
+    });
+
+    it('accepts inputSize="sm"', () => {
+      render(
+        <Input
+          inputSize="sm"
+          data-testid="input"
+        />,
+      );
+      expect(screen.getByTestId('input')).toBeInTheDocument();
+    });
+
+    it('accepts fullWidth={false}', () => {
+      render(
+        <Input
+          fullWidth={false}
+          data-testid="input"
+        />,
+      );
+      expect(screen.getByTestId('input')).toBeInTheDocument();
+    });
+
+    it('accepts padding="search"', () => {
+      render(
+        <Input
+          padding="search"
           data-testid="input"
         />,
       );

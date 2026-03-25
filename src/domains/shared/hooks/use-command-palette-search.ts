@@ -39,9 +39,6 @@ function fuzzyMatch(text: string, query: string) {
 }
 
 function filterResults(items: readonly CommandPaletteResult[], query: string) {
-  if (!query) {
-    return items;
-  }
   return items.filter((item) => fuzzyMatch(item.label, query));
 }
 
