@@ -37,8 +37,8 @@ export const useAuditLogsQueryOptions = (
         size,
         action,
         resourceType,
-        fromDate,
-        toDate,
+        fromDate: fromDate ? `${fromDate}T00:00:00.000Z` : undefined,
+        toDate: toDate ? `${toDate}T23:59:59.999Z` : undefined,
       },
     },
   });

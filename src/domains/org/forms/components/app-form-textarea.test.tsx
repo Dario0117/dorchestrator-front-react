@@ -1,13 +1,18 @@
 import { useAppForm } from '@domains/org/forms/hooks/app-form';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { z } from 'zod/v4';
+
+const requiredSchema = z.object({
+  testField: z.string().min(1),
+});
 
 describe('AppFormTextarea', () => {
   const TestFormWrapper = ({
     initialValue = '',
     hasError = false,
     errorMessage = 'This field is required',
-    required = false,
+    schema,
     rows,
     maxLength,
     placeholder = 'Enter value',
@@ -16,7 +21,7 @@ describe('AppFormTextarea', () => {
     initialValue?: string;
     hasError?: boolean;
     errorMessage?: string;
-    required?: boolean;
+    schema?: typeof requiredSchema;
     rows?: number;
     maxLength?: number;
     placeholder?: string;
@@ -26,6 +31,7 @@ describe('AppFormTextarea', () => {
       defaultValues: {
         testField: initialValue,
       },
+      validators: schema ? { onSubmit: schema } : undefined,
       onSubmit: async () => {
         // Intentionally empty for testing
       },
@@ -48,7 +54,6 @@ describe('AppFormTextarea', () => {
             <field.AppFormTextarea
               label={label}
               placeholder={placeholder}
-              required={required}
               rows={rows}
               maxLength={maxLength}
             />
@@ -72,11 +77,11 @@ describe('AppFormTextarea', () => {
     ).toBeInTheDocument();
   });
 
-  it('should render required indicator when required is true', () => {
+  it('should render required indicator when schema field is required', () => {
     render(
       <TestFormWrapper
         label="Description"
-        required={true}
+        schema={requiredSchema}
       />,
     );
 
@@ -84,13 +89,8 @@ describe('AppFormTextarea', () => {
     expect(requiredIndicator).toBeInTheDocument();
   });
 
-  it('should not render required indicator when required is false', () => {
-    render(
-      <TestFormWrapper
-        label="Description"
-        required={false}
-      />,
-    );
+  it('should not render required indicator when no schema is provided', () => {
+    render(<TestFormWrapper label="Description" />);
 
     expect(screen.queryByText('*')).not.toBeInTheDocument();
   });

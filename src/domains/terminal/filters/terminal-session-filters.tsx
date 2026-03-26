@@ -1,7 +1,7 @@
-import { Input } from '@components/ds/atoms/input';
 import { Stack } from '@components/ds/atoms/stack';
 import { useDevicesQueryOptions } from '@domains/devices/services/list-devices.http-service';
 import { useListMembersQueryOptions } from '@domains/org/services/organizations/list-members.http-service';
+import { DateInputRangeFilter } from '@domains/shared/filters/date-input-range-filter';
 import { SelectFilter } from '@domains/shared/filters/select-filter';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
 import { useCurrentTeam } from '@domains/shared/hooks/use-current-team';
@@ -60,20 +60,6 @@ export function TerminalSessionFilterControls() {
     });
   };
 
-  const handleDateFromFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    navigateFilter({
-      dateFrom: value ? `${value}T00:00:00.000Z` : undefined,
-    });
-  };
-
-  const handleDateToFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    navigateFilter({
-      dateTo: value ? `${value}T23:59:59.999Z` : undefined,
-    });
-  };
-
   return (
     <Stack gap="md">
       <SelectFilter
@@ -104,19 +90,13 @@ export function TerminalSessionFilterControls() {
         ariaLabel="Filter by user"
         fullWidth
       />
-      <Input
-        type="date"
-        aria-label="From date"
-        value={dateFrom?.slice(0, 10) ?? ''}
-        onChange={handleDateFromFilter}
-        placeholder="From"
-      />
-      <Input
-        type="date"
-        aria-label="To date"
-        value={dateTo?.slice(0, 10) ?? ''}
-        onChange={handleDateToFilter}
-        placeholder="To"
+      <DateInputRangeFilter
+        dateFrom={dateFrom}
+        dateTo={dateTo}
+        onChange={({ dateFrom: from, dateTo: to }) =>
+          navigateFilter({ dateFrom: from, dateTo: to })
+        }
+        fullWidth
       />
     </Stack>
   );

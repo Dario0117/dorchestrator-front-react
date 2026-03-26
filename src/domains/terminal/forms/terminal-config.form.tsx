@@ -41,7 +41,6 @@ export function TerminalConfigForm({
                   label="Inactivity Timeout (minutes)"
                   type="number"
                   placeholder="60"
-                  required
                   helperText="Sessions will lock after this period of inactivity. Maximum: 4320 minutes (3 days)."
                 />
               )}

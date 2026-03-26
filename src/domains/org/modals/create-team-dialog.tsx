@@ -59,7 +59,6 @@ export function CreateTeamDialog({
                 <field.AppFormField
                   label="Team Name"
                   placeholder="Team name"
-                  required
                   onChange={(e) => {
                     const slugSuggestion = generateSlugSuggestion(
                       e.target.value,
@@ -76,7 +75,6 @@ export function CreateTeamDialog({
                 <field.AppFormField
                   label="Team Slug"
                   placeholder="team-slug"
-                  required
                   helperText="Used in URLs. Only lowercase letters, numbers, and hyphens."
                 />
               )}

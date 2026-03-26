@@ -1,5 +1,10 @@
 import { isValidSlug } from '@lib/organization-logo.utils';
 import { z } from 'zod/v4';
+import type {
+  ApiRequestBody,
+  Expect,
+  IsExact,
+} from '@/types/form-api-sync.types';
 
 export const createOrganizationFormSchema = z.object({
   name: z
@@ -18,4 +23,10 @@ export const createOrganizationFormSchema = z.object({
 
 export type CreateOrganizationFormData = z.infer<
   typeof createOrganizationFormSchema
+>;
+
+// Compile-time check: if the API contract changes, this will error with
+// "Type 'false' does not satisfy the constraint 'true'"
+export type FormApiSync = Expect<
+  IsExact<CreateOrganizationFormData, ApiRequestBody<'postApiV1Organizations'>>
 >;

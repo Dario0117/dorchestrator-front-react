@@ -34,7 +34,6 @@ export function UpdatePasswordForm({
                     label="New password"
                     type="password"
                     placeholder="Password"
-                    required
                   />
                 )}
               </form.AppField>
@@ -44,7 +43,6 @@ export function UpdatePasswordForm({
                     label="Confirm new password"
                     type="password"
                     placeholder="Confirm Password"
-                    required
                   />
                 )}
               </form.AppField>

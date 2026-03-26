@@ -89,4 +89,36 @@ describe('checkIsActive', () => {
     };
     expect(checkIsActive('/settings/general', item)).toBe(true);
   });
+
+  it('should return true when href is a child route of item url', () => {
+    const item: NavItem = { title: 'Commands', url: '/org/t/team/commands' };
+    expect(checkIsActive('/org/t/team/commands/123', item)).toBe(true);
+  });
+
+  it('should not prefix-match for root url', () => {
+    const item: NavItem = { title: 'Home', url: '/' };
+    expect(checkIsActive('/settings', item)).toBe(false);
+  });
+
+  it('should not prefix-match for collapsible items without sub-items match', () => {
+    const item: NavItem = {
+      title: 'Terminal',
+      items: [
+        { title: 'Sessions', url: '/terminal' },
+        { title: 'Bookmarks', url: '/terminal/bookmarks' },
+      ],
+    };
+    expect(checkIsActive('/other/page', item)).toBe(false);
+  });
+
+  it('should prefix-match sub-items in collapsible groups', () => {
+    const item: NavItem = {
+      title: 'Terminal',
+      items: [
+        { title: 'Sessions', url: '/org/t/team/terminal' },
+        { title: 'Bookmarks', url: '/org/t/team/terminal/bookmarks' },
+      ],
+    };
+    expect(checkIsActive('/org/t/team/terminal/session-123', item)).toBe(true);
+  });
 });

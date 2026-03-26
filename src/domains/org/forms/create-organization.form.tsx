@@ -92,7 +92,6 @@ export function CreateOrganizationForm({
                   <field.AppFormField
                     label="Organization Name"
                     placeholder="Acme Corporation"
-                    required
                     onChange={(e) => {
                       const value = e.target.value;
                       setOrgName(value);
@@ -115,7 +114,6 @@ export function CreateOrganizationForm({
                     <field.AppFormField
                       label="Organization Slug"
                       placeholder="acme-corporation"
-                      required
                       helperText="Used in URLs. Only lowercase letters, numbers, and hyphens."
                       onChange={(e) => {
                         resetValidation(e.target.value);

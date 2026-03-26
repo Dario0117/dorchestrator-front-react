@@ -33,7 +33,6 @@ export function DeviceConfigForm({
               label="Inactivity Timeout (minutes)"
               type="number"
               placeholder="60"
-              required
               helperText={
                 orgCeiling
                   ? `Sessions will lock after this period of inactivity. Organization ceiling: ${orgCeiling.inactivityTimeoutMinutes} minutes.`

@@ -11,6 +11,7 @@ import {
 import { normalizeFieldErrors } from '@domains/org/forms/components/normalize-field-errors';
 import { RequiredAsterisk } from '@domains/org/forms/components/required-asterisk';
 import { useFieldContext } from '@domains/org/forms/hooks/app-form';
+import { useIsFieldRequired } from '@domains/org/forms/hooks/use-is-field-required';
 
 export interface SelectOption {
   value: string;
@@ -21,7 +22,6 @@ interface AppFormSelectProps {
   label: string;
   placeholder?: string;
   options: SelectOption[];
-  required?: boolean;
   disabled?: boolean;
 }
 
@@ -29,10 +29,10 @@ export function AppFormSelect({
   label,
   placeholder = 'Select an option...',
   options,
-  required = false,
   disabled = false,
 }: AppFormSelectProps) {
   const field = useFieldContext<string | number>();
+  const required = useIsFieldRequired();
   const errorMessages = normalizeFieldErrors(field.state.meta.errors);
   const hasError = errorMessages.length > 0;
 

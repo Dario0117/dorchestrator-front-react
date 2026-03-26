@@ -33,7 +33,6 @@ export function ResetPasswordForm({
                   <field.AppFormField
                     label="Email"
                     placeholder="johndoe17@mail.com"
-                    required
                   />
                 )}
               </form.AppField>

@@ -21,12 +21,16 @@ interface DateRangeFilterProps {
   fullWidth?: boolean;
 }
 
+function toDateOnly(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
 function getDateRange(preset: string, presets: DatePreset[]) {
   const match = presets.find((p) => p.value === preset) as DatePreset;
   const now = new Date();
   return {
-    startDate: new Date(now.getTime() - match.offsetMs).toISOString(),
-    endDate: now.toISOString(),
+    startDate: toDateOnly(new Date(now.getTime() - match.offsetMs)),
+    endDate: toDateOnly(now),
   };
 }
 
@@ -38,14 +42,14 @@ function getCurrentPreset(
     return undefined;
   }
 
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
   const now = Date.now();
   const start = new Date(startDate).getTime();
-  const diffMs = now - start;
+  const dayDiff = Math.round((now - start) / MS_PER_DAY);
 
-  // Find closest preset within 1-hour tolerance
-  const tolerance = 60 * 60 * 1000;
   for (const preset of presets) {
-    if (Math.abs(diffMs - preset.offsetMs) < tolerance) {
+    const presetDays = Math.round(preset.offsetMs / MS_PER_DAY);
+    if (dayDiff === presetDays) {
       return preset.value;
     }
   }

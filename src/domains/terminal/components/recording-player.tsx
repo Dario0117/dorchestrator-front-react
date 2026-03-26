@@ -32,7 +32,7 @@ import { useRecordingPlayback } from '@domains/terminal/hooks/use-recording-play
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { Terminal } from '@xterm/xterm';
 import { Pause, Play, RotateCcw } from 'lucide-react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 const SPEED_OPTIONS: PlaybackSpeed[] = [0.5, 1, 2, 4];
 
@@ -48,6 +48,16 @@ export function RecordingPlayer({
   const terminalRef = useRef<Terminal | null>(null);
   const fontSizeRef = useRef(fontSize);
   fontSizeRef.current = fontSize;
+  const measureTerminalWidth = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) {
+      return;
+    }
+    const xtermScreen = container.querySelector('.xterm-screen');
+    if (xtermScreen) {
+      container.style.minWidth = `${xtermScreen.scrollWidth}px`;
+    }
+  }, []);
 
   const { playbackState, events, play, pause, restart, changeSpeed, scrub } =
     useRecordingPlayback({ chunks, durationSeconds, terminalRef });
@@ -73,12 +83,18 @@ export function RecordingPlayer({
     terminal.open(container);
 
     terminalRef.current = terminal;
+    measureTerminalWidth();
+
+    const resizeDisposable = terminal.onResize(() => {
+      measureTerminalWidth();
+    });
 
     return () => {
+      resizeDisposable.dispose();
       terminal.dispose();
       terminalRef.current = null;
     };
-  }, []);
+  }, [measureTerminalWidth]);
 
   // Update font size without re-creating terminal
   useEffect(() => {
@@ -89,7 +105,8 @@ export function RecordingPlayer({
     }
     /* v8 ignore stop */
     terminal.options.fontSize = fontSize;
-  }, [fontSize]);
+    measureTerminalWidth();
+  }, [fontSize, measureTerminalWidth]);
 
   const visibleFileEvents = useMemo(
     () => collectFileEventsUpTo(events, playbackState.currentEventIndex),
@@ -118,9 +135,12 @@ export function RecordingPlayer({
           overflow="auto"
           minH="md"
           fullWidth
-          ref={containerRef}
-          data-testid="recording-player-container"
-        />
+        >
+          <Box
+            ref={containerRef}
+            data-testid="recording-player-container"
+          />
+        </Scrollable>
       </Surface>
 
       <Stack

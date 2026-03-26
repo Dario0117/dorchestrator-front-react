@@ -840,7 +840,7 @@ describe('TerminalSessionsPage', () => {
       ];
       const result = lastCall[0].search({ page: 2, size: 25 });
       expect(result.page).toBe(1);
-      expect(result.dateFrom).toBe('2026-01-01T00:00:00.000Z');
+      expect(result.dateFrom).toBe('2026-01-01');
     });
 
     it('should clear dateFrom when clearing from date input', async () => {
@@ -848,7 +848,7 @@ describe('TerminalSessionsPage', () => {
       mockSearchParams = {
         page: 1,
         size: 25,
-        dateFrom: '2026-01-01T00:00:00.000Z',
+        dateFrom: '2026-01-01',
       };
 
       renderWithProviders(<TerminalSessionsPage />);
@@ -876,7 +876,7 @@ describe('TerminalSessionsPage', () => {
       const result = lastCall[0].search({
         page: 2,
         size: 25,
-        dateFrom: '2026-01-01T00:00:00.000Z',
+        dateFrom: '2026-01-01',
       });
       expect(result.dateFrom).toBeUndefined();
       expect(result.page).toBe(1);
@@ -906,7 +906,7 @@ describe('TerminalSessionsPage', () => {
       ];
       const result = lastCall[0].search({ page: 2, size: 25 });
       expect(result.page).toBe(1);
-      expect(result.dateTo).toBe('2026-12-31T23:59:59.999Z');
+      expect(result.dateTo).toBe('2026-12-31');
     });
 
     it('should clear dateTo when clearing to date input', async () => {
@@ -914,7 +914,7 @@ describe('TerminalSessionsPage', () => {
       mockSearchParams = {
         page: 1,
         size: 25,
-        dateTo: '2026-12-31T23:59:59.999Z',
+        dateTo: '2026-12-31',
       };
 
       renderWithProviders(<TerminalSessionsPage />);
@@ -942,7 +942,7 @@ describe('TerminalSessionsPage', () => {
       const result = lastCall[0].search({
         page: 2,
         size: 25,
-        dateTo: '2026-12-31T23:59:59.999Z',
+        dateTo: '2026-12-31',
       });
       expect(result.dateTo).toBeUndefined();
       expect(result.page).toBe(1);

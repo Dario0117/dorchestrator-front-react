@@ -27,7 +27,6 @@ export function LoginForm({ loginMutation, handleSuccess }: LoginFormProps) {
               <field.AppFormField
                 label="Email"
                 placeholder="johndoe17@mail.com"
-                required
               />
             )}
           </form.AppField>
@@ -38,7 +37,6 @@ export function LoginForm({ loginMutation, handleSuccess }: LoginFormProps) {
                 label="Password"
                 type="password"
                 placeholder="Password"
-                required
               />
             )}
           </form.AppField>

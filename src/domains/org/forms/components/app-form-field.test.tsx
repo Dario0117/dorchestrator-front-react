@@ -1,13 +1,18 @@
 import { useAppForm } from '@domains/org/forms/hooks/app-form';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { z } from 'zod/v4';
+
+const requiredSchema = z.object({
+  testField: z.string().min(1, 'This field is required'),
+});
 
 describe('AppFormField', () => {
   const TestFormWrapper = ({
     initialValue = '',
     hasError = false,
     errorMessage = 'This field is required',
-    required = false,
+    schema,
     type = 'text',
     placeholder = 'Enter value',
     label = 'Test Field',
@@ -16,7 +21,7 @@ describe('AppFormField', () => {
     initialValue?: string;
     hasError?: boolean;
     errorMessage?: string;
-    required?: boolean;
+    schema?: typeof requiredSchema;
     type?: string;
     placeholder?: string;
     label?: string;
@@ -26,6 +31,7 @@ describe('AppFormField', () => {
       defaultValues: {
         testField: initialValue,
       },
+      validators: schema ? { onSubmit: schema } : undefined,
       onSubmit: async () => {
         // Intentionally empty for testing
       },
@@ -49,7 +55,6 @@ describe('AppFormField', () => {
               label={label}
               placeholder={placeholder}
               type={type}
-              required={required}
             >
               {children}
             </field.AppFormField>
@@ -71,11 +76,11 @@ describe('AppFormField', () => {
     expect(screen.getByPlaceholderText('Enter username')).toBeInTheDocument();
   });
 
-  it('should render required indicator when required is true', () => {
+  it('should render required indicator when schema field is required', () => {
     render(
       <TestFormWrapper
         label="Email"
-        required={true}
+        schema={requiredSchema}
       />,
     );
 
@@ -84,13 +89,8 @@ describe('AppFormField', () => {
     expect(screen.getByLabelText('Email*')).toBeInTheDocument();
   });
 
-  it('should not render required indicator when required is false', () => {
-    render(
-      <TestFormWrapper
-        label="Email"
-        required={false}
-      />,
-    );
+  it('should not render required indicator when no schema is provided', () => {
+    render(<TestFormWrapper label="Email" />);
 
     expect(screen.queryByText('*')).not.toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
@@ -333,11 +333,11 @@ describe('AppFormField', () => {
     expect(screen.getByText('Custom content')).toBeInTheDocument();
   });
 
-  it('should have required attribute when required is true', () => {
+  it('should have required attribute when schema field is required', () => {
     render(
       <TestFormWrapper
         label="Email"
-        required={true}
+        schema={requiredSchema}
       />,
     );
 
@@ -345,13 +345,8 @@ describe('AppFormField', () => {
     expect(input).toHaveAttribute('required');
   });
 
-  it('should not have required attribute when required is false', () => {
-    render(
-      <TestFormWrapper
-        label="Email"
-        required={false}
-      />,
-    );
+  it('should not have required attribute when no schema is provided', () => {
+    render(<TestFormWrapper label="Email" />);
 
     const input = screen.getByLabelText('Email');
     expect(input).not.toHaveAttribute('required');

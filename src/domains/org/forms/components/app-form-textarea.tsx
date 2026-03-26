@@ -8,11 +8,11 @@ import { Textarea } from '@components/ds/atoms/textarea';
 import { normalizeFieldErrors } from '@domains/org/forms/components/normalize-field-errors';
 import { RequiredAsterisk } from '@domains/org/forms/components/required-asterisk';
 import { useFieldContext } from '@domains/org/forms/hooks/app-form';
+import { useIsFieldRequired } from '@domains/org/forms/hooks/use-is-field-required';
 
 interface AppFormTextareaProps {
   label: string;
   placeholder?: string;
-  required?: boolean;
   rows?: number;
   maxLength?: number;
 }
@@ -20,10 +20,10 @@ interface AppFormTextareaProps {
 export function AppFormTextarea({
   label,
   placeholder,
-  required = false,
   rows = 4,
   maxLength,
 }: AppFormTextareaProps) {
+  const required = useIsFieldRequired();
   const field = useFieldContext<string>();
   const errorMessages = normalizeFieldErrors(field.state.meta.errors);
   const hasError = errorMessages.length > 0;

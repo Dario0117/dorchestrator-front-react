@@ -86,6 +86,29 @@ status: z.enum(['pending', 'running', 'completed', 'failed']);
 status: status as 'pending' | 'running' | 'completed' | 'failed' | undefined;
 ```
 
+## Form Schema / API Contract Sync
+
+Form Zod schemas that map directly to an API request body **must** include a compile-time type check using the utilities in `@/types/form-api-sync.types`. This ensures that when the backend API changes (and `api.generated.types.ts` is regenerated), TypeScript will flag any Zod schemas that no longer match.
+
+```typescript
+// In schema file
+import type { ApiRequestBody, Expect, IsExact } from '@/types/form-api-sync.types';
+
+export type FormApiSync = Expect<
+  IsExact<MyFormData, ApiRequestBody<'postApiV1MyEndpoint'>>
+>;
+```
+
+If the types diverge, TypeScript will error: `Type 'false' does not satisfy the constraint 'true'`.
+
+**When to add this check:**
+- Form data is sent directly as the API request body (no transformation in the hook)
+- Examples: create-organization, create-team, submit-command
+
+**When to skip:**
+- The hook transforms the form data before sending (different field names/units) — the `$api.useMutation` typing already catches mismatches at the hook level
+- The form uses a non-OpenAPI endpoint (e.g., better-auth)
+
 ## Enums
 
 Never use TypeScript enums. Use `as const` objects or constant variables instead.

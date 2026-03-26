@@ -34,7 +34,6 @@ export function RegisterForm({
                   <field.AppFormField
                     label="Name"
                     placeholder="John Doe"
-                    required
                   />
                 )}
               </form.AppField>
@@ -43,7 +42,6 @@ export function RegisterForm({
                   <field.AppFormField
                     label="Email"
                     placeholder="johndoe17@mail.com"
-                    required
                   />
                 )}
               </form.AppField>
@@ -53,7 +51,6 @@ export function RegisterForm({
                     label="Password"
                     type="password"
                     placeholder="Password"
-                    required
                   />
                 )}
               </form.AppField>
@@ -63,7 +60,6 @@ export function RegisterForm({
                     label="Confirm Password"
                     type="password"
                     placeholder="Confirm Password"
-                    required
                   />
                 )}
               </form.AppField>

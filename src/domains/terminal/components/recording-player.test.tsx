@@ -17,6 +17,7 @@ vi.mock('@xterm/xterm', () => {
       dispose: mockTerminalDispose,
       reset: mockTerminalReset,
       loadAddon: mockLoadAddon,
+      onResize: vi.fn(() => ({ dispose: vi.fn() })),
       options: { fontSize: 14 },
       cols: 80,
       rows: 24,

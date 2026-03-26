@@ -2,6 +2,7 @@ import { useAppForm } from '@domains/org/forms/hooks/app-form';
 import { clickTrigger } from '@lib/test-wrappers.utils';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { z } from 'zod/v4';
 
 const OPTIONS = [
   { value: 'option-a', label: 'Option A' },
@@ -15,12 +16,16 @@ const NUMBER_OPTIONS = [
   { value: '3', label: 'Three' },
 ];
 
+const requiredSchema = z.object({
+  testField: z.string().min(1),
+});
+
 describe('AppFormSelect', () => {
   const StringSelectWrapper = ({
     initialValue = '',
     hasError = false,
     errorMessage = 'This field is required',
-    required = false,
+    schema,
     disabled = false,
     placeholder,
     label = 'Test Select',
@@ -28,7 +33,7 @@ describe('AppFormSelect', () => {
     initialValue?: string;
     hasError?: boolean;
     errorMessage?: string;
-    required?: boolean;
+    schema?: typeof requiredSchema;
     disabled?: boolean;
     placeholder?: string;
     label?: string;
@@ -37,6 +42,7 @@ describe('AppFormSelect', () => {
       defaultValues: {
         testField: initialValue,
       },
+      validators: schema ? { onSubmit: schema } : undefined,
       onSubmit: async () => {
         // Intentionally empty for testing
       },
@@ -59,7 +65,6 @@ describe('AppFormSelect', () => {
             <field.AppFormSelect
               label={label}
               options={OPTIONS}
-              required={required}
               disabled={disabled}
               placeholder={placeholder}
             />
@@ -122,10 +127,10 @@ describe('AppFormSelect', () => {
     expect(screen.getByText('Pick one')).toBeInTheDocument();
   });
 
-  it('should render required indicator when required is true', () => {
+  it('should render required indicator when schema field is required', () => {
     render(
       <StringSelectWrapper
-        required={true}
+        schema={requiredSchema}
         label="Category"
       />,
     );
@@ -133,8 +138,8 @@ describe('AppFormSelect', () => {
     expect(screen.getByText('*')).toBeInTheDocument();
   });
 
-  it('should not render required indicator when required is false', () => {
-    render(<StringSelectWrapper required={false} />);
+  it('should not render required indicator when no schema is provided', () => {
+    render(<StringSelectWrapper />);
 
     expect(screen.queryByText('*')).not.toBeInTheDocument();
   });

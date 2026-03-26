@@ -13,8 +13,19 @@ export function checkIsActive(href: string, item: NavItem, mainNav = false) {
 
   return (
     normalizedHref === normalizedItemUrl ||
-    !!item?.items?.filter((i) => normalizeUrl(i.url ?? '') === normalizedHref)
-      .length ||
+    (!item.items &&
+      normalizedItemUrl !== '' &&
+      normalizedItemUrl !== '/' &&
+      normalizedHref.startsWith(`${normalizedItemUrl}/`)) ||
+    !!item?.items?.filter((i) => {
+      const normalizedSubUrl = normalizeUrl(i.url ?? '');
+      return (
+        normalizedSubUrl === normalizedHref ||
+        (normalizedSubUrl !== '' &&
+          normalizedSubUrl !== '/' &&
+          normalizedHref.startsWith(`${normalizedSubUrl}/`))
+      );
+    }).length ||
     (mainNav &&
       href.split('/')[1] !== '' &&
       href.split('/')[1] === item?.url?.split('/')[1])

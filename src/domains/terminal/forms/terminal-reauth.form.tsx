@@ -32,7 +32,6 @@ export function TerminalReauthForm({
               label="Password"
               type="password"
               placeholder="Enter your password"
-              required
             />
           )}
         </form.AppField>

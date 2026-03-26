@@ -1,4 +1,9 @@
 import { z } from 'zod/v4';
+import type {
+  ApiRequestBody,
+  Expect,
+  IsExact,
+} from '@/types/form-api-sync.types';
 
 export const commandFormSchema = z.object({
   deviceId: z.number().min(1, 'Please select a device'),
@@ -9,3 +14,12 @@ export const commandFormSchema = z.object({
 });
 
 export type CommandFormData = z.infer<typeof commandFormSchema>;
+
+// Compile-time check: if the API contract changes, this will error with
+// "Type 'false' does not satisfy the constraint 'true'"
+export type FormApiSync = Expect<
+  IsExact<
+    CommandFormData,
+    ApiRequestBody<'postApiV1ByOrganizationIdTeamsByTeamIdCommands'>
+  >
+>;

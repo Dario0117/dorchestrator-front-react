@@ -83,7 +83,6 @@ export function CommandFormInner({
                 label="Device"
                 placeholder="Select a device..."
                 options={deviceOptions}
-                required
                 disabled={isDeviceDisabled}
               />
             )}
@@ -96,7 +95,6 @@ export function CommandFormInner({
                 label="Command"
                 placeholder="Enter your command..."
                 rows={6}
-                required
                 maxLength={MAX_COMMAND_LENGTH}
               />
             )}
