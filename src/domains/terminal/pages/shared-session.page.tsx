@@ -6,7 +6,6 @@ import { Flex } from '@components/ds/atoms/flex';
 import { HStack } from '@components/ds/atoms/hstack';
 import { SecondaryParagraph } from '@components/ds/atoms/secondary-paragraph';
 import { SectionTitle } from '@components/ds/atoms/section-title';
-import { Skeleton } from '@components/ds/atoms/skeleton';
 import { Stack } from '@components/ds/atoms/stack';
 import { IconCircle } from '@domains/shared/components/icon-circle';
 import { FontSizeControls } from '@domains/terminal/components/font-size-controls';
@@ -14,6 +13,7 @@ import { SuggestionSidebar } from '@domains/terminal/components/suggestion-sideb
 import { TerminalConnectionStatus } from '@domains/terminal/components/terminal-connection-status';
 import { TerminalEmulator } from '@domains/terminal/components/terminal-emulator';
 import { useFontSize } from '@domains/terminal/hooks/use-font-size';
+import { SharedSessionPageSkeleton } from '@domains/terminal/pages/shared-session.page.skeleton';
 import { useResolveShareLinkQuery } from '@domains/terminal/services/resolve-share-link.http-service';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
 import { Link, useParams } from '@tanstack/react-router';
@@ -57,25 +57,7 @@ export function SharedSessionPage({
   }, [resolvedSessionId]);
 
   if (isLoading) {
-    return (
-      <Center fullHeight>
-        <Stack
-          gap="lg"
-          textAlign="center"
-        >
-          <Skeleton
-            centered
-            h="2rem"
-            w="12rem"
-          />
-          <Skeleton
-            centered
-            h="1rem"
-            w="16rem"
-          />
-        </Stack>
-      </Center>
-    );
+    return <SharedSessionPageSkeleton />;
   }
 
   // 410 Gone — session terminated

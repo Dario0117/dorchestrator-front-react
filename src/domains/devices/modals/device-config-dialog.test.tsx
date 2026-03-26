@@ -9,14 +9,9 @@ import type { operations } from '@/types/api.generated.types';
 
 type GetDeviceConfigSuccessResponse =
   operations['getApiV1ByOrganizationIdTerminalConfigByDeviceId']['responses']['200']['content']['application/json'];
-type GetTerminalConfigSuccessResponse =
-  operations['getApiV1ByOrganizationIdTerminalConfig']['responses']['200']['content']['application/json'];
 
 const deviceConfigUrl = buildBackendUrl(
   '/api/v1/{organizationId}/terminal/config/{deviceId}',
-);
-const terminalConfigUrl = buildBackendUrl(
-  '/api/v1/{organizationId}/terminal/config',
 );
 
 const defaultProps = {
@@ -54,27 +49,9 @@ function buildDeviceConfigResponse(
   };
 }
 
-function buildTerminalConfigResponse(
-  overrides?: Partial<{
-    inactivityTimeoutMs: number;
-    hardCapMs: number | null;
-  }>,
-): GetTerminalConfigSuccessResponse {
-  return {
-    responseData: {
-      results: {
-        inactivityTimeoutMs: overrides?.inactivityTimeoutMs ?? 3_600_000,
-        hardCapMs: overrides?.hardCapMs ?? null,
-        maxConcurrentSessions: 5,
-        defaultWorkingDirectory: null,
-        recordingRetentionDays: null,
-        recordingMaxSizePerSessionBytes: null,
-        recordingMaxSizePerOrgBytes: null,
-      },
-    },
-    responseErrors: null,
-  };
-}
+// Form field rendering, validation, and submission are tested in
+// device-config.form.test.tsx. These tests focus on the dialog wrapper:
+// open/close, loading state, inherited message, and success alert lifecycle.
 
 describe('DeviceConfigDialog', () => {
   beforeEach(() => {
@@ -123,78 +100,14 @@ describe('DeviceConfigDialog', () => {
     });
   });
 
-  it('should render form with correct default values after data loads', async () => {
-    server.use(
-      http.get<never, never, GetDeviceConfigSuccessResponse>(
-        deviceConfigUrl,
-        () => {
-          return HttpResponse.json(
-            buildDeviceConfigResponse({
-              inactivityTimeoutMs: 1_800_000,
-              hardCapMs: 7_200_000,
-              defaultWorkingDirectory: '/home/user',
-            }),
-          );
-        },
-      ),
-    );
-
+  it('should render form after data loads', async () => {
     renderWithProviders(<DeviceConfigDialog {...defaultProps} />);
 
     await waitFor(() => {
       expect(
-        screen.getByLabelText(/Inactivity Timeout \(minutes\)/),
+        screen.getByRole('button', { name: 'Save Device Configuration' }),
       ).toBeInTheDocument();
     });
-
-    const inactivityInput = screen.getByLabelText(
-      /Inactivity Timeout \(minutes\)/,
-    ) as HTMLInputElement;
-    const hardCapInput = screen.getByLabelText(
-      /Hard Cap \(hours\)/,
-    ) as HTMLInputElement;
-    const workingDirInput = screen.getByLabelText(
-      /Default Working Directory/,
-    ) as HTMLInputElement;
-
-    expect(inactivityInput.value).toBe('30');
-    expect(hardCapInput.value).toBe('2');
-    expect(workingDirInput.value).toBe('/home/user');
-  });
-
-  it('should render form with fallback defaults when config is undefined', async () => {
-    server.use(
-      http.get(deviceConfigUrl, () => {
-        return HttpResponse.json({
-          responseData: {
-            results: { config: undefined, inherited: true },
-          },
-          responseErrors: null,
-        });
-      }),
-    );
-
-    renderWithProviders(<DeviceConfigDialog {...defaultProps} />);
-
-    await waitFor(() => {
-      expect(
-        screen.getByLabelText(/Inactivity Timeout \(minutes\)/),
-      ).toBeInTheDocument();
-    });
-
-    const inactivityInput = screen.getByLabelText(
-      /Inactivity Timeout \(minutes\)/,
-    ) as HTMLInputElement;
-    const hardCapInput = screen.getByLabelText(
-      /Hard Cap \(hours\)/,
-    ) as HTMLInputElement;
-    const workingDirInput = screen.getByLabelText(
-      /Default Working Directory/,
-    ) as HTMLInputElement;
-
-    expect(inactivityInput.value).toBe('60');
-    expect(hardCapInput.value).toBe('');
-    expect(workingDirInput.value).toBe('');
   });
 
   it('should show inherited settings message when config is inherited', async () => {
@@ -232,62 +145,6 @@ describe('DeviceConfigDialog', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should show org ceiling info in helper text when org config is loaded', async () => {
-    server.use(
-      http.get<never, never, GetTerminalConfigSuccessResponse>(
-        terminalConfigUrl,
-        () => {
-          return HttpResponse.json(
-            buildTerminalConfigResponse({
-              inactivityTimeoutMs: 7_200_000,
-              hardCapMs: 14_400_000,
-            }),
-          );
-        },
-      ),
-    );
-
-    renderWithProviders(<DeviceConfigDialog {...defaultProps} />);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Organization ceiling: 120 minutes/),
-      ).toBeInTheDocument();
-    });
-
-    expect(
-      screen.getByText(/Organization hard cap: 4 hours/),
-    ).toBeInTheDocument();
-  });
-
-  it('should show default helper text when org ceiling has no hard cap', async () => {
-    server.use(
-      http.get<never, never, GetTerminalConfigSuccessResponse>(
-        terminalConfigUrl,
-        () => {
-          return HttpResponse.json(
-            buildTerminalConfigResponse({
-              inactivityTimeoutMs: 3_600_000,
-              hardCapMs: null,
-            }),
-          );
-        },
-      ),
-    );
-
-    renderWithProviders(<DeviceConfigDialog {...defaultProps} />);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Organization ceiling: 60 minutes/),
-      ).toBeInTheDocument();
-    });
-
-    expect(
-      screen.getByText(/Must not exceed the organization ceiling/),
-    ).toBeInTheDocument();
-  });
-
   it('should show success alert after form submission', async () => {
     const user = userEvent.setup();
 
@@ -299,7 +156,6 @@ describe('DeviceConfigDialog', () => {
       ).toBeInTheDocument();
     });
 
-    // Make form dirty by modifying a field
     const inactivityInput = screen.getByLabelText(
       /Inactivity Timeout \(minutes\)/,
     );
@@ -332,7 +188,6 @@ describe('DeviceConfigDialog', () => {
       ).toBeInTheDocument();
     });
 
-    // Make form dirty
     const inactivityInput = screen.getByLabelText(
       /Inactivity Timeout \(minutes\)/,
     );
@@ -379,7 +234,6 @@ describe('DeviceConfigDialog', () => {
       ).toBeInTheDocument();
     });
 
-    // Make form dirty
     const inactivityInput = screen.getByLabelText(
       /Inactivity Timeout \(minutes\)/,
     );
@@ -418,28 +272,5 @@ describe('DeviceConfigDialog', () => {
     ).not.toBeInTheDocument();
 
     vi.useRealTimers();
-  });
-
-  it('should render the save button', async () => {
-    renderWithProviders(<DeviceConfigDialog {...defaultProps} />);
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: 'Save Device Configuration' }),
-      ).toBeInTheDocument();
-    });
-  });
-
-  it('should show form fields with correct labels', async () => {
-    renderWithProviders(<DeviceConfigDialog {...defaultProps} />);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText('Inactivity Timeout (minutes)'),
-      ).toBeInTheDocument();
-    });
-
-    expect(screen.getByText('Hard Cap (hours)')).toBeInTheDocument();
-    expect(screen.getByText('Default Working Directory')).toBeInTheDocument();
   });
 });

@@ -1,12 +1,7 @@
-import {
-  CommandFilterControls,
-  CommandSearchInput,
-} from '@domains/commands/filters/command-filters';
-import { useCommandFilterState } from '@domains/commands/hooks/use-command-filter-state';
+import { CommandFilterControls } from '@domains/commands/filters/command-filters';
 import { useDevicesSuspenseQuery } from '@domains/devices/services/list-devices.http-service';
 import { renderWithProviders, selectOption } from '@lib/test-wrappers.utils';
-import { renderHook, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { screen } from '@testing-library/react';
 
 const mockNavigate = vi.fn();
 
@@ -173,96 +168,5 @@ describe('CommandFilterControls', () => {
     renderWithProviders(<CommandFilterControls />);
 
     expect(screen.getByLabelText('Filter by device')).toBeInTheDocument();
-  });
-});
-
-describe('CommandSearchInput', () => {
-  beforeEach(() => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
-    mockNavigate.mockClear();
-    mockSearchParams = { page: 1, size: 25 };
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it('should render search input', () => {
-    renderWithProviders(<CommandSearchInput />);
-    expect(
-      screen.getByPlaceholderText('Search commands...'),
-    ).toBeInTheDocument();
-  });
-
-  it('should navigate with search value after debounce', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-    renderWithProviders(<CommandSearchInput />);
-
-    await user.type(
-      screen.getByPlaceholderText('Search commands...'),
-      'docker',
-    );
-
-    vi.advanceTimersByTime(300);
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalled();
-    });
-
-    const call = mockNavigate.mock.calls[0] as [
-      { search: (prev: Record<string, unknown>) => Record<string, unknown> },
-    ];
-    const result = call[0].search({ page: 1, size: 25 });
-    expect(result.search).toBe('docker');
-  });
-});
-
-describe('useCommandFilterState', () => {
-  beforeEach(() => {
-    mockNavigate.mockClear();
-    mockSearchParams = { page: 1, size: 25 };
-  });
-
-  it('should return zero active filters when none are set', () => {
-    const { result } = renderHook(() => useCommandFilterState());
-    expect(result.current.activeFilterCount).toBe(0);
-    expect(result.current.chips).toHaveLength(0);
-  });
-
-  it('should count active filters', () => {
-    mockSearchParams = {
-      page: 1,
-      size: 25,
-      status: 'completed',
-      deviceId: 1,
-      search: 'docker',
-    };
-    const { result } = renderHook(() => useCommandFilterState());
-    expect(result.current.activeFilterCount).toBe(3);
-    expect(result.current.chips).toHaveLength(3);
-  });
-
-  it('should count startDate as an active filter', () => {
-    mockSearchParams = {
-      page: 1,
-      size: 25,
-      startDate: '2026-01-01T00:00:00.000Z',
-    };
-    const { result } = renderHook(() => useCommandFilterState());
-    expect(result.current.activeFilterCount).toBe(1);
-  });
-
-  it('should build chips with correct labels', () => {
-    mockSearchParams = {
-      page: 1,
-      size: 25,
-      status: 'completed',
-    };
-    const { result } = renderHook(() => useCommandFilterState());
-    expect(result.current.chips[0]).toEqual({
-      key: 'status',
-      label: 'Status',
-      value: 'Completed',
-    });
   });
 });

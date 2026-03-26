@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@components/ds/atoms/select';
-import { Skeleton } from '@components/ds/atoms/skeleton';
 import { SmallParagraph } from '@components/ds/atoms/small-paragraph';
 import { Stack } from '@components/ds/atoms/stack';
 import {
@@ -21,6 +20,7 @@ import {
   DialogTitle,
 } from '@components/ds/molecules/dialog';
 import { useCreateTerminalSessionDialog } from '@domains/terminal/hooks/use-create-terminal-session-dialog';
+import { CreateTerminalSessionDialogSkeleton } from '@domains/terminal/modals/create-terminal-session-dialog.skeleton';
 import { formatDurationHuman } from '@lib/format-duration';
 import {
   type HardCapSelection,
@@ -97,16 +97,7 @@ export function CreateTerminalSessionDialog({
         </DialogHeader>
 
         {isLoading ? (
-          <Stack gap="lg">
-            <Skeleton
-              h="2.5rem"
-              w="100%"
-            />
-            <Skeleton
-              h="2.5rem"
-              w="100%"
-            />
-          </Stack>
+          <CreateTerminalSessionDialogSkeleton />
         ) : (
           <Stack
             gap="lg"

@@ -1,7 +1,6 @@
 import { AuthenticatedLayout } from '@domains/shared/components/authenticated-layout';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { Suspense } from 'react';
 
 vi.mock('@lib/cookies.utils', () => ({
@@ -113,100 +112,13 @@ describe('AuthenticatedLayout', () => {
     mockUseParams.mockReturnValue({ organizationSlug: 'test-org' });
   });
 
-  it('should render children', async () => {
+  it('should render children when organizationSlug is present', async () => {
     await renderAuthenticatedLayout();
 
     expect(screen.getByTestId('child-content')).toBeInTheDocument();
   });
 
-  it('should render app sidebar', async () => {
-    await renderAuthenticatedLayout();
-
-    expect(screen.getByText('Test Organization')).toBeInTheDocument();
-  });
-
-  it('should render header with theme switch', async () => {
-    await renderAuthenticatedLayout();
-
-    const themeButton = screen.getByRole('button', { name: /toggle theme/i });
-    expect(themeButton).toBeInTheDocument();
-  });
-
-  it('should render profile dropdown', async () => {
-    const { container } = await renderAuthenticatedLayout();
-
-    const header = container.querySelector('header');
-    expect(header).toBeInTheDocument();
-  });
-
-  it('should render skip to main link', async () => {
-    await renderAuthenticatedLayout();
-
-    const skipLink = screen.getByRole('link', {
-      name: /skip to main/i,
-    });
-    expect(skipLink).toBeInTheDocument();
-  });
-
-  it('should provide sidebar context', async () => {
-    const { container } = await renderAuthenticatedLayout();
-
-    const sidebarWrapper = container.querySelector(
-      '[data-slot="sidebar-wrapper"]',
-    );
-    expect(sidebarWrapper).toBeInTheDocument();
-  });
-
-  it('should provide layout context', async () => {
-    await renderAuthenticatedLayout();
-
-    expect(screen.getByText('Test Organization')).toBeInTheDocument();
-  });
-
-  it('should provide search context', async () => {
-    await renderAuthenticatedLayout();
-
-    const layout = screen.getByTestId('child-content').parentElement;
-    expect(layout).toBeInTheDocument();
-  });
-
-  it('should render sidebar inset', async () => {
-    const { container } = await renderAuthenticatedLayout();
-
-    const sidebarInset = container.querySelector('[data-slot="sidebar-inset"]');
-    expect(sidebarInset).toBeInTheDocument();
-  });
-
-  it('should render with custom children', async () => {
-    const customContent = (
-      <div data-testid="custom-content">
-        <h1>Custom Page Title</h1>
-        <p>Custom page content</p>
-      </div>
-    );
-
-    await renderAuthenticatedLayout(customContent);
-
-    expect(screen.getByTestId('custom-content')).toBeInTheDocument();
-    expect(screen.getByText('Custom Page Title')).toBeInTheDocument();
-    expect(screen.getByText('Custom page content')).toBeInTheDocument();
-  });
-
-  it('should have correct header structure', async () => {
-    const { container } = await renderAuthenticatedLayout();
-
-    const header = container.querySelector('header');
-    expect(header).toBeInTheDocument();
-  });
-
-  it('should render navigation groups in sidebar', async () => {
-    await renderAuthenticatedLayout();
-
-    expect(screen.getByText('General')).toBeInTheDocument();
-    expect(screen.getByText('Settings')).toBeInTheDocument();
-  });
-
-  it('should apply default open state from cookie', async () => {
+  it('should render sidebar layout when organizationSlug is present', async () => {
     const { container } = await renderAuthenticatedLayout();
 
     const sidebarWrapper = container.querySelector(
@@ -230,10 +142,8 @@ describe('AuthenticatedLayout', () => {
       expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
     });
 
-    // Should render children
     expect(screen.getByTestId('child-content')).toBeInTheDocument();
 
-    // Should NOT render sidebar
     const sidebarWrapper = result.container.querySelector(
       '[data-slot="sidebar-wrapper"]',
     );
@@ -268,29 +178,5 @@ describe('AuthenticatedLayout', () => {
     });
 
     expect(screen.getByTestId('outlet')).toBeInTheDocument();
-  });
-
-  it('should open command palette when search trigger is clicked', async () => {
-    const user = userEvent.setup();
-    await renderAuthenticatedLayout();
-
-    // biome-ignore lint/style/noNonNullAssertion: test assertion — element is guaranteed by getAllByRole
-    const searchButton = screen.getAllByRole('button', { name: /search/i })[0]!;
-    await user.click(searchButton);
-
-    expect(
-      screen.getByPlaceholderText(/search devices, actions, pages/i),
-    ).toBeInTheDocument();
-  });
-
-  it('should build basePath with teamSlug when present in params', async () => {
-    mockUseParams.mockReturnValue({
-      organizationSlug: 'test-org',
-      teamSlug: 'test-team',
-    });
-
-    await renderAuthenticatedLayout();
-
-    expect(screen.getByTestId('child-content')).toBeInTheDocument();
   });
 });

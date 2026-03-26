@@ -6,7 +6,7 @@ import {
 } from '@components/ds/atoms/card';
 import { Grid } from '@components/ds/atoms/grid';
 import { SectionTitle } from '@components/ds/atoms/section-title';
-import { Skeleton } from '@components/ds/atoms/skeleton';
+import { StatCardSkeleton } from '@domains/shared/components/stat-cards.skeleton';
 import { HardDrive, Monitor, Terminal } from 'lucide-react';
 
 interface StatCardsProps {
@@ -15,36 +15,6 @@ interface StatCardsProps {
   commandsIn24h: number;
   activeSessions: number;
   isLoading?: boolean;
-}
-
-function StatCardSkeleton() {
-  return (
-    <Card>
-      <CardHeader
-        direction="row"
-        align="center"
-        paddingBottom="sm"
-      >
-        <Skeleton
-          w="80px"
-          h="16px"
-          rounded
-        />
-        <Skeleton
-          w="20px"
-          h="20px"
-          rounded
-        />
-      </CardHeader>
-      <CardContent>
-        <Skeleton
-          w="60px"
-          h="28px"
-          rounded
-        />
-      </CardContent>
-    </Card>
-  );
 }
 
 export function StatCards({

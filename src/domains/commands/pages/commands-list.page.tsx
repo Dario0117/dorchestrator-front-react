@@ -11,10 +11,8 @@ import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
 import { PaginatedFooter } from '@components/ds/organisms/paginated-footer';
 import { CommandCard } from '@domains/commands/components/command-card';
 import { CommandsTable } from '@domains/commands/components/commands-table';
-import {
-  CommandFilterControls,
-  CommandSearchInput,
-} from '@domains/commands/filters/command-filters';
+import { CommandFilterControls } from '@domains/commands/filters/command-filters';
+import { CommandSearchInput } from '@domains/commands/filters/command-search-input';
 import { useCommandFilterState } from '@domains/commands/hooks/use-command-filter-state';
 import { ExecuteCommandModal } from '@domains/commands/modals/execute-command-modal';
 import { useCommandsSuspenseQuery } from '@domains/commands/services/list-commands.http-service';

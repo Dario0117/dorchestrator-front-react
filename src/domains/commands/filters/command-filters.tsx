@@ -1,7 +1,6 @@
 import { Stack } from '@components/ds/atoms/stack';
 import { useDevicesSuspenseQuery } from '@domains/devices/services/list-devices.http-service';
 import { DateRangeFilter } from '@domains/shared/filters/date-range-filter';
-import { SearchInput } from '@domains/shared/filters/search-input';
 import { SelectFilter } from '@domains/shared/filters/select-filter';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
 import { useCurrentTeam } from '@domains/shared/hooks/use-current-team';
@@ -78,23 +77,5 @@ export function CommandFilterControls() {
         fullWidth
       />
     </Stack>
-  );
-}
-
-export function CommandSearchInput() {
-  const { search } = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
-
-  return (
-    <SearchInput
-      value={search}
-      onSearch={(value) =>
-        navigate({
-          search: (prev) => ({ ...prev, search: value, page: 1 }),
-        })
-      }
-      placeholder="Search commands..."
-      ariaLabel="Search commands"
-    />
   );
 }

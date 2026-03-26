@@ -1,7 +1,5 @@
 import { Alert, AlertDescription } from '@components/ds/atoms/alert';
-import { Skeleton } from '@components/ds/atoms/skeleton';
 import { SmallText } from '@components/ds/atoms/small-text';
-import { Stack } from '@components/ds/atoms/stack';
 import {
   Dialog,
   DialogContent,
@@ -10,6 +8,7 @@ import {
   DialogTitle,
 } from '@components/ds/molecules/dialog';
 import { DeviceConfigForm } from '@domains/devices/forms/device-config.form';
+import { DeviceConfigDialogSkeleton } from '@domains/devices/modals/device-config-dialog.skeleton';
 import { useGetDeviceConfigQueryOptions } from '@domains/terminal/services/get-device-config.http-service';
 import { useGetTerminalConfigQueryOptions } from '@domains/terminal/services/get-terminal-config.http-service';
 import { useUpdateDeviceConfigMutation } from '@domains/terminal/services/update-device-config.http-service';
@@ -96,20 +95,7 @@ export function DeviceConfigDialog({
         )}
 
         {isLoading ? (
-          <Stack gap="lg">
-            <Skeleton
-              h="2.5rem"
-              w="100%"
-            />
-            <Skeleton
-              h="2.5rem"
-              w="100%"
-            />
-            <Skeleton
-              h="2.5rem"
-              w="100%"
-            />
-          </Stack>
+          <DeviceConfigDialogSkeleton />
         ) : (
           <DeviceConfigForm
             key={`${config?.inactivityTimeoutMs}-${config?.hardCapMs}-${config?.defaultWorkingDirectory}`}
