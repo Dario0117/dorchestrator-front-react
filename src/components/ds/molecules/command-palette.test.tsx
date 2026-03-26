@@ -12,7 +12,7 @@ vi.mock('@domains/shared/hooks/use-current-organization', () => ({
 }));
 
 vi.mock('@domains/shared/hooks/use-current-team', () => ({
-  useCurrentTeam: () => ({
+  useActiveTeam: () => ({
     id: 'team-1',
     slug: 'test-team',
     name: 'Test Team',

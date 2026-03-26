@@ -1,9 +1,8 @@
 # Tech Debt items
 
-## Quick wins
+## Needs backend
 
 - [ ] Add the device id and user id on the command card
-- [ ] Update all the consumers of useCurrentTeam to reflect the new response, now it's not an optional value, we can remove that extra check on the consumers
 
 ## UI Enhancements
 

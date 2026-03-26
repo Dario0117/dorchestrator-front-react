@@ -2,7 +2,7 @@ import type { CommandPaletteResult } from '@components/ds/molecules/command-pale
 import { useDevicesQueryOptions } from '@domains/devices/services/list-devices.http-service';
 import type { CommandPaletteGroup } from '@domains/shared/hooks/use-command-palette-search.types';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
-import { useCurrentTeam } from '@domains/shared/hooks/use-current-team';
+import { useActiveTeam } from '@domains/shared/hooks/use-current-team';
 import { useRecentItemsStore } from '@domains/shared/stores/recent-items.store';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
@@ -47,14 +47,14 @@ const ALL_DEVICES_SIZE = 100;
 export function useCommandPaletteSearch(query: string, enabled: boolean) {
   const recentItems = useRecentItemsStore((s) => s.recentItems);
   const currentOrganization = useCurrentOrganization();
-  const currentTeam = useCurrentTeam();
+  const activeTeam = useActiveTeam();
 
   const organizationId = currentOrganization.id;
-  const teamId = currentTeam?.id ?? '';
+  const teamId = activeTeam.id;
 
   const { data: devicesData } = useQuery({
     ...useDevicesQueryOptions(organizationId, teamId, 1, ALL_DEVICES_SIZE),
-    enabled: enabled && !!teamId,
+    enabled,
   });
 
   const deviceResults = useMemo((): CommandPaletteResult[] => {

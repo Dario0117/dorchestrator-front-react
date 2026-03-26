@@ -24,8 +24,7 @@ export function TerminalSessionFilterControls() {
   const navigate = useNavigate({ from: Route.fullPath });
 
   const organizationId = currentOrganization.id;
-  // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
-  const teamId = currentTeam!.id;
+  const teamId = currentTeam.id;
 
   const { data: devicesData } = useQuery(
     useDevicesQueryOptions(organizationId, teamId, 1, 100),

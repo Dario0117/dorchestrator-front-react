@@ -4,6 +4,7 @@ import { PageSection } from '@components/ds/atoms/page-section';
 import { Stack } from '@components/ds/atoms/stack';
 import { LoginForm } from '@domains/org/forms/login.form';
 import { useLoginMutation } from '@domains/org/services/users/login.http-service';
+import { useNavigationStore } from '@domains/shared/stores/navigation.store';
 import { Route } from '@routes/(unauthenticated)/login';
 import { useNavigate } from '@tanstack/react-router';
 import { CheckCircle2 } from 'lucide-react';
@@ -31,6 +32,7 @@ export function LoginPage() {
           <LoginForm
             loginMutation={login}
             handleSuccess={() => {
+              useNavigationStore.getState().clear();
               navigate({ to: '/' });
             }}
           />

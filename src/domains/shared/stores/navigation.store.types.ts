@@ -3,4 +3,5 @@ export interface NavigationStore {
   teamByOrg: Record<string, string>;
   setActiveOrg: (orgSlug: string) => void;
   setActiveTeam: (orgSlug: string, teamSlug: string) => void;
+  clear: () => void;
 }

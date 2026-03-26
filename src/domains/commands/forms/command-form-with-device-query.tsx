@@ -17,8 +17,7 @@ export function CommandFormWithDeviceQuery({
   const currentTeam = useCurrentTeam();
   const { data } = useDevicesSuspenseQuery(
     currentOrganization.id,
-    // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
-    currentTeam!.id,
+    currentTeam.id,
     1,
     100,
   );

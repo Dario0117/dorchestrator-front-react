@@ -14,6 +14,8 @@ export const useNavigationStore = create<NavigationStore>()(
         set((state) => ({
           teamByOrg: { ...state.teamByOrg, [orgSlug]: teamSlug },
         })),
+
+      clear: () => set({ activeOrgSlug: null, teamByOrg: {} }),
     }),
     {
       name: 'dorchestrator-navigation',

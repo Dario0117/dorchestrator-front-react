@@ -87,6 +87,10 @@ vi.mock('@/app', () => ({
   _getNullableCurrentTeamFromSlug: () => mockTeam,
 }));
 
+vi.mock('@domains/shared/hooks/use-current-team', () => ({
+  useActiveTeam: () => mockTeam,
+}));
+
 async function renderAuthenticatedLayout(children?: React.ReactNode) {
   const result = renderWithProviders(
     <Suspense fallback={<div>Loading...</div>}>

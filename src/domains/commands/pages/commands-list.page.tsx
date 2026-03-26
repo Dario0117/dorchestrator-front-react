@@ -48,8 +48,7 @@ export function CommandsListPage() {
     useCommandFilterState();
 
   const organizationId = currentOrganization.id;
-  // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
-  const teamId = currentTeam!.id;
+  const teamId = currentTeam.id;
 
   const { data } = useCommandsSuspenseQuery(organizationId, teamId, {
     page,

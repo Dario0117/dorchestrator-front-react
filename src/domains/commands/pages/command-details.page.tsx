@@ -21,8 +21,7 @@ export function CommandDetailsPage() {
 
   const { data } = useGetCommandSuspenseQuery(
     currentOrganization.id,
-    // biome-ignore lint/style/noNonNullAssertion: Team is always defined in team-scoped routes (validated in route loader)
-    currentTeam!.id,
+    currentTeam.id,
     Number(commandId),
   );
 
