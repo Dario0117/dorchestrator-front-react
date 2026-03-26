@@ -9,7 +9,6 @@
 
 ## Architecture & Patterns
 
-- [ ] Review each folder and component and see if we can identify new patterns to implement through the whole app
 - [ ] Each component file must only have one component and one export
 - [ ] The skeleton components should be on a separate file besides the component file and end it with .skeleton.tsx (some components still have inline Skeleton usage: device-config-dialog, shared-session.page, create-terminal-session-dialog, stat-cards)
 - [ ] Look for big components and split them into smaller ones (organization-settings.page.tsx ~597 lines, session-history-export-dialog.tsx ~398 lines)

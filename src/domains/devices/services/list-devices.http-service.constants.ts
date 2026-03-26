@@ -7,3 +7,5 @@ export const DEVICE_PLATFORMS = [
   'macos',
   'windows',
 ] as const satisfies readonly DevicePlatform[];
+
+export const DEVICE_STATUSES = ['online', 'offline'] as const;

@@ -7,6 +7,7 @@ export type AuditLogResourceType = NonNullable<
 
 export const AUDIT_LOG_ACTIONS = [
   'created',
+  'deactivated',
   'deleted',
   'updated',
 ] as const satisfies readonly AuditLogAction[];

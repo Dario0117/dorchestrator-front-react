@@ -22,6 +22,11 @@ import { listUserOrganizationsHandler } from '@domains/org/services/organization
 import { removeMemberHandler } from '@domains/org/services/organizations/remove-member.http-service.handlers';
 import { setDefaultOrganizationHandler } from '@domains/org/services/organizations/set-default-organization.http-service.handlers';
 import { transferOwnershipHandler } from '@domains/org/services/organizations/transfer-ownership.http-service.handlers';
+import { addTeamMemberHandler } from '@domains/org/services/teams/add-team-member.http-service.handlers';
+import { createTeamHandler } from '@domains/org/services/teams/create-team.http-service.handlers';
+import { getDefaultTeamHandler } from '@domains/org/services/teams/get-default-team.http-service.handlers';
+import { removeTeamMemberHandler } from '@domains/org/services/teams/remove-team-member.http-service.handlers';
+import { setDefaultTeamHandler } from '@domains/org/services/teams/set-default-team.http-service.handlers';
 import { getProfileHandler } from '@domains/org/services/users/get-profile.http-service.handlers';
 import { loginHandler } from '@domains/org/services/users/login.http-service.handlers';
 import { logoutHandler } from '@domains/org/services/users/logout.http-service.handlers';
@@ -30,8 +35,10 @@ import { registerHandler } from '@domains/org/services/users/register.http-servi
 import { resetPasswordHandler } from '@domains/org/services/users/reset-password.http-service.handlers';
 import { updatePasswordHandler } from '@domains/org/services/users/update-password.http-service.handlers';
 import { createBookmarkHandler } from '@domains/terminal/services/create-bookmark.http-service.handlers';
+import { createShortcutHandler } from '@domains/terminal/services/create-shortcut.http-service.handlers';
 import { createTerminalSessionHandler } from '@domains/terminal/services/create-terminal-session.http-service.handlers';
 import { deleteBookmarkHandler } from '@domains/terminal/services/delete-bookmark.http-service.handlers';
+import { deleteShortcutHandler } from '@domains/terminal/services/delete-shortcut.http-service.handlers';
 import {
   cancelExportHandler,
   downloadExportFileHandler,
@@ -44,16 +51,28 @@ import {
 import { extendTerminalSessionHandler } from '@domains/terminal/services/extend-terminal-session.http-service.handlers';
 import { getDeviceConfigHandler } from '@domains/terminal/services/get-device-config.http-service.handlers';
 import { getEffectiveCeilingHandler } from '@domains/terminal/services/get-effective-ceiling.http-service.handlers';
+import { getFileDownloadUrlHandler } from '@domains/terminal/services/get-file-download-url.http-service.handlers';
+import { getRecordingHandler } from '@domains/terminal/services/get-recording.http-service.handlers';
 import { getTerminalConfigHandler } from '@domains/terminal/services/get-terminal-config.http-service.handlers';
 import { getTerminalSessionHandler } from '@domains/terminal/services/get-terminal-session.http-service.handlers';
+import { listBookmarksHandler } from '@domains/terminal/services/list-bookmarks.http-service.handlers';
+import { listSessionFilesHandler } from '@domains/terminal/services/list-session-files.http-service.handlers';
+import { listSessionSuggestionsHandler } from '@domains/terminal/services/list-session-suggestions.http-service.handlers';
 import { listTerminalSessionsHandler } from '@domains/terminal/services/list-terminal-sessions.http-service.handlers';
+import { resolveShareLinkHandler } from '@domains/terminal/services/resolve-share-link.http-service.handlers';
+import { respondToSuggestionHandler } from '@domains/terminal/services/respond-to-suggestion.http-service.handlers';
+import { restoreRecordingHandler } from '@domains/terminal/services/restore-recording.http-service.handlers';
 import { shareTerminalSessionHandler } from '@domains/terminal/services/share-terminal-session.http-service.handlers';
+import { submitSuggestionHandler } from '@domains/terminal/services/submit-suggestion.http-service.handlers';
 import { terminalAuthHandler } from '@domains/terminal/services/terminal-auth.http-service.handlers';
 import { terminateTerminalSessionHandler } from '@domains/terminal/services/terminate-terminal-session.http-service.handlers';
 import { unlockTerminalSessionHandler } from '@domains/terminal/services/unlock-terminal-session.http-service.handlers';
 import { unshareTerminalSessionHandler } from '@domains/terminal/services/unshare-terminal-session.http-service.handlers';
+import { updateBookmarkNoteHandler } from '@domains/terminal/services/update-bookmark-note.http-service.handlers';
 import { updateDeviceConfigHandler } from '@domains/terminal/services/update-device-config.http-service.handlers';
+import { updateShortcutHandler } from '@domains/terminal/services/update-shortcut.http-service.handlers';
 import { updateTerminalConfigHandler } from '@domains/terminal/services/update-terminal-config.http-service.handlers';
+import { uploadSessionFileHandler } from '@domains/terminal/services/upload-session-file.http-service.handlers';
 
 export function MSWSuccessHandlers() {
   return [
@@ -75,6 +94,11 @@ export function MSWSuccessHandlers() {
     leaveOrganizationHandler,
     deleteOrganizationHandler,
     transferOwnershipHandler,
+    addTeamMemberHandler,
+    createTeamHandler,
+    getDefaultTeamHandler,
+    removeTeamMemberHandler,
+    setDefaultTeamHandler,
     generateDeviceTokenHandler,
     listDevicesHandler,
     removeDeviceHandler,
@@ -106,8 +130,22 @@ export function MSWSuccessHandlers() {
     cancelExportHandler,
     createBookmarkHandler,
     deleteBookmarkHandler,
+    listBookmarksHandler,
+    updateBookmarkNoteHandler,
     shareTerminalSessionHandler,
     unshareTerminalSessionHandler,
+    resolveShareLinkHandler,
     extendTerminalSessionHandler,
+    getFileDownloadUrlHandler,
+    listSessionFilesHandler,
+    uploadSessionFileHandler,
+    getRecordingHandler,
+    restoreRecordingHandler,
+    createShortcutHandler,
+    deleteShortcutHandler,
+    updateShortcutHandler,
+    listSessionSuggestionsHandler,
+    submitSuggestionHandler,
+    respondToSuggestionHandler,
   ];
 }

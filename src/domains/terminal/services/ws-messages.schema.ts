@@ -59,11 +59,16 @@ const sessionUnlockSchema = z.object({
   sessionId: z.string(),
 });
 
+const SESSION_WARNING_REASONS = [
+  'hard_cap_expiry',
+  'absolute_max_expiry',
+] as const;
+
 const sessionWarningSchema = z.object({
   type: z.literal('session:warning'),
   sessionId: z.string(),
   payload: z.object({
-    reason: z.enum(['hard_cap_expiry', 'absolute_max_expiry']),
+    reason: z.enum(SESSION_WARNING_REASONS),
     remainingMs: z.number(),
   }),
 });

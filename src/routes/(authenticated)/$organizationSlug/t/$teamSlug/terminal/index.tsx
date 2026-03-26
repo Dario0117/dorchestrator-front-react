@@ -1,13 +1,8 @@
-import { Box } from '@components/ds/atoms/box';
-import { PageSection } from '@components/ds/atoms/page-section';
 import { RouteErrorFallback } from '@components/ds/atoms/route-error-fallback';
-import { SectionTitle } from '@components/ds/atoms/section-title';
-import { SessionTableSkeleton } from '@domains/terminal/components/session-table-skeleton';
 import { TerminalSessionsPage } from '@domains/terminal/pages/terminal-sessions.page';
 import { useTerminalSessionsQueryOptions } from '@domains/terminal/services/list-terminal-sessions.http-service';
 import { TERMINAL_SESSION_STATUSES } from '@domains/terminal/services/list-terminal-sessions.http-service.constants';
 import { createFileRoute } from '@tanstack/react-router';
-import { Suspense } from 'react';
 import { z } from 'zod/v4';
 
 const searchParamsSchema = z.object({
@@ -24,7 +19,7 @@ export const Route = createFileRoute(
   '/(authenticated)/$organizationSlug/t/$teamSlug/terminal/',
 )({
   validateSearch: searchParamsSchema,
-  component: TerminalSessionsRoute,
+  component: TerminalSessionsPage,
   errorComponent: ({ reset }) => (
     <RouteErrorFallback
       reset={reset}
@@ -65,22 +60,3 @@ export const Route = createFileRoute(
     );
   },
 });
-
-function TerminalSessionsRoute() {
-  return (
-    <Suspense
-      fallback={
-        <PageSection>
-          <Box innerSpaceY="lg">
-            <Box spaceBelow="lg">
-              <SectionTitle>Terminal Sessions</SectionTitle>
-            </Box>
-            <SessionTableSkeleton />
-          </Box>
-        </PageSection>
-      }
-    >
-      <TerminalSessionsPage />
-    </Suspense>
-  );
-}
