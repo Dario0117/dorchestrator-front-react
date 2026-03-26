@@ -5,8 +5,10 @@ import {
   Bookmark,
   HardDrive,
   Home,
+  MonitorPlay,
   ScrollText,
   Settings,
+  SquareTerminal,
   Terminal,
 } from 'lucide-react';
 
@@ -42,7 +44,7 @@ export function getSidebarData(
           {
             title: 'Commands',
             url: `${teamBaseUrl}/commands`,
-            icon: Terminal,
+            icon: SquareTerminal,
           },
           {
             title: 'Terminal',
@@ -51,7 +53,7 @@ export function getSidebarData(
               {
                 title: 'Sessions',
                 url: `${teamBaseUrl}/terminal`,
-                icon: Terminal,
+                icon: MonitorPlay,
               },
               {
                 title: 'Bookmarks',

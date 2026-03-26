@@ -75,8 +75,8 @@ export function AppFormField({
           variant="error"
           role="alert"
         >
-          {errorMessages.map((message) => (
-            <ListItem key={message}>{message}</ListItem>
+          {errorMessages.map((message, index) => (
+            <ListItem key={`${field.name}-error-${index}`}>{message}</ListItem>
           ))}
         </List>
       )}

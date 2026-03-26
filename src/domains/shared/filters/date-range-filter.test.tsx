@@ -1,11 +1,16 @@
 import { DateRangeFilter } from '@domains/shared/filters/date-range-filter';
-import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
+import {
+  clickTrigger,
+  renderWithProviders,
+  selectOption,
+} from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 describe('DateRangeFilter', () => {
   beforeEach(() => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
+    // Only fake Date (not setTimeout/setInterval) so Base UI's internal
+    // timers for select open/close still work normally and don't cause act() warnings
+    vi.useFakeTimers({ shouldAdvanceTime: true, toFake: ['Date'] });
     vi.setSystemTime(new Date('2026-01-15T12:00:00.000Z'));
   });
 
@@ -50,19 +55,13 @@ describe('DateRangeFilter', () => {
   });
 
   it('should call onChange with startDate and endDate on preset selection', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const onChange = vi.fn();
     renderWithProviders(<DateRangeFilter onChange={onChange} />);
 
-    await clickTrigger(screen.getByLabelText('Filter by date range'));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { name: 'Last 7 days' }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('option', { name: 'Last 7 days' }));
+    await selectOption(
+      screen.getByLabelText('Filter by date range'),
+      'Last 7 days',
+    );
 
     expect(onChange).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -82,7 +81,6 @@ describe('DateRangeFilter', () => {
   });
 
   it('should call onChange with undefined dates when "Any Time" is selected', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const onChange = vi.fn();
     renderWithProviders(
       <DateRangeFilter
@@ -91,15 +89,10 @@ describe('DateRangeFilter', () => {
       />,
     );
 
-    await clickTrigger(screen.getByLabelText('Filter by date range'));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { name: 'Any Time' }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('option', { name: 'Any Time' }));
+    await selectOption(
+      screen.getByLabelText('Filter by date range'),
+      'Any Time',
+    );
 
     expect(onChange).toHaveBeenCalledWith({
       startDate: undefined,

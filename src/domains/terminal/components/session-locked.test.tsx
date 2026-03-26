@@ -55,7 +55,7 @@ describe('SessionLocked', () => {
     mockOnUnlocked.mockClear();
   });
 
-  it('should render "Session locked" heading', () => {
+  it('should render "Session locked" heading', async () => {
     renderWithProviders(
       <SessionLocked
         session={lockedSession}
@@ -68,7 +68,9 @@ describe('SessionLocked', () => {
 
     // Use getByText instead of getByRole because Radix Dialog opens on mount
     // and marks background content as aria-hidden
-    expect(screen.getByText('Session locked')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Session locked')).toBeInTheDocument();
+    });
   });
 
   it('should display device name and shell', () => {

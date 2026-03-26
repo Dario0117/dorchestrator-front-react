@@ -20,6 +20,10 @@ export function configureLogHandler(handler: LogHandler) {
   activeHandler = handler;
 }
 
+export function resetLogHandler() {
+  activeHandler = defaultLogHandler;
+}
+
 function getTraceContext() {
   const span = trace.getActiveSpan();
   if (!span) {

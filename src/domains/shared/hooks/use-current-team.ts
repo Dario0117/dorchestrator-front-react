@@ -12,5 +12,6 @@ export function useCurrentTeam() {
     return undefined;
   }
 
-  return _getNullableCurrentTeamFromSlug(currentOrganization.id, teamSlug);
+  // biome-ignore lint/style/noNonNullAssertion: At this point, team must be defined (validated in route.tsx:beforeLoad)
+  return _getNullableCurrentTeamFromSlug(currentOrganization.id, teamSlug)!;
 }

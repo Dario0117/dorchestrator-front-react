@@ -115,6 +115,7 @@ export function HomePage() {
               >
                 <Button
                   size="lg"
+                  nativeButton={false}
                   render={
                     <Link
                       to="/$organizationSlug/t/$teamSlug/devices"

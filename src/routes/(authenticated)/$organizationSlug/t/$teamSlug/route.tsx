@@ -1,3 +1,4 @@
+import { useNavigationStore } from '@domains/shared/stores/navigation.store';
 import { logWarning } from '@lib/logger.utils';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { authClient } from '@/better-auth.client';
@@ -32,9 +33,12 @@ export const Route = createFileRoute(
       });
     }
 
-    // Sync the session's active team
-    await authClient.organization.setActiveTeam({
-      teamId: resolvedTeam.id,
-    });
+    const store = useNavigationStore.getState();
+    if (store.teamByOrg[ctx.params.organizationSlug] !== ctx.params.teamSlug) {
+      await authClient.organization.setActiveTeam({
+        teamId: resolvedTeam.id,
+      });
+      store.setActiveTeam(ctx.params.organizationSlug, ctx.params.teamSlug);
+    }
   },
 });

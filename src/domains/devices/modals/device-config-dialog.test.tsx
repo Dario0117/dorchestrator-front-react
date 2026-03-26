@@ -1,7 +1,7 @@
 import { DeviceConfigDialog } from '@domains/devices/modals/device-config-dialog';
 import { buildBackendUrl } from '@lib/test-backend-url.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { delay, HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
@@ -350,7 +350,9 @@ describe('DeviceConfigDialog', () => {
       ).toBeInTheDocument();
     });
 
-    vi.advanceTimersByTime(5000);
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
 
     await waitFor(() => {
       expect(

@@ -43,6 +43,18 @@ export default defineConfig(({ mode }) => {
       globals: true,
       environment: 'jsdom',
       setupFiles: './testsSetup.ts',
+      // Suppress known jsdom limitation messages that leak to console
+      onConsoleLog: (log: string) => {
+        if (
+          log.includes('Not implemented: navigation') ||
+          log.includes(
+            'Not implemented: HTMLCanvasElement.prototype.getContext',
+          )
+        ) {
+          return false;
+        }
+        return undefined;
+      },
       // Limit parallel test execution for agent runs to prevent resource exhaustion
       // Vitest 4 uses top-level options instead of poolOptions
       ...(isAgentTest && {

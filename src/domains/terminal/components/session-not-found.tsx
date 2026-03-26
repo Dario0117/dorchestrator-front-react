@@ -32,6 +32,7 @@ export function SessionNotFound({
         </SecondaryParagraph>
         <Button
           variant="outline"
+          nativeButton={false}
           render={
             <Link
               to="/$organizationSlug/t/$teamSlug/terminal"

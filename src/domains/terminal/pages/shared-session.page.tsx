@@ -99,6 +99,7 @@ export function SharedSessionPage({
           </SecondaryParagraph>
           <Button
             variant="outline"
+            nativeButton={false}
             render={
               <Link
                 to="/$organizationSlug/t/$teamSlug/terminal"
@@ -133,6 +134,7 @@ export function SharedSessionPage({
           </SecondaryParagraph>
           <Button
             variant="outline"
+            nativeButton={false}
             render={
               <Link
                 to="/$organizationSlug/t/$teamSlug/terminal"

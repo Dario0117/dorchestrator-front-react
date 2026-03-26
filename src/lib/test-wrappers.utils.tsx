@@ -1,7 +1,14 @@
 import { ThemeProvider } from '@domains/shared/context/theme.provider';
 import type { ProviderWrapperOptions } from '@lib/test-wrappers.utils.types';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, fireEvent, render } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 
 // Mock matchMedia
@@ -60,9 +67,27 @@ export const createQueryThemeWrapper = (options?: ProviderWrapperOptions) => {
  * Uses fireEvent.click instead of userEvent.click because Base UI's floating-ui
  * dismiss handler conflicts with userEvent's full pointer event sequence in jsdom.
  */
-export function clickTrigger(element: HTMLElement) {
-  return act(() => {
+export async function clickTrigger(element: HTMLElement) {
+  await act(async () => {
     fireEvent.click(element);
+    // Flush microtask queue so floating-ui position calculations complete within act()
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+}
+
+/**
+ * Select an option in a Base UI Select component by opening the trigger and clicking an option.
+ * Handles the full open → select → close lifecycle within act() boundaries to prevent
+ * act() warnings from Base UI's async floating-ui cleanup.
+ */
+export async function selectOption(trigger: HTMLElement, optionName: string) {
+  await clickTrigger(trigger);
+  const option = await screen.findByRole('option', { name: optionName });
+  const user = userEvent.setup();
+  await user.click(option);
+  // Wait for Base UI's deferred select close/cleanup to complete within act()
+  await waitFor(() => {
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
   });
 }
 

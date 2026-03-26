@@ -88,6 +88,7 @@ export function SessionLocked({
           <Button onClick={() => setShowReauth(true)}>Re-authenticate</Button>
           <Button
             variant="outline"
+            nativeButton={false}
             render={
               <Link
                 to="/$organizationSlug/t/$teamSlug/terminal"

@@ -4,6 +4,7 @@ import {
   logError,
   logInfo,
   logWarning,
+  resetLogHandler,
 } from '@lib/logger.utils';
 
 describe('logger utils', () => {
@@ -13,6 +14,7 @@ describe('logger utils', () => {
   let consoleLogSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
+    resetLogHandler();
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => null);
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => null);
     consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => null);
@@ -237,16 +239,7 @@ describe('logger utils', () => {
 
     afterEach(() => {
       // Restore default handler so other tests aren't affected
-      configureLogHandler((level, message, data) => {
-        const methodMap = {
-          debug: 'log',
-          info: 'info',
-          warn: 'warn',
-          error: 'error',
-        } as const;
-        // biome-ignore lint/suspicious/noConsole: restoring default log handler in test teardown
-        console[methodMap[level]](message, data);
-      });
+      resetLogHandler();
     });
   });
 

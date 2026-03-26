@@ -10,6 +10,7 @@ import { NavGroup } from '@domains/shared/components/nav-group';
 import { OrganizationSwitcher } from '@domains/shared/components/organization-switcher';
 import { useLayout } from '@domains/shared/context/layout.provider';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
+import { useNavigationStore } from '@domains/shared/stores/navigation.store';
 import { useNavigate, useParams } from '@tanstack/react-router';
 
 export function AppSidebar() {
@@ -19,8 +20,11 @@ export function AppSidebar() {
   const allOrganizations = data.responseData?.results ?? [];
   const navigate = useNavigate();
   const params = useParams({ strict: false });
+  const storedTeamSlug = useNavigationStore(
+    (s) => s.teamByOrg[currentOrganization?.slug ?? ''],
+  );
   const teamSlug =
-    'teamSlug' in params ? (params.teamSlug as string) : undefined;
+    'teamSlug' in params ? (params.teamSlug as string) : storedTeamSlug;
 
   if (!currentOrganization) {
     return null;

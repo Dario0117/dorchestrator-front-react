@@ -1,7 +1,7 @@
 import { CommandOutput } from '@domains/commands/components/command-output';
 import type { GetCommandDetail } from '@domains/commands/services/get-command.http-service';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 type CommandResults = GetCommandDetail['results'];
@@ -221,7 +221,9 @@ describe('CommandOutput', () => {
         expect(screen.getByText('Copied!')).toBeInTheDocument();
       });
 
-      vi.advanceTimersByTime(2000);
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
 
       await waitFor(() => {
         expect(screen.queryByText('Copied!')).not.toBeInTheDocument();

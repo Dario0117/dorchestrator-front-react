@@ -1,7 +1,7 @@
 import { SidebarProvider } from '@components/ds/organisms/sidebar';
 import { Header } from '@domains/shared/components/header';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 
 function renderHeader(props = {}) {
   return renderWithProviders(
@@ -87,7 +87,9 @@ describe('Header', () => {
       configurable: true,
     });
 
-    document.dispatchEvent(new Event('scroll'));
+    act(() => {
+      document.dispatchEvent(new Event('scroll'));
+    });
 
     // After scroll, the header should have the shadow class applied (offset > 10 && fixed)
     await waitFor(() => {
@@ -111,7 +113,9 @@ describe('Header', () => {
       configurable: true,
     });
 
-    document.dispatchEvent(new Event('scroll'));
+    act(() => {
+      document.dispatchEvent(new Event('scroll'));
+    });
 
     await waitFor(() => {
       expect(header?.className).toContain('shadow');
@@ -134,7 +138,9 @@ describe('Header', () => {
       configurable: true,
     });
 
-    document.dispatchEvent(new Event('scroll'));
+    act(() => {
+      document.dispatchEvent(new Event('scroll'));
+    });
 
     await waitFor(() => {
       expect(header?.className).toContain('shadow-none');

@@ -63,6 +63,9 @@ if (typeof window.ClipboardEvent === 'undefined') {
   };
 }
 
+// Polyfill canvas getContext for jsdom (prevents "Not implemented" thrown error)
+HTMLCanvasElement.prototype.getContext = (() => null) as never;
+
 // Polyfill ResizeObserver for Base UI components
 if (typeof globalThis.ResizeObserver === 'undefined') {
   globalThis.ResizeObserver = class ResizeObserver {
@@ -79,7 +82,12 @@ import { cleanup } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { setupServer } from 'msw/node';
+import { configureLogHandler } from './src/lib/logger.utils';
 import { MSWSuccessHandlers } from './src/lib/test.utils';
+
+// Silence logs during tests to keep output clean
+// biome-ignore lint/suspicious/noEmptyBlockStatements: intentional no-op to suppress test logs
+configureLogHandler(() => {});
 
 // Set up MSW server and start listening BEFORE any modules import the auth client
 export const server = setupServer(...MSWSuccessHandlers());

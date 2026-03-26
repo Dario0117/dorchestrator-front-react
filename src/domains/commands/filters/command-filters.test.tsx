@@ -4,7 +4,7 @@ import {
 } from '@domains/commands/filters/command-filters';
 import { useCommandFilterState } from '@domains/commands/hooks/use-command-filter-state';
 import { useDevicesSuspenseQuery } from '@domains/devices/services/list-devices.http-service';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
+import { renderWithProviders, selectOption } from '@lib/test-wrappers.utils';
 import { renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -100,18 +100,9 @@ describe('CommandFilterControls', () => {
   });
 
   it('should allow selecting a status filter', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     renderWithProviders(<CommandFilterControls />);
 
-    await user.click(screen.getByLabelText('Filter by status'));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { name: 'Failed' }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('option', { name: 'Failed' }));
+    await selectOption(screen.getByLabelText('Filter by status'), 'Failed');
 
     const call = mockNavigate.mock.calls[0] as [
       { search: (prev: Record<string, unknown>) => Record<string, unknown> },
@@ -122,18 +113,12 @@ describe('CommandFilterControls', () => {
   });
 
   it('should allow selecting a device filter', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     renderWithProviders(<CommandFilterControls />);
 
-    await user.click(screen.getByLabelText('Filter by device'));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { name: 'Server Alpha' }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('option', { name: 'Server Alpha' }));
+    await selectOption(
+      screen.getByLabelText('Filter by device'),
+      'Server Alpha',
+    );
 
     const call = mockNavigate.mock.calls[0] as [
       { search: (prev: Record<string, unknown>) => Record<string, unknown> },
@@ -145,18 +130,12 @@ describe('CommandFilterControls', () => {
 
   it('should allow clearing device filter by selecting "All Devices"', async () => {
     mockSearchParams = { page: 1, size: 25, deviceId: 1 };
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     renderWithProviders(<CommandFilterControls />);
 
-    await user.click(screen.getByLabelText('Filter by device'));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { name: 'All Devices' }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('option', { name: 'All Devices' }));
+    await selectOption(
+      screen.getByLabelText('Filter by device'),
+      'All Devices',
+    );
 
     const call = mockNavigate.mock.calls[0] as [
       { search: (prev: Record<string, unknown>) => Record<string, unknown> },
@@ -167,18 +146,12 @@ describe('CommandFilterControls', () => {
   });
 
   it('should navigate with date range when selecting a date preset', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     renderWithProviders(<CommandFilterControls />);
 
-    await user.click(screen.getByLabelText('Filter by date range'));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { name: 'Last 24 hours' }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('option', { name: 'Last 24 hours' }));
+    await selectOption(
+      screen.getByLabelText('Filter by date range'),
+      'Last 24 hours',
+    );
 
     const call = mockNavigate.mock.calls[0] as [
       { search: (prev: Record<string, unknown>) => Record<string, unknown> },

@@ -2,9 +2,8 @@ import {
   DeviceFilterControls,
   useDeviceFilterState,
 } from '@domains/devices/filters/device-filters';
-import { renderWithProviders } from '@lib/test-wrappers.utils';
-import { renderHook, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { renderWithProviders, selectOption } from '@lib/test-wrappers.utils';
+import { renderHook, screen } from '@testing-library/react';
 
 const mockNavigate = vi.fn();
 
@@ -196,18 +195,9 @@ describe('DeviceFilterControls', () => {
   });
 
   it('should allow selecting a status filter', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     renderWithProviders(<DeviceFilterControls />);
 
-    await user.click(screen.getByLabelText('Filter by status'));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { name: 'Online' }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('option', { name: 'Online' }));
+    await selectOption(screen.getByLabelText('Filter by status'), 'Online');
 
     const call = mockNavigate.mock.calls[0] as [
       { search: (prev: Record<string, unknown>) => Record<string, unknown> },
@@ -218,16 +208,9 @@ describe('DeviceFilterControls', () => {
   });
 
   it('should allow selecting a platform filter', async () => {
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     renderWithProviders(<DeviceFilterControls />);
 
-    await user.click(screen.getByLabelText('Filter by platform'));
-
-    await waitFor(() => {
-      expect(screen.getByRole('option', { name: 'Linux' })).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('option', { name: 'Linux' }));
+    await selectOption(screen.getByLabelText('Filter by platform'), 'Linux');
 
     const call = mockNavigate.mock.calls[0] as [
       { search: (prev: Record<string, unknown>) => Record<string, unknown> },
@@ -239,18 +222,12 @@ describe('DeviceFilterControls', () => {
 
   it('should allow clearing status filter by selecting "All Statuses"', async () => {
     mockSearchParams = { page: 1, size: 25, status: 'online' };
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     renderWithProviders(<DeviceFilterControls />);
 
-    await user.click(screen.getByLabelText('Filter by status'));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { name: 'All Statuses' }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('option', { name: 'All Statuses' }));
+    await selectOption(
+      screen.getByLabelText('Filter by status'),
+      'All Statuses',
+    );
 
     const call = mockNavigate.mock.calls[0] as [
       { search: (prev: Record<string, unknown>) => Record<string, unknown> },
@@ -262,18 +239,12 @@ describe('DeviceFilterControls', () => {
 
   it('should allow clearing platform filter by selecting "All Platforms"', async () => {
     mockSearchParams = { page: 1, size: 25, platform: 'linux' };
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     renderWithProviders(<DeviceFilterControls />);
 
-    await user.click(screen.getByLabelText('Filter by platform'));
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { name: 'All Platforms' }),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('option', { name: 'All Platforms' }));
+    await selectOption(
+      screen.getByLabelText('Filter by platform'),
+      'All Platforms',
+    );
 
     const call = mockNavigate.mock.calls[0] as [
       { search: (prev: Record<string, unknown>) => Record<string, unknown> },

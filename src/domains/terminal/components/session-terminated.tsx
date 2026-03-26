@@ -60,6 +60,7 @@ export function SessionTerminated({
         >
           <Button
             variant="outline"
+            nativeButton={false}
             render={
               <Link
                 to="/$organizationSlug/t/$teamSlug/terminal/sessions/$sessionId/recording"
@@ -76,6 +77,7 @@ export function SessionTerminated({
           </Button>
           <Button
             variant="outline"
+            nativeButton={false}
             render={
               <Link
                 to="/$organizationSlug/t/$teamSlug/terminal"
