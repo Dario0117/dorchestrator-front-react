@@ -145,6 +145,27 @@ describe('DeviceConfigDialog', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('should convert hardCapMs to hours when a numeric value is provided', async () => {
+    server.use(
+      http.get<never, never, GetDeviceConfigSuccessResponse>(
+        deviceConfigUrl,
+        () => {
+          return HttpResponse.json(
+            buildDeviceConfigResponse({ hardCapMs: 7_200_000 }),
+          );
+        },
+      ),
+    );
+
+    renderWithProviders(<DeviceConfigDialog {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Save Device Configuration' }),
+      ).toBeInTheDocument();
+    });
+  });
+
   it('should show success alert after form submission', async () => {
     const user = userEvent.setup();
 

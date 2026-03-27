@@ -210,51 +210,6 @@ describe('DevicesPage', () => {
     });
   });
 
-  it('should render pagination when multiple pages exist', async () => {
-    type ListDevicesSuccessResponse =
-      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
-    server.use(
-      http.get<never, never, ListDevicesSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
-        () => {
-          return HttpResponse.json({
-            responseData: {
-              results: [
-                {
-                  id: 1,
-                  deviceName: 'Device 1',
-                  platform: 'linux',
-                  lastSeenAt: new Date().toISOString(),
-                  createdAt: new Date().toISOString(),
-                },
-              ],
-              hasNext: true,
-              hasPrevious: false,
-              totalResults: 20,
-              totalPages: 2,
-              page: 1,
-              size: 10,
-            },
-            responseErrors: null,
-          });
-        },
-      ),
-    );
-
-    renderWithProviders(<DevicesPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Device 1')).toBeInTheDocument();
-    });
-
-    // Should show pagination navigation
-    expect(
-      screen.getByRole('navigation', { name: 'pagination' }),
-    ).toBeInTheDocument();
-    expect(screen.getByText('Previous')).toBeInTheDocument();
-    expect(screen.getByText('Next')).toBeInTheDocument();
-  });
-
   it('should navigate to next page when Next is clicked', async () => {
     type ListDevicesSuccessResponse =
       operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
@@ -478,73 +433,6 @@ describe('DevicesPage', () => {
     expect(mockNavigate).toHaveBeenCalled();
   });
 
-  it('should navigate when clicking next page', async () => {
-    type ListDevicesSuccessResponse =
-      operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
-    server.use(
-      http.get<never, never, ListDevicesSuccessResponse>(
-        buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/devices'),
-        () => {
-          return HttpResponse.json({
-            responseData: {
-              results: [
-                {
-                  id: 1,
-                  deviceName: 'Device 1',
-                  platform: 'linux',
-                  lastSeenAt: new Date().toISOString(),
-                  createdAt: new Date().toISOString(),
-                },
-              ],
-              hasNext: true,
-              hasPrevious: false,
-              totalResults: 20,
-              totalPages: 2,
-              page: 1,
-              size: 25,
-            },
-            responseErrors: null,
-          });
-        },
-      ),
-    );
-
-    const user = userEvent.setup();
-    renderWithProviders(<DevicesPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Device 1')).toBeInTheDocument();
-    });
-
-    // Click next page button
-    await user.click(screen.getByLabelText('Go to next page'));
-
-    expect(mockNavigate).toHaveBeenCalled();
-  });
-
-  it('should open execute command modal when Execute Command button is clicked', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<DevicesPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Test Server')).toBeInTheDocument();
-    });
-
-    // Click the first "Command" button
-    const executeButtons = screen.getAllByRole('button', {
-      name: /^Command$/,
-    });
-    const firstExecuteButton = executeButtons[0];
-    expect(firstExecuteButton).toBeDefined();
-    await user.click(firstExecuteButton as HTMLElement);
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', { name: 'Execute Command' }),
-      ).toBeInTheDocument();
-    });
-  });
-
   it('should open terminal reauth modal when Open Terminal button is clicked', async () => {
     const user = userEvent.setup();
     renderWithProviders(<DevicesPage />);
@@ -561,59 +449,6 @@ describe('DevicesPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Terminal Authentication')).toBeInTheDocument();
-    });
-  });
-
-  it('should open config dialog when configure button is clicked (admin)', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<DevicesPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Test Server')).toBeInTheDocument();
-    });
-
-    // Settings button (configure) should be present since role is owner
-    const configButtons = screen
-      .getAllByRole('button')
-      .filter((btn) => btn.querySelector('svg.lucide-settings'));
-    expect(configButtons[0]).toBeDefined();
-    await user.click(configButtons[0] as HTMLElement);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Device Configuration: Test Server/),
-      ).toBeInTheDocument();
-    });
-  });
-
-  it('should close config dialog when dismissed', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<DevicesPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Test Server')).toBeInTheDocument();
-    });
-
-    // Open config dialog
-    const configButtons = screen
-      .getAllByRole('button')
-      .filter((btn) => btn.querySelector('svg.lucide-settings'));
-    await user.click(configButtons[0] as HTMLElement);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Device Configuration: Test Server/),
-      ).toBeInTheDocument();
-    });
-
-    // Close via close button
-    const closeButton = screen.getByRole('button', { name: 'Close' });
-    await user.click(closeButton);
-
-    await waitFor(() => {
-      expect(
-        screen.queryByText(/Device Configuration: Test Server/),
-      ).not.toBeInTheDocument();
     });
   });
 
@@ -803,37 +638,6 @@ describe('DevicesPage', () => {
     expect(configButtons).toHaveLength(0);
   });
 
-  it('should close execute command modal when dismissed', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<DevicesPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Test Server')).toBeInTheDocument();
-    });
-
-    // Open execute command modal
-    const executeButtons = screen.getAllByRole('button', {
-      name: /^Command$/,
-    });
-    await user.click(executeButtons[0] as HTMLElement);
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('heading', { name: 'Execute Command' }),
-      ).toBeInTheDocument();
-    });
-
-    // Close the modal via the close button
-    const closeButton = screen.getByRole('button', { name: 'Close' });
-    await user.click(closeButton);
-
-    await waitFor(() => {
-      expect(
-        screen.queryByRole('heading', { name: 'Execute Command' }),
-      ).not.toBeInTheDocument();
-    });
-  });
-
   it('should handle responseData being null gracefully', async () => {
     type ListDevicesSuccessResponse =
       operations['getApiV1ByOrganizationIdTeamsByTeamIdDevices']['responses']['200']['content']['application/json'];
@@ -962,9 +766,95 @@ describe('DevicesPage', () => {
     });
   });
 
-  // The else branches for onOpenChange handlers at L185, L198, L218, L243
-  // cannot be feasibly covered via user interaction. These guards only act
-  // when onOpenChange is called with open=true, which is an internal dialog
-  // no-op path (the dialog is already open). There is no user action that
-  // triggers this code path.
+  it('should open execute command modal when Command button is clicked', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<DevicesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Server')).toBeInTheDocument();
+    });
+
+    const commandButtons = screen.getAllByRole('button', { name: 'Command' });
+    expect(commandButtons[0]).toBeDefined();
+    await user.click(commandButtons[0] as HTMLElement);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Execute Command' }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('should close execute command modal when dismissed', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<DevicesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Server')).toBeInTheDocument();
+    });
+
+    const commandButtons = screen.getAllByRole('button', { name: 'Command' });
+    await user.click(commandButtons[0] as HTMLElement);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: 'Execute Command' }),
+      ).toBeInTheDocument();
+    });
+
+    const closeButton = screen.getByRole('button', { name: 'Close' });
+    await user.click(closeButton);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('heading', { name: 'Execute Command' }),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should open device config dialog when Configure button is clicked by admin', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<DevicesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Server')).toBeInTheDocument();
+    });
+
+    const configButtons = screen.getAllByLabelText('Configure device');
+    expect(configButtons[0]).toBeDefined();
+    await user.click(configButtons[0] as HTMLElement);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: /Device Configuration/ }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('should close device config dialog when dismissed', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<DevicesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Server')).toBeInTheDocument();
+    });
+
+    const configButtons = screen.getAllByLabelText('Configure device');
+    await user.click(configButtons[0] as HTMLElement);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: /Device Configuration/ }),
+      ).toBeInTheDocument();
+    });
+
+    const closeButton = screen.getByRole('button', { name: 'Close' });
+    await user.click(closeButton);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('heading', { name: /Device Configuration/ }),
+      ).not.toBeInTheDocument();
+    });
+  });
 });

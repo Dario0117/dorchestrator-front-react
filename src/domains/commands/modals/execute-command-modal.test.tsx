@@ -73,6 +73,24 @@ describe('ExecuteCommandModal', () => {
     });
   });
 
+  it('should show pinned device description when pinnedDevice is provided', async () => {
+    renderWithProviders(
+      <ExecuteCommandModal
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        organizationId="org-1"
+        teamId="team-1"
+        pinnedDevice={{ id: 42, name: 'My Device' }}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Execute a command on My Device.'),
+      ).toBeInTheDocument();
+    });
+  });
+
   it('should not render modal when closed', () => {
     renderWithProviders(
       <ExecuteCommandModal

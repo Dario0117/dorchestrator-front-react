@@ -9,6 +9,8 @@ const mockTerminalDispose = vi.fn();
 const mockTerminalReset = vi.fn();
 const mockLoadAddon = vi.fn();
 
+let capturedOnResizeCallback: (() => void) | null = null;
+
 vi.mock('@xterm/xterm', () => {
   function MockTerminal() {
     return {
@@ -17,7 +19,10 @@ vi.mock('@xterm/xterm', () => {
       dispose: mockTerminalDispose,
       reset: mockTerminalReset,
       loadAddon: mockLoadAddon,
-      onResize: vi.fn(() => ({ dispose: vi.fn() })),
+      onResize: vi.fn((cb: () => void) => {
+        capturedOnResizeCallback = cb;
+        return { dispose: vi.fn() };
+      }),
       options: { fontSize: 14 },
       cols: 80,
       rows: 24,
@@ -93,6 +98,7 @@ const emptyChunks: RecordingChunkItem[] = [
 describe('RecordingPlayer', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    capturedOnResizeCallback = null;
   });
 
   it('should render the terminal container', () => {
@@ -439,5 +445,46 @@ describe('RecordingPlayer', () => {
     ).toBeInTheDocument();
 
     vi.useRealTimers();
+  });
+
+  it('should invoke measureTerminalWidth when terminal emits a resize event', () => {
+    renderWithProviders(
+      <RecordingPlayer
+        chunks={chunks}
+        durationSeconds={1}
+      />,
+    );
+
+    expect(capturedOnResizeCallback).not.toBeNull();
+
+    // Add an .xterm-screen child so measureTerminalWidth sets minWidth
+    const container = screen.getByTestId('recording-player-container');
+    const fakeScreen = document.createElement('div');
+    fakeScreen.className = 'xterm-screen';
+    Object.defineProperty(fakeScreen, 'scrollWidth', { value: 800 });
+    container.appendChild(fakeScreen);
+
+    act(() => {
+      capturedOnResizeCallback?.();
+    });
+
+    expect(container.style.minWidth).toBe('800px');
+  });
+
+  it('should handle measureTerminalWidth when container ref is null', () => {
+    const { unmount } = renderWithProviders(
+      <RecordingPlayer
+        chunks={chunks}
+        durationSeconds={1}
+      />,
+    );
+
+    const savedCallback = capturedOnResizeCallback;
+    unmount();
+
+    // After unmount, containerRef is null — calling the callback exercises the early return
+    act(() => {
+      savedCallback?.();
+    });
   });
 });

@@ -31,4 +31,45 @@ describe('List', () => {
     );
     expect(screen.getByRole('listitem')).toBeInTheDocument();
   });
+
+  describe('variant', () => {
+    it('applies default variant with list-disc', () => {
+      renderWithProviders(
+        <List>
+          <ListItem>Item</ListItem>
+        </List>,
+      );
+      expect(screen.getByRole('list')).toHaveClass('list-disc', 'pl-4');
+    });
+
+    it('applies error variant with destructive text', () => {
+      renderWithProviders(
+        <List variant="error">
+          <ListItem>Error item</ListItem>
+        </List>,
+      );
+      expect(screen.getByRole('list')).toHaveClass(
+        'text-sm',
+        'text-destructive',
+      );
+    });
+  });
+
+  it('spreads additional props on List', () => {
+    renderWithProviders(
+      <List data-testid="list">
+        <ListItem>Item</ListItem>
+      </List>,
+    );
+    expect(screen.getByTestId('list')).toBeInTheDocument();
+  });
+
+  it('spreads additional props on ListItem', () => {
+    renderWithProviders(
+      <List>
+        <ListItem data-testid="item">Item</ListItem>
+      </List>,
+    );
+    expect(screen.getByTestId('item')).toBeInTheDocument();
+  });
 });

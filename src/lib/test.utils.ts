@@ -25,6 +25,7 @@ import { transferOwnershipHandler } from '@domains/org/services/organizations/tr
 import { addTeamMemberHandler } from '@domains/org/services/teams/add-team-member.http-service.handlers';
 import { createTeamHandler } from '@domains/org/services/teams/create-team.http-service.handlers';
 import { getDefaultTeamHandler } from '@domains/org/services/teams/get-default-team.http-service.handlers';
+import { listTeamMembersHandler } from '@domains/org/services/teams/list-team-members.http-service.handlers';
 import { removeTeamMemberHandler } from '@domains/org/services/teams/remove-team-member.http-service.handlers';
 import { setDefaultTeamHandler } from '@domains/org/services/teams/set-default-team.http-service.handlers';
 import { getProfileHandler } from '@domains/org/services/users/get-profile.http-service.handlers';
@@ -97,6 +98,7 @@ export function MSWSuccessHandlers() {
     addTeamMemberHandler,
     createTeamHandler,
     getDefaultTeamHandler,
+    listTeamMembersHandler,
     removeTeamMemberHandler,
     setDefaultTeamHandler,
     generateDeviceTokenHandler,

@@ -59,9 +59,11 @@ export function TeamManagementSection({
   const [expandedTeamId, setExpandedTeamId] = useState<string | null>(null);
 
   const handleDeleteTeam = () => {
+    /* v8 ignore start -- defensive guard: only called when confirmDelete is set */
     if (!confirmDelete) {
       return;
     }
+    /* v8 ignore stop */
     removeTeamMutation.mutate(
       { teamId: confirmDelete.id },
       {

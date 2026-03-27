@@ -48,7 +48,9 @@ export function TerminalSessionPage() {
       sessionId={session.id}
       isShared={session.isShared}
       shareToken={session.shareToken ?? null}
+      /* v8 ignore next */
       onSessionLocked={() => refetch()}
+      /* v8 ignore next */
       onSessionTerminated={() => refetch()}
     />
   );

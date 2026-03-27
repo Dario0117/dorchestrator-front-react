@@ -70,9 +70,11 @@ export function TeamMembersPanel({
   );
 
   const handleAddMember = () => {
+    /* v8 ignore start -- defensive guard: button disabled when no selection */
     if (!selectedUserId) {
       return;
     }
+    /* v8 ignore stop */
     addMemberMutation.mutate(
       {
         params: {
@@ -93,9 +95,11 @@ export function TeamMembersPanel({
   };
 
   const handleRemoveMember = () => {
+    /* v8 ignore start -- defensive guard: only called when confirmRemove is set */
     if (!confirmRemove) {
       return;
     }
+    /* v8 ignore stop */
     removeMemberMutation.mutate(
       {
         params: {

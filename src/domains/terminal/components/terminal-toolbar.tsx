@@ -70,9 +70,11 @@ export function TerminalToolbar({
   const handleToolbarKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       const toolbar = toolbarRef.current;
+      /* v8 ignore start -- defensive guard: ref is always attached */
       if (!toolbar) {
         return;
       }
+      /* v8 ignore stop */
 
       const focusableElements = Array.from(
         toolbar.querySelectorAll<HTMLElement>(
@@ -80,9 +82,11 @@ export function TerminalToolbar({
         ),
       );
 
+      /* v8 ignore start -- defensive guard: toolbar always has focusable elements */
       if (focusableElements.length === 0) {
         return;
       }
+      /* v8 ignore stop */
 
       const currentIndex = focusableElements.indexOf(
         document.activeElement as HTMLElement,

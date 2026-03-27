@@ -12,6 +12,27 @@ describe('PageSection', () => {
     expect(screen.getByTestId('ps').tagName).toBe('SECTION');
   });
 
+  describe('centered', () => {
+    it('applies centering classes when centered is true', () => {
+      render(
+        <PageSection
+          data-testid="ps"
+          centered
+        >
+          Content
+        </PageSection>,
+      );
+      const el = screen.getByTestId('ps');
+      expect(el).toHaveClass('flex', 'items-center', 'justify-center');
+    });
+
+    it('does not apply centering classes by default', () => {
+      render(<PageSection data-testid="ps">Content</PageSection>);
+      const el = screen.getByTestId('ps');
+      expect(el).not.toHaveClass('flex');
+    });
+  });
+
   it('spreads additional props', () => {
     render(
       <PageSection

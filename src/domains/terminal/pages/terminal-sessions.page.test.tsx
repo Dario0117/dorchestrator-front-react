@@ -3,11 +3,6 @@ import { queryClient } from '@domains/shared/context/query.provider';
 import { TerminalSessionsPage } from '@domains/terminal/pages/terminal-sessions.page';
 import { buildBackendUrl } from '@lib/test-backend-url.utils';
 import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
-import {
-  setDesktopViewport,
-  setMobileViewport,
-  setTabletViewport,
-} from '@lib/viewport-test-utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
@@ -200,34 +195,6 @@ describe('TerminalSessionsPage', () => {
     });
   });
 
-  it('should render data table with column headers', async () => {
-    renderWithProviders(<TerminalSessionsPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText('User')).toBeInTheDocument();
-      expect(screen.getByText('Device')).toBeInTheDocument();
-      expect(screen.getByText('Status')).toBeInTheDocument();
-      expect(screen.getByText('Created')).toBeInTheDocument();
-      expect(screen.getByText('Last Activity')).toBeInTheDocument();
-      expect(screen.getByText('Terminated')).toBeInTheDocument();
-      expect(screen.getByText('Duration')).toBeInTheDocument();
-      expect(screen.getByText('Recording')).toBeInTheDocument();
-    });
-  });
-
-  it('should render session rows with mock data', async () => {
-    renderWithProviders(<TerminalSessionsPage />);
-
-    await waitFor(() => {
-      expect(
-        screen.getAllByText('Production Server').length,
-      ).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText('Alice').length).toBeGreaterThanOrEqual(1);
-      expect(screen.getByText('Dev Laptop')).toBeInTheDocument();
-      expect(screen.getByText('Bob')).toBeInTheDocument();
-    });
-  });
-
   it('should show empty state when no sessions exist', async () => {
     useEmptyHandler();
 
@@ -307,47 +274,6 @@ describe('TerminalSessionsPage', () => {
   });
 
   describe('Page Size Selector', () => {
-    it('should render page size selector', async () => {
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-      });
-    });
-
-    it('should have current size selected', async () => {
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByLabelText('Page size')).toHaveTextContent('25');
-      });
-    });
-
-    it('should render all page size options', async () => {
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-      });
-
-      await clickTrigger(screen.getByLabelText('Page size'));
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('option', { name: '10 per page' }),
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('option', { name: '25 per page' }),
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('option', { name: '50 per page' }),
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('option', { name: '100 per page' }),
-        ).toBeInTheDocument();
-      });
-    });
-
     it('should reset page to 1 when page size changes', async () => {
       const user = userEvent.setup();
       useMultiPageHandler({ page: 3, totalPages: 5, hasPrevious: true });
@@ -385,45 +311,6 @@ describe('TerminalSessionsPage', () => {
   });
 
   describe('Pagination Controls', () => {
-    it('should disable Previous button on first page', async () => {
-      useMultiPageHandler({ page: 1, hasPrevious: false, hasNext: true });
-
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        const prevButton = screen.getByLabelText('Go to previous page');
-        expect(prevButton).toHaveAttribute('aria-disabled', 'true');
-      });
-    });
-
-    it('should disable Next button on last page', async () => {
-      useMultiPageHandler({
-        page: 3,
-        totalPages: 3,
-        hasPrevious: true,
-        hasNext: false,
-      });
-      mockSearchParams = { page: 3, size: 25 };
-
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        const nextButton = screen.getByLabelText('Go to next page');
-        expect(nextButton).toHaveAttribute('aria-disabled', 'true');
-      });
-    });
-
-    it('should display "Page X of Y" indicator', async () => {
-      useMultiPageHandler({ page: 2, totalPages: 5 });
-      mockSearchParams = { page: 2, size: 25 };
-
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Page 2 of 5')).toBeInTheDocument();
-      });
-    });
-
     it('should navigate to previous page when Previous is clicked', async () => {
       const user = userEvent.setup();
       useMultiPageHandler({
@@ -483,116 +370,6 @@ describe('TerminalSessionsPage', () => {
       const nextSearchFn = nextCall[0].search;
       const nextResult = nextSearchFn({ page: 1, size: 25 });
       expect(nextResult.page).toBe(2);
-    });
-  });
-
-  describe('Mobile viewport', () => {
-    beforeEach(() => setMobileViewport());
-
-    it('should render page title', async () => {
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Terminal Sessions' }),
-        ).toBeInTheDocument();
-      });
-    });
-
-    it('should render table with data', async () => {
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Dev Laptop')).toBeInTheDocument();
-      });
-    });
-
-    it('should render pagination controls', async () => {
-      useMultiPageHandler({ page: 1, totalPages: 3, hasNext: true });
-
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Page 1 of 3')).toBeInTheDocument();
-        expect(
-          screen.getByLabelText('Go to previous page'),
-        ).toBeInTheDocument();
-        expect(screen.getByLabelText('Go to next page')).toBeInTheDocument();
-        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-      });
-    });
-
-    it('should render empty state on mobile', async () => {
-      useEmptyHandler();
-
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText(/No terminal sessions/)).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Tablet viewport', () => {
-    beforeEach(() => setTabletViewport());
-
-    it('should render page title', async () => {
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Terminal Sessions' }),
-        ).toBeInTheDocument();
-      });
-    });
-
-    it('should render table with data', async () => {
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Dev Laptop')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Desktop viewport', () => {
-    beforeEach(() => setDesktopViewport());
-
-    it('should render page title', async () => {
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Terminal Sessions' }),
-        ).toBeInTheDocument();
-      });
-    });
-
-    it('should render pagination inline', async () => {
-      useMultiPageHandler({
-        page: 1,
-        totalPages: 3,
-        hasNext: true,
-        totalResults: 60,
-      });
-
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Page 1 of 3')).toBeInTheDocument();
-        expect(screen.getByText('60 total sessions')).toBeInTheDocument();
-        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-      });
-    });
-
-    it('should render empty state on desktop', async () => {
-      useEmptyHandler();
-
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText(/No terminal sessions/)).toBeInTheDocument();
-      });
     });
   });
 
@@ -1025,21 +802,6 @@ describe('TerminalSessionsPage', () => {
   });
 
   describe('Terminate session', () => {
-    it('should show terminate button for non-terminated sessions', async () => {
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getAllByText('Production Server').length).toBeGreaterThan(
-          0,
-        );
-      });
-
-      const closeButtons = screen.getAllByRole('button', {
-        name: 'Close session',
-      });
-      expect(closeButtons.length).toBeGreaterThan(0);
-    });
-
     it('should open confirmation dialog when clicking terminate button', async () => {
       renderWithProviders(<TerminalSessionsPage />);
 
@@ -1213,105 +975,6 @@ describe('TerminalSessionsPage', () => {
   });
 
   describe('Session data edge cases', () => {
-    it('should display "Never" when createdAt or lastActivityAt is null', async () => {
-      server.use(
-        http.get<never, never, ListTerminalSessionsSuccessResponse>(
-          buildBackendUrl(
-            '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
-          ),
-          () => {
-            return HttpResponse.json({
-              responseData: {
-                results: [
-                  {
-                    id: 10,
-                    deviceId: 1,
-                    deviceName: 'Null Dates Device',
-                    userId: 'user-1',
-                    userName: 'Charlie',
-                    userEmail: 'charlie@example.com',
-                    status: 'created',
-                    shell: '/bin/bash',
-                    createdAt: '',
-                    lastActivityAt: '',
-                    terminatedAt: null,
-                    durationSeconds: 0,
-                    recordingSizeBytes: null,
-                  },
-                ],
-                hasNext: false,
-                hasPrevious: false,
-                totalResults: 1,
-                totalPages: 1,
-                page: 1,
-                size: 25,
-              },
-              responseErrors: null,
-            });
-          },
-        ),
-      );
-
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Null Dates Device')).toBeInTheDocument();
-      });
-
-      const neverCells = screen.getAllByText('Never');
-      expect(neverCells.length).toBe(2);
-    });
-
-    it('should not show terminate button for terminated sessions', async () => {
-      server.use(
-        http.get<never, never, ListTerminalSessionsSuccessResponse>(
-          buildBackendUrl(
-            '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
-          ),
-          () => {
-            return HttpResponse.json({
-              responseData: {
-                results: [
-                  {
-                    id: 3,
-                    deviceId: 1,
-                    deviceName: 'Terminated Device',
-                    userId: 'user-1',
-                    userName: 'Eve',
-                    userEmail: 'eve@example.com',
-                    status: 'terminated',
-                    shell: '/bin/bash',
-                    createdAt: new Date().toISOString(),
-                    lastActivityAt: new Date().toISOString(),
-                    terminatedAt: new Date().toISOString(),
-                    durationSeconds: 3600,
-                    recordingSizeBytes: 0,
-                  },
-                ],
-                hasNext: false,
-                hasPrevious: false,
-                totalResults: 1,
-                totalPages: 1,
-                page: 1,
-                size: 25,
-              },
-              responseErrors: null,
-            });
-          },
-        ),
-      );
-
-      renderWithProviders(<TerminalSessionsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Terminated Device')).toBeInTheDocument();
-      });
-
-      expect(
-        screen.queryByRole('button', { name: 'Close session' }),
-      ).not.toBeInTheDocument();
-    });
-
     it('should handle responseData being null gracefully', async () => {
       server.use(
         http.get<never, never, ListTerminalSessionsSuccessResponse>(

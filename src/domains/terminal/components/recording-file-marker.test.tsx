@@ -175,6 +175,33 @@ describe('RecordingFileMarker', () => {
     expect(screen.getByText(/5\.0 MB/)).toBeInTheDocument();
   });
 
+  it('should fall back to icon when download URL fetch fails', async () => {
+    server.use(
+      http.get(
+        buildBackendUrl(
+          '/api/v1/{organizationId}/terminal/sessions/{sessionId}/files/{fileId}/download-url',
+        ),
+        () => HttpResponse.json({ message: 'Not found' }, { status: 404 }),
+      ),
+    );
+
+    renderWithProviders(
+      <RecordingFileMarker
+        event={baseEvent}
+        timestamp="2026-01-15T10:30:00.000Z"
+        organizationId="org-1"
+        sessionId={1}
+        fileId={99}
+      />,
+    );
+
+    // Wait for the failed fetch to settle, then verify no link appeared
+    await waitFor(() => {
+      expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    });
+    expect(screen.getByTestId('recording-file-marker')).toBeInTheDocument();
+  });
+
   it('should render image link pointing to presigned URL', async () => {
     server.use(downloadUrlHandler);
 

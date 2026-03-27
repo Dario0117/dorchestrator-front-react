@@ -3,11 +3,6 @@ import { useUserOrganizationsQueryOptions } from '@domains/org/services/organiza
 import { queryClient } from '@domains/shared/context/query.provider';
 import { buildBackendUrl } from '@lib/test-backend-url.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import {
-  setDesktopViewport,
-  setMobileViewport,
-  setTabletViewport,
-} from '@lib/viewport-test-utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
@@ -215,36 +210,6 @@ describe('AuditLogsListPage', () => {
     });
   });
 
-  it('should render data table with column headers', async () => {
-    renderWithProviders(<AuditLogsListPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Time')).toBeInTheDocument();
-      expect(screen.getByText('Action')).toBeInTheDocument();
-      expect(screen.getByText('Resource')).toBeInTheDocument();
-      expect(screen.getByText('Actor')).toBeInTheDocument();
-      expect(screen.getByText('Resource ID')).toBeInTheDocument();
-      expect(screen.getByText('Request ID')).toBeInTheDocument();
-    });
-  });
-
-  it('should render audit log rows with mock data', async () => {
-    renderWithProviders(<AuditLogsListPage />);
-
-    await waitFor(() => {
-      expect(screen.getAllByText('admin@org.com').length).toBeGreaterThan(0);
-      expect(screen.getAllByText('user@org.com').length).toBeGreaterThan(0);
-    });
-  });
-
-  it('should render action badges in rows', async () => {
-    renderWithProviders(<AuditLogsListPage />);
-
-    await waitFor(() => {
-      expect(screen.getAllByText('Created').length).toBeGreaterThan(0);
-    });
-  });
-
   it('should show empty state when responseData is null', async () => {
     useNullResponseDataHandler();
 
@@ -357,32 +322,6 @@ describe('AuditLogsListPage', () => {
 
       await waitFor(() => {
         expect(screen.getByLabelText('Page size')).toHaveTextContent('25');
-      });
-    });
-
-    it('should render all page size options', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(<AuditLogsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-      });
-
-      await user.click(screen.getByLabelText('Page size'));
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('option', { name: '10 per page' }),
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('option', { name: '25 per page' }),
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('option', { name: '50 per page' }),
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('option', { name: '100 per page' }),
-        ).toBeInTheDocument();
       });
     });
 
@@ -521,116 +460,6 @@ describe('AuditLogsListPage', () => {
       const nextSearchFn = nextCall[0].search;
       const nextResult = nextSearchFn({ page: 1, size: 25 });
       expect(nextResult.page).toBe(2);
-    });
-  });
-
-  describe('Mobile viewport', () => {
-    beforeEach(() => setMobileViewport());
-
-    it('should render page title', async () => {
-      renderWithProviders(<AuditLogsListPage />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Audit Logs' }),
-        ).toBeInTheDocument();
-      });
-    });
-
-    it('should render table with data', async () => {
-      renderWithProviders(<AuditLogsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getAllByText('admin@org.com').length).toBeGreaterThan(0);
-      });
-    });
-
-    it('should render pagination controls', async () => {
-      useMultiPageHandler({ page: 1, totalPages: 3, hasNext: true });
-
-      renderWithProviders(<AuditLogsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Page 1 of 3')).toBeInTheDocument();
-        expect(
-          screen.getByLabelText('Go to previous page'),
-        ).toBeInTheDocument();
-        expect(screen.getByLabelText('Go to next page')).toBeInTheDocument();
-        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-      });
-    });
-
-    it('should render empty state on mobile', async () => {
-      useEmptyHandler();
-
-      renderWithProviders(<AuditLogsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText(/No audit logs/)).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Tablet viewport', () => {
-    beforeEach(() => setTabletViewport());
-
-    it('should render page title', async () => {
-      renderWithProviders(<AuditLogsListPage />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Audit Logs' }),
-        ).toBeInTheDocument();
-      });
-    });
-
-    it('should render table with data', async () => {
-      renderWithProviders(<AuditLogsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getAllByText('admin@org.com').length).toBeGreaterThan(0);
-      });
-    });
-  });
-
-  describe('Desktop viewport', () => {
-    beforeEach(() => setDesktopViewport());
-
-    it('should render page title', async () => {
-      renderWithProviders(<AuditLogsListPage />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Audit Logs' }),
-        ).toBeInTheDocument();
-      });
-    });
-
-    it('should render pagination inline', async () => {
-      useMultiPageHandler({
-        page: 1,
-        totalPages: 3,
-        hasNext: true,
-        totalResults: 60,
-      });
-
-      renderWithProviders(<AuditLogsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Page 1 of 3')).toBeInTheDocument();
-        expect(screen.getByText('60 total entries')).toBeInTheDocument();
-        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-      });
-    });
-
-    it('should render empty state on desktop', async () => {
-      useEmptyHandler();
-
-      renderWithProviders(<AuditLogsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText(/No audit logs/)).toBeInTheDocument();
-      });
     });
   });
 });

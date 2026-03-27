@@ -71,6 +71,30 @@ describe('Card', () => {
       );
       expect(screen.getByTestId('card')).toBeInTheDocument();
     });
+
+    it('applies min-width class when minWidth prop is provided', () => {
+      render(
+        <Card
+          minWidth="sm"
+          data-testid="card"
+        >
+          content
+        </Card>,
+      );
+      expect(screen.getByTestId('card')).toHaveClass('min-w-80');
+    });
+
+    it('applies xs min-width class', () => {
+      render(
+        <Card
+          minWidth="xs"
+          data-testid="card"
+        >
+          content
+        </Card>,
+      );
+      expect(screen.getByTestId('card')).toHaveClass('min-w-64');
+    });
   });
 
   describe('additional props', () => {
@@ -178,6 +202,32 @@ describe('CardFooter', () => {
     it('renders children', () => {
       render(<CardFooter>Footer content</CardFooter>);
       expect(screen.getByText('Footer content')).toBeInTheDocument();
+    });
+  });
+
+  describe('semantic props', () => {
+    it('applies gap class when gap prop is provided', () => {
+      render(
+        <CardFooter
+          gap="md"
+          data-testid="footer"
+        >
+          content
+        </CardFooter>,
+      );
+      expect(screen.getByTestId('footer')).toHaveClass('gap-3');
+    });
+
+    it('applies flex-wrap class when wrap prop is provided', () => {
+      render(
+        <CardFooter
+          wrap
+          data-testid="footer"
+        >
+          content
+        </CardFooter>,
+      );
+      expect(screen.getByTestId('footer')).toHaveClass('flex-wrap');
     });
   });
 

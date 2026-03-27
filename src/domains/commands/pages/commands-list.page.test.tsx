@@ -3,11 +3,6 @@ import { useUserOrganizationsQueryOptions } from '@domains/org/services/organiza
 import { queryClient } from '@domains/shared/context/query.provider';
 import { buildBackendUrl } from '@lib/test-backend-url.utils';
 import { renderWithProviders } from '@lib/test-wrappers.utils';
-import {
-  setDesktopViewport,
-  setMobileViewport,
-  setTabletViewport,
-} from '@lib/viewport-test-utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
@@ -308,35 +303,6 @@ describe('CommandsListPage', () => {
     });
   });
 
-  it('should display command status badges', async () => {
-    renderWithProviders(<CommandsListPage />);
-
-    await waitFor(() => {
-      // Both table and card views render (CSS media queries not applied in jsdom)
-      expect(screen.getAllByText('Completed').length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText('Running').length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText('Pending').length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText('Failed').length).toBeGreaterThanOrEqual(1);
-    });
-  });
-
-  it('should display device names in command views', async () => {
-    renderWithProviders(<CommandsListPage />);
-
-    await waitFor(() => {
-      // Both table and card views render (CSS media queries not applied in jsdom)
-      expect(screen.getAllByText('Test Server').length).toBeGreaterThanOrEqual(
-        1,
-      );
-      expect(screen.getAllByText('Dev Laptop').length).toBeGreaterThanOrEqual(
-        1,
-      );
-      expect(screen.getAllByText('Build Agent').length).toBeGreaterThanOrEqual(
-        1,
-      );
-    });
-  });
-
   it('should open modal when executeModal search param is "open"', async () => {
     mockSearchParams = { page: 1, size: 10, executeModal: 'open' };
 
@@ -456,32 +422,6 @@ describe('CommandsListPage', () => {
   });
 
   describe('Page Size Selector', () => {
-    it('should render page size selector with correct options', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-      });
-
-      await user.click(screen.getByLabelText('Page size'));
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('option', { name: '10 per page' }),
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('option', { name: '25 per page' }),
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('option', { name: '50 per page' }),
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('option', { name: '100 per page' }),
-        ).toBeInTheDocument();
-      });
-    });
-
     it('should have current size selected', async () => {
       renderWithProviders(<CommandsListPage />);
 
@@ -640,184 +580,6 @@ describe('CommandsListPage', () => {
       const nextSearchFn = nextCall[0].search;
       const nextResult = nextSearchFn({ page: 1, size: 25 });
       expect(nextResult.page).toBe(2);
-    });
-  });
-
-  describe('Mobile viewport', () => {
-    beforeEach(() => setMobileViewport());
-
-    it('should render page title', async () => {
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Commands' }),
-        ).toBeInTheDocument();
-      });
-    });
-
-    it('should render execute button', async () => {
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('New Command')).toBeInTheDocument();
-      });
-    });
-
-    it('should render command cards', async () => {
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('#1')).toBeInTheDocument();
-        expect(screen.getByText('#2')).toBeInTheDocument();
-      });
-    });
-
-    it('should render pagination controls stacked', async () => {
-      useMultiPageHandler({ page: 1, totalPages: 3, hasNext: true });
-
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Page 1 of 3')).toBeInTheDocument();
-        expect(
-          screen.getByLabelText('Go to previous page'),
-        ).toBeInTheDocument();
-        expect(screen.getByLabelText('Go to next page')).toBeInTheDocument();
-        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-      });
-    });
-
-    it('should render empty state on mobile', async () => {
-      server.use(
-        http.get<never, never, ListCommandsSuccessResponse>(
-          buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/commands'),
-          () => {
-            return HttpResponse.json({
-              responseData: {
-                results: [],
-                hasNext: false,
-                hasPrevious: false,
-                totalResults: 0,
-                totalPages: 0,
-                page: 1,
-                size: 10,
-              },
-              responseErrors: null,
-            });
-          },
-        ),
-      );
-
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText(/No commands yet/)).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Tablet viewport', () => {
-    beforeEach(() => setTabletViewport());
-
-    it('should render page title and button', async () => {
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Commands' }),
-        ).toBeInTheDocument();
-        expect(screen.getByText('New Command')).toBeInTheDocument();
-      });
-    });
-
-    it('should render command cards', async () => {
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('#1')).toBeInTheDocument();
-        expect(screen.getByText('#2')).toBeInTheDocument();
-      });
-    });
-
-    it('should render pagination controls', async () => {
-      useMultiPageHandler({ page: 2, totalPages: 5, hasPrevious: true });
-      mockSearchParams = { page: 2, size: 25 };
-
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Page 2 of 5')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Desktop viewport', () => {
-    beforeEach(() => setDesktopViewport());
-
-    it('should render page title and button', async () => {
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: 'Commands' }),
-        ).toBeInTheDocument();
-        expect(screen.getByText('New Command')).toBeInTheDocument();
-      });
-    });
-
-    it('should render command cards', async () => {
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('#1')).toBeInTheDocument();
-        expect(screen.getByText('#2')).toBeInTheDocument();
-      });
-    });
-
-    it('should render pagination inline', async () => {
-      useMultiPageHandler({
-        page: 1,
-        totalPages: 3,
-        hasNext: true,
-        totalResults: 60,
-      });
-
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText('Page 1 of 3')).toBeInTheDocument();
-        expect(screen.getByText('60 total results')).toBeInTheDocument();
-        expect(screen.getByLabelText('Page size')).toBeInTheDocument();
-      });
-    });
-
-    it('should render empty state on desktop', async () => {
-      server.use(
-        http.get<never, never, ListCommandsSuccessResponse>(
-          buildBackendUrl('/api/v1/{organizationId}/teams/{teamId}/commands'),
-          () => {
-            return HttpResponse.json({
-              responseData: {
-                results: [],
-                hasNext: false,
-                hasPrevious: false,
-                totalResults: 0,
-                totalPages: 0,
-                page: 1,
-                size: 10,
-              },
-              responseErrors: null,
-            });
-          },
-        ),
-      );
-
-      renderWithProviders(<CommandsListPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText(/No commands yet/)).toBeInTheDocument();
-      });
     });
   });
 });

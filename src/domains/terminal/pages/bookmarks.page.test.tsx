@@ -195,4 +195,123 @@ describe('BookmarksPage', () => {
     });
     expect(screen.getByText(/50/)).toBeInTheDocument();
   });
+
+  it('should navigate to next page when next button is clicked', async () => {
+    const user = userEvent.setup();
+    setupBookmarksHandler([makeBookmark()], {
+      totalResults: 50,
+      totalPages: 2,
+      hasNext: true,
+    });
+    renderWithProviders(<BookmarksPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('test-device')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: /next/i }));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: expect.any(Function),
+      }),
+    );
+
+    const searchFn = mockNavigate.mock.calls[0]?.[0]?.search as
+      | ((prev: { page: number; size: number }) => {
+          page: number;
+          size: number;
+        })
+      | undefined;
+    expect(searchFn?.({ page: 1, size: 25 })).toEqual({ page: 2, size: 25 });
+  });
+
+  it('should reset to page 1 when page size is changed', async () => {
+    const user = userEvent.setup();
+    setupBookmarksHandler([makeBookmark()], {
+      totalResults: 50,
+      totalPages: 2,
+      hasNext: true,
+    });
+    renderWithProviders(<BookmarksPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('test-device')).toBeInTheDocument();
+    });
+
+    const trigger = screen.getByRole('combobox', { name: /page size/i });
+    await user.click(trigger);
+
+    const option = await screen.findByRole('option', { name: '50 per page' });
+    await user.click(option);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          search: expect.any(Function),
+        }),
+      );
+    });
+
+    const searchFn = mockNavigate.mock.calls[0]?.[0]?.search as
+      | ((prev: { page: number; size: number }) => {
+          page: number;
+          size: number;
+        })
+      | undefined;
+    expect(searchFn?.({ page: 3, size: 25 })).toEqual({ page: 1, size: 50 });
+  });
+
+  it('should call delete mutation when delete button is clicked', async () => {
+    const user = userEvent.setup();
+    setupBookmarksHandler([makeBookmark({ id: 5 })]);
+    server.use(
+      http.delete(
+        buildBackendUrl(
+          '/api/v1/{organizationId}/terminal/bookmarks/{bookmarkId}',
+        ),
+        () => {
+          return HttpResponse.json({
+            responseData: { results: ['Bookmark deleted'] },
+            responseErrors: null,
+          });
+        },
+      ),
+    );
+    renderWithProviders(<BookmarksPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('test-device')).toBeInTheDocument();
+    });
+
+    const deleteButton = screen.getByRole('button', { name: '' });
+    await user.click(deleteButton);
+
+    // Verify navigation was NOT called (stopPropagation prevents row click)
+    expect(mockNavigate).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: '/$organizationSlug/t/$teamSlug/terminal/$sessionId',
+      }),
+    );
+  });
+
+  it('should use fallback values when responseData fields are missing', async () => {
+    server.use(
+      http.get<never, never, ListBookmarksResponse>(
+        buildBackendUrl('/api/v1/{organizationId}/terminal/bookmarks'),
+        () => {
+          return HttpResponse.json({
+            responseData:
+              undefined as unknown as ListBookmarksResponse['responseData'],
+            responseErrors: null,
+          });
+        },
+      ),
+    );
+    renderWithProviders(<BookmarksPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('No bookmarked sessions')).toBeInTheDocument();
+    });
+  });
 });

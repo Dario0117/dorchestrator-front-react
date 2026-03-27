@@ -16,9 +16,24 @@ const mockUseNavigate = vi.mocked(
 const mockNavigate = vi.fn();
 mockUseNavigate.mockReturnValue(mockNavigate);
 
+// Mock better-auth client to control mutation responses
+const mockRequestPasswordReset = vi.fn();
+vi.mock('@/better-auth.client', () => ({
+  authClient: {
+    requestPasswordReset: (params: { email: string; redirectTo: string }) =>
+      mockRequestPasswordReset(params),
+  },
+}));
+
 describe('ResetPasswordPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    mockRequestPasswordReset.mockClear();
+    // Default: successful response without message property
+    mockRequestPasswordReset.mockResolvedValue({
+      data: { status: true },
+      error: null,
+    });
   });
 
   it('should render reset password form', () => {
@@ -68,5 +83,28 @@ describe('ResetPasswordPage', () => {
 
     const section = screen.getByText('Reset your password').closest('section');
     expect(section).toBeInTheDocument();
+  });
+
+  it('should use message from response data when available', async () => {
+    mockRequestPasswordReset.mockResolvedValue({
+      data: null,
+      error: null,
+      message: 'Custom reset message from server',
+    });
+
+    const user = userEvent.setup();
+    renderWithProviders(<ResetPasswordPage />);
+
+    const emailInput = screen.getByLabelText(/Email/);
+    const submitButton = screen.getByRole('button', {
+      name: 'Send reset email',
+    });
+
+    await user.type(emailInput, 'test@example.com');
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith({ to: '/login' });
+    });
   });
 });
