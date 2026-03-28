@@ -3,70 +3,85 @@ import type {
   WsMessage,
   WsMessageType,
 } from '@domains/terminal/services/ws-messages.schema';
-import { wsMessageSchema } from '@domains/terminal/services/ws-messages.schema';
+import {
+  RT,
+  wsMessageSchema,
+} from '@domains/terminal/services/ws-messages.schema';
 import { useTerminalConnectionStore } from '@domains/terminal/stores/terminal-connection.store';
 import { env } from '@lib/env.utils';
 import { logDebug, logError, logInfo, logWarning } from '@lib/logger.utils';
-
-const AUTH_FAILURE_CODES = [4001, 4003, 1008] as const;
-
-const BACKOFF_INITIAL_MS = 1000;
-const BACKOFF_MAX_MS = 30_000;
-const BACKOFF_MULTIPLIER = 2;
-
-function buildWsUrl(shareToken?: string) {
-  const base = env.BACKEND_BASE_URL.replace('https://', 'wss://').replace(
-    'http://',
-    'ws://',
-  );
-  const url = `${base}/ws/terminal`;
-  if (shareToken) {
-    return `${url}?shareToken=${encodeURIComponent(shareToken)}`;
-  }
-  return url;
-}
-
-function calculateBackoff(attempt: number) {
-  const delay = BACKOFF_INITIAL_MS * BACKOFF_MULTIPLIER ** attempt;
-  return Math.min(delay, BACKOFF_MAX_MS);
-}
+import {
+  Centrifuge,
+  type PublicationContext,
+  type Subscription,
+} from 'centrifuge';
+import { fetchClient } from '@/http-service-setup';
 
 function getStore() {
   return useTerminalConnectionStore.getState();
 }
 
-export class TerminalWsClient {
-  private ws: WebSocket | null = null;
-  private currentShareToken: string | undefined;
-  private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-  private intentionalDisconnect = false;
-  private authenticated = false;
-  private handlers = new Map<WsMessageType, Set<WsMessageHandler>>();
+async function fetchConnectionToken() {
+  const { data } = await fetchClient.POST('/api/ws/connection-token');
+  const token = data?.responseData?.results?.token;
+  if (!token) {
+    throw new Error('Failed to fetch connection token');
+  }
+  return token;
+}
 
-  private clearReconnectTimer() {
-    if (this.reconnectTimer !== null) {
-      clearTimeout(this.reconnectTimer);
-      this.reconnectTimer = null;
+async function fetchSubscriptionToken(channel: string) {
+  logDebug({ channel }, 'Fetching subscription token');
+  const { data, error } = await fetchClient.POST('/api/ws/subscription-token', {
+    body: { channel },
+  });
+  if (error) {
+    logError(
+      { channel, error: JSON.stringify(error) },
+      'Subscription token request failed',
+    );
+    throw new Error('Failed to fetch subscription token');
+  }
+  const token = data?.responseData?.results?.token;
+  if (!token) {
+    logError({ channel }, 'Subscription token response missing token');
+    throw new Error('Failed to fetch subscription token');
+  }
+  logDebug({ channel }, 'Subscription token fetched');
+  return token;
+}
+
+export class TerminalWsClient {
+  private client: Centrifuge | null = null;
+  private inputSubscription: Subscription | null = null;
+  private outputSubscription: Subscription | null = null;
+  private eventsSubscription: Subscription | null = null;
+  private intentionalDisconnect = false;
+
+  private removeSessionSubscriptions() {
+    if (this.inputSubscription) {
+      this.inputSubscription.removeAllListeners();
+      this.inputSubscription.unsubscribe();
+      this.client?.removeSubscription(this.inputSubscription);
+      this.inputSubscription = null;
+    }
+    if (this.outputSubscription) {
+      this.outputSubscription.removeAllListeners();
+      this.outputSubscription.unsubscribe();
+      this.client?.removeSubscription(this.outputSubscription);
+      this.outputSubscription = null;
     }
   }
 
-  private scheduleReconnect() {
-    const store = getStore();
-    const delay = calculateBackoff(store.reconnectAttempt);
-
-    logInfo(
-      { attempt: store.reconnectAttempt + 1, delayMs: delay },
-      'Scheduling WebSocket reconnect',
-    );
-
-    store.setConnectionState('reconnecting');
-    store.incrementReconnectAttempt();
-
-    this.reconnectTimer = setTimeout(() => {
-      this.reconnectTimer = null;
-      this.connectInternal();
-    }, delay);
+  private removeEventsSubscription() {
+    if (this.eventsSubscription) {
+      this.eventsSubscription.removeAllListeners();
+      this.eventsSubscription.unsubscribe();
+      this.client?.removeSubscription(this.eventsSubscription);
+      this.eventsSubscription = null;
+    }
   }
+  private handlers = new Map<WsMessageType, Set<WsMessageHandler>>();
 
   private dispatchMessage(message: WsMessage) {
     const typeHandlers = this.handlers.get(message.type);
@@ -77,149 +92,179 @@ export class TerminalWsClient {
     }
   }
 
-  private handleHeartbeat(message: WsMessage) {
-    if (message.type === 'heartbeat:ping') {
-      logDebug({}, 'Received heartbeat:ping, responding with pong');
-
-      if (!this.authenticated) {
-        this.authenticated = true;
-        getStore().setConnectionState('connected');
-        logInfo({}, 'WebSocket authenticated (first heartbeat received)');
-      }
-
-      this.send({ type: 'heartbeat:pong' });
-    }
-  }
-
-  // Arrow functions to preserve `this` when assigned as WebSocket callbacks
-  private handleMessage = (event: MessageEvent) => {
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(event.data as string);
-    } catch {
-      logWarning(
-        { rawData: event.data },
-        'Failed to parse WebSocket message as JSON',
-      );
-      return;
-    }
-
-    const result = wsMessageSchema.safeParse(parsed);
+  private handlePublication = (ctx: PublicationContext) => {
+    const result = wsMessageSchema.safeParse(ctx.data);
     if (!result.success) {
       logWarning(
-        { rawData: parsed, error: result.error },
-        'Received invalid WebSocket message',
+        { rawData: ctx.data, error: result.error },
+        'Received invalid realtime message',
       );
       return;
     }
-
-    const message = result.data;
-    this.handleHeartbeat(message);
-    this.dispatchMessage(message);
+    this.dispatchMessage(result.data);
   };
 
-  private handleOpen = () => {
-    const store = getStore();
-    store.setError(null);
-    store.resetReconnectAttempt();
-    logInfo({}, 'WebSocket transport open — awaiting authentication');
-  };
-
-  private handleClose = (event: CloseEvent) => {
-    this.ws = null;
-
-    if (this.intentionalDisconnect) {
-      getStore().setConnectionState('disconnected');
-      logInfo({}, 'WebSocket disconnected intentionally');
-      return;
+  private ensureClient() {
+    if (this.client) {
+      return this.client;
     }
 
-    if (
-      AUTH_FAILURE_CODES.includes(
-        event.code as (typeof AUTH_FAILURE_CODES)[number],
-      )
-    ) {
+    this.client = new Centrifuge(env.REALTIME_WS_URL, {
+      getToken: fetchConnectionToken,
+    });
+
+    this.client.on('connected', () => {
+      getStore().setConnectionState('connected');
+      getStore().resetReconnectAttempt();
+      logInfo({}, 'Realtime connected');
+    });
+
+    this.client.on('connecting', (ctx) => {
       const store = getStore();
-      store.setConnectionState('disconnected');
-      store.setError(`Authentication failed (code: ${event.code})`);
-      logError(
-        { code: event.code, reason: event.reason },
-        'WebSocket auth failure — not reconnecting',
+      if (store.connectionState === 'connected') {
+        store.setConnectionState('reconnecting');
+        store.incrementReconnectAttempt();
+      } else {
+        store.setConnectionState('connecting');
+      }
+      logDebug({ code: ctx.code, reason: ctx.reason }, 'Realtime connecting');
+    });
+
+    this.client.on('disconnected', (ctx) => {
+      if (this.intentionalDisconnect) {
+        getStore().setConnectionState('disconnected');
+        logInfo({}, 'Realtime disconnected intentionally');
+        return;
+      }
+      logWarning(
+        { code: ctx.code, reason: ctx.reason },
+        'Realtime disconnected',
       );
-      return;
-    }
+      getStore().setConnectionState('disconnected');
+    });
 
-    logWarning(
-      { code: event.code, reason: event.reason },
-      'WebSocket connection closed unexpectedly',
-    );
-    this.scheduleReconnect();
-  };
+    this.client.on('error', (ctx) => {
+      logError({ error: ctx.error }, 'Realtime error');
+    });
 
-  private handleError = () => {
-    const store = getStore();
-    logError(
-      {
-        connectionState: store.connectionState,
-        reconnectAttempt: store.reconnectAttempt,
-      },
-      'WebSocket connection error',
-    );
-  };
-
-  private connectInternal() {
-    if (
-      this.ws &&
-      (this.ws.readyState === WebSocket.CONNECTING ||
-        this.ws.readyState === WebSocket.OPEN)
-    ) {
-      return;
-    }
-
-    this.authenticated = false;
-
-    const url = buildWsUrl(this.currentShareToken);
-    getStore().setConnectionState('connecting');
-
-    this.ws = new WebSocket(url);
-    this.ws.onopen = this.handleOpen;
-    this.ws.onmessage = this.handleMessage;
-    this.ws.onclose = this.handleClose;
-    this.ws.onerror = this.handleError;
+    this.client.connect();
+    return this.client;
   }
 
-  connect(shareToken?: string) {
-    if (this.ws) {
-      const existingWs = this.ws;
-      existingWs.onerror = null;
-      existingWs.onclose = null;
-      existingWs.close(1000, 'Switching to terminal mode');
-      this.ws = null;
-    }
-    this.clearReconnectTimer();
+  connect() {
     this.intentionalDisconnect = false;
-    this.currentShareToken = shareToken;
     getStore().resetReconnectAttempt();
-    this.connectInternal();
+
+    // Clean up previous session subscription
+    this.removeSessionSubscriptions();
+
+    this.ensureClient();
+
+    logInfo({}, 'Realtime terminal connect');
+  }
+
+  subscribeToSession(sessionId: string) {
+    if (!this.client) {
+      logWarning({}, 'Cannot subscribe to session — client not connected');
+      return;
+    }
+
+    // Unsubscribe from previous session
+    this.removeSessionSubscriptions();
+
+    // Output channel: agent → browsers (pty:output, session events)
+    const outputChannel = `$terminal_output:${sessionId}`;
+    this.outputSubscription = this.client.newSubscription(outputChannel, {
+      getToken: () => fetchSubscriptionToken(outputChannel),
+    });
+
+    this.outputSubscription.on('publication', this.handlePublication);
+
+    this.outputSubscription.on('subscribing', (ctx) => {
+      logDebug(
+        { sessionId, code: ctx.code, reason: ctx.reason },
+        'Output subscription subscribing',
+      );
+    });
+
+    this.outputSubscription.on('subscribed', () => {
+      logInfo({ sessionId }, 'Subscribed to terminal output channel');
+      // Dispatch a synthetic heartbeat:ping to trigger initialization in terminal-emulator
+      this.dispatchMessage({ type: RT.HEARTBEAT_PING });
+    });
+
+    this.outputSubscription.on('error', (ctx) => {
+      logError(
+        {
+          sessionId,
+          error:
+            ctx.error instanceof Error
+              ? ctx.error.message
+              : JSON.stringify(ctx.error),
+        },
+        'Output subscription error',
+      );
+    });
+
+    this.outputSubscription.on('unsubscribed', (ctx) => {
+      logWarning(
+        { sessionId, code: ctx.code, reason: ctx.reason },
+        'Output subscription unsubscribed',
+      );
+    });
+
+    this.outputSubscription.subscribe();
+
+    // Input channel: browsers → agent (pty:input, pty:resize, file:transfer)
+    const inputChannel = `$terminal_input:${sessionId}`;
+    this.inputSubscription = this.client.newSubscription(inputChannel, {
+      getToken: () => fetchSubscriptionToken(inputChannel),
+    });
+
+    this.inputSubscription.subscribe();
+  }
+
+  subscribeToEvents(userId: string, organizationId: string) {
+    if (!this.client) {
+      logWarning({}, 'Cannot subscribe to events — client not connected');
+      return;
+    }
+
+    this.removeEventsSubscription();
+
+    const channel = `$events_user:${userId}#${organizationId}`;
+    this.eventsSubscription = this.client.newSubscription(channel, {
+      getToken: () => fetchSubscriptionToken(channel),
+    });
+
+    this.eventsSubscription.on('publication', this.handlePublication);
+
+    this.eventsSubscription.on('subscribed', () => {
+      logInfo({}, 'Subscribed to user events channel');
+    });
+
+    this.eventsSubscription.subscribe();
   }
 
   connectForEvents() {
     this.intentionalDisconnect = false;
-    this.currentShareToken = undefined;
     getStore().resetReconnectAttempt();
-    this.connectInternal();
+
+    // Clean up session subscription but keep client + events subscription
+    this.removeSessionSubscriptions();
+
+    this.ensureClient();
   }
 
   disconnect() {
     this.intentionalDisconnect = true;
-    this.currentShareToken = undefined;
-    this.clearReconnectTimer();
 
-    if (this.ws) {
-      this.ws.onerror = null;
-      this.ws.onclose = null;
-      this.ws.close(1000, 'Client disconnect');
-      this.ws = null;
+    this.removeSessionSubscriptions();
+    this.removeEventsSubscription();
+
+    if (this.client) {
+      this.client.disconnect();
+      this.client = null;
     }
 
     const store = getStore();
@@ -229,27 +274,41 @@ export class TerminalWsClient {
   }
 
   isAuthenticated() {
-    return this.authenticated;
+    return this.client?.state === 'connected';
   }
 
   send(message: WsMessage) {
-    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+    if (!this.inputSubscription) {
       logWarning(
         { messageType: message.type },
-        'Cannot send — WebSocket is not connected',
+        'Cannot send — no session subscription',
       );
       return;
     }
 
-    if (!this.authenticated && message.type !== 'heartbeat:pong') {
+    if (this.inputSubscription.state !== 'subscribed') {
       logDebug(
-        { messageType: message.type },
-        'Dropping message — not yet authenticated',
+        {
+          messageType: message.type,
+          state: this.inputSubscription.state,
+        },
+        'Cannot publish — subscription not in subscribed state',
       );
       return;
     }
 
-    this.ws.send(JSON.stringify(message));
+    this.inputSubscription.publish(message).catch((error: unknown) => {
+      logError(
+        {
+          messageType: message.type,
+          error:
+            error instanceof Error
+              ? error.message
+              : JSON.stringify(error, null, 2),
+        },
+        'Failed to publish message to session channel',
+      );
+    });
   }
 
   onMessage<T extends WsMessageType>(

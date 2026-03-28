@@ -317,6 +317,7 @@ describe('CreateTerminalSessionDialog', () => {
     });
 
     const dirInput = screen.getByLabelText('Working Directory');
+    await user.clear(dirInput);
     await user.type(dirInput, '/tmp/work');
 
     expect(dirInput).toHaveValue('/tmp/work');

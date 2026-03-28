@@ -14,6 +14,7 @@ import { queryClient } from '@domains/shared/context/query.provider';
 import { useListSessionSuggestionsQuery } from '@domains/terminal/services/list-session-suggestions.http-service';
 import { useSubmitSuggestionMutation } from '@domains/terminal/services/submit-suggestion.http-service';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
+import { RT } from '@domains/terminal/services/ws-messages.schema';
 import { Check, RefreshCw, Send, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -75,7 +76,7 @@ export function SuggestionSidebar({
   // Refetch suggestions when WS notifications arrive
   useEffect(() => {
     const unsubAccepted = terminalWsClient.onMessage(
-      'suggestion:accepted',
+      RT.SUGGESTION_ACCEPTED,
       (msg) => {
         if (msg.sessionId !== sessionId) {
           return;
@@ -84,7 +85,7 @@ export function SuggestionSidebar({
       },
     );
     const unsubDismissed = terminalWsClient.onMessage(
-      'suggestion:dismissed',
+      RT.SUGGESTION_DISMISSED,
       (msg) => {
         if (msg.sessionId !== sessionId) {
           return;

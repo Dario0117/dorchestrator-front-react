@@ -6,6 +6,7 @@ NODE_ENV = "development"
 BETTER_AUTH_URL = { required = true }
 VITE_BACKEND_BASE_URL = { required = true }
 VITE_FRONTEND_BASE_URL = { required = true }
+VITE_REALTIME_WS_URL = { required = true }
 
 [tasks.dev]
 depends = ["checkTs", "formatAndLint", "openApi"]

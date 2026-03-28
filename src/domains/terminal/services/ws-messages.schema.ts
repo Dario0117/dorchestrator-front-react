@@ -307,3 +307,33 @@ export type HeartbeatPongMessage = z.infer<typeof heartbeatPongSchema>;
 export type ErrorMessage = z.infer<typeof errorMessageSchema>;
 
 export type WsMessageType = WsMessage['type'];
+
+/**
+ * Constants for message type values. Use these instead of raw strings
+ * to get compile-time safety — a typo here is a type error.
+ */
+export const RT = {
+  PTY_INPUT: 'pty:input',
+  PTY_OUTPUT: 'pty:output',
+  PTY_RESIZE: 'pty:resize',
+  SESSION_CREATE: 'session:create',
+  SESSION_CLOSE: 'session:close',
+  SESSION_LOCK: 'session:lock',
+  SESSION_UNLOCK: 'session:unlock',
+  SESSION_WARNING: 'session:warning',
+  SESSION_EXTENDED: 'session:extended',
+  SESSION_STATUS: 'session:status',
+  COMMAND_NOTIFY: 'command:notify',
+  COMMAND_DISPATCH: 'command:dispatch',
+  VIEWER_JOIN: 'viewer:join',
+  VIEWER_LEAVE: 'viewer:leave',
+  VIEWER_LIST_REQUEST: 'viewer:list:request',
+  VIEWER_LIST: 'viewer:list',
+  SUGGESTION_NOTIFY: 'suggestion:notify',
+  SUGGESTION_ACCEPTED: 'suggestion:accepted',
+  SUGGESTION_DISMISSED: 'suggestion:dismissed',
+  FILE_TRANSFER: 'file:transfer',
+  HEARTBEAT_PING: 'heartbeat:ping',
+  HEARTBEAT_PONG: 'heartbeat:pong',
+  ERROR: 'error',
+} as const satisfies Record<string, WsMessageType>;

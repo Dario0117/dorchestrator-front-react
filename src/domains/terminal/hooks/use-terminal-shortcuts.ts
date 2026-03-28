@@ -8,6 +8,7 @@ import {
 } from '@domains/terminal/services/list-shortcuts.http-service';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
 import { useUpdateShortcutMutation } from '@domains/terminal/services/update-shortcut.http-service';
+import { RT } from '@domains/terminal/services/ws-messages.schema';
 import { parseEscapeSequence } from '@lib/escape-sequence.utils';
 import { useQuery } from '@tanstack/react-query';
 import type { RefObject } from 'react';
@@ -84,7 +85,7 @@ export function useTerminalShortcuts({
           : shortcut.keySequence.replace(/\n$/, '\r');
 
       terminalWsClient.send({
-        type: 'pty:input',
+        type: RT.PTY_INPUT,
         sessionId,
         data,
       });
@@ -99,7 +100,7 @@ export function useTerminalShortcuts({
         return;
       }
       terminalWsClient.send({
-        type: 'pty:input',
+        type: RT.PTY_INPUT,
         sessionId,
         data: sequence,
       });

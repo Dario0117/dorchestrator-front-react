@@ -30,6 +30,7 @@ export default defineConfig(({ mode }) => {
   const isAgentTest = env.VITEST_IS_AGENT_TEST === 'true';
   const backendBaseUrl = env.VITE_BACKEND_BASE_URL;
   const frontendBaseUrl = env.VITE_FRONTEND_BASE_URL;
+  const realtimeWsUrl = env.VITE_REALTIME_WS_URL;
 
   return {
     define: {
@@ -37,6 +38,7 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_APP_VERSION': JSON.stringify(gitSha),
       'import.meta.env.BACKEND_BASE_URL': JSON.stringify(backendBaseUrl),
       'import.meta.env.FRONTEND_BASE_URL': JSON.stringify(frontendBaseUrl),
+      'import.meta.env.REALTIME_WS_URL': JSON.stringify(realtimeWsUrl),
     },
     test: {
       watch: false,

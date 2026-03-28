@@ -6,6 +6,7 @@ import type {
   TerminalEmulatorProps,
 } from '@domains/terminal/components/terminal-emulator.types';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
+import { RT } from '@domains/terminal/services/ws-messages.schema';
 import { useTerminalConnectionStore } from '@domains/terminal/stores/terminal-connection.store';
 import { logError, logInfo } from '@lib/logger.utils';
 import { FitAddon } from '@xterm/addon-fit';
@@ -69,7 +70,7 @@ function initializeSession(
   // Start forwarding user keystrokes to the server PTY.
   const disposable = terminal.onData((data) => {
     terminalWsClient.send({
-      type: 'pty:input',
+      type: RT.PTY_INPUT,
       sessionId,
       data,
     });
@@ -81,19 +82,19 @@ function subscribeToWs(
   terminal: Terminal,
   sessionId: string,
   readOnly: boolean | undefined,
-  shareToken: string | undefined,
   callbacks: SessionCallbacks,
 ): () => void {
-  terminalWsClient.connect(shareToken);
+  terminalWsClient.connect();
+  terminalWsClient.subscribeToSession(sessionId);
   terminal.write('Connecting...\r\n');
 
   let onDataDisposable: { dispose(): void } | null = null;
   let initialized = false;
 
-  const unsubHeartbeat = terminalWsClient.onMessage('heartbeat:ping', () => {
+  const unsubHeartbeat = terminalWsClient.onMessage(RT.HEARTBEAT_PING, () => {
     if (!readOnly) {
       terminalWsClient.send({
-        type: 'pty:resize',
+        type: RT.PTY_RESIZE,
         sessionId,
         payload: { cols: terminal.cols, rows: terminal.rows },
       });
@@ -107,13 +108,13 @@ function subscribeToWs(
     }
   });
 
-  const unsubOutput = terminalWsClient.onMessage('pty:output', (msg) => {
+  const unsubOutput = terminalWsClient.onMessage(RT.PTY_OUTPUT, (msg) => {
     if (msg.sessionId === sessionId) {
       terminal.write(msg.data);
     }
   });
 
-  const unsubClose = terminalWsClient.onMessage('session:close', (msg) => {
+  const unsubClose = terminalWsClient.onMessage(RT.SESSION_CLOSE, (msg) => {
     if (msg.sessionId === sessionId) {
       terminal.write('\r\n[Session terminated]\r\n');
       callbacks.onSessionTerminated.current?.();
@@ -121,12 +122,12 @@ function subscribeToWs(
     }
   });
 
-  const unsubError = terminalWsClient.onMessage('error', (msg) => {
+  const unsubError = terminalWsClient.onMessage(RT.ERROR, (msg) => {
     logError({ payload: msg.payload }, 'Terminal WS error');
     terminal.write(`\r\n[Error: ${msg.payload.message}]\r\n`);
   });
 
-  const unsubLock = terminalWsClient.onMessage('session:lock', (msg) => {
+  const unsubLock = terminalWsClient.onMessage(RT.SESSION_LOCK, (msg) => {
     if (msg.sessionId === sessionId) {
       onDataDisposable?.dispose();
       onDataDisposable = null;
@@ -134,7 +135,7 @@ function subscribeToWs(
     }
   });
 
-  const unsubWarning = terminalWsClient.onMessage('session:warning', (msg) => {
+  const unsubWarning = terminalWsClient.onMessage(RT.SESSION_WARNING, (msg) => {
     if (msg.sessionId === sessionId) {
       callbacks.onSessionWarning.current?.(
         msg.payload.reason,
@@ -172,7 +173,7 @@ function observeResize(
       fitAddon.fit();
       if (!readOnly) {
         terminalWsClient.send({
-          type: 'pty:resize',
+          type: RT.PTY_RESIZE,
           sessionId,
           payload: { cols: terminal.cols, rows: terminal.rows },
         });
@@ -198,7 +199,7 @@ export const TerminalEmulator = forwardRef<
     sessionId,
     fontSize = 14,
     readOnly,
-    shareToken,
+    shareToken: _shareToken,
     onSessionEnd,
     onSessionLocked,
     onSessionWarning,
@@ -245,7 +246,7 @@ export const TerminalEmulator = forwardRef<
     terminalInstanceRef.current = terminal;
     fitAddonRef.current = fitAddon;
 
-    const cleanupWs = subscribeToWs(terminal, sessionId, readOnly, shareToken, {
+    const cleanupWs = subscribeToWs(terminal, sessionId, readOnly, {
       onSessionEnd: onSessionEndRef,
       onSessionLocked: onSessionLockedRef,
       onSessionWarning: onSessionWarningRef,
@@ -267,7 +268,7 @@ export const TerminalEmulator = forwardRef<
       terminalInstanceRef.current = null;
       fitAddonRef.current = null;
     };
-  }, [sessionId, readOnly, shareToken]);
+  }, [sessionId, readOnly]);
 
   useEffect(() => {
     const terminal = terminalInstanceRef.current;

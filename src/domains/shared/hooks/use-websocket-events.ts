@@ -1,4 +1,5 @@
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
+import { RT } from '@domains/terminal/services/ws-messages.schema';
 import { useTerminalConnectionStore } from '@domains/terminal/stores/terminal-connection.store';
 import { logInfo } from '@lib/logger.utils';
 import { useQueryClient } from '@tanstack/react-query';
@@ -40,7 +41,7 @@ export function useWebSocketEvents() {
     logInfo({}, 'WebSocket event connection initiated');
 
     const unsubscribeCommand = terminalWsClient.onMessage(
-      'command:dispatch',
+      RT.COMMAND_DISPATCH,
       (message) => {
         invalidateAll(queryClient, COMMAND_QUERIES);
 
@@ -51,7 +52,7 @@ export function useWebSocketEvents() {
     );
 
     const unsubscribeSessionStatus = terminalWsClient.onMessage(
-      'session:status',
+      RT.SESSION_STATUS,
       (message) => {
         invalidateAll(queryClient, SESSION_QUERIES);
 

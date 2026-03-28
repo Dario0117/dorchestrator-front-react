@@ -1,6 +1,7 @@
 import { Badge } from '@components/ds/atoms/badge';
 import { HStack } from '@components/ds/atoms/hstack';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
+import { RT } from '@domains/terminal/services/ws-messages.schema';
 import { Eye } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -57,21 +58,21 @@ export function SessionViewerList({ sessionId }: { sessionId: string }) {
 
   useEffect(() => {
     const unsubJoin = terminalWsClient.onMessage(
-      'viewer:join',
+      RT.VIEWER_JOIN,
       handleViewerJoin,
     );
     const unsubLeave = terminalWsClient.onMessage(
-      'viewer:leave',
+      RT.VIEWER_LEAVE,
       handleViewerLeave,
     );
     const unsubList = terminalWsClient.onMessage(
-      'viewer:list',
+      RT.VIEWER_LIST,
       handleViewerList,
     );
 
     // Request current viewer list on mount
     terminalWsClient.send({
-      type: 'viewer:list:request',
+      type: RT.VIEWER_LIST_REQUEST,
       sessionId,
     });
 

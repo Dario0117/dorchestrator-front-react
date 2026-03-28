@@ -12,6 +12,7 @@ import { queryClient } from '@domains/shared/context/query.provider';
 import { useListSessionSuggestionsQuery } from '@domains/terminal/services/list-session-suggestions.http-service';
 import { useRespondToSuggestionMutation } from '@domains/terminal/services/respond-to-suggestion.http-service';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
+import { RT } from '@domains/terminal/services/ws-messages.schema';
 import { Check, Lightbulb, RefreshCw, X } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 
@@ -43,7 +44,7 @@ export function SuggestionNotificationPanel({
   // Refetch on WS notification signals
   useEffect(() => {
     const unsubNotify = terminalWsClient.onMessage(
-      'suggestion:notify',
+      RT.SUGGESTION_NOTIFY,
       (msg) => {
         if (msg.sessionId !== sessionId) {
           return;

@@ -1,5 +1,6 @@
 import { useExtendTerminalSessionMutation } from '@domains/terminal/services/extend-terminal-session.http-service';
 import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
+import { RT } from '@domains/terminal/services/ws-messages.schema';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -85,7 +86,7 @@ export function useTerminalSessionLifecycle({
   const handleCloseSession = useCallback(() => {
     setIsClosing(true);
     terminalWsClient.send({
-      type: 'session:close',
+      type: RT.SESSION_CLOSE,
       sessionId,
     });
   }, [sessionId]);

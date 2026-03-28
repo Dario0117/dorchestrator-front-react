@@ -16,10 +16,15 @@ const frontendBaseUrl = requireEnv(
   'FRONTEND_BASE_URL',
   import.meta.env.FRONTEND_BASE_URL,
 );
+const realtimeWsUrl = requireEnv(
+  'REALTIME_WS_URL',
+  import.meta.env.REALTIME_WS_URL,
+);
 
 export const env = {
   BACKEND_BASE_URL: backendBaseUrl,
   FRONTEND_BASE_URL: frontendBaseUrl,
+  REALTIME_WS_URL: realtimeWsUrl,
 
   get APP_VERSION() {
     return (import.meta.env.VITE_APP_VERSION as string) || 'unknown';

@@ -78,6 +78,31 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
   } as unknown as typeof ResizeObserver;
 }
 
+// Mock centrifuge SDK globally — prevents side effects in jsdom
+vi.mock('centrifuge', () => {
+  function MockSubscription() {
+    return {
+      on: vi.fn().mockReturnThis(),
+      subscribe: vi.fn(),
+      unsubscribe: vi.fn(),
+      removeAllListeners: vi.fn(),
+      publish: vi.fn().mockResolvedValue({}),
+      state: 'unsubscribed',
+    };
+  }
+  function MockCentrifuge() {
+    return {
+      on: vi.fn().mockReturnThis(),
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      removeSubscription: vi.fn(),
+      newSubscription: vi.fn().mockImplementation(() => MockSubscription()),
+      state: 'disconnected',
+    };
+  }
+  return { Centrifuge: MockCentrifuge };
+});
+
 import { cleanup } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';

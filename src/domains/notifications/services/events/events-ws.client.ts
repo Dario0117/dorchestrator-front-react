@@ -3,197 +3,44 @@ import type {
   EventsWsMessageType,
 } from '@domains/notifications/services/events/events-ws-messages.schema';
 import { eventsWsMessageSchema } from '@domains/notifications/services/events/events-ws-messages.schema';
-import { env } from '@lib/env.utils';
-import { logDebug, logError, logInfo, logWarning } from '@lib/logger.utils';
+import { terminalWsClient } from '@domains/terminal/services/terminal-ws.client';
+import type { WsMessageType } from '@domains/terminal/services/ws-messages.schema';
+import { logInfo, logWarning } from '@lib/logger.utils';
 
 type EventsWsMessageHandler<T extends EventsWsMessage = EventsWsMessage> = (
   message: T,
 ) => void;
 
-const AUTH_FAILURE_CODES = [4001, 4003, 1008] as const;
-
-const BACKOFF_INITIAL_MS = 1000;
-const BACKOFF_MAX_MS = 30_000;
-const BACKOFF_MULTIPLIER = 2;
-
-function buildWsUrl() {
-  const base = env.BACKEND_BASE_URL.replace('https://', 'wss://').replace(
-    'http://',
-    'ws://',
-  );
-  return `${base}/ws/events`;
-}
-
-function calculateBackoff(attempt: number) {
-  const delay = BACKOFF_INITIAL_MS * BACKOFF_MULTIPLIER ** attempt;
-  return Math.min(delay, BACKOFF_MAX_MS);
-}
-
+/**
+ * Events WS client — delegates to the shared realtime connection managed
+ * by terminalWsClient. Subscribes to the user events channel for notifications.
+ */
 export class EventsWsClient {
-  private ws: WebSocket | null = null;
-  private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-  private intentionalDisconnect = false;
-  private authenticated = false;
-  private reconnectAttempt = 0;
   private handlers = new Map<
     EventsWsMessageType,
     Set<EventsWsMessageHandler>
   >();
 
-  private clearReconnectTimer() {
-    if (this.reconnectTimer !== null) {
-      clearTimeout(this.reconnectTimer);
-      this.reconnectTimer = null;
-    }
-  }
-
-  private scheduleReconnect() {
-    const delay = calculateBackoff(this.reconnectAttempt);
-
-    logInfo(
-      { attempt: this.reconnectAttempt + 1, delayMs: delay },
-      'Scheduling events WS reconnect',
-    );
-
-    this.reconnectAttempt++;
-
-    this.reconnectTimer = setTimeout(() => {
-      this.reconnectTimer = null;
-      this.connectInternal();
-    }, delay);
-  }
-
-  private dispatchMessage(message: EventsWsMessage) {
-    const typeHandlers = this.handlers.get(message.type);
-    if (typeHandlers) {
-      for (const handler of typeHandlers) {
-        handler(message);
-      }
-    }
-  }
-
-  private handleHeartbeat(message: EventsWsMessage) {
-    if (message.type === 'heartbeat:ping') {
-      logDebug({}, 'Events WS: heartbeat:ping received');
-
-      if (!this.authenticated) {
-        this.authenticated = true;
-        logInfo({}, 'Events WS authenticated (first heartbeat received)');
-      }
-
-      this.send({ type: 'heartbeat:pong' });
-    }
-  }
-
-  private handleMessage = (event: MessageEvent) => {
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(event.data as string);
-    } catch {
-      logWarning({ rawData: event.data }, 'Events WS: failed to parse message');
-      return;
-    }
-
-    const result = eventsWsMessageSchema.safeParse(parsed);
-    if (!result.success) {
+  async connect(userId?: string, organizationId?: string) {
+    if (!userId || !organizationId) {
       logWarning(
-        { rawData: parsed, error: result.error },
-        'Events WS: invalid message',
+        {},
+        'Events WS connect called without userId or organizationId',
       );
       return;
     }
 
-    const message = result.data;
-    this.handleHeartbeat(message);
-    this.dispatchMessage(message);
-  };
+    // Ensure the realtime client is connected
+    await terminalWsClient.connectForEvents();
 
-  private handleOpen = () => {
-    this.reconnectAttempt = 0;
-    logInfo({}, 'Events WS transport open — awaiting authentication');
-  };
+    // Subscribe to user events channel via the shared client
+    terminalWsClient.subscribeToEvents(userId, organizationId);
 
-  private handleClose = (event: CloseEvent) => {
-    this.ws = null;
-
-    if (this.intentionalDisconnect) {
-      logInfo({}, 'Events WS disconnected intentionally');
-      return;
-    }
-
-    if (
-      AUTH_FAILURE_CODES.includes(
-        event.code as (typeof AUTH_FAILURE_CODES)[number],
-      )
-    ) {
-      logError(
-        { code: event.code, reason: event.reason },
-        'Events WS auth failure — not reconnecting',
-      );
-      return;
-    }
-
-    logWarning(
-      { code: event.code, reason: event.reason },
-      'Events WS connection closed unexpectedly',
-    );
-    this.scheduleReconnect();
-  };
-
-  private handleError = () => {
-    logError({}, 'Events WS connection error');
-  };
-
-  private connectInternal() {
-    if (
-      this.ws &&
-      (this.ws.readyState === WebSocket.CONNECTING ||
-        this.ws.readyState === WebSocket.OPEN)
-    ) {
-      return;
-    }
-
-    this.authenticated = false;
-
-    const url = buildWsUrl();
-
-    this.ws = new WebSocket(url);
-    this.ws.onopen = this.handleOpen;
-    this.ws.onmessage = this.handleMessage;
-    this.ws.onclose = this.handleClose;
-    this.ws.onerror = this.handleError;
-  }
-
-  connect() {
-    this.intentionalDisconnect = false;
-    this.reconnectAttempt = 0;
-    this.connectInternal();
+    logInfo({}, 'Events WS connected via realtime');
   }
 
   disconnect() {
-    this.intentionalDisconnect = true;
-    this.clearReconnectTimer();
-
-    if (this.ws) {
-      this.ws.onerror = null;
-      this.ws.onclose = null;
-      this.ws.close(1000, 'Client disconnect');
-      this.ws = null;
-    }
-
-    this.reconnectAttempt = 0;
-  }
-
-  send(message: EventsWsMessage) {
-    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      return;
-    }
-
-    if (!this.authenticated && message.type !== 'heartbeat:pong') {
-      return;
-    }
-
-    this.ws.send(JSON.stringify(message));
+    // Don't disconnect the shared client — terminal may still need it
   }
 
   onMessage<T extends EventsWsMessageType>(
@@ -205,7 +52,25 @@ export class EventsWsClient {
     }
     this.handlers.get(type)?.add(handler as EventsWsMessageHandler);
 
+    // Register on the terminal client's handler system since publications
+    // from the events channel flow through the same realtime connection
+    const unsubTerminal = terminalWsClient.onMessage(
+      type as unknown as WsMessageType,
+      (msg: unknown) => {
+        const result = eventsWsMessageSchema.safeParse(msg);
+        if (result.success) {
+          const typeHandlers = this.handlers.get(result.data.type);
+          if (typeHandlers) {
+            for (const h of typeHandlers) {
+              h(result.data);
+            }
+          }
+        }
+      },
+    );
+
     return () => {
+      unsubTerminal();
       const typeHandlers = this.handlers.get(type);
       if (typeHandlers) {
         typeHandlers.delete(handler as EventsWsMessageHandler);
