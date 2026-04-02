@@ -56,6 +56,10 @@ export class TerminalWsClient {
   private inputSubscription: Subscription | null = null;
   private outputSubscription: Subscription | null = null;
   private eventsSubscription: Subscription | null = null;
+  private deviceSubscriptions = new Map<
+    number,
+    { subscription: Subscription; refCount: number }
+  >();
   private intentionalDisconnect = false;
 
   private removeSessionSubscriptions() {
@@ -246,6 +250,72 @@ export class TerminalWsClient {
     this.eventsSubscription.subscribe();
   }
 
+  subscribeToDevice(deviceId: number) {
+    const existing = this.deviceSubscriptions.get(deviceId);
+    if (existing) {
+      existing.refCount++;
+      logDebug({ deviceId }, 'Reusing device subscription (refCount++)');
+      return existing.subscription;
+    }
+
+    const client = this.ensureClient();
+    const channel = `$terminal_device:${deviceId}`;
+    const subscription = client.newSubscription(channel, {
+      getToken: () => fetchSubscriptionToken(channel),
+    });
+
+    subscription.on('subscribed', () => {
+      logInfo({ deviceId, channel }, 'Subscribed to device channel');
+    });
+
+    subscription.on('error', (ctx) => {
+      logError(
+        {
+          deviceId,
+          channel,
+          error:
+            ctx.error instanceof Error
+              ? ctx.error.message
+              : JSON.stringify(ctx.error),
+        },
+        'Device subscription error',
+      );
+    });
+
+    subscription.on('subscribing', (ctx) => {
+      logDebug(
+        { deviceId, code: ctx.code, reason: ctx.reason },
+        'Device subscription subscribing',
+      );
+    });
+
+    subscription.on('unsubscribed', (ctx) => {
+      logWarning(
+        { deviceId, code: ctx.code, reason: ctx.reason },
+        'Device subscription unsubscribed',
+      );
+    });
+
+    subscription.subscribe();
+    this.deviceSubscriptions.set(deviceId, { subscription, refCount: 1 });
+    return subscription;
+  }
+
+  unsubscribeFromDevice(deviceId: number) {
+    const entry = this.deviceSubscriptions.get(deviceId);
+    if (!entry) {
+      return;
+    }
+
+    entry.refCount--;
+    if (entry.refCount <= 0) {
+      entry.subscription.removeAllListeners();
+      entry.subscription.unsubscribe();
+      this.client?.removeSubscription(entry.subscription);
+      this.deviceSubscriptions.delete(deviceId);
+    }
+  }
+
   connectForEvents() {
     this.intentionalDisconnect = false;
     getStore().resetReconnectAttempt();
@@ -261,6 +331,12 @@ export class TerminalWsClient {
 
     this.removeSessionSubscriptions();
     this.removeEventsSubscription();
+
+    for (const [, entry] of this.deviceSubscriptions) {
+      entry.subscription.removeAllListeners();
+      entry.subscription.unsubscribe();
+    }
+    this.deviceSubscriptions.clear();
 
     if (this.client) {
       this.client.disconnect();

@@ -1,8 +1,8 @@
 import { eventsWsClient } from '@domains/notifications/services/events/events-ws.client';
 import { profileQueryOptions } from '@domains/org/services/users/get-profile.http-service';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { renderHook } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { act, renderHook } from '@testing-library/react';
+import { type ReactNode, Suspense } from 'react';
 import { useEventsWebSocket } from './use-events-websocket';
 
 vi.mock('@domains/notifications/services/events/events-ws.client', () => ({
@@ -37,7 +37,9 @@ function createQueryClientWithProfile() {
 
 function createWrapper(queryClient: QueryClient) {
   return ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <Suspense fallback={null}>{children}</Suspense>
+    </QueryClientProvider>
   );
 }
 
@@ -46,19 +48,25 @@ describe('useEventsWebSocket', () => {
     vi.clearAllMocks();
   });
 
-  test('does not connect when organizationId is undefined', () => {
+  test('does not connect when organizationId is undefined', async () => {
     const queryClient = createQueryClientWithProfile();
-    renderHook(() => useEventsWebSocket(undefined), {
-      wrapper: createWrapper(queryClient),
+    await act(async () => {
+      renderHook(() => useEventsWebSocket(undefined), {
+        wrapper: createWrapper(queryClient),
+      });
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
     expect(eventsWsClient.connect).not.toHaveBeenCalled();
   });
 
-  test('connects and subscribes when organizationId is provided', () => {
+  test('connects and subscribes when organizationId is provided', async () => {
     const queryClient = createQueryClientWithProfile();
-    renderHook(() => useEventsWebSocket('org-123'), {
-      wrapper: createWrapper(queryClient),
+    await act(async () => {
+      renderHook(() => useEventsWebSocket('org-123'), {
+        wrapper: createWrapper(queryClient),
+      });
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
     expect(eventsWsClient.connect).toHaveBeenCalledOnce();
@@ -68,27 +76,34 @@ describe('useEventsWebSocket', () => {
     );
   });
 
-  test('disconnects and unsubscribes on cleanup', () => {
+  test('disconnects and unsubscribes on cleanup', async () => {
     const unsubscribe = vi.fn();
     vi.mocked(eventsWsClient.onMessage).mockReturnValue(unsubscribe);
 
     const queryClient = createQueryClientWithProfile();
-    const { unmount } = renderHook(() => useEventsWebSocket('org-123'), {
-      wrapper: createWrapper(queryClient),
+    let result: ReturnType<typeof renderHook>;
+    await act(async () => {
+      result = renderHook(() => useEventsWebSocket('org-123'), {
+        wrapper: createWrapper(queryClient),
+      });
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    unmount();
+    result!.unmount();
 
     expect(unsubscribe).toHaveBeenCalledOnce();
     expect(eventsWsClient.disconnect).toHaveBeenCalledOnce();
   });
 
-  test('notification:changed handler invalidates unread count query', () => {
+  test('notification:changed handler invalidates unread count query', async () => {
     const queryClient = createQueryClientWithProfile();
     const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
 
-    renderHook(() => useEventsWebSocket('org-456'), {
-      wrapper: createWrapper(queryClient),
+    await act(async () => {
+      renderHook(() => useEventsWebSocket('org-456'), {
+        wrapper: createWrapper(queryClient),
+      });
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
     const onMessageCall = vi
@@ -104,14 +119,22 @@ describe('useEventsWebSocket', () => {
     });
   });
 
-  test('does not connect when profile data is missing', () => {
+  test('does not connect when profile data is missing', async () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } },
     });
-    renderHook(() => useEventsWebSocket('org-123'), {
+    const { unmount } = renderHook(() => useEventsWebSocket('org-123'), {
       wrapper: createWrapper(queryClient),
     });
 
+    // Hook is suspended (no profile in cache), so connect should not be called
     expect(eventsWsClient.connect).not.toHaveBeenCalled();
+
+    // Unmount before the suspended profile query resolves via MSW,
+    // then flush the pending resolution within act() to avoid warnings
+    unmount();
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
   });
 });

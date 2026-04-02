@@ -205,7 +205,6 @@ describe('InlineNoteEditor', () => {
 
     // The X button is the second ghost button (after Save)
     const buttons = screen.getAllByRole('button', { name: '' });
-    // biome-ignore lint/style/noNonNullAssertion: test context
     await user.click(buttons[buttons.length - 1]!);
 
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();

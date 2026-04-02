@@ -417,6 +417,33 @@ describe('NotificationPanel', () => {
     });
   });
 
+  it('should not navigate when clicking a sandbox notification', async () => {
+    overrideNotificationsHandler([
+      {
+        id: 40,
+        message: 'Sandbox session ended',
+        resourceId: 'sandbox-1',
+        resourceType: 'sandbox',
+        severity: 'info',
+        read: false,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+
+    renderWithProviders(<NotificationPanel />);
+
+    await openNotificationPanel();
+
+    await waitFor(() => {
+      expect(screen.getByText('Sandbox session ended')).toBeInTheDocument();
+    });
+
+    const user = userEvent.setup();
+    await user.click(screen.getByText('Sandbox session ended'));
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
   it('should show empty state when no notifications exist', async () => {
     overrideNotificationsHandler([]);
     overrideUnreadCountHandler(0);

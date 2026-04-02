@@ -1,7 +1,7 @@
 import { CreateTerminalSessionDialog } from '@domains/terminal/modals/create-terminal-session-dialog';
 import { buildBackendUrl } from '@lib/test-backend-url.utils';
 import { renderWithProviders, selectOption } from '@lib/test-wrappers.utils';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
@@ -101,6 +101,12 @@ function useOrgSourceCeiling() {
 // Validation, preset filtering, ceiling logic, and custom input behavior are
 // tested in use-create-terminal-session-dialog.test.ts. These tests focus on
 // the dialog wrapper: open/close, loading, cancel, and end-to-end flow.
+
+function getSandboxPresetCombobox() {
+  const label = screen.getByText('Sandbox Preset');
+  const container = label.parentElement!;
+  return within(container as HTMLElement).getByRole('combobox');
+}
 
 describe('CreateTerminalSessionDialog', () => {
   beforeEach(() => {
@@ -351,6 +357,105 @@ describe('CreateTerminalSessionDialog', () => {
     await waitFor(() => {
       expect(screen.getByText(/\/opt\/app/)).toBeInTheDocument();
     });
+  });
+
+  it('should allow changing the shell selection', async () => {
+    renderWithProviders(<CreateTerminalSessionDialog {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Inactivity Timeout')).toBeInTheDocument();
+    });
+
+    await selectOption(screen.getByLabelText('Shell'), '/bin/zsh');
+
+    expect(screen.getByLabelText('Shell')).toHaveTextContent('/bin/zsh');
+  });
+
+  it('should allow changing the sandbox preset', async () => {
+    renderWithProviders(<CreateTerminalSessionDialog {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Sandbox Preset')).toBeInTheDocument();
+    });
+
+    await selectOption(
+      getSandboxPresetCombobox(),
+      'Restricted Docker - requires approval',
+    );
+
+    expect(screen.getByText(/Requires admin approval/)).toBeInTheDocument();
+  });
+
+  it('should show "Request Approval" button when sandbox override is selected', async () => {
+    renderWithProviders(<CreateTerminalSessionDialog {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Sandbox Preset')).toBeInTheDocument();
+    });
+
+    await selectOption(
+      getSandboxPresetCombobox(),
+      'Restricted Docker - requires approval',
+    );
+
+    expect(screen.getByText('Request Approval')).toBeInTheDocument();
+  });
+
+  it('should show "Requesting..." while sandbox override mutation is pending', async () => {
+    server.use(
+      http.post(
+        buildBackendUrl(
+          '/api/v1/{organizationId}/teams/{teamId}/sandbox/approval-requests',
+        ),
+        () => {
+          return new Promise(() => {
+            // intentionally never resolves to keep pending state
+          });
+        },
+      ),
+    );
+
+    const user = userEvent.setup();
+    renderWithProviders(<CreateTerminalSessionDialog {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Sandbox Preset')).toBeInTheDocument();
+    });
+
+    await selectOption(
+      getSandboxPresetCombobox(),
+      'Restricted Docker - requires approval',
+    );
+
+    await user.click(screen.getByText('Request Approval'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Requesting...')).toBeInTheDocument();
+    });
+  });
+
+  it('should show "Pending Approval" and "Close" after sandbox override succeeds', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<CreateTerminalSessionDialog {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Sandbox Preset')).toBeInTheDocument();
+    });
+
+    await selectOption(
+      getSandboxPresetCombobox(),
+      'Restricted Docker - requires approval',
+    );
+
+    await user.click(screen.getByText('Request Approval'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Pending Approval')).toBeInTheDocument();
+    });
+
+    const closeButtons = screen.getAllByRole('button', { name: 'Close' });
+    expect(closeButtons.length).toBeGreaterThanOrEqual(1);
+    expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
   });
 
   it('should show Creating... text while mutation is pending', async () => {

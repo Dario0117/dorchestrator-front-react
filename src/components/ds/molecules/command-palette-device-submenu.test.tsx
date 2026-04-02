@@ -68,7 +68,6 @@ describe('CommandPaletteDeviceSubmenu', () => {
       />,
     );
     const options = screen.getAllByRole('option');
-    // biome-ignore lint/style/noNonNullAssertion: test assertion — element is guaranteed by getAllByRole
     fireEvent.keyDown(options[2]!, { key: 'Enter' });
     expect(onSelectAction).toHaveBeenCalledWith('settings');
   });
@@ -82,7 +81,6 @@ describe('CommandPaletteDeviceSubmenu', () => {
       />,
     );
     const options = screen.getAllByRole('option');
-    // biome-ignore lint/style/noNonNullAssertion: test assertion — element is guaranteed by getAllByRole
     fireEvent.keyDown(options[0]!, { key: 'a' });
     expect(onSelectAction).not.toHaveBeenCalled();
   });

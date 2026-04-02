@@ -16,6 +16,7 @@ import { useIsFieldRequired } from '@domains/org/forms/hooks/use-is-field-requir
 export interface SelectOption {
   value: string;
   label: string;
+  disabled?: boolean;
 }
 
 interface AppFormSelectProps {
@@ -51,6 +52,9 @@ export function AppFormSelect({
     }
   };
 
+  const selectedLabel =
+    options.find((o) => o.value === currentValue)?.label ?? null;
+
   return (
     <Grid>
       <Label htmlFor={field.name}>
@@ -69,13 +73,14 @@ export function AppFormSelect({
           aria-describedby={hasError ? `${field.name}-error` : undefined}
           width="full"
         >
-          <SelectValue placeholder={placeholder} />
+          <SelectValue placeholder={placeholder}>{selectedLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
             <SelectItem
               key={option.value}
               value={option.value}
+              disabled={option.disabled}
             >
               {option.label}
             </SelectItem>

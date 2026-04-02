@@ -123,6 +123,9 @@ export function NotificationPanel() {
           },
         });
         break;
+      case 'sandbox':
+        // Informational — no specific page to navigate to
+        break;
       /* v8 ignore next 4 -- exhaustive check */
       default: {
         const _exhaustive: never = notification.resourceType;

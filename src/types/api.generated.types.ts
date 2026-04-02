@@ -68,6 +68,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/{organizationId}/agent/offline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdAgentOffline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/{organizationId}/agent/commands/{commandId}/status": {
         parameters: {
             query?: never;
@@ -126,6 +142,70 @@ export interface paths {
         get: operations["getApiV1ByOrganizationIdAgentSessionsBySessionIdFilesByFileIdDownload-url"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/agent/sessions/{sessionId}/sandbox-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdAgentSessionsBySessionIdSandbox-config"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/agent/sandbox/plugins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdAgentSandboxPlugins"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/agent/sandbox/plugins/{sandboxTypeId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdAgentSandboxPluginsBySandboxTypeIdStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/agent/sandbox/plugins/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdAgentSandboxPluginsRegister"];
         delete?: never;
         options?: never;
         head?: never;
@@ -898,6 +978,230 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/sandbox/types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdSandboxTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/sandbox/presets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdSandboxPresets"];
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdSandboxPresets"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/sandbox/presets/{presetId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["putApiV1ByOrganizationIdSandboxPresetsByPresetId"];
+        post?: never;
+        delete: operations["deleteApiV1ByOrganizationIdSandboxPresetsByPresetId"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/sandbox/presets/{presetId}/set-default": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["patchApiV1ByOrganizationIdSandboxPresetsByPresetIdSet-default"];
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdDevicesByDeviceIdSandboxConfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/default-preset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["putApiV1ByOrganizationIdDevicesByDeviceIdSandboxDefault-preset"];
+        post?: never;
+        delete: operations["deleteApiV1ByOrganizationIdDevicesByDeviceIdSandboxDefault-preset"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/plugins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdDevicesByDeviceIdSandboxPlugins"];
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdDevicesByDeviceIdSandboxPlugins"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/plugins/{sandboxTypeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["deleteApiV1ByOrganizationIdDevicesByDeviceIdSandboxPluginsBySandboxTypeId"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/kill-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdDevicesByDeviceIdSandboxKill-sessions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/plugins/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdDevicesByDeviceIdSandboxPluginsRefresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/teams/{teamId}/sandbox/approval-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdTeamsByTeamIdSandboxApproval-requests"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/sandbox/approval-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdSandboxApproval-requests"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/teams/{teamId}/sandbox/approval-requests/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getApiV1ByOrganizationIdTeamsByTeamIdSandboxApproval-requestsMine"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/{organizationId}/sandbox/approval-requests/{approvalId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["patchApiV1ByOrganizationIdSandboxApproval-requestsByApprovalId"];
         trace?: never;
     };
     "/api/v1/sign-out": {
@@ -2373,6 +2677,51 @@ export interface operations {
                             results: {
                                 commandId: number;
                                 command: string;
+                                shell: string;
+                                sandboxConfig: {
+                                    presetId: number;
+                                    presetName: string;
+                                    sandboxTypeId: number;
+                                    /** @enum {string} */
+                                    category: "none" | "container" | "vm" | "remote";
+                                    networkPolicy?: {
+                                        /** @enum {string} */
+                                        mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                        allow?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                        deny?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                    } | null;
+                                    resourceLimits?: {
+                                        maxTimeoutMs?: number;
+                                        maxOutputSize?: number;
+                                        pidsLimit?: number;
+                                    } | null;
+                                    volumeMounts?: {
+                                        hostPath: string;
+                                        containerPath: string;
+                                        readOnly?: boolean;
+                                    }[] | null;
+                                    pluginConfig: {
+                                        [key: string]: unknown;
+                                    } | null;
+                                } | null;
                             }[];
                             hasNext: boolean;
                             hasPrevious: boolean;
@@ -2380,6 +2729,103 @@ export interface operations {
                             totalPages: number;
                             page: number;
                             size: number;
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdAgentOffline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
                         };
                         responseErrors: null;
                     };
@@ -2828,6 +3274,482 @@ export interface operations {
                         responseData: null;
                         responseErrors: {
                             nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "getApiV1ByOrganizationIdAgentSessionsBySessionIdSandbox-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                sessionId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                presetId: number;
+                                presetName: string;
+                                sandboxTypeId: number;
+                                /** @enum {string} */
+                                category: "none" | "container" | "vm" | "remote";
+                                networkPolicy?: {
+                                    /** @enum {string} */
+                                    mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                    allow?: {
+                                        external: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                        local: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                    };
+                                    deny?: {
+                                        external: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                        local: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                    };
+                                } | null;
+                                resourceLimits?: {
+                                    maxTimeoutMs?: number;
+                                    maxOutputSize?: number;
+                                    pidsLimit?: number;
+                                } | null;
+                                volumeMounts?: {
+                                    hostPath: string;
+                                    containerPath: string;
+                                    readOnly?: boolean;
+                                }[] | null;
+                                pluginConfig: {
+                                    [key: string]: unknown;
+                                } | null;
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getApiV1ByOrganizationIdAgentSandboxPlugins: {
+        parameters: {
+            query: {
+                page: number;
+                size: number;
+            };
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                sandboxTypeId: number;
+                                /** @enum {string} */
+                                category: "none" | "container" | "vm" | "remote";
+                                /** @enum {string} */
+                                pluginType: "native" | "third-party";
+                                source: string | null;
+                                version: string | null;
+                                checksum: string | null;
+                            }[];
+                            hasNext: boolean;
+                            hasPrevious: boolean;
+                            totalResults: number;
+                            totalPages: number;
+                            page: number;
+                            size: number;
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdAgentSandboxPluginsBySandboxTypeIdStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                sandboxTypeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    status: "active" | "failed";
+                    reason?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors?: string[];
+                            status?: string[];
+                            reason?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdAgentSandboxPluginsRegister: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    plugins: {
+                        /** @enum {string} */
+                        category: "none" | "container" | "vm" | "remote";
+                        /** @enum {string} */
+                        status: "active" | "failed";
+                        statusReason?: string;
+                    }[];
+                    requestedBy?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors?: string[];
+                            plugins?: string[];
+                            requestedBy?: string[];
                         };
                     };
                 };
@@ -5122,6 +6044,8 @@ export interface operations {
                 "application/json": {
                     deviceId: number;
                     command: string;
+                    sandboxPresetId: number;
+                    shell: string;
                 };
             };
         };
@@ -5156,6 +6080,8 @@ export interface operations {
                             nonFieldErrors?: string[];
                             deviceId?: string[];
                             command?: string[];
+                            sandboxPresetId?: string[];
+                            shell?: string[];
                         };
                     };
                 };
@@ -5492,7 +6418,7 @@ export interface operations {
                                 message: string;
                                 resourceId: string;
                                 /** @enum {string} */
-                                resourceType: "command" | "device" | "terminal_session";
+                                resourceType: "command" | "device" | "terminal_session" | "sandbox";
                                 /** @enum {string} */
                                 severity: "success" | "error" | "warning" | "info";
                                 read: boolean;
@@ -9821,6 +10747,7 @@ export interface operations {
                 "application/json": {
                     terminalAuthToken: string;
                     deviceId: number;
+                    sandboxPresetId: number;
                     shell?: string;
                     workingDirectory?: string;
                     inactivityTimeoutMs?: number | "max";
@@ -9863,10 +10790,2441 @@ export interface operations {
                             nonFieldErrors?: string[];
                             terminalAuthToken?: string[];
                             deviceId?: string[];
+                            sandboxPresetId?: string[];
                             shell?: string[];
                             workingDirectory?: string[];
                             inactivityTimeoutMs?: string[];
                             hardCapMs?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getApiV1ByOrganizationIdSandboxTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: number;
+                                name: string;
+                                /** @enum {string} */
+                                category: "none" | "container" | "vm" | "remote";
+                                /** @enum {string} */
+                                pluginType: "native" | "third-party";
+                                available: boolean;
+                            }[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getApiV1ByOrganizationIdSandboxPresets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: number;
+                                organizationId: string;
+                                name: string;
+                                description: string | null;
+                                sandboxTypeId: number;
+                                networkPolicy?: {
+                                    /** @enum {string} */
+                                    mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                    allow?: {
+                                        external: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                        local: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                    };
+                                    deny?: {
+                                        external: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                        local: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                    };
+                                } | null;
+                                resourceLimits?: {
+                                    maxTimeoutMs?: number;
+                                    maxOutputSize?: number;
+                                    pidsLimit?: number;
+                                } | null;
+                                volumeMounts?: {
+                                    hostPath: string;
+                                    containerPath: string;
+                                    readOnly?: boolean;
+                                }[] | null;
+                                pluginConfig: {
+                                    [key: string]: unknown;
+                                } | null;
+                                isOrgDefault: boolean;
+                                requiresApproval: boolean;
+                                createdBy: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdSandboxPresets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                    description?: string;
+                    sandboxTypeId: number;
+                    networkPolicy?: {
+                        /** @enum {string} */
+                        mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                        allow?: {
+                            /** @default [] */
+                            external: {
+                                host: string;
+                                ports: number[];
+                            }[];
+                            /** @default [] */
+                            local: {
+                                host: string;
+                                ports: number[];
+                            }[];
+                        };
+                        deny?: {
+                            /** @default [] */
+                            external: {
+                                host: string;
+                                ports: number[];
+                            }[];
+                            /** @default [] */
+                            local: {
+                                host: string;
+                                ports: number[];
+                            }[];
+                        };
+                    };
+                    resourceLimits?: {
+                        maxTimeoutMs?: number;
+                        maxOutputSize?: number;
+                        pidsLimit?: number;
+                    };
+                    volumeMounts?: {
+                        hostPath: string;
+                        containerPath: string;
+                        readOnly?: boolean;
+                    }[];
+                    pluginConfig?: {
+                        [key: string]: unknown;
+                    };
+                    requiresApproval?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 201 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: number;
+                                organizationId: string;
+                                name: string;
+                                description: string | null;
+                                sandboxTypeId: number;
+                                networkPolicy?: {
+                                    /** @enum {string} */
+                                    mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                    allow?: {
+                                        external: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                        local: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                    };
+                                    deny?: {
+                                        external: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                        local: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                    };
+                                } | null;
+                                resourceLimits?: {
+                                    maxTimeoutMs?: number;
+                                    maxOutputSize?: number;
+                                    pidsLimit?: number;
+                                } | null;
+                                volumeMounts?: {
+                                    hostPath: string;
+                                    containerPath: string;
+                                    readOnly?: boolean;
+                                }[] | null;
+                                pluginConfig: {
+                                    [key: string]: unknown;
+                                } | null;
+                                isOrgDefault: boolean;
+                                requiresApproval: boolean;
+                                createdBy: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors?: string[];
+                            name?: string[];
+                            description?: string[];
+                            sandboxTypeId?: string[];
+                            networkPolicy?: string[];
+                            resourceLimits?: string[];
+                            volumeMounts?: string[];
+                            pluginConfig?: string[];
+                            requiresApproval?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    putApiV1ByOrganizationIdSandboxPresetsByPresetId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                presetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name?: string;
+                    description?: string;
+                    sandboxTypeId?: number;
+                    networkPolicy?: {
+                        /** @enum {string} */
+                        mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                        allow?: {
+                            /** @default [] */
+                            external: {
+                                host: string;
+                                ports: number[];
+                            }[];
+                            /** @default [] */
+                            local: {
+                                host: string;
+                                ports: number[];
+                            }[];
+                        };
+                        deny?: {
+                            /** @default [] */
+                            external: {
+                                host: string;
+                                ports: number[];
+                            }[];
+                            /** @default [] */
+                            local: {
+                                host: string;
+                                ports: number[];
+                            }[];
+                        };
+                    };
+                    resourceLimits?: {
+                        maxTimeoutMs?: number;
+                        maxOutputSize?: number;
+                        pidsLimit?: number;
+                    };
+                    volumeMounts?: {
+                        hostPath: string;
+                        containerPath: string;
+                        readOnly?: boolean;
+                    }[];
+                    pluginConfig?: {
+                        [key: string]: unknown;
+                    };
+                    requiresApproval?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: number;
+                                organizationId: string;
+                                name: string;
+                                description: string | null;
+                                sandboxTypeId: number;
+                                networkPolicy?: {
+                                    /** @enum {string} */
+                                    mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                    allow?: {
+                                        external: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                        local: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                    };
+                                    deny?: {
+                                        external: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                        local: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                    };
+                                } | null;
+                                resourceLimits?: {
+                                    maxTimeoutMs?: number;
+                                    maxOutputSize?: number;
+                                    pidsLimit?: number;
+                                } | null;
+                                volumeMounts?: {
+                                    hostPath: string;
+                                    containerPath: string;
+                                    readOnly?: boolean;
+                                }[] | null;
+                                pluginConfig: {
+                                    [key: string]: unknown;
+                                } | null;
+                                isOrgDefault: boolean;
+                                requiresApproval: boolean;
+                                createdBy: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors?: string[];
+                            name?: string[];
+                            description?: string[];
+                            sandboxTypeId?: string[];
+                            networkPolicy?: string[];
+                            resourceLimits?: string[];
+                            volumeMounts?: string[];
+                            pluginConfig?: string[];
+                            requiresApproval?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    deleteApiV1ByOrganizationIdSandboxPresetsByPresetId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                presetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "patchApiV1ByOrganizationIdSandboxPresetsByPresetIdSet-default": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                presetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getApiV1ByOrganizationIdDevicesByDeviceIdSandboxConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                deviceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                presetId: number;
+                                presetName: string;
+                                sandboxTypeId: number;
+                                /** @enum {string} */
+                                category: "none" | "container" | "vm" | "remote";
+                                networkPolicy?: {
+                                    /** @enum {string} */
+                                    mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                    allow?: {
+                                        external: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                        local: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                    };
+                                    deny?: {
+                                        external: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                        local: {
+                                            host: string;
+                                            ports: number[];
+                                        }[];
+                                    };
+                                } | null;
+                                resourceLimits?: {
+                                    maxTimeoutMs?: number;
+                                    maxOutputSize?: number;
+                                    pidsLimit?: number;
+                                } | null;
+                                volumeMounts?: {
+                                    hostPath: string;
+                                    containerPath: string;
+                                    readOnly?: boolean;
+                                }[] | null;
+                                pluginConfig: {
+                                    [key: string]: unknown;
+                                } | null;
+                            } | null;
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "putApiV1ByOrganizationIdDevicesByDeviceIdSandboxDefault-preset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                deviceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    presetId: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors?: string[];
+                            presetId?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "deleteApiV1ByOrganizationIdDevicesByDeviceIdSandboxDefault-preset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                deviceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getApiV1ByOrganizationIdDevicesByDeviceIdSandboxPlugins: {
+        parameters: {
+            query: {
+                page: number;
+                size: number;
+            };
+            header?: never;
+            path: {
+                organizationId: string;
+                deviceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: number;
+                                sandboxTypeId: number;
+                                /** @enum {string} */
+                                category: "none" | "container" | "vm" | "remote";
+                                /** @enum {string} */
+                                pluginType: "native" | "third-party";
+                                source: string | null;
+                                version: string | null;
+                                checksum: string | null;
+                                /** @enum {string} */
+                                status: "active" | "failed";
+                                statusReason: string | null;
+                                installedBy: string;
+                                installedAt: string;
+                            }[];
+                            hasNext: boolean;
+                            hasPrevious: boolean;
+                            totalResults: number;
+                            totalPages: number;
+                            page: number;
+                            size: number;
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdDevicesByDeviceIdSandboxPlugins: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                deviceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    sandboxTypeId: number;
+                    source?: string;
+                    version?: string;
+                    checksum?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 201 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: number;
+                                sandboxTypeId: number;
+                                /** @enum {string} */
+                                category: "none" | "container" | "vm" | "remote";
+                                /** @enum {string} */
+                                pluginType: "native" | "third-party";
+                                source: string | null;
+                                version: string | null;
+                                checksum: string | null;
+                                /** @enum {string} */
+                                status: "active" | "failed";
+                                statusReason: string | null;
+                                installedBy: string;
+                                installedAt: string;
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors?: string[];
+                            sandboxTypeId?: string[];
+                            source?: string[];
+                            version?: string[];
+                            checksum?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    deleteApiV1ByOrganizationIdDevicesByDeviceIdSandboxPluginsBySandboxTypeId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                deviceId: string;
+                sandboxTypeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "postApiV1ByOrganizationIdDevicesByDeviceIdSandboxKill-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                deviceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdDevicesByDeviceIdSandboxPluginsRefresh: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                deviceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "postApiV1ByOrganizationIdTeamsByTeamIdSandboxApproval-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                teamId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    deviceId: number;
+                    /** @enum {string} */
+                    requestType: "command" | "terminal";
+                    presetId: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 201 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                /** @constant */
+                                approvalRequired: false;
+                                config: {
+                                    presetId: number;
+                                    presetName: string;
+                                    sandboxTypeId: number;
+                                    /** @enum {string} */
+                                    category: "none" | "container" | "vm" | "remote";
+                                    networkPolicy?: {
+                                        /** @enum {string} */
+                                        mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                        allow?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                        deny?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                    } | null;
+                                    resourceLimits?: {
+                                        maxTimeoutMs?: number;
+                                        maxOutputSize?: number;
+                                        pidsLimit?: number;
+                                    } | null;
+                                    volumeMounts?: {
+                                        hostPath: string;
+                                        containerPath: string;
+                                        readOnly?: boolean;
+                                    }[] | null;
+                                    pluginConfig: {
+                                        [key: string]: unknown;
+                                    } | null;
+                                };
+                            } | {
+                                /** @constant */
+                                approvalRequired: true;
+                                approval: {
+                                    id: number;
+                                    status: string;
+                                    expiresAt: string;
+                                    createdAt: string;
+                                };
+                            };
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors?: string[];
+                            deviceId?: string[];
+                            requestType?: string[];
+                            presetId?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "getApiV1ByOrganizationIdSandboxApproval-requests": {
+        parameters: {
+            query: {
+                page: number;
+                size: number;
+                status?: string;
+            };
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: number;
+                                deviceId: number;
+                                userId: string;
+                                /** @enum {string} */
+                                requestType: "command" | "terminal";
+                                requestedConfig: {
+                                    presetId: number;
+                                    presetName: string;
+                                    sandboxTypeId: number;
+                                    /** @enum {string} */
+                                    category: "none" | "container" | "vm" | "remote";
+                                    networkPolicy?: {
+                                        /** @enum {string} */
+                                        mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                        allow?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                        deny?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                    } | null;
+                                    resourceLimits?: {
+                                        maxTimeoutMs?: number;
+                                        maxOutputSize?: number;
+                                        pidsLimit?: number;
+                                    } | null;
+                                    volumeMounts?: {
+                                        hostPath: string;
+                                        containerPath: string;
+                                        readOnly?: boolean;
+                                    }[] | null;
+                                    pluginConfig: {
+                                        [key: string]: unknown;
+                                    } | null;
+                                };
+                                effectiveConfigAtRequest: {
+                                    presetId: number;
+                                    presetName: string;
+                                    sandboxTypeId: number;
+                                    /** @enum {string} */
+                                    category: "none" | "container" | "vm" | "remote";
+                                    networkPolicy?: {
+                                        /** @enum {string} */
+                                        mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                        allow?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                        deny?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                    } | null;
+                                    resourceLimits?: {
+                                        maxTimeoutMs?: number;
+                                        maxOutputSize?: number;
+                                        pidsLimit?: number;
+                                    } | null;
+                                    volumeMounts?: {
+                                        hostPath: string;
+                                        containerPath: string;
+                                        readOnly?: boolean;
+                                    }[] | null;
+                                    pluginConfig: {
+                                        [key: string]: unknown;
+                                    } | null;
+                                };
+                                requestedPresetId: number | null;
+                                effectivePresetId: number | null;
+                                /** @enum {string} */
+                                status: "pending" | "approved" | "rejected" | "superseded" | "expired" | "consumed";
+                                expiresAt: string;
+                                reviewedBy: string | null;
+                                reviewedAt: string | null;
+                                createdAt: string;
+                            }[];
+                            hasNext: boolean;
+                            hasPrevious: boolean;
+                            totalResults: number;
+                            totalPages: number;
+                            page: number;
+                            size: number;
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "getApiV1ByOrganizationIdTeamsByTeamIdSandboxApproval-requestsMine": {
+        parameters: {
+            query: {
+                page: number;
+                size: number;
+            };
+            header?: never;
+            path: {
+                organizationId: string;
+                teamId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: {
+                                id: number;
+                                deviceId: number;
+                                userId: string;
+                                /** @enum {string} */
+                                requestType: "command" | "terminal";
+                                requestedConfig: {
+                                    presetId: number;
+                                    presetName: string;
+                                    sandboxTypeId: number;
+                                    /** @enum {string} */
+                                    category: "none" | "container" | "vm" | "remote";
+                                    networkPolicy?: {
+                                        /** @enum {string} */
+                                        mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                        allow?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                        deny?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                    } | null;
+                                    resourceLimits?: {
+                                        maxTimeoutMs?: number;
+                                        maxOutputSize?: number;
+                                        pidsLimit?: number;
+                                    } | null;
+                                    volumeMounts?: {
+                                        hostPath: string;
+                                        containerPath: string;
+                                        readOnly?: boolean;
+                                    }[] | null;
+                                    pluginConfig: {
+                                        [key: string]: unknown;
+                                    } | null;
+                                };
+                                effectiveConfigAtRequest: {
+                                    presetId: number;
+                                    presetName: string;
+                                    sandboxTypeId: number;
+                                    /** @enum {string} */
+                                    category: "none" | "container" | "vm" | "remote";
+                                    networkPolicy?: {
+                                        /** @enum {string} */
+                                        mode: "allow-list" | "deny-list" | "allow-all" | "internet-only" | "local-only";
+                                        allow?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                        deny?: {
+                                            external: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                            local: {
+                                                host: string;
+                                                ports: number[];
+                                            }[];
+                                        };
+                                    } | null;
+                                    resourceLimits?: {
+                                        maxTimeoutMs?: number;
+                                        maxOutputSize?: number;
+                                        pidsLimit?: number;
+                                    } | null;
+                                    volumeMounts?: {
+                                        hostPath: string;
+                                        containerPath: string;
+                                        readOnly?: boolean;
+                                    }[] | null;
+                                    pluginConfig: {
+                                        [key: string]: unknown;
+                                    } | null;
+                                };
+                                requestedPresetId: number | null;
+                                effectivePresetId: number | null;
+                                /** @enum {string} */
+                                status: "pending" | "approved" | "rejected" | "superseded" | "expired" | "consumed";
+                                expiresAt: string;
+                                reviewedBy: string | null;
+                                reviewedAt: string | null;
+                                createdAt: string;
+                            }[];
+                            hasNext: boolean;
+                            hasPrevious: boolean;
+                            totalResults: number;
+                            totalPages: number;
+                            page: number;
+                            size: number;
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "patchApiV1ByOrganizationIdSandboxApproval-requestsByApprovalId": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+                approvalId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    decision: "approved" | "rejected";
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors?: string[];
+                            decision?: string[];
                         };
                     };
                 };

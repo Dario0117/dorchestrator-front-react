@@ -32,6 +32,26 @@
 - When testing composed components, test the inner component in isolation. If the outer component (e.g., `login.page.tsx`) is just a wrapper, create its test file with a comment noting the internals are tested separately. Re-evaluate this whenever the outer component changes.
 - When asked to fix or add tests: accommodate the tests to match the code, never change the tested code
 
+## Clicking Interactive Elements (act warnings)
+
+Use `clickTrigger(element)` from `@lib/test-wrappers.utils` instead of `userEvent.click()` or raw `element.click()` when clicking any element that triggers asynchronous state updates in Base UI components (Select triggers, dropdown triggers, dialog openers, buttons that fire mutations affecting `disabled`/`isPending` on sibling components, etc.).
+
+`clickTrigger` wraps `fireEvent.click` inside `act()` with a microtask flush, ensuring floating-ui position calculations and React state updates settle before the assertion phase. Without it, Base UI's async internals cause "not wrapped in act(...)" warnings.
+
+```typescript
+import { clickTrigger } from '@lib/test-wrappers.utils';
+
+// Correct — no act warnings
+await clickTrigger(screen.getByRole('button', { name: 'Save' }));
+await clickTrigger(screen.getByRole('combobox'));
+
+// Incorrect — produces act warnings with Base UI components
+await user.click(screen.getByRole('button', { name: 'Save' }));
+trigger.click();
+```
+
+For selecting an option in a Base UI Select, use `selectOption(trigger, optionName)` which handles the full open → select → close lifecycle.
+
 ## Coverage Workflow
 
 Run `mise run coverageForAgents`, then find untested files:

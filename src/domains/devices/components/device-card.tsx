@@ -16,33 +16,13 @@ import type { ListDevicesDevice } from '@domains/devices/services/list-devices.h
 import { formatRelativeTime } from '@lib/format-relative-time';
 import { Play, Settings, Terminal, Trash2 } from 'lucide-react';
 
-const ONLINE_THRESHOLD_MS = 30_000;
-
 interface DeviceCardProps {
   device: ListDevicesDevice;
+  isOnline: boolean;
   onRemove: (deviceId: number) => void;
   onExecuteCommand: (deviceId: number) => void;
   onOpenTerminal: (deviceId: number) => void;
   onConfigure?: (deviceId: number) => void;
-}
-
-function getDeviceStatus(lastSeenAt: string | null) {
-  if (!lastSeenAt) {
-    return {
-      status: 'offline' as const,
-      text: 'Never connected',
-      isOnline: false,
-    };
-  }
-
-  const lastSeen = new Date(lastSeenAt);
-  const diffMs = Date.now() - lastSeen.getTime();
-
-  if (diffMs < ONLINE_THRESHOLD_MS) {
-    return { status: 'online' as const, text: 'Online', isOnline: true };
-  }
-
-  return { status: 'offline' as const, text: 'Offline', isOnline: false };
 }
 
 function getPlatformLabel(platform: string) {
@@ -58,14 +38,25 @@ function getPlatformLabel(platform: string) {
   }
 }
 
+function getStatusDisplay(isOnline: boolean, lastSeenAt: string | null) {
+  if (isOnline) {
+    return { status: 'online' as const, text: 'Online' };
+  }
+  if (!lastSeenAt) {
+    return { status: 'offline' as const, text: 'Never connected' };
+  }
+  return { status: 'offline' as const, text: 'Offline' };
+}
+
 export function DeviceCard({
   device,
+  isOnline,
   onRemove,
   onExecuteCommand,
   onOpenTerminal,
   onConfigure,
 }: DeviceCardProps) {
-  const deviceStatus = getDeviceStatus(device.lastSeenAt);
+  const deviceStatus = getStatusDisplay(isOnline, device.lastSeenAt);
 
   return (
     <Card interactive>
@@ -93,7 +84,7 @@ export function DeviceCard({
         <HStack gap="sm">
           <SecondaryText>{deviceStatus.text}</SecondaryText>
         </HStack>
-        {!deviceStatus.isOnline && device.lastSeenAt && (
+        {!isOnline && device.lastSeenAt && (
           <SmallParagraph spaceAbove="sm">
             Last seen: {formatRelativeTime(device.lastSeenAt)}
           </SmallParagraph>
@@ -112,7 +103,7 @@ export function DeviceCard({
             variant="outline"
             size="sm"
             fullWidth
-            disabled={!deviceStatus.isOnline}
+            disabled={!isOnline}
             onClick={() => onOpenTerminal(device.id)}
           >
             <Terminal className="mr-2 h-4 w-4" />

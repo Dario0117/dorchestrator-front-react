@@ -23,7 +23,7 @@ export const useDevicesQueryOptions = (
       },
     },
     {
-      refetchInterval: 10000, // Poll every 10s for status updates
+      refetchInterval: 30000, // Poll every 30s for device metadata (online status is real-time via Centrifugo presence)
     },
   );
 

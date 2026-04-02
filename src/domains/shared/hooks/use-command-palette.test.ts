@@ -64,7 +64,6 @@ describe('useCommandPalette', () => {
     );
     expect(modKCall).toBeDefined();
 
-    // biome-ignore lint/style/noNonNullAssertion: test assertion — modKCall is verified by expect above
     const hotkeyHandler = modKCall![1];
     const fakeEvent = { preventDefault: vi.fn() } as unknown as KeyboardEvent;
 
@@ -275,6 +274,7 @@ describe('useCommandPalette', () => {
           type: 'device',
           id: 'device-1',
           label: 'My Device',
+          isOnline: true,
         });
       });
 
@@ -294,6 +294,7 @@ describe('useCommandPalette', () => {
           type: 'device',
           id: 'device-1',
           label: 'My Device',
+          isOnline: true,
           action: 'terminal',
         });
       });
@@ -314,6 +315,7 @@ describe('useCommandPalette', () => {
           type: 'device',
           id: 'device-1',
           label: 'My Device',
+          isOnline: true,
           action: 'command',
         });
       });
@@ -334,6 +336,7 @@ describe('useCommandPalette', () => {
           type: 'device',
           id: 'device-1',
           label: 'My Device',
+          isOnline: true,
           action: 'settings',
         });
       });
@@ -356,6 +359,7 @@ describe('useCommandPalette', () => {
           type: 'device',
           id: 'device-1',
           label: 'My Device',
+          isOnline: true,
           action: 'terminal',
         });
       });

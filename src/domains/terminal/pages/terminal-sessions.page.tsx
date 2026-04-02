@@ -9,6 +9,7 @@ import { FilterPanel } from '@components/ds/molecules/filter-panel';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
 import { DataTable } from '@components/ds/organisms/data-table';
 import { PaginatedFooter } from '@components/ds/organisms/paginated-footer';
+import { MyPendingApprovalsSection } from '@domains/sandbox/components/my-pending-approvals-section';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
 import { useCurrentTeam } from '@domains/shared/hooks/use-current-team';
 import { TerminalSessionFilterControls } from '@domains/terminal/filters/terminal-session-filters';
@@ -126,6 +127,11 @@ export function TerminalSessionsPage() {
           filters={chips}
           onRemove={removeFilter}
           onClearAll={clearFilters}
+        />
+
+        <MyPendingApprovalsSection
+          organizationId={organizationId}
+          teamId={teamId}
         />
 
         {sessions.length === 0 ? (

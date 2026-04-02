@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@components/ds/molecules/dialog';
+import { SandboxSelector } from '@domains/sandbox/components/sandbox-selector';
 import { useCreateTerminalSessionDialog } from '@domains/terminal/hooks/use-create-terminal-session-dialog';
 import { CreateTerminalSessionDialogSkeleton } from '@domains/terminal/modals/create-terminal-session-dialog.skeleton';
 import { formatDurationHuman } from '@lib/format-duration';
@@ -64,8 +65,16 @@ export function CreateTerminalSessionDialog({
     setHardCapSelection,
     customHardCapHours,
     setCustomHardCapHours,
+    shell,
+    setShell,
     workingDirectory,
     setWorkingDirectory,
+    activePresetId,
+    setSelectedPresetId,
+    effectivePresetId,
+    isSandboxOverride,
+    approvalPending,
+    presets,
     error,
     setError,
     availableInactivityPresets,
@@ -211,6 +220,44 @@ export function CreateTerminalSessionDialog({
               </Stack>
             )}
 
+            <SandboxSelector
+              value={activePresetId}
+              onChange={(val) => {
+                setSelectedPresetId(val);
+                setError(null);
+              }}
+              effectivePresetId={effectivePresetId}
+              presets={presets}
+            />
+
+            <Stack gap="sm">
+              <Label htmlFor="shell">Shell</Label>
+              <Select
+                value={shell}
+                onValueChange={(val) => {
+                  /* v8 ignore start -- Base UI types onValueChange as string | null but never emits null */
+                  if (val === null) {
+                    return;
+                  }
+                  /* v8 ignore stop */
+                  setShell(val);
+                  setError(null);
+                }}
+              >
+                <SelectTrigger id="shell">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="/bin/bash">/bin/bash</SelectItem>
+                  <SelectItem value="/bin/zsh">/bin/zsh</SelectItem>
+                  <SelectItem value="/bin/sh">/bin/sh</SelectItem>
+                </SelectContent>
+              </Select>
+              <SmallParagraph>
+                Shell to use for the terminal session.
+              </SmallParagraph>
+            </Stack>
+
             <Stack gap="sm">
               <Label htmlFor="working-directory">Working Directory</Label>
               <Input
@@ -249,15 +296,30 @@ export function CreateTerminalSessionDialog({
             onClick={() => handleOpenChange(false)}
             disabled={isPending}
           >
-            Cancel
+            {approvalPending ? 'Close' : 'Cancel'}
           </Button>
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isLoading || isPending}
-          >
-            {isPending ? 'Creating...' : 'Start Session'}
-          </Button>
+          {approvalPending ? (
+            <Button
+              type="button"
+              disabled
+            >
+              Pending Approval
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              onClick={handleSubmit}
+              disabled={isLoading || isPending}
+            >
+              {isPending
+                ? isSandboxOverride
+                  ? 'Requesting...'
+                  : 'Creating...'
+                : isSandboxOverride
+                  ? 'Request Approval'
+                  : 'Start Session'}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

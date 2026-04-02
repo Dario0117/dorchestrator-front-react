@@ -27,7 +27,7 @@ export interface DeviceResult {
   type: 'device';
   id: string;
   label: string;
-  lastSeenAt?: string;
+  isOnline: boolean;
   action?: DeviceActionId;
 }
 

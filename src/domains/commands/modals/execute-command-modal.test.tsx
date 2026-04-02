@@ -1,9 +1,12 @@
 import { ExecuteCommandModal } from '@domains/commands/modals/execute-command-modal';
 import { useUserOrganizationsQueryOptions } from '@domains/org/services/organizations/list-user-organizations.http-service';
 import { queryClient } from '@domains/shared/context/query.provider';
+import { buildBackendUrl } from '@lib/test-backend-url.utils';
 import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { HttpResponse, http } from 'msw';
+import { server } from '@/../testsSetup';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual =
@@ -141,6 +144,103 @@ describe('ExecuteCommandModal', () => {
     await user.click(cancelButton);
 
     expect(mockOnOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('should request approval when sandbox override is required', async () => {
+    // Override device sandbox config to return a preset that requires approval (id: 2)
+    server.use(
+      http.get(
+        buildBackendUrl(
+          '/api/v1/{organizationId}/devices/{deviceId}/sandbox/config',
+        ),
+        () => {
+          return HttpResponse.json({
+            responseData: {
+              results: {
+                presetId: 2,
+                presetName: 'Restricted Docker',
+                sandboxTypeId: 2,
+                category: 'container',
+                networkPolicy: {
+                  mode: 'allow-list',
+                  allow: {
+                    external: [{ host: 'registry.npmjs.org', ports: [443] }],
+                    local: [],
+                  },
+                  deny: undefined,
+                },
+                resourceLimits: {
+                  maxTimeoutMs: 60000,
+                  maxOutputSize: 2097152,
+                  pidsLimit: 50,
+                },
+                volumeMounts: null,
+                pluginConfig: { image: 'dorchestrator/sandbox:latest' },
+              },
+            },
+            responseErrors: null,
+          });
+        },
+      ),
+    );
+
+    const user = userEvent.setup();
+    renderWithProviders(
+      <ExecuteCommandModal
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        organizationId="org-1"
+        teamId="team-1"
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Device/)).toBeInTheDocument();
+    });
+
+    // Select device
+    await clickTrigger(screen.getByLabelText(/Device/));
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: /Test Server/ }),
+      ).toBeInTheDocument();
+    });
+    await user.click(screen.getByRole('option', { name: /Test Server/ }));
+
+    // Wait for sandbox config to load and button text to update
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Request Approval' }),
+      ).toBeInTheDocument();
+    });
+
+    // Enter command
+    const textarea = screen.getByPlaceholderText('Enter your command...');
+    await user.type(textarea, 'echo hello');
+
+    // Click "Request Approval" — triggers onBeforeSubmit which calls requestOverrideMutation
+    const requestApprovalButton = screen.getByRole('button', {
+      name: 'Request Approval',
+    });
+    await user.click(requestApprovalButton);
+
+    // Device may appear offline — handle the confirm dialog
+    const continueButton = await screen
+      .findByRole('button', { name: 'Continue' })
+      .catch(() => null);
+    if (continueButton) {
+      await user.click(continueButton);
+    }
+
+    // After the override mutation succeeds, approvalPending should be true
+    // which renders "Pending Approval" disabled button and "Close" instead of "Cancel"
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Pending Approval' }),
+      ).toBeInTheDocument();
+    });
+    const closeButtons = screen.getAllByRole('button', { name: 'Close' });
+    expect(closeButtons.length).toBeGreaterThanOrEqual(1);
   });
 
   it('should close modal after successful submission', async () => {

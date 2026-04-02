@@ -1,4 +1,5 @@
 import { Alert, AlertDescription } from '@components/ds/atoms/alert';
+import { Separator } from '@components/ds/atoms/separator';
 import { SmallText } from '@components/ds/atoms/small-text';
 import {
   Dialog,
@@ -9,6 +10,8 @@ import {
 } from '@components/ds/molecules/dialog';
 import { DeviceConfigForm } from '@domains/devices/forms/device-config.form';
 import { DeviceConfigDialogSkeleton } from '@domains/devices/modals/device-config-dialog.skeleton';
+import { DeviceSandboxConfig } from '@domains/sandbox/components/device-sandbox-config';
+import { useDeviceSandboxConfigQueryOptions } from '@domains/sandbox/services/get-device-sandbox-config.http-service';
 import { useGetDeviceConfigQueryOptions } from '@domains/terminal/services/get-device-config.http-service';
 import { useGetTerminalConfigQueryOptions } from '@domains/terminal/services/get-terminal-config.http-service';
 import { useUpdateDeviceConfigMutation } from '@domains/terminal/services/update-device-config.http-service';
@@ -40,6 +43,10 @@ export function DeviceConfigDialog({
   });
   const { data: orgConfigData } = useQuery({
     ...useGetTerminalConfigQueryOptions(organizationId),
+    enabled: open,
+  });
+  const { data: sandboxConfigData } = useQuery({
+    ...useDeviceSandboxConfigQueryOptions(organizationId, deviceId),
     enabled: open,
   });
   const updateConfigMutation = useUpdateDeviceConfigMutation();
@@ -97,22 +104,35 @@ export function DeviceConfigDialog({
         {isLoading ? (
           <DeviceConfigDialogSkeleton />
         ) : (
-          <DeviceConfigForm
-            key={`${config?.inactivityTimeoutMs}-${config?.hardCapMs}-${config?.defaultWorkingDirectory}`}
-            updateConfigMutation={updateConfigMutation}
-            organizationId={organizationId}
-            deviceId={deviceId}
-            defaultValues={defaultValues}
-            orgCeiling={orgCeiling}
-            handleSuccess={() => {
-              clearTimeout(successTimeoutRef.current);
-              setShowSuccess(true);
-              successTimeoutRef.current = setTimeout(
-                () => setShowSuccess(false),
-                5000,
-              );
-            }}
-          />
+          <>
+            <DeviceConfigForm
+              key={`${config?.inactivityTimeoutMs}-${config?.hardCapMs}-${config?.defaultWorkingDirectory}`}
+              updateConfigMutation={updateConfigMutation}
+              organizationId={organizationId}
+              deviceId={deviceId}
+              defaultValues={defaultValues}
+              orgCeiling={orgCeiling}
+              handleSuccess={() => {
+                clearTimeout(successTimeoutRef.current);
+                setShowSuccess(true);
+                successTimeoutRef.current = setTimeout(
+                  () => setShowSuccess(false),
+                  5000,
+                );
+              }}
+            />
+            <Separator />
+            <DeviceSandboxConfig
+              organizationId={organizationId}
+              deviceId={deviceId}
+              effectivePresetId={
+                sandboxConfigData?.responseData?.results?.presetId
+              }
+              effectivePresetName={
+                sandboxConfigData?.responseData?.results?.presetName
+              }
+            />
+          </>
         )}
       </DialogContent>
     </Dialog>

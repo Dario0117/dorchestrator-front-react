@@ -13,6 +13,8 @@ interface UseCommandFormProps {
   organizationId: string;
   teamId: string;
   initialDeviceId?: number;
+  sandboxPresetId: number;
+  onBeforeSubmit?: (deviceId: number) => boolean | undefined;
 }
 
 export function useCommandForm({
@@ -21,16 +23,27 @@ export function useCommandForm({
   organizationId,
   teamId,
   initialDeviceId,
+  sandboxPresetId,
+  onBeforeSubmit,
 }: UseCommandFormProps) {
   const form = useAppForm({
     defaultValues: {
       deviceId: initialDeviceId ?? 0,
       command: '',
+      sandboxPresetId,
+      shell: '/bin/bash',
     },
     validators: {
       onSubmit: commandFormSchema,
     },
     onSubmit({ value }) {
+      if (onBeforeSubmit) {
+        const result = onBeforeSubmit(value.deviceId);
+        if (result === false) {
+          return;
+        }
+      }
+
       submitCommandMutation.mutate(
         {
           body: value,

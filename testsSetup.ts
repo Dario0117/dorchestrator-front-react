@@ -80,7 +80,7 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
 
 // Mock centrifuge SDK globally — prevents side effects in jsdom
 vi.mock('centrifuge', () => {
-  function MockSubscription() {
+  function createMockSubscription() {
     return {
       on: vi.fn().mockReturnThis(),
       subscribe: vi.fn(),
@@ -90,16 +90,16 @@ vi.mock('centrifuge', () => {
       state: 'unsubscribed',
     };
   }
-  function MockCentrifuge() {
-    return {
-      on: vi.fn().mockReturnThis(),
-      connect: vi.fn(),
-      disconnect: vi.fn(),
-      removeSubscription: vi.fn(),
-      newSubscription: vi.fn().mockImplementation(() => MockSubscription()),
-      state: 'disconnected',
-    };
-  }
+  const MockCentrifuge = vi.fn(function (this: Record<string, unknown>) {
+    this.on = vi.fn().mockReturnValue(this);
+    this.connect = vi.fn();
+    this.disconnect = vi.fn();
+    this.removeSubscription = vi.fn();
+    this.newSubscription = vi
+      .fn()
+      .mockImplementation(() => createMockSubscription());
+    this.state = 'disconnected';
+  });
   return { Centrifuge: MockCentrifuge };
 });
 

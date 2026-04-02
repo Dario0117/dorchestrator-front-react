@@ -23,6 +23,7 @@ import {
 import { useRemoveMemberMutation } from '@domains/org/services/organizations/remove-member.http-service';
 import { useTransferOwnershipMutation } from '@domains/org/services/organizations/transfer-ownership.http-service';
 import { useProfileSuspendedQuery } from '@domains/org/services/users/get-profile.http-service';
+import { SandboxPresetsSection } from '@domains/sandbox/components/sandbox-presets-section';
 import { ConfirmDialog } from '@domains/shared/components/confirm-dialog';
 import { queryClient } from '@domains/shared/context/query.provider';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
@@ -132,6 +133,7 @@ export function OrganizationSettingsPage() {
         />
 
         {canManageMembers && <TerminalConfigSection />}
+        {canManageMembers && <SandboxPresetsSection />}
 
         <MembersCard
           members={members}

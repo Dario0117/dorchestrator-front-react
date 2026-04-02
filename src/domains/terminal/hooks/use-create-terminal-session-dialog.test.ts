@@ -15,6 +15,15 @@ type DeviceConfigSuccessResponse =
 type CreateSessionSuccessResponse =
   operations['postApiV1ByOrganizationIdTeamsByTeamIdTerminalSessions']['responses']['201']['content']['application/json'];
 
+type ListPresetsSuccessResponse =
+  operations['getApiV1ByOrganizationIdSandboxPresets']['responses']['200']['content']['application/json'];
+
+type SandboxConfigSuccessResponse =
+  operations['getApiV1ByOrganizationIdDevicesByDeviceIdSandboxConfig']['responses']['200']['content']['application/json'];
+
+type RequestOverrideSuccessResponse =
+  operations['postApiV1ByOrganizationIdTeamsByTeamIdSandboxApproval-requests']['responses']['201']['content']['application/json'];
+
 const MS_PER_MINUTE = 60 * 1000;
 const MS_PER_HOUR = 60 * 60 * 1000;
 
@@ -110,6 +119,81 @@ function setupCreateSessionErrorHandler(
       ),
       () => {
         return HttpResponse.json(errorBody, { status });
+      },
+    ),
+  );
+}
+
+function setupPresetsHandler(
+  presets: ListPresetsSuccessResponse['responseData']['results'],
+) {
+  server.use(
+    http.get<never, never, ListPresetsSuccessResponse>(
+      buildBackendUrl('/api/v1/{organizationId}/sandbox/presets'),
+      () => {
+        return HttpResponse.json({
+          responseData: { results: presets },
+          responseErrors: null,
+        });
+      },
+    ),
+  );
+}
+
+function setupSandboxConfigHandler(presetId: number) {
+  server.use(
+    http.get<never, never, SandboxConfigSuccessResponse>(
+      buildBackendUrl(
+        '/api/v1/{organizationId}/devices/{deviceId}/sandbox/config',
+      ),
+      () => {
+        return HttpResponse.json({
+          responseData: {
+            results: {
+              presetId,
+              presetName: 'Test Preset',
+              sandboxTypeId: 2,
+              category: 'container',
+              networkPolicy: { mode: 'allow-all' },
+              resourceLimits: null,
+              volumeMounts: null,
+              pluginConfig: null,
+            },
+          },
+          responseErrors: null,
+        });
+      },
+    ),
+  );
+}
+
+function setupRequestOverrideHandler(
+  response: RequestOverrideSuccessResponse,
+  status = 201,
+) {
+  server.use(
+    http.post(
+      buildBackendUrl(
+        '/api/v1/{organizationId}/teams/{teamId}/sandbox/approval-requests',
+      ),
+      () => {
+        return HttpResponse.json(response, { status });
+      },
+    ),
+  );
+}
+
+function setupRequestOverrideErrorHandler(status = 500) {
+  server.use(
+    http.post(
+      buildBackendUrl(
+        '/api/v1/{organizationId}/teams/{teamId}/sandbox/approval-requests',
+      ),
+      () => {
+        return HttpResponse.json(
+          { message: 'Internal server error' },
+          { status },
+        );
       },
     ),
   );
@@ -997,6 +1081,130 @@ describe('useCreateTerminalSessionDialog', () => {
         { value: '1', label: '1 hour', ms: 1 * MS_PER_HOUR },
         { value: '2', label: '2 hours', ms: 2 * MS_PER_HOUR },
       ]);
+    });
+  });
+
+  describe('sandbox override flow', () => {
+    const APPROVAL_PRESET = {
+      id: 10,
+      organizationId: 'org-1',
+      name: 'Restricted Preset',
+      description: 'Requires approval',
+      sandboxTypeId: 2,
+      networkPolicy: { mode: 'allow-all' as const },
+      resourceLimits: null,
+      volumeMounts: null,
+      pluginConfig: null,
+      isOrgDefault: false,
+      requiresApproval: true,
+      createdBy: 'user-1',
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    it('submits approval request and sets approvalPending on success', async () => {
+      setupCeilingHandler(3_600_000, null);
+      setupDeviceConfigHandler(null);
+      setupPresetsHandler([APPROVAL_PRESET]);
+      setupSandboxConfigHandler(1);
+      setupRequestOverrideHandler({
+        responseData: {
+          results: {
+            approvalRequired: true as const,
+            approval: {
+              id: 1,
+              status: 'pending',
+              expiresAt: new Date(Date.now() + 86400000).toISOString(),
+              createdAt: new Date().toISOString(),
+            },
+          },
+        },
+        responseErrors: null,
+      });
+
+      const onSessionCreated = vi.fn();
+      const { result } = renderHook(
+        () =>
+          useCreateTerminalSessionDialog({
+            ...DEFAULT_PROPS,
+            open: true,
+            onSessionCreated,
+          }),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      await waitFor(() => {
+        expect(result.current.ceiling).toBeDefined();
+      });
+
+      // Wait for presets to load
+      await waitFor(() => {
+        expect(result.current.presets.length).toBeGreaterThan(0);
+      });
+
+      // Select the preset that requires approval
+      act(() => {
+        result.current.setSelectedPresetId(10);
+      });
+
+      expect(result.current.isSandboxOverride).toBe(true);
+
+      await act(() => {
+        result.current.handleSubmit();
+      });
+
+      await waitFor(() => {
+        expect(result.current.approvalPending).toBe(true);
+      });
+
+      expect(onSessionCreated).not.toHaveBeenCalled();
+    });
+
+    it('sets error when sandbox override request fails', async () => {
+      setupCeilingHandler(3_600_000, null);
+      setupDeviceConfigHandler(null);
+      setupPresetsHandler([APPROVAL_PRESET]);
+      setupSandboxConfigHandler(1);
+      setupRequestOverrideErrorHandler(500);
+
+      const onSessionCreated = vi.fn();
+      const { result } = renderHook(
+        () =>
+          useCreateTerminalSessionDialog({
+            ...DEFAULT_PROPS,
+            open: true,
+            onSessionCreated,
+          }),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      await waitFor(() => {
+        expect(result.current.ceiling).toBeDefined();
+      });
+
+      // Wait for presets to load
+      await waitFor(() => {
+        expect(result.current.presets.length).toBeGreaterThan(0);
+      });
+
+      // Select the preset that requires approval
+      act(() => {
+        result.current.setSelectedPresetId(10);
+      });
+
+      expect(result.current.isSandboxOverride).toBe(true);
+
+      await act(() => {
+        result.current.handleSubmit();
+      });
+
+      await waitFor(() => {
+        expect(result.current.error).toBe(
+          'Failed to request sandbox override. Please try again.',
+        );
+      });
+
+      expect(onSessionCreated).not.toHaveBeenCalled();
     });
   });
 });

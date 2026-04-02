@@ -2,32 +2,26 @@ import type { ListDevicesDevice } from '@domains/devices/services/list-devices.h
 import type { SelectOption } from '@domains/org/forms/components/app-form-select';
 
 export const MAX_COMMAND_LENGTH = 10000;
-export const OFFLINE_THRESHOLD_SECONDS = 30;
 
-export function getDeviceStatus(device: ListDevicesDevice) {
+function getStatusText(device: ListDevicesDevice, isOnline: boolean) {
+  if (isOnline) {
+    return 'Online';
+  }
   if (!device.lastSeenAt) {
-    return { color: 'bg-red-500', text: 'Never connected', isOnline: false };
+    return 'Never connected';
   }
-
-  const lastSeen = new Date(device.lastSeenAt);
-  const now = new Date();
-  const diffSeconds = (now.getTime() - lastSeen.getTime()) / 1000;
-
-  if (diffSeconds < OFFLINE_THRESHOLD_SECONDS) {
-    return { color: 'bg-green-500', text: 'Online', isOnline: true };
-  }
-
-  return { color: 'bg-gray-500', text: 'Offline', isOnline: false };
+  return 'Offline';
 }
 
 export function buildDeviceOptions(
   devices: ListDevicesDevice[],
+  presenceMap: Map<number, boolean>,
 ): SelectOption[] {
   return devices.map((device) => {
-    const status = getDeviceStatus(device);
+    const online = presenceMap.get(device.id) ?? false;
     return {
       value: String(device.id),
-      label: `${device.deviceName} (${status.text})`,
+      label: `${device.deviceName} (${getStatusText(device, online)})`,
     };
   });
 }

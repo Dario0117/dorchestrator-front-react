@@ -58,6 +58,7 @@ function TestWrapper() {
     handleSuccess: mockHandleSuccess,
     organizationId: 'org-1',
     teamId: 'team-1',
+    sandboxPresetId: 1,
   });
 
   return (

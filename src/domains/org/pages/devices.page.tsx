@@ -15,9 +15,9 @@ import {
   DeviceFilterControls,
   useDeviceFilterState,
 } from '@domains/devices/filters/device-filters';
+import { useDevicesPresence } from '@domains/devices/hooks/use-devices-presence';
 import { AddDeviceModal } from '@domains/devices/modals/add-device-modal';
 import { DeviceConfigDialog } from '@domains/devices/modals/device-config-dialog';
-import type { ListDevicesDevice } from '@domains/devices/services/list-devices.http-service';
 import { useDevicesSuspenseQuery } from '@domains/devices/services/list-devices.http-service';
 import { useRemoveDeviceMutation } from '@domains/devices/services/remove-device.http-service';
 import { ConfirmDialog } from '@domains/shared/components/confirm-dialog';
@@ -29,17 +29,6 @@ import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/dev
 import { useNavigate } from '@tanstack/react-router';
 import { HardDrive, Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
-
-const ONLINE_THRESHOLD_MS = 60_000;
-
-function isDeviceOnline(device: ListDevicesDevice) {
-  if (!device.lastSeenAt) {
-    return false;
-  }
-  return (
-    Date.now() - new Date(device.lastSeenAt).getTime() < ONLINE_THRESHOLD_MS
-  );
-}
 
 export function DevicesPage() {
   const currentOrganization = useCurrentOrganization();
@@ -92,18 +81,22 @@ export function DevicesPage() {
   const hasNext = data.responseData?.hasNext || false;
   const hasPrevious = data.responseData?.hasPrevious || false;
 
+  const deviceIds = useMemo(() => allDevices.map((d) => d.id), [allDevices]);
+  const { presenceMap } = useDevicesPresence(deviceIds);
+
   const devices = useMemo(() => {
     let filtered = allDevices;
     if (status !== undefined) {
-      filtered = filtered.filter((d) =>
-        status === 'online' ? isDeviceOnline(d) : !isDeviceOnline(d),
-      );
+      filtered = filtered.filter((d) => {
+        const online = presenceMap.get(d.id) ?? false;
+        return status === 'online' ? online : !online;
+      });
     }
     if (platform !== undefined) {
       filtered = filtered.filter((d) => d.platform === platform);
     }
     return filtered;
-  }, [allDevices, status, platform]);
+  }, [allDevices, status, platform, presenceMap]);
 
   const handlePageChange = (newPage: number) => {
     navigate({
@@ -170,6 +163,7 @@ export function DevicesPage() {
                 <DeviceCard
                   key={device.id}
                   device={device}
+                  isOnline={presenceMap.get(device.id) ?? false}
                   onRemove={(id) =>
                     setConfirmDelete({ id, name: device.deviceName })
                   }

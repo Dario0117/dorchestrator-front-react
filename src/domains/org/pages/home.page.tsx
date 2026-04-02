@@ -6,10 +6,8 @@ import { PageTitle } from '@components/ds/atoms/page-title';
 import { SecondaryText } from '@components/ds/atoms/secondary-text';
 import { Stack } from '@components/ds/atoms/stack';
 import { PageHeadingBar } from '@components/ds/molecules/page-heading-bar';
-import {
-  DashboardDeviceGrid,
-  isDeviceOnline,
-} from '@domains/devices/components/dashboard-device-grid';
+import { DashboardDeviceGrid } from '@domains/devices/components/dashboard-device-grid';
+import { useDevicesPresence } from '@domains/devices/hooks/use-devices-presence';
 import { useDevicesSuspenseQuery } from '@domains/devices/services/list-devices.http-service';
 import { useOrganizationStatsSuspenseQuery } from '@domains/org/services/organizations/get-organization-stats.http-service';
 import { StatCards } from '@domains/shared/components/stat-cards';
@@ -49,9 +47,12 @@ export function HomePage() {
   const totalDevices = devicesData.responseData?.totalResults ?? 0;
   const activeSessions = sessionsData.responseData?.totalResults ?? 0;
 
+  const deviceIds = useMemo(() => devices.map((d) => d.id), [devices]);
+  const { presenceMap } = useDevicesPresence(deviceIds);
+
   const onlineCount = useMemo(
-    () => devices.filter(isDeviceOnline).length,
-    [devices],
+    () => devices.filter((d) => presenceMap.get(d.id) ?? false).length,
+    [devices, presenceMap],
   );
 
   const hasDevices = totalDevices > 0;

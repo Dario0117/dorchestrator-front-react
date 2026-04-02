@@ -1,6 +1,6 @@
 import { TerminalToolbar } from '@domains/terminal/components/terminal-toolbar';
 import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 const defaultProps = {
@@ -26,6 +26,17 @@ const defaultProps = {
 };
 
 describe('TerminalToolbar', () => {
+  afterEach(async () => {
+    // Flush pending tooltip delay timers within act() to avoid act() warnings
+    // from Base UI tooltip's open-delay timers that fire after focus/hover
+    await act(async () => {
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, 400);
+      });
+    });
+    cleanup();
+  });
+
   it('renders toolbar with correct role and aria-label', () => {
     renderWithProviders(<TerminalToolbar {...defaultProps} />);
     const toolbar = screen.getByRole('toolbar');
@@ -263,11 +274,14 @@ describe('TerminalToolbar', () => {
       renderWithProviders(<TerminalToolbar {...defaultProps} />);
       const toolbar = screen.getByRole('toolbar');
       const buttons = toolbar.querySelectorAll('button');
-      // Focus the first button
-      (buttons[0] as HTMLElement).focus();
+      act(() => {
+        (buttons[0] as HTMLElement).focus();
+      });
       expect(document.activeElement).toBe(buttons[0]);
 
-      fireEvent.keyDown(toolbar, { key: 'ArrowRight' });
+      act(() => {
+        fireEvent.keyDown(toolbar, { key: 'ArrowRight' });
+      });
       expect(document.activeElement).toBe(buttons[1]);
     });
 
@@ -276,9 +290,13 @@ describe('TerminalToolbar', () => {
       const toolbar = screen.getByRole('toolbar');
       const buttons = toolbar.querySelectorAll('button:not(:disabled)');
       const lastButton = buttons[buttons.length - 1] as HTMLElement;
-      lastButton.focus();
+      act(() => {
+        lastButton.focus();
+      });
 
-      fireEvent.keyDown(toolbar, { key: 'ArrowRight' });
+      act(() => {
+        fireEvent.keyDown(toolbar, { key: 'ArrowRight' });
+      });
       expect(document.activeElement).toBe(buttons[0]);
     });
 
@@ -286,10 +304,13 @@ describe('TerminalToolbar', () => {
       renderWithProviders(<TerminalToolbar {...defaultProps} />);
       const toolbar = screen.getByRole('toolbar');
       const buttons = toolbar.querySelectorAll('button');
-      // Focus the second button
-      (buttons[1] as HTMLElement).focus();
+      act(() => {
+        (buttons[1] as HTMLElement).focus();
+      });
 
-      fireEvent.keyDown(toolbar, { key: 'ArrowLeft' });
+      act(() => {
+        fireEvent.keyDown(toolbar, { key: 'ArrowLeft' });
+      });
       expect(document.activeElement).toBe(buttons[0]);
     });
 
@@ -297,9 +318,13 @@ describe('TerminalToolbar', () => {
       renderWithProviders(<TerminalToolbar {...defaultProps} />);
       const toolbar = screen.getByRole('toolbar');
       const buttons = toolbar.querySelectorAll('button:not(:disabled)');
-      (buttons[0] as HTMLElement).focus();
+      act(() => {
+        (buttons[0] as HTMLElement).focus();
+      });
 
-      fireEvent.keyDown(toolbar, { key: 'ArrowLeft' });
+      act(() => {
+        fireEvent.keyDown(toolbar, { key: 'ArrowLeft' });
+      });
       expect(document.activeElement).toBe(buttons[buttons.length - 1]);
     });
 
@@ -307,10 +332,13 @@ describe('TerminalToolbar', () => {
       renderWithProviders(<TerminalToolbar {...defaultProps} />);
       const toolbar = screen.getByRole('toolbar');
       const buttons = toolbar.querySelectorAll('button');
-      // Focus a middle button
-      (buttons[2] as HTMLElement).focus();
+      act(() => {
+        (buttons[2] as HTMLElement).focus();
+      });
 
-      fireEvent.keyDown(toolbar, { key: 'Home' });
+      act(() => {
+        fireEvent.keyDown(toolbar, { key: 'Home' });
+      });
       expect(document.activeElement).toBe(buttons[0]);
     });
 
@@ -319,9 +347,13 @@ describe('TerminalToolbar', () => {
       const toolbar = screen.getByRole('toolbar');
       const buttons = toolbar.querySelectorAll('button:not(:disabled)');
 
-      (buttons[0] as HTMLElement).focus();
+      act(() => {
+        (buttons[0] as HTMLElement).focus();
+      });
 
-      fireEvent.keyDown(toolbar, { key: 'End' });
+      act(() => {
+        fireEvent.keyDown(toolbar, { key: 'End' });
+      });
       expect(document.activeElement).toBe(buttons[buttons.length - 1]);
     });
 
@@ -329,9 +361,13 @@ describe('TerminalToolbar', () => {
       renderWithProviders(<TerminalToolbar {...defaultProps} />);
       const toolbar = screen.getByRole('toolbar');
       const buttons = toolbar.querySelectorAll('button');
-      (buttons[0] as HTMLElement).focus();
+      act(() => {
+        (buttons[0] as HTMLElement).focus();
+      });
 
-      fireEvent.keyDown(toolbar, { key: 'Tab' });
+      act(() => {
+        fireEvent.keyDown(toolbar, { key: 'Tab' });
+      });
       // Focus should remain on the same button
       expect(document.activeElement).toBe(buttons[0]);
     });
@@ -345,7 +381,9 @@ describe('TerminalToolbar', () => {
       );
       const toolbar = screen.getByRole('toolbar');
       // When all buttons are disabled, focusableElements is empty — early return
-      fireEvent.keyDown(toolbar, { key: 'ArrowRight' });
+      act(() => {
+        fireEvent.keyDown(toolbar, { key: 'ArrowRight' });
+      });
       // No error thrown and focus is not moved (body or no active element)
       expect(document.activeElement).not.toBe(null);
     });

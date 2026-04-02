@@ -1,3 +1,7 @@
+import { useDeviceSandboxConfigQueryOptions } from '@domains/sandbox/services/get-device-sandbox-config.http-service';
+import { useListSandboxPresetsQueryOptions } from '@domains/sandbox/services/list-sandbox-presets.http-service';
+import { useRequestSandboxOverrideMutation } from '@domains/sandbox/services/request-sandbox-override.http-service';
+import type { ApprovalRequestType } from '@domains/sandbox/services/sandbox.http-service.constants';
 import {
   filterPresets,
   HARD_CAP_PRESETS,
@@ -43,7 +47,20 @@ export function useCreateTerminalSessionDialog({
     enabled: open,
   });
 
+  const { data: sandboxConfigData } = useQuery({
+    ...useDeviceSandboxConfigQueryOptions(organizationId, deviceId),
+    enabled: open,
+  });
+
+  const { data: presetsData } = useQuery({
+    ...useListSandboxPresetsQueryOptions(organizationId),
+    enabled: open,
+  });
+
   const createSessionMutation = useCreateTerminalSessionMutation();
+  const requestOverrideMutation = useRequestSandboxOverrideMutation();
+
+  const presets = presetsData?.responseData?.results ?? [];
 
   const ceiling = data?.responseData?.results;
   const inactivityCeiling = ceiling?.effectiveInactivityCeilingMs ?? 0;
@@ -52,14 +69,24 @@ export function useCreateTerminalSessionDialog({
   const deviceConfig = deviceConfigData?.responseData?.results?.config;
   const defaultWorkingDirectory = deviceConfig?.defaultWorkingDirectory ?? '';
 
+  const effectiveSandboxConfig = sandboxConfigData?.responseData?.results;
+  const effectivePresetId = effectiveSandboxConfig?.presetId ?? 0;
+
   const [inactivitySelection, setInactivitySelection] =
     useState<InactivitySelection>('max');
   const [customInactivityMinutes, setCustomInactivityMinutes] = useState('');
   const [hardCapSelection, setHardCapSelection] =
     useState<HardCapSelection>('max');
   const [customHardCapHours, setCustomHardCapHours] = useState('');
+  const [shell, setShell] = useState('/bin/bash');
   const [workingDirectory, setWorkingDirectory] = useState('');
+  const [selectedPresetId, setSelectedPresetId] = useState<number | null>(null);
+  const [approvalPending, setApprovalPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const activePresetId = selectedPresetId ?? effectivePresetId;
+  const activePreset = presets.find((p) => p.id === activePresetId);
+  const isSandboxOverride = activePreset?.requiresApproval === true;
 
   const availableInactivityPresets = filterPresets(
     INACTIVITY_PRESETS,
@@ -142,6 +169,29 @@ export function useCreateTerminalSessionDialog({
     }
     setError(null);
 
+    // If sandbox override requested, submit approval request instead
+    if (isSandboxOverride) {
+      requestOverrideMutation.mutate(
+        {
+          params: { path: { organizationId, teamId } },
+          body: {
+            deviceId,
+            requestType: 'terminal' satisfies ApprovalRequestType,
+            presetId: activePresetId,
+          },
+        },
+        {
+          onSuccess: () => {
+            setApprovalPending(true);
+          },
+          onError: () => {
+            setError('Failed to request sandbox override. Please try again.');
+          },
+        },
+      );
+      return;
+    }
+
     const inactivityTimeoutMs = resolveInactivityMs();
     const hardCapMs = resolveHardCapMs();
 
@@ -151,6 +201,8 @@ export function useCreateTerminalSessionDialog({
         body: {
           terminalAuthToken,
           deviceId,
+          sandboxPresetId: activePresetId,
+          shell,
           inactivityTimeoutMs,
           hardCapMs,
           ...(workingDirectory.trim() !== '' && {
@@ -181,9 +233,13 @@ export function useCreateTerminalSessionDialog({
       setCustomInactivityMinutes('');
       setHardCapSelection('max');
       setCustomHardCapHours('');
+      setShell('/bin/bash');
       setWorkingDirectory('');
+      setSelectedPresetId(null);
+      setApprovalPending(false);
       setError(null);
       createSessionMutation.reset();
+      requestOverrideMutation.reset();
     }
     onOpenChange(nextOpen);
   };
@@ -202,13 +258,22 @@ export function useCreateTerminalSessionDialog({
     setHardCapSelection,
     customHardCapHours,
     setCustomHardCapHours,
+    shell,
+    setShell,
     workingDirectory,
     setWorkingDirectory,
+    activePresetId,
+    setSelectedPresetId,
+    effectivePresetId,
+    isSandboxOverride,
+    approvalPending,
+    presets,
     error,
     setError,
     availableInactivityPresets,
     availableHardCapPresets,
-    isPending: createSessionMutation.isPending,
+    isPending:
+      createSessionMutation.isPending || requestOverrideMutation.isPending,
     handleSubmit,
     handleOpenChange,
   };

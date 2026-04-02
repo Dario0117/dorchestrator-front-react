@@ -16,6 +16,7 @@ import { CommandSearchInput } from '@domains/commands/filters/command-search-inp
 import { useCommandFilterState } from '@domains/commands/hooks/use-command-filter-state';
 import { ExecuteCommandModal } from '@domains/commands/modals/execute-command-modal';
 import { useCommandsSuspenseQuery } from '@domains/commands/services/list-commands.http-service';
+import { MyPendingApprovalsSection } from '@domains/sandbox/components/my-pending-approvals-section';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
 import { useCurrentTeam } from '@domains/shared/hooks/use-current-team';
 import { Route } from '@routes/(authenticated)/$organizationSlug/t/$teamSlug/commands/index';
@@ -133,6 +134,11 @@ export function CommandsListPage() {
           filters={chips}
           onRemove={removeFilter}
           onClearAll={clearFilters}
+        />
+
+        <MyPendingApprovalsSection
+          organizationId={organizationId}
+          teamId={teamId}
         />
 
         {commands.length === 0 ? (

@@ -159,6 +159,18 @@
       "!**/routeTree.gen.ts"
     ]
   },
+  "overrides": [
+    {
+      "includes": ["**/*.test.ts", "**/*.test.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
+    }
+  ],
   "css": {
     "linter": {
       "enabled": true

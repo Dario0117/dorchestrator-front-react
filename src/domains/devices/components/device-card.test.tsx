@@ -8,10 +8,11 @@ const mockOnRemove = vi.fn();
 const mockOnExecuteCommand = vi.fn();
 const mockOnOpenTerminal = vi.fn();
 
-function renderDeviceCard(device: ListDevicesDevice) {
+function renderDeviceCard(device: ListDevicesDevice, isOnline = false) {
   return renderWithProviders(
     <DeviceCard
       device={device}
+      isOnline={isOnline}
       onRemove={mockOnRemove}
       onExecuteCommand={mockOnExecuteCommand}
       onOpenTerminal={mockOnOpenTerminal}
@@ -98,26 +99,32 @@ describe('DeviceCard', () => {
     expect(screen.getByText('freebsd')).toBeInTheDocument();
   });
 
-  it('should show Online status for recently seen devices (< 30 seconds)', () => {
-    renderDeviceCard({
-      id: 1,
-      deviceName: 'Server',
-      platform: 'linux',
-      lastSeenAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-    });
+  it('should show Online status when isOnline is true', () => {
+    renderDeviceCard(
+      {
+        id: 1,
+        deviceName: 'Server',
+        platform: 'linux',
+        lastSeenAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+      },
+      true,
+    );
 
     expect(screen.getByText('Online')).toBeInTheDocument();
   });
 
-  it('should show StatusDot with online status for recently seen devices', () => {
-    renderDeviceCard({
-      id: 1,
-      deviceName: 'Server',
-      platform: 'linux',
-      lastSeenAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-    });
+  it('should show StatusDot with online status when isOnline is true', () => {
+    renderDeviceCard(
+      {
+        id: 1,
+        deviceName: 'Server',
+        platform: 'linux',
+        lastSeenAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+      },
+      true,
+    );
 
     expect(screen.getByRole('img', { name: 'Online' })).toBeInTheDocument();
   });
@@ -173,24 +180,26 @@ describe('DeviceCard', () => {
   });
 
   it('should not show last seen text for online devices', () => {
-    renderDeviceCard({
-      id: 1,
-      deviceName: 'Server',
-      platform: 'linux',
-      lastSeenAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-    });
+    renderDeviceCard(
+      {
+        id: 1,
+        deviceName: 'Server',
+        platform: 'linux',
+        lastSeenAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+      },
+      true,
+    );
 
     expect(screen.queryByText(/Last seen:/)).not.toBeInTheDocument();
   });
 
   it('should disable Terminal button when device is offline', () => {
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
     renderDeviceCard({
       id: 1,
       deviceName: 'Server',
       platform: 'linux',
-      lastSeenAt: fiveMinutesAgo,
+      lastSeenAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
       createdAt: new Date().toISOString(),
     });
 
@@ -198,13 +207,16 @@ describe('DeviceCard', () => {
   });
 
   it('should enable Terminal button when device is online', () => {
-    renderDeviceCard({
-      id: 1,
-      deviceName: 'Server',
-      platform: 'linux',
-      lastSeenAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-    });
+    renderDeviceCard(
+      {
+        id: 1,
+        deviceName: 'Server',
+        platform: 'linux',
+        lastSeenAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+      },
+      true,
+    );
 
     expect(screen.getByText('Terminal').closest('button')).not.toBeDisabled();
   });
@@ -241,13 +253,16 @@ describe('DeviceCard', () => {
 
   it('should call onOpenTerminal when Terminal button is clicked', async () => {
     const user = userEvent.setup();
-    renderDeviceCard({
-      id: 42,
-      deviceName: 'Server',
-      platform: 'linux',
-      lastSeenAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-    });
+    renderDeviceCard(
+      {
+        id: 42,
+        deviceName: 'Server',
+        platform: 'linux',
+        lastSeenAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+      },
+      true,
+    );
 
     await user.click(screen.getByText('Terminal'));
 
@@ -267,6 +282,7 @@ describe('DeviceCard', () => {
           lastSeenAt: new Date().toISOString(),
           createdAt: new Date().toISOString(),
         }}
+        isOnline={true}
         onRemove={mockOnRemove}
         onExecuteCommand={mockOnExecuteCommand}
         onOpenTerminal={mockOnOpenTerminal}

@@ -35,6 +35,24 @@ import { logoutAllSessionsHandler } from '@domains/org/services/users/logout-all
 import { registerHandler } from '@domains/org/services/users/register.http-service.handlers';
 import { resetPasswordHandler } from '@domains/org/services/users/reset-password.http-service.handlers';
 import { updatePasswordHandler } from '@domains/org/services/users/update-password.http-service.handlers';
+import { clearDeviceDefaultPresetHandler } from '@domains/sandbox/services/clear-device-default-preset.http-service.handlers';
+import { createSandboxPresetHandler } from '@domains/sandbox/services/create-sandbox-preset.http-service.handlers';
+import { deleteSandboxPresetHandler } from '@domains/sandbox/services/delete-sandbox-preset.http-service.handlers';
+import { getDevicePluginsHandler } from '@domains/sandbox/services/get-device-plugins.http-service.handlers';
+import { getDeviceSandboxConfigHandler } from '@domains/sandbox/services/get-device-sandbox-config.http-service.handlers';
+import { installDevicePluginHandler } from '@domains/sandbox/services/install-device-plugin.http-service.handlers';
+import { killDeviceSessionsHandler } from '@domains/sandbox/services/kill-device-sessions.http-service.handlers';
+import { listMySandboxApprovalsHandler } from '@domains/sandbox/services/list-my-sandbox-approvals.http-service.handlers';
+import { listSandboxApprovalsHandler } from '@domains/sandbox/services/list-sandbox-approvals.http-service.handlers';
+import { listSandboxPresetsHandler } from '@domains/sandbox/services/list-sandbox-presets.http-service.handlers';
+import { listSandboxTypesHandler } from '@domains/sandbox/services/list-sandbox-types.http-service.handlers';
+import { refreshDevicePluginsHandler } from '@domains/sandbox/services/refresh-device-plugins.http-service.handlers';
+import { requestSandboxOverrideHandler } from '@domains/sandbox/services/request-sandbox-override.http-service.handlers';
+import { reviewSandboxApprovalHandler } from '@domains/sandbox/services/review-sandbox-approval.http-service.handlers';
+import { setDeviceDefaultPresetHandler } from '@domains/sandbox/services/set-device-default-preset.http-service.handlers';
+import { setOrgDefaultPresetHandler } from '@domains/sandbox/services/set-org-default-preset.http-service.handlers';
+import { uninstallDevicePluginHandler } from '@domains/sandbox/services/uninstall-device-plugin.http-service.handlers';
+import { updateSandboxPresetHandler } from '@domains/sandbox/services/update-sandbox-preset.http-service.handlers';
 import { createBookmarkHandler } from '@domains/terminal/services/create-bookmark.http-service.handlers';
 import { createShortcutHandler } from '@domains/terminal/services/create-shortcut.http-service.handlers';
 import { createTerminalSessionHandler } from '@domains/terminal/services/create-terminal-session.http-service.handlers';
@@ -149,5 +167,23 @@ export function MSWSuccessHandlers() {
     listSessionSuggestionsHandler,
     submitSuggestionHandler,
     respondToSuggestionHandler,
+    getDeviceSandboxConfigHandler,
+    getDevicePluginsHandler,
+    installDevicePluginHandler,
+    uninstallDevicePluginHandler,
+    listSandboxPresetsHandler,
+    createSandboxPresetHandler,
+    updateSandboxPresetHandler,
+    deleteSandboxPresetHandler,
+    setOrgDefaultPresetHandler,
+    setDeviceDefaultPresetHandler,
+    clearDeviceDefaultPresetHandler,
+    listSandboxApprovalsHandler,
+    requestSandboxOverrideHandler,
+    reviewSandboxApprovalHandler,
+    killDeviceSessionsHandler,
+    refreshDevicePluginsHandler,
+    listMySandboxApprovalsHandler,
+    listSandboxTypesHandler,
   ];
 }

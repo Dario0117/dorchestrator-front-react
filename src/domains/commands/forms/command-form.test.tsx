@@ -7,6 +7,15 @@ import { clickTrigger, renderWithProviders } from '@lib/test-wrappers.utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+// Device ID 1 (Test Server) is online; others (Dev Laptop=2, Build Agent=3) are offline
+const onlineDeviceIds = new Set([1]);
+vi.mock('@domains/devices/hooks/use-devices-presence', () => ({
+  useDevicesPresence: (deviceIds: number[]) => ({
+    presenceMap: new Map(deviceIds.map((id) => [id, onlineDeviceIds.has(id)])),
+    isLoading: false,
+  }),
+}));
+
 vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual =
     await importOriginal<typeof import('@tanstack/react-router')>();
@@ -119,6 +128,7 @@ function TestWrapper({
     organizationId: 'org-1',
     teamId: 'team-1',
     initialDeviceId: pinnedDevice?.id,
+    sandboxPresetId: 1,
   });
 
   return (

@@ -36,7 +36,7 @@ import {
   Trash2,
   Users2,
 } from 'lucide-react';
-import { Suspense, useState } from 'react';
+import { Fragment, Suspense, useState } from 'react';
 
 interface TeamManagementSectionProps {
   organizationId: string;
@@ -126,8 +126,8 @@ export function TeamManagementSection({
             </TableHeader>
             <TableBody>
               {teams.map((team) => (
-                <>
-                  <TableRow key={team.id}>
+                <Fragment key={team.id}>
+                  <TableRow>
                     <TableCell>
                       <Button
                         variant="ghost"
@@ -213,7 +213,7 @@ export function TeamManagementSection({
                       </TableCell>
                     </TableRow>
                   )}
-                </>
+                </Fragment>
               ))}
             </TableBody>
           </Table>

@@ -1,3 +1,4 @@
+import { useDevicesPresence } from '@domains/devices/hooks/use-devices-presence';
 import { DevicesPage } from '@domains/org/pages/devices.page';
 import { useUserOrganizationsQueryOptions } from '@domains/org/services/organizations/list-user-organizations.http-service';
 import { queryClient } from '@domains/shared/context/query.provider';
@@ -9,6 +10,14 @@ import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { server } from '@/../testsSetup';
 import type { operations } from '@/types/api.generated.types';
+
+// Default: device ID 1 is online, others offline (matches test MSW data)
+vi.mock('@domains/devices/hooks/use-devices-presence', () => ({
+  useDevicesPresence: vi.fn((deviceIds: number[]) => ({
+    presenceMap: new Map(deviceIds.map((id: number) => [id, id === 1])),
+    isLoading: false,
+  })),
+}));
 
 const mockNavigate = vi.fn();
 
@@ -65,6 +74,10 @@ const mockOrganization = {
 describe('DevicesPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    vi.mocked(useDevicesPresence).mockImplementation((deviceIds: number[]) => ({
+      presenceMap: new Map(deviceIds.map((id: number) => [id, id === 1])),
+      isLoading: false,
+    }));
     vi.mocked(Route.useSearch).mockReturnValue({ page: 1, size: 25 });
     queryClient.setQueryData(useUserOrganizationsQueryOptions.queryKey, {
       responseData: {
@@ -855,6 +868,45 @@ describe('DevicesPage', () => {
       expect(
         screen.queryByRole('heading', { name: /Device Configuration/ }),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  it('should default to offline when presenceMap has no entry for a device during status filter', async () => {
+    // Return an empty presenceMap so presenceMap.get(id) returns undefined,
+    // triggering the ?? false fallback at L91
+    vi.mocked(useDevicesPresence).mockReturnValue({
+      presenceMap: new Map(),
+      isLoading: false,
+    });
+
+    vi.mocked(Route.useSearch).mockReturnValue({
+      page: 1,
+      size: 25,
+      status: 'offline',
+    });
+
+    renderWithProviders(<DevicesPage />);
+
+    // All devices should appear because presenceMap.get(id) is undefined,
+    // which falls back to false (offline), matching the offline filter
+    await waitFor(() => {
+      expect(screen.getByText('Test Server')).toBeInTheDocument();
+    });
+  });
+
+  it('should default isOnline to false when presenceMap has no entry for a device in card rendering', async () => {
+    // Return a presenceMap missing some device IDs so presenceMap.get(id)
+    // returns undefined, triggering the ?? false fallback at L166
+    vi.mocked(useDevicesPresence).mockReturnValue({
+      presenceMap: new Map(),
+      isLoading: false,
+    });
+
+    renderWithProviders(<DevicesPage />);
+
+    // Devices should still render — they just get isOnline=false
+    await waitFor(() => {
+      expect(screen.getByText('Test Server')).toBeInTheDocument();
     });
   });
 });

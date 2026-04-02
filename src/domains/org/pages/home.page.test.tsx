@@ -20,6 +20,16 @@ type ListDevicesSuccessResponse =
 type ListTerminalSessionsSuccessResponse =
   operations['getApiV1ByOrganizationIdTeamsByTeamIdTerminalSessions']['responses']['200']['content']['application/json'];
 
+const mockUseDevicesPresence = vi.fn((deviceIds: number[]) => ({
+  presenceMap: new Map(deviceIds.map((id) => [id, true])),
+  isLoading: false,
+}));
+
+vi.mock('@domains/devices/hooks/use-devices-presence', () => ({
+  useDevicesPresence: (deviceIds: number[]) =>
+    mockUseDevicesPresence(deviceIds),
+}));
+
 const mockNavigate = vi.fn();
 
 const mockUseParams = vi.fn<() => Record<string, string>>(() => ({
@@ -128,6 +138,10 @@ function setupDefaultHandlers() {
 describe('HomePage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    mockUseDevicesPresence.mockImplementation((deviceIds: number[]) => ({
+      presenceMap: new Map(deviceIds.map((id) => [id, true])),
+      isLoading: false,
+    }));
     mockUseParams.mockReturnValue({
       organizationSlug: 'test-org',
       teamSlug: 'my-team',
@@ -215,7 +229,6 @@ describe('HomePage', () => {
     const removeButtons = screen.getAllByRole('button', {
       name: 'Remove device',
     });
-    // biome-ignore lint/style/noNonNullAssertion: test assertion — element is guaranteed by getAllByRole
     await user.click(removeButtons[0]!);
 
     expect(mockNavigate).toHaveBeenCalledWith(
@@ -240,7 +253,6 @@ describe('HomePage', () => {
     });
 
     const commandButtons = screen.getAllByRole('button', { name: /Command/i });
-    // biome-ignore lint/style/noNonNullAssertion: test assertion — element is guaranteed by getAllByRole
     await user.click(commandButtons[0]!);
 
     expect(mockNavigate).toHaveBeenCalledWith(
@@ -270,7 +282,6 @@ describe('HomePage', () => {
       name: /Terminal/i,
     });
     // The online device's terminal button is the second one
-    // biome-ignore lint/style/noNonNullAssertion: test assertion — element is guaranteed by getAllByRole
     await user.click(terminalButtons[1]!);
 
     expect(mockNavigate).toHaveBeenCalledWith(
@@ -344,7 +355,6 @@ describe('HomePage', () => {
     const removeButtons = screen.getAllByRole('button', {
       name: 'Remove device',
     });
-    // biome-ignore lint/style/noNonNullAssertion: test assertion — element is guaranteed by getAllByRole
     await user.click(removeButtons[0]!);
 
     expect(mockNavigate).toHaveBeenCalledWith(
@@ -352,6 +362,35 @@ describe('HomePage', () => {
         params: { organizationSlug: 'test-org', teamSlug: '' },
       }),
     );
+  });
+
+  it('should count devices as offline when presenceMap has no entry for a device', async () => {
+    mockUseDevicesPresence.mockImplementation(() => ({
+      presenceMap: new Map(),
+      isLoading: false,
+    }));
+
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <HomePage />
+      </Suspense>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    });
+
+    // With an empty presenceMap, presenceMap.get(d.id) returns undefined,
+    // so the ?? false fallback kicks in and onlineCount should be 0.
+    // The "Devices Online" stat card should show "0/2"
+    expect(
+      screen.getByText((_content, element) => {
+        return (
+          element?.tagName === 'H1' &&
+          element.textContent?.replace(/\s/g, '') === '0/2'
+        );
+      }),
+    ).toBeInTheDocument();
   });
 
   it('should handle null responseData gracefully', async () => {

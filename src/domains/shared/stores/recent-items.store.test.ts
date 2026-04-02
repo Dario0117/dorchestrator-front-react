@@ -6,6 +6,7 @@ const makeItem = (id: string, label = `Item ${id}`): RecentItem => ({
   id,
   type: 'device',
   label,
+  isOnline: true,
 });
 
 describe('useRecentItemsStore', () => {

@@ -3,6 +3,13 @@ import { renderWithProviders } from '@lib/test-wrappers.utils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+vi.mock('@domains/devices/hooks/use-devices-presence', () => ({
+  useDevicesPresence: (deviceIds: number[]) => ({
+    presenceMap: new Map(deviceIds.map((id) => [id, id === 1])),
+    isLoading: false,
+  }),
+}));
+
 vi.mock('@domains/shared/hooks/use-current-organization', () => ({
   useCurrentOrganization: () => ({
     id: 'org-1',

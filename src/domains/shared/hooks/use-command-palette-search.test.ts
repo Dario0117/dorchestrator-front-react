@@ -5,6 +5,16 @@ import { createQueryThemeWrapper } from '@lib/test-wrappers.utils';
 import { cleanup, renderHook, waitFor } from '@testing-library/react';
 import { setupServer } from 'msw/node';
 
+const useDevicesPresenceMock = vi.fn((deviceIds: number[]) => ({
+  presenceMap: new Map(deviceIds.map((id) => [id, id === 1])),
+  isLoading: false,
+}));
+
+vi.mock('@domains/devices/hooks/use-devices-presence', () => ({
+  useDevicesPresence: (...args: unknown[]) =>
+    useDevicesPresenceMock(...(args as [number[]])),
+}));
+
 vi.mock('@domains/shared/hooks/use-current-organization', () => ({
   useCurrentOrganization: () => ({
     id: 'org-1',
@@ -173,7 +183,7 @@ describe('useCommandPaletteSearch', () => {
       });
     });
 
-    it('maps device lastSeenAt to undefined when null', async () => {
+    it('maps device isOnline from presence', async () => {
       const { result } = renderHook(
         () => useCommandPaletteSearch('Build Agent', true),
         { wrapper: createQueryThemeWrapper() },
@@ -188,9 +198,9 @@ describe('useCommandPaletteSearch', () => {
           (r) => r.label === 'Build Agent',
         );
         expect(buildAgent).toBeDefined();
-        expect(
-          buildAgent?.type === 'device' ? buildAgent.lastSeenAt : 'has value',
-        ).toBeUndefined();
+        expect(buildAgent?.type === 'device' ? buildAgent.isOnline : true).toBe(
+          false,
+        );
       });
     });
 
@@ -255,6 +265,39 @@ describe('useCommandPaletteSearch', () => {
         );
         expect(deviceGroup).toBeUndefined();
       });
+    });
+  });
+
+  describe('when presence data is missing for a device', () => {
+    it('defaults isOnline to false via nullish coalescing', async () => {
+      useDevicesPresenceMock.mockImplementation(() => ({
+        presenceMap: new Map(),
+        isLoading: false,
+      }));
+
+      const { result } = renderHook(
+        () => useCommandPaletteSearch('Test Server', true),
+        { wrapper: createQueryThemeWrapper() },
+      );
+
+      await waitFor(() => {
+        const deviceGroup = result.current.groups.find(
+          (g) => g.label === 'Devices',
+        );
+        expect(deviceGroup).toBeDefined();
+        const testServer = deviceGroup?.results.find(
+          (r) => r.label === 'Test Server',
+        );
+        expect(testServer).toBeDefined();
+        expect(testServer?.type === 'device' ? testServer.isOnline : true).toBe(
+          false,
+        );
+      });
+
+      useDevicesPresenceMock.mockImplementation((deviceIds: number[]) => ({
+        presenceMap: new Map(deviceIds.map((id) => [id, id === 1])),
+        isLoading: false,
+      }));
     });
   });
 });

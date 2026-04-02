@@ -1,3 +1,4 @@
+import type { SandboxState } from '@domains/commands/forms/command-form.types';
 import { CommandFormInner } from '@domains/commands/forms/command-form-inner';
 import type { CommandFormType } from '@domains/commands/forms/hooks/use-command-form';
 import { useDevicesSuspenseQuery } from '@domains/devices/services/list-devices.http-service';
@@ -7,11 +8,15 @@ import { useCurrentTeam } from '@domains/shared/hooks/use-current-team';
 interface CommandFormWithDeviceQueryProps {
   form: CommandFormType;
   onCancel?: () => void;
+  onDeviceChange?: (deviceId: number) => void;
+  sandbox?: SandboxState;
 }
 
 export function CommandFormWithDeviceQuery({
   form,
   onCancel,
+  onDeviceChange,
+  sandbox,
 }: CommandFormWithDeviceQueryProps) {
   const currentOrganization = useCurrentOrganization();
   const currentTeam = useCurrentTeam();
@@ -28,6 +33,8 @@ export function CommandFormWithDeviceQuery({
       form={form}
       devices={devices}
       onCancel={onCancel}
+      onDeviceChange={onDeviceChange}
+      sandbox={sandbox}
     />
   );
 }

@@ -1,22 +1,26 @@
 import { Button } from '@components/ds/atoms/button';
 import { ResponsiveRow } from '@components/ds/atoms/responsive-row';
 import { Stack } from '@components/ds/atoms/stack';
+import type { SandboxState } from '@domains/commands/forms/command-form.types';
 import {
   buildDeviceOptions,
-  getDeviceStatus,
   MAX_COMMAND_LENGTH,
 } from '@domains/commands/forms/device-status.utils';
 import type { CommandFormType } from '@domains/commands/forms/hooks/use-command-form';
 import type { PinnedDevice } from '@domains/commands/modals/execute-command-modal';
+import { useDevicesPresence } from '@domains/devices/hooks/use-devices-presence';
 import type { ListDevicesDevice } from '@domains/devices/services/list-devices.http-service';
+import { SandboxSelector } from '@domains/sandbox/components/sandbox-selector';
 import { ConfirmDialog } from '@domains/shared/components/confirm-dialog';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 interface CommandFormInnerProps {
   form: CommandFormType;
   devices: ListDevicesDevice[];
   pinnedDevice?: PinnedDevice;
   onCancel?: () => void;
+  onDeviceChange?: (deviceId: number) => void;
+  sandbox?: SandboxState;
 }
 
 export function CommandFormInner({
@@ -24,15 +28,20 @@ export function CommandFormInner({
   devices,
   pinnedDevice,
   onCancel,
+  onDeviceChange,
+  sandbox,
 }: CommandFormInnerProps) {
   const [showOfflineDialog, setShowOfflineDialog] = useState(false);
+
+  const deviceIds = useMemo(() => devices.map((d) => d.id), [devices]);
+  const { presenceMap } = useDevicesPresence(deviceIds);
 
   const deviceOptions = useMemo(() => {
     if (pinnedDevice) {
       return [{ value: String(pinnedDevice.id), label: pinnedDevice.name }];
     }
-    return buildDeviceOptions(devices);
-  }, [pinnedDevice, devices]);
+    return buildDeviceOptions(devices, presenceMap);
+  }, [pinnedDevice, devices, presenceMap]);
 
   const handleFormSubmit = () => {
     if (pinnedDevice) {
@@ -41,9 +50,9 @@ export function CommandFormInner({
     }
 
     const deviceId = form.getFieldValue('deviceId');
-    const selectedDevice = devices.find((d) => d.id === deviceId);
+    const isOnline = presenceMap.get(deviceId) ?? false;
 
-    if (selectedDevice && !getDeviceStatus(selectedDevice).isOnline) {
+    if (!isOnline) {
       setShowOfflineDialog(true);
       return;
     }
@@ -65,6 +74,7 @@ export function CommandFormInner({
   };
 
   const isDeviceDisabled = !!pinnedDevice;
+  const prevDeviceIdRef = useRef<number>(0);
 
   return (
     <>
@@ -88,6 +98,20 @@ export function CommandFormInner({
             )}
           </form.AppField>
 
+          {/* Notify parent when device changes */}
+          {onDeviceChange && (
+            <form.Subscribe selector={(state) => state.values.deviceId}>
+              {(deviceId) => {
+                if (deviceId > 0 && deviceId !== prevDeviceIdRef.current) {
+                  prevDeviceIdRef.current = deviceId;
+                  // Schedule to avoid calling during render
+                  queueMicrotask(() => onDeviceChange(deviceId));
+                }
+                return null;
+              }}
+            </form.Subscribe>
+          )}
+
           {/* Command Textarea */}
           <form.AppField name="command">
             {(field) => (
@@ -100,6 +124,31 @@ export function CommandFormInner({
             )}
           </form.AppField>
 
+          {/* Shell Selector */}
+          <form.AppField name="shell">
+            {(field) => (
+              <field.AppFormSelect
+                label="Shell"
+                placeholder="Select a shell..."
+                options={[
+                  { value: '/bin/bash', label: '/bin/bash' },
+                  { value: '/bin/zsh', label: '/bin/zsh' },
+                  { value: '/bin/sh', label: '/bin/sh' },
+                ]}
+              />
+            )}
+          </form.AppField>
+
+          {/* Sandbox Selector */}
+          {sandbox && (
+            <SandboxSelector
+              value={sandbox.activePresetId}
+              onChange={sandbox.onPresetChange}
+              effectivePresetId={sandbox.effectivePresetId}
+              presets={sandbox.presets}
+            />
+          )}
+
           {/* Action Buttons */}
           <ResponsiveRow
             gap="md"
@@ -111,15 +160,29 @@ export function CommandFormInner({
               size="lg"
               onClick={handleCancel}
             >
-              Cancel
+              {sandbox?.approvalPending ? 'Close' : 'Cancel'}
             </Button>
-            <form.AppForm>
-              <form.AppSubscribeSubmitButton
-                label="Execute Command"
+            {sandbox?.approvalPending ? (
+              <Button
+                type="button"
                 size="lg"
-                fullWidth={false}
-              />
-            </form.AppForm>
+                disabled
+              >
+                Pending Approval
+              </Button>
+            ) : (
+              <form.AppForm>
+                <form.AppSubscribeSubmitButton
+                  label={
+                    sandbox?.isSandboxOverride
+                      ? 'Request Approval'
+                      : 'Execute Command'
+                  }
+                  size="lg"
+                  fullWidth={false}
+                />
+              </form.AppForm>
+            )}
           </ResponsiveRow>
 
           <form.AppForm>

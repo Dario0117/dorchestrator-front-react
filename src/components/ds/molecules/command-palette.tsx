@@ -71,7 +71,7 @@ export function CommandPalette({
         type: 'device',
         id: device.id,
         label: device.label,
-        lastSeenAt: device.lastSeenAt,
+        isOnline: device.isOnline,
         action: actionId,
       });
       onOpenChange(false);

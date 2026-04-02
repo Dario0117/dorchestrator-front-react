@@ -36,6 +36,7 @@ describe('useCommandForm', () => {
           handleSuccess: mockHandleSuccess,
           organizationId: 'org-1',
           teamId: 'team-1',
+          sandboxPresetId: 1,
         }),
       { wrapper: createQueryThemeWrapper() },
     );
@@ -65,6 +66,7 @@ describe('useCommandForm', () => {
           handleSuccess: mockHandleSuccess,
           organizationId: 'org-1',
           teamId: 'team-1',
+          sandboxPresetId: 1,
         }),
       { wrapper: createQueryThemeWrapper() },
     );
@@ -81,6 +83,8 @@ describe('useCommandForm', () => {
           body: {
             deviceId: 1,
             command: 'echo hello',
+            sandboxPresetId: 1,
+            shell: '/bin/bash',
           },
           params: {
             path: { organizationId: 'org-1', teamId: 'team-1' },
@@ -106,6 +110,7 @@ describe('useCommandForm', () => {
           handleSuccess: mockHandleSuccess,
           organizationId: 'org-1',
           teamId: 'team-1',
+          sandboxPresetId: 1,
         }),
       { wrapper: createQueryThemeWrapper() },
     );
@@ -135,6 +140,7 @@ describe('useCommandForm', () => {
           handleSuccess: mockHandleSuccess,
           organizationId: 'org-1',
           teamId: 'team-1',
+          sandboxPresetId: 1,
         }),
       { wrapper: createQueryThemeWrapper() },
     );
@@ -147,6 +153,80 @@ describe('useCommandForm', () => {
 
     await waitFor(() => {
       expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should abort submission when onBeforeSubmit returns false', async () => {
+    const mockMutation = {
+      mutate: vi.fn(),
+    } as unknown as useSubmitCommandMutationType;
+    const mockHandleSuccess = vi.fn();
+    const mockOnBeforeSubmit = vi.fn().mockReturnValue(false);
+
+    const { result } = renderHook(
+      () =>
+        useCommandForm({
+          submitCommandMutation: mockMutation,
+          handleSuccess: mockHandleSuccess,
+          organizationId: 'org-1',
+          teamId: 'team-1',
+          sandboxPresetId: 1,
+          onBeforeSubmit: mockOnBeforeSubmit,
+        }),
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    await act(async () => {
+      result.current.setFieldValue('deviceId', 1);
+      result.current.setFieldValue('command', 'echo hello');
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockOnBeforeSubmit).toHaveBeenCalledWith(1);
+      expect(mockMutation.mutate).not.toHaveBeenCalled();
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should proceed with submission when onBeforeSubmit returns undefined', async () => {
+    const mockData = {
+      responseData: {
+        results: {
+          commandId: 42,
+          status: 'pending',
+          createdAt: '2026-02-16T10:00:00.000Z',
+        },
+      },
+      responseErrors: null,
+    };
+    const mockMutation = createSuccessMutation(mockData);
+    const mockHandleSuccess = vi.fn();
+    const mockOnBeforeSubmit = vi.fn().mockReturnValue(undefined);
+
+    const { result } = renderHook(
+      () =>
+        useCommandForm({
+          submitCommandMutation: mockMutation,
+          handleSuccess: mockHandleSuccess,
+          organizationId: 'org-1',
+          teamId: 'team-1',
+          sandboxPresetId: 1,
+          onBeforeSubmit: mockOnBeforeSubmit,
+        }),
+      { wrapper: createQueryThemeWrapper() },
+    );
+
+    await act(async () => {
+      result.current.setFieldValue('deviceId', 1);
+      result.current.setFieldValue('command', 'echo hello');
+      await result.current.handleSubmit();
+    });
+
+    await waitFor(() => {
+      expect(mockOnBeforeSubmit).toHaveBeenCalledWith(1);
+      expect(mockMutation.mutate).toHaveBeenCalled();
+      expect(mockHandleSuccess).toHaveBeenCalledWith(mockData);
     });
   });
 
@@ -163,6 +243,7 @@ describe('useCommandForm', () => {
           handleSuccess: mockHandleSuccess,
           organizationId: 'org-1',
           teamId: 'team-1',
+          sandboxPresetId: 1,
         }),
       { wrapper: createQueryThemeWrapper() },
     );

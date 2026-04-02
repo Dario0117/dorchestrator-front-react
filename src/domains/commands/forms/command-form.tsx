@@ -1,3 +1,4 @@
+import type { SandboxState } from '@domains/commands/forms/command-form.types';
 import { CommandFormInner } from '@domains/commands/forms/command-form-inner';
 import { CommandFormWithDeviceQuery } from '@domains/commands/forms/command-form-with-device-query';
 import type { CommandFormType } from '@domains/commands/forms/hooks/use-command-form';
@@ -7,12 +8,16 @@ interface CommandFormProps {
   form: CommandFormType;
   pinnedDevice?: PinnedDevice;
   onCancel?: () => void;
+  onDeviceChange?: (deviceId: number) => void;
+  sandbox?: SandboxState;
 }
 
 export function CommandForm({
   form,
   pinnedDevice,
   onCancel,
+  onDeviceChange,
+  sandbox,
 }: CommandFormProps) {
   if (pinnedDevice) {
     return (
@@ -21,6 +26,7 @@ export function CommandForm({
         devices={[]}
         pinnedDevice={pinnedDevice}
         onCancel={onCancel}
+        sandbox={sandbox}
       />
     );
   }
@@ -29,6 +35,8 @@ export function CommandForm({
     <CommandFormWithDeviceQuery
       form={form}
       onCancel={onCancel}
+      onDeviceChange={onDeviceChange}
+      sandbox={sandbox}
     />
   );
 }

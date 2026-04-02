@@ -1,4 +1,5 @@
 import type { CommandPaletteResult } from '@components/ds/molecules/command-palette.types';
+import { useDevicesPresence } from '@domains/devices/hooks/use-devices-presence';
 import { useDevicesQueryOptions } from '@domains/devices/services/list-devices.http-service';
 import type { CommandPaletteGroup } from '@domains/shared/hooks/use-command-palette-search.types';
 import { useCurrentOrganization } from '@domains/shared/hooks/use-current-organization';
@@ -57,18 +58,18 @@ export function useCommandPaletteSearch(query: string, enabled: boolean) {
     enabled,
   });
 
+  const devices = devicesData?.responseData?.results ?? [];
+  const deviceIds = useMemo(() => devices.map((d) => d.id), [devices]);
+  const { presenceMap } = useDevicesPresence(deviceIds);
+
   const deviceResults = useMemo((): CommandPaletteResult[] => {
-    const results = devicesData?.responseData?.results;
-    if (!results) {
-      return [];
-    }
-    return results.map((device) => ({
+    return devices.map((device) => ({
       id: String(device.id),
       type: 'device' as const,
       label: device.deviceName,
-      lastSeenAt: device.lastSeenAt ?? undefined,
+      isOnline: presenceMap.get(device.id) ?? false,
     }));
-  }, [devicesData]);
+  }, [devices, presenceMap]);
 
   const groups = useMemo((): CommandPaletteGroup[] => {
     if (!query) {

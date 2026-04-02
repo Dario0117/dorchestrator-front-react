@@ -8,21 +8,21 @@ const onlineDevice: CommandPaletteResult = {
   id: 'device-1',
   type: 'device',
   label: 'Online Server',
-  lastSeenAt: new Date().toISOString(),
+  isOnline: true,
 };
 
 const offlineDevice: CommandPaletteResult = {
   id: 'device-2',
   type: 'device',
   label: 'Offline Server',
-  lastSeenAt: new Date(Date.now() - 120_000).toISOString(),
+  isOnline: false,
 };
 
-const deviceWithoutLastSeen: CommandPaletteResult = {
+const deviceNeverConnected: CommandPaletteResult = {
   id: 'device-3',
   type: 'device',
   label: 'Unknown Device',
-  lastSeenAt: undefined,
+  isOnline: false,
 };
 
 const navigationItem: CommandPaletteResult = {
@@ -77,10 +77,10 @@ describe('CommandPaletteResultItem', () => {
     expect(screen.getByLabelText('Offline')).toBeInTheDocument();
   });
 
-  it('renders offline status dot for device without lastSeenAt', () => {
+  it('renders offline status dot for never-connected device', () => {
     renderWithProviders(
       <CommandPaletteResultItem
-        item={deviceWithoutLastSeen}
+        item={deviceNeverConnected}
         active={false}
         onSelect={vi.fn()}
       />,

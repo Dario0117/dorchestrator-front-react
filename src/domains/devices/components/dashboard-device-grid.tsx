@@ -1,23 +1,16 @@
 import { Grid } from '@components/ds/atoms/grid';
 import { DeviceCard } from '@domains/devices/components/device-card';
+import { useDevicesPresence } from '@domains/devices/hooks/use-devices-presence';
 import type { ListDevicesDevice } from '@domains/devices/services/list-devices.http-service';
 import { useMemo } from 'react';
 
-export const ONLINE_THRESHOLD_MS = 30_000;
-
-export function isDeviceOnline(device: ListDevicesDevice) {
-  if (!device.lastSeenAt) {
-    return false;
-  }
-  return (
-    Date.now() - new Date(device.lastSeenAt).getTime() < ONLINE_THRESHOLD_MS
-  );
-}
-
-export function sortDevicesByPriority(devices: ListDevicesDevice[]) {
+export function sortDevicesByPriority(
+  devices: ListDevicesDevice[],
+  presenceMap: Map<number, boolean>,
+) {
   return [...devices].sort((a, b) => {
-    const aOnline = isDeviceOnline(a);
-    const bOnline = isDeviceOnline(b);
+    const aOnline = presenceMap.get(a.id) ?? false;
+    const bOnline = presenceMap.get(b.id) ?? false;
 
     // Offline devices first (problem prioritization)
     if (!aOnline && bOnline) {
@@ -56,9 +49,12 @@ export function DashboardDeviceGrid({
   onOpenTerminal,
   onConfigure,
 }: DashboardDeviceGridProps) {
+  const deviceIds = useMemo(() => devices.map((d) => d.id), [devices]);
+  const { presenceMap } = useDevicesPresence(deviceIds);
+
   const sortedDevices = useMemo(
-    () => sortDevicesByPriority(devices),
-    [devices],
+    () => sortDevicesByPriority(devices, presenceMap),
+    [devices, presenceMap],
   );
 
   return (
@@ -70,6 +66,7 @@ export function DashboardDeviceGrid({
         <DeviceCard
           key={device.id}
           device={device}
+          isOnline={presenceMap.get(device.id) ?? false}
           onRemove={onRemove}
           onExecuteCommand={() => onExecuteCommand(device.id)}
           onOpenTerminal={() => onOpenTerminal(device.id)}
