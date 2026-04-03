@@ -1,4 +1,3 @@
-import type { CommandFormData } from '@domains/commands/forms/validation/command-form.schema';
 import { commandFormSchema } from '@domains/commands/forms/validation/command-form.schema';
 import type { useSubmitCommandMutationType } from '@domains/commands/services/submit-command.http-service';
 import { useAppForm } from '@domains/org/forms/hooks/app-form';
@@ -68,4 +67,3 @@ export function useCommandForm({
 }
 
 export type CommandFormType = ReturnType<typeof useCommandForm>;
-export type CommandFormFieldName = keyof CommandFormData;

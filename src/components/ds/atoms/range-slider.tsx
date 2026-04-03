@@ -13,4 +13,3 @@ function RangeSlider({ ref, ...props }: RangeSliderProps) {
 }
 
 export { RangeSlider };
-export type { RangeSliderProps };

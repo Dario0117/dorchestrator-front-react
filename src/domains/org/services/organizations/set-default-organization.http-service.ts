@@ -11,7 +11,3 @@ export function useSetDefaultOrganizationMutation() {
     },
   });
 }
-
-export type useSetDefaultOrganizationMutationType = ReturnType<
-  typeof useSetDefaultOrganizationMutation
->;

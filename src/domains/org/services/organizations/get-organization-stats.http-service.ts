@@ -18,7 +18,3 @@ export const useOrganizationStatsQueryOptions = (organizationId: string) =>
 export function useOrganizationStatsSuspenseQuery(organizationId: string) {
   return useSuspenseQuery(useOrganizationStatsQueryOptions(organizationId));
 }
-
-export type useOrganizationStatsQueryReturnType = ReturnType<
-  typeof useOrganizationStatsSuspenseQuery
->;

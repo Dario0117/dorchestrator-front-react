@@ -1,4 +1,3 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { $api } from '@/http-service-setup';
 import type { operations } from '@/types/api.generated.types';
 
@@ -24,7 +23,3 @@ export const useShortcutsQueryOptions = (organizationId: string) => {
     },
   );
 };
-
-export function useShortcutsSuspenseQuery(organizationId: string) {
-  return useSuspenseQuery(useShortcutsQueryOptions(organizationId));
-}

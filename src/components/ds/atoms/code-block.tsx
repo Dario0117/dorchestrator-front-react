@@ -62,4 +62,3 @@ function CodeBlock({
 }
 
 export { CodeBlock };
-export type { CodeBlockProps };

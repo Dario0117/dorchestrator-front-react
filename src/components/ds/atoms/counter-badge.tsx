@@ -11,4 +11,3 @@ function CounterBadge({ count }: CounterBadgeProps) {
 }
 
 export { CounterBadge };
-export type { CounterBadgeProps };

@@ -1,5 +1,4 @@
 import { useAppForm } from '@domains/org/forms/hooks/app-form';
-import type { CreateTeamFormData } from '@domains/org/forms/validation/create-team-form.schema';
 import { createTeamFormSchema } from '@domains/org/forms/validation/create-team-form.schema';
 import type { useCreateTeamMutationType } from '@domains/org/services/teams/create-team.http-service';
 import { setFormErrorsFromResponse } from '@lib/api-error.utils';
@@ -45,6 +44,3 @@ export function useCreateTeamForm({
 
   return form;
 }
-
-export type CreateTeamFormType = ReturnType<typeof useCreateTeamForm>;
-export type CreateTeamFormFieldName = keyof CreateTeamFormData;

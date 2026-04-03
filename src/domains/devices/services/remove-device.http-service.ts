@@ -14,7 +14,3 @@ export function useRemoveDeviceMutation() {
     },
   );
 }
-
-export type useRemoveDeviceMutationType = ReturnType<
-  typeof useRemoveDeviceMutation
->;

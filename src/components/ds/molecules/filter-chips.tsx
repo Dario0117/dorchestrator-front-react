@@ -4,7 +4,7 @@ import { HStack } from '@components/ds/atoms/hstack';
 import { SmallText } from '@components/ds/atoms/small-text';
 import { X } from 'lucide-react';
 
-interface FilterChip {
+export interface FilterChip {
   key: string;
   label: string;
   value: string;
@@ -61,5 +61,3 @@ export function FilterChips({
     </HStack>
   );
 }
-
-export type { FilterChipsProps, FilterChip };

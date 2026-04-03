@@ -54,4 +54,3 @@ function SecondaryParagraph({
 }
 
 export { SecondaryParagraph };
-export type { SecondaryParagraphProps };

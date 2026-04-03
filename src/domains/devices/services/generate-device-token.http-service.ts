@@ -6,7 +6,3 @@ export function useGenerateTokenMutation() {
     '/api/v1/{organizationId}/teams/{teamId}/devices',
   );
 }
-
-export type useGenerateTokenMutationType = ReturnType<
-  typeof useGenerateTokenMutation
->;

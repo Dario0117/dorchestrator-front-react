@@ -17,7 +17,3 @@ export function useResolveShareLinkQuery(
     ),
   );
 }
-
-export type useResolveShareLinkQueryReturnType = ReturnType<
-  typeof useResolveShareLinkQuery
->;

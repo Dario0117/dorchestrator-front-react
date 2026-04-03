@@ -64,4 +64,3 @@ function FlexFill({
 }
 
 export { FlexFill };
-export type { FlexFillProps };

@@ -28,10 +28,10 @@ export function useNotificationsSuspenseQuery(
   );
 }
 
-export type useNotificationsSuspenseQueryReturnType = ReturnType<
+type useNotificationsSuspenseQueryReturnType = ReturnType<
   typeof useNotificationsSuspenseQuery
 >;
-export type useNotificationsSuspenseQueryData =
+type useNotificationsSuspenseQueryData =
   useNotificationsSuspenseQueryReturnType['data'];
 export type useNotificationsSuspenseQueryResponseData = NonNullable<
   NonNullable<useNotificationsSuspenseQueryData>['responseData']

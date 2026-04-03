@@ -17,7 +17,3 @@ export function useUnlockTerminalSessionMutation() {
     },
   );
 }
-
-export type useUnlockTerminalSessionMutationType = ReturnType<
-  typeof useUnlockTerminalSessionMutation
->;

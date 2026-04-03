@@ -1,4 +1,3 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { $api } from '@/http-service-setup';
 
 export const useDeviceSandboxConfigQueryOptions = (
@@ -14,16 +13,3 @@ export const useDeviceSandboxConfigQueryOptions = (
       },
     },
   );
-
-export function useDeviceSandboxConfigSuspenseQuery(
-  organizationId: string,
-  deviceId: number,
-) {
-  return useSuspenseQuery(
-    useDeviceSandboxConfigQueryOptions(organizationId, deviceId),
-  );
-}
-
-export type useDeviceSandboxConfigQueryReturnType = ReturnType<
-  typeof useDeviceSandboxConfigSuspenseQuery
->;

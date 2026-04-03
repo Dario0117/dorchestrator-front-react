@@ -103,4 +103,3 @@ function Grid({
 }
 
 export { Grid };
-export type { GridProps };

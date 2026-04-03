@@ -14,4 +14,3 @@ function MetadataLabel({ ref, ...props }: MetadataLabelProps) {
 }
 
 export { MetadataLabel };
-export type { MetadataLabelProps };

@@ -11,4 +11,3 @@ function FileThumbOverlay(props: FileThumbOverlayProps) {
 }
 
 export { FileThumbOverlay };
-export type { FileThumbOverlayProps };

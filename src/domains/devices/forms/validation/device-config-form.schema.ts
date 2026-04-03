@@ -58,5 +58,3 @@ export const deviceConfigFormSchema = z
       path: ['hardCapHours'],
     },
   );
-
-export type DeviceConfigFormData = z.infer<typeof deviceConfigFormSchema>;

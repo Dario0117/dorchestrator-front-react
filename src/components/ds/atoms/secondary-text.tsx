@@ -16,4 +16,3 @@ function SecondaryText({ centered, ref, ...props }: SecondaryTextProps) {
 }
 
 export { SecondaryText };
-export type { SecondaryTextProps };

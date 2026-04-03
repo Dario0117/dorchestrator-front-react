@@ -127,13 +127,3 @@ export {
   TableCell,
   TableCaption,
 };
-export type {
-  TableProps,
-  TableHeaderProps,
-  TableBodyProps,
-  TableFooterProps,
-  TableRowProps,
-  TableHeadProps,
-  TableCellProps,
-  TableCaptionProps,
-};

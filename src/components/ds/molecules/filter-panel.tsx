@@ -97,5 +97,3 @@ export function FilterPanel({
     </Popover>
   );
 }
-
-export type { FilterPanelProps };

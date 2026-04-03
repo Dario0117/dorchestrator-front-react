@@ -17,7 +17,3 @@ export function useListSessionSuggestionsQuery(
     { enabled },
   );
 }
-
-export type useListSessionSuggestionsQueryType = ReturnType<
-  typeof useListSessionSuggestionsQuery
->;

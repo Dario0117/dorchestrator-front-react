@@ -8,4 +8,3 @@ function FormErrorDisplay(props: FormErrorDisplayProps) {
 }
 
 export { FormErrorDisplay };
-export type { FormErrorDisplayProps };

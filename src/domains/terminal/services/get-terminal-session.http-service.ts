@@ -18,10 +18,7 @@ export const useTerminalSessionQueryOptions = (
     },
   );
 
-export function useTerminalSessionQuery(
-  organizationId: string,
-  sessionId: number,
-) {
+function useTerminalSessionQuery(organizationId: string, sessionId: number) {
   return useQuery(useTerminalSessionQueryOptions(organizationId, sessionId));
 }
 
@@ -34,11 +31,10 @@ export function useTerminalSessionSuspenseQuery(
   );
 }
 
-export type useTerminalSessionQueryReturnType = ReturnType<
+type useTerminalSessionQueryReturnType = ReturnType<
   typeof useTerminalSessionQuery
 >;
-export type useTerminalSessionQueryData =
-  useTerminalSessionQueryReturnType['data'];
+type useTerminalSessionQueryData = useTerminalSessionQueryReturnType['data'];
 export type useTerminalSessionQueryResponseData = NonNullable<
   NonNullable<useTerminalSessionQueryData>['responseData']
 >;

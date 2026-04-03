@@ -37,4 +37,3 @@ function CommandPaletteTrigger({ onClick }: CommandPaletteTriggerProps) {
 }
 
 export { CommandPaletteTrigger };
-export type { CommandPaletteTriggerProps };

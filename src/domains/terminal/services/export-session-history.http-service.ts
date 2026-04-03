@@ -1,10 +1,4 @@
 import { $api, fetchClient } from '@/http-service-setup';
-import type { operations } from '@/types/api.generated.types';
-
-type ExportStatusResult =
-  operations['getApiV1ByOrganizationIdTerminalSessionsExportByExportIdStatus']['responses']['200']['content']['application/json']['responseData']['results'];
-
-export type { ExportStatusResult };
 
 export function useInitiateExportMutation() {
   return $api.useMutation(

@@ -3,7 +3,7 @@ import type {
   RecordingEvent,
 } from '@domains/terminal/components/recording-player.types';
 
-export interface VisibleFileEvent {
+interface VisibleFileEvent {
   event: FileEventMetadata;
   timestamp: string;
   eventIndex: number;

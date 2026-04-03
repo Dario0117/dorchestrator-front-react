@@ -11,7 +11,3 @@ export function useDeleteOrganizationMutation() {
     },
   });
 }
-
-export type useDeleteOrganizationMutationType = ReturnType<
-  typeof useDeleteOrganizationMutation
->;

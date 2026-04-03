@@ -116,4 +116,3 @@ function PaginatedFooter({
 }
 
 export { PaginatedFooter };
-export type { PaginatedFooterProps };

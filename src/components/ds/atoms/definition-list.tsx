@@ -14,4 +14,3 @@ function DefinitionList({ ref, ...props }: DefinitionListProps) {
 }
 
 export { DefinitionList };
-export type { DefinitionListProps };

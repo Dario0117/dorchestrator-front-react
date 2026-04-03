@@ -38,5 +38,3 @@ export function useTerminalReauthForm({
 
   return form;
 }
-
-export type TerminalReauthFormType = ReturnType<typeof useTerminalReauthForm>;

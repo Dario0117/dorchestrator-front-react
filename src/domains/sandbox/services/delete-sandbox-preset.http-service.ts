@@ -15,7 +15,3 @@ export function useDeleteSandboxPresetMutation(organizationId: string) {
     },
   );
 }
-
-export type useDeleteSandboxPresetMutationType = ReturnType<
-  typeof useDeleteSandboxPresetMutation
->;

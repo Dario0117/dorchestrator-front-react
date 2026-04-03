@@ -16,4 +16,3 @@ function TextLink({ external, ref, ...props }: TextLinkProps) {
 }
 
 export { TextLink };
-export type { TextLinkProps };

@@ -17,7 +17,3 @@ export function useSubmitSuggestionMutation() {
     },
   );
 }
-
-export type useSubmitSuggestionMutationType = ReturnType<
-  typeof useSubmitSuggestionMutation
->;

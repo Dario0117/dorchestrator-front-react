@@ -6,4 +6,3 @@ const APP_LINK_VARIANT: Record<AppLinkVariant, string> = {
 };
 
 export { APP_LINK_VARIANT };
-export type { AppLinkVariant };

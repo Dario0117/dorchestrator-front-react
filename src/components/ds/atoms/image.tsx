@@ -44,4 +44,3 @@ function Image({
 }
 
 export { Image };
-export type { ImageProps };

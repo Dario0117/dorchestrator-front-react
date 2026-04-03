@@ -17,7 +17,3 @@ export function useShareTerminalSessionMutation() {
     },
   );
 }
-
-export type useShareTerminalSessionMutationType = ReturnType<
-  typeof useShareTerminalSessionMutation
->;

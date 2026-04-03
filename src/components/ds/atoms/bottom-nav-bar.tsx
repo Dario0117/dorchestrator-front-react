@@ -63,8 +63,3 @@ function BottomNavBarButton({ children, ...props }: BottomNavBarButtonProps) {
 }
 
 export { BottomNavBar, BottomNavBarButton, BottomNavBarItem };
-export type {
-  BottomNavBarButtonProps,
-  BottomNavBarItemProps,
-  BottomNavBarProps,
-};

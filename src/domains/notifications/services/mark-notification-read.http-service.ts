@@ -31,10 +31,3 @@ export function useMarkAllNotificationsReadMutation() {
     },
   });
 }
-
-export type useMarkNotificationReadMutationType = ReturnType<
-  typeof useMarkNotificationReadMutation
->;
-export type useMarkAllNotificationsReadMutationType = ReturnType<
-  typeof useMarkAllNotificationsReadMutation
->;

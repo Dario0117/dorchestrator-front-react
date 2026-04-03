@@ -154,17 +154,3 @@ export {
   AlertDialogTitle,
   AlertDialogTrigger,
 };
-export type {
-  AlertDialogActionProps,
-  AlertDialogCancelProps,
-  AlertDialogContentProps,
-  AlertDialogDescriptionProps,
-  AlertDialogFooterProps,
-  AlertDialogHeaderProps,
-  AlertDialogMediaProps,
-  AlertDialogOverlayProps,
-  AlertDialogPortalProps,
-  AlertDialogProps,
-  AlertDialogTitleProps,
-  AlertDialogTriggerProps,
-};

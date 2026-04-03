@@ -97,11 +97,3 @@ export {
   AvatarGroupCount,
   AvatarImage,
 };
-export type {
-  AvatarBadgeProps,
-  AvatarFallbackProps,
-  AvatarGroupCountProps,
-  AvatarGroupProps,
-  AvatarImageProps,
-  AvatarProps,
-};

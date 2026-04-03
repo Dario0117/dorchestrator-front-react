@@ -34,4 +34,3 @@ function PageHeader({ position, shadow, ref, ...props }: PageHeaderProps) {
 }
 
 export { PageHeader };
-export type { PageHeaderProps };

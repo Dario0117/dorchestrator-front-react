@@ -6,7 +6,3 @@ export function useSetDeviceDefaultPresetMutation() {
     '/api/v1/{organizationId}/devices/{deviceId}/sandbox/default-preset',
   );
 }
-
-export type useSetDeviceDefaultPresetMutationType = ReturnType<
-  typeof useSetDeviceDefaultPresetMutation
->;

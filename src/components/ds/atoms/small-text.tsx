@@ -96,4 +96,3 @@ function SmallText({
 }
 
 export { SmallText };
-export type { SmallTextProps };

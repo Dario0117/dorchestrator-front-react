@@ -51,5 +51,3 @@ export function useTerminalConfigForm({
 
   return form;
 }
-
-export type TerminalConfigFormType = ReturnType<typeof useTerminalConfigForm>;

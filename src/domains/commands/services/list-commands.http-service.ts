@@ -63,11 +63,10 @@ export function useCommandsSuspenseQuery(
   );
 }
 
-export type useCommandsSuspenseQueryReturnType = ReturnType<
+type useCommandsSuspenseQueryReturnType = ReturnType<
   typeof useCommandsSuspenseQuery
 >;
-export type useCommandsSuspenseQueryData =
-  useCommandsSuspenseQueryReturnType['data'];
+type useCommandsSuspenseQueryData = useCommandsSuspenseQueryReturnType['data'];
 export type useCommandsSuspenseQueryResponseData = NonNullable<
   NonNullable<useCommandsSuspenseQueryData>['responseData']
 >;

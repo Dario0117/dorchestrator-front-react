@@ -19,4 +19,3 @@ function Form({ gap = 'md', innerSpaceY, ref, ...props }: FormProps) {
 }
 
 export { Form };
-export type { FormProps };

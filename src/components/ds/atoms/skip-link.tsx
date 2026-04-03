@@ -14,4 +14,3 @@ function SkipLink({ ref, ...props }: SkipLinkProps) {
 }
 
 export { SkipLink };
-export type { SkipLinkProps };

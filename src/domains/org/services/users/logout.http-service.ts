@@ -18,5 +18,3 @@ export function useLogoutMutation({
     },
   });
 }
-
-export type useLogoutMutationType = ReturnType<typeof useLogoutMutation>;

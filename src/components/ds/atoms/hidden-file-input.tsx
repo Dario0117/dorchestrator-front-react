@@ -13,4 +13,3 @@ function HiddenFileInput({ ref, ...props }: HiddenFileInputProps) {
 }
 
 export { HiddenFileInput };
-export type { HiddenFileInputProps };

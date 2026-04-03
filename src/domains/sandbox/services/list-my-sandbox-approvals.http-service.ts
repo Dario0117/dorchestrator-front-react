@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { $api } from '@/http-service-setup';
 
-export const useListMySandboxApprovalsQueryOptions = (
+const useListMySandboxApprovalsQueryOptions = (
   organizationId: string,
   teamId: string,
   params: { page: number; size: number },
@@ -29,9 +29,3 @@ export function useListMySandboxApprovalsSuspenseQuery(
     useListMySandboxApprovalsQueryOptions(organizationId, teamId, params),
   );
 }
-
-export type useListMySandboxApprovalsSuspenseQueryReturnType = ReturnType<
-  typeof useListMySandboxApprovalsSuspenseQuery
->;
-export type useListMySandboxApprovalsSuspenseQueryData =
-  useListMySandboxApprovalsSuspenseQueryReturnType['data'];

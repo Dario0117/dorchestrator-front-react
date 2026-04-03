@@ -17,7 +17,3 @@ export function useUnshareTerminalSessionMutation() {
     },
   );
 }
-
-export type useUnshareTerminalSessionMutationType = ReturnType<
-  typeof useUnshareTerminalSessionMutation
->;

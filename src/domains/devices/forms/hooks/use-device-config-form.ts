@@ -58,5 +58,3 @@ export function useDeviceConfigForm({
 
   return form;
 }
-
-export type DeviceConfigFormType = ReturnType<typeof useDeviceConfigForm>;

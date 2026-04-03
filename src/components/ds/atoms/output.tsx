@@ -23,4 +23,3 @@ function Output({ variant = 'inline', ref, ...props }: OutputProps) {
 }
 
 export { Output };
-export type { OutputProps };

@@ -38,16 +38,12 @@ export function useDevicesSuspenseQuery(
   );
 }
 
-export type useDevicesSuspenseQueryReturnType = ReturnType<
+type useDevicesSuspenseQueryReturnType = ReturnType<
   typeof useDevicesSuspenseQuery
 >;
-export type useDevicesSuspenseQueryData =
-  useDevicesSuspenseQueryReturnType['data'];
-export type useDevicesSuspenseQueryResponseData = NonNullable<
+type useDevicesSuspenseQueryData = useDevicesSuspenseQueryReturnType['data'];
+type useDevicesSuspenseQueryResponseData = NonNullable<
   NonNullable<useDevicesSuspenseQueryData>['responseData']
->;
-export type useDevicesSuspenseQueryResponseErrors = NonNullable<
-  NonNullable<useDevicesSuspenseQueryData>['responseErrors']
 >;
 export type ListDevicesDevice =
   NonNullable<useDevicesSuspenseQueryResponseData>['results'][0];

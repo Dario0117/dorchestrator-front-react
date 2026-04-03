@@ -10,7 +10,3 @@ export function useSetDefaultTeamMutation() {
     },
   });
 }
-
-export type useSetDefaultTeamMutationType = ReturnType<
-  typeof useSetDefaultTeamMutation
->;

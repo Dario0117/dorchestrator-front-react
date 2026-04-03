@@ -31,4 +31,3 @@ function AlertBanner({
 }
 
 export { AlertBanner };
-export type { AlertBannerProps };

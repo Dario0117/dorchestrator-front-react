@@ -51,10 +51,10 @@ export function useAuditLogsSuspenseQuery(
   return useSuspenseQuery(useAuditLogsQueryOptions(organizationId, params));
 }
 
-export type useAuditLogsSuspenseQueryReturnType = ReturnType<
+type useAuditLogsSuspenseQueryReturnType = ReturnType<
   typeof useAuditLogsSuspenseQuery
 >;
-export type useAuditLogsSuspenseQueryData =
+type useAuditLogsSuspenseQueryData =
   useAuditLogsSuspenseQueryReturnType['data'];
 export type useAuditLogsSuspenseQueryResponseData = NonNullable<
   NonNullable<useAuditLogsSuspenseQueryData>['responseData']

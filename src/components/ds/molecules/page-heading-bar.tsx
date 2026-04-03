@@ -17,5 +17,3 @@ export function PageHeadingBar({ children, ...props }: PageHeadingBarProps) {
     </ResponsiveRow>
   );
 }
-
-export type { PageHeadingBarProps };

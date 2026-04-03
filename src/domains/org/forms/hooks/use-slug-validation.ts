@@ -8,7 +8,7 @@ export const SlugStatus = {
   TAKEN: 'taken',
 } as const;
 
-export type SlugStatusType = (typeof SlugStatus)[keyof typeof SlugStatus];
+type SlugStatusType = (typeof SlugStatus)[keyof typeof SlugStatus];
 
 export function useSlugValidation() {
   const checkSlugMutation = useCheckSlugAvailabilityMutation();

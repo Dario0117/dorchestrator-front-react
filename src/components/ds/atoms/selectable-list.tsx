@@ -37,4 +37,3 @@ function SelectableListItem({
 }
 
 export { SelectableList, SelectableListItem };
-export type { SelectableListItemProps, SelectableListProps };

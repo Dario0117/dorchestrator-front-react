@@ -12,7 +12,7 @@ type BookmarkItem = ListBookmarksResponse['responseData']['results'][0];
 
 export type { BookmarkItem };
 
-export type BookmarkQueryParams = Partial<
+type BookmarkQueryParams = Partial<
   ListBookmarksOperation['parameters']['query']
 >;
 

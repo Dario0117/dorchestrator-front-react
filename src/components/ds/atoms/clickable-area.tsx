@@ -30,4 +30,3 @@ function ClickableArea({ size, rounded, ref, ...props }: ClickableAreaProps) {
 }
 
 export { ClickableArea };
-export type { ClickableAreaProps };

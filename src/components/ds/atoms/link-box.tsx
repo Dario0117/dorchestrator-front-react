@@ -25,4 +25,3 @@ function LinkBox({ variant, ref, ...props }: LinkBoxProps) {
 }
 
 export { LinkBox };
-export type { LinkBoxProps };

@@ -247,26 +247,9 @@ export const wsMessageSchema = z.discriminatedUnion('type', [
 // =============================================================================
 
 export {
-  ptyInputSchema,
-  ptyOutputSchema,
-  ptyResizeSchema,
-  sessionCreateSchema,
-  sessionCloseSchema,
-  sessionLockSchema,
-  sessionUnlockSchema,
-  sessionWarningSchema,
-  sessionExtendedSchema,
-  sessionStatusSchema,
-  commandNotifySchema,
-  commandDispatchSchema,
   viewerJoinSchema,
   viewerLeaveSchema,
-  viewerListRequestSchema,
   viewerListSchema,
-  suggestionNotifySchema,
-  suggestionAcceptedSchema,
-  suggestionDismissedSchema,
-  fileTransferSchema,
   heartbeatPingSchema,
   heartbeatPongSchema,
   errorMessageSchema,
@@ -278,33 +261,9 @@ export {
 
 export type WsMessage = z.infer<typeof wsMessageSchema>;
 
-export type PtyInputMessage = z.infer<typeof ptyInputSchema>;
-export type PtyOutputMessage = z.infer<typeof ptyOutputSchema>;
-export type PtyResizeMessage = z.infer<typeof ptyResizeSchema>;
-export type SessionCreateMessage = z.infer<typeof sessionCreateSchema>;
-export type SessionCloseMessage = z.infer<typeof sessionCloseSchema>;
-export type SessionLockMessage = z.infer<typeof sessionLockSchema>;
-export type SessionUnlockMessage = z.infer<typeof sessionUnlockSchema>;
-export type SessionWarningMessage = z.infer<typeof sessionWarningSchema>;
-export type SessionExtendedMessage = z.infer<typeof sessionExtendedSchema>;
-export type SessionStatusMessage = z.infer<typeof sessionStatusSchema>;
-export type CommandNotifyMessage = z.infer<typeof commandNotifySchema>;
-export type CommandDispatchMessage = z.infer<typeof commandDispatchSchema>;
 export type ViewerJoinMessage = z.infer<typeof viewerJoinSchema>;
 export type ViewerLeaveMessage = z.infer<typeof viewerLeaveSchema>;
-export type ViewerListRequestMessage = z.infer<typeof viewerListRequestSchema>;
 export type ViewerListMessage = z.infer<typeof viewerListSchema>;
-export type SuggestionNotifyMessage = z.infer<typeof suggestionNotifySchema>;
-export type SuggestionAcceptedMessage = z.infer<
-  typeof suggestionAcceptedSchema
->;
-export type SuggestionDismissedMessage = z.infer<
-  typeof suggestionDismissedSchema
->;
-export type FileTransferMessage = z.infer<typeof fileTransferSchema>;
-export type HeartbeatPingMessage = z.infer<typeof heartbeatPingSchema>;
-export type HeartbeatPongMessage = z.infer<typeof heartbeatPongSchema>;
-export type ErrorMessage = z.infer<typeof errorMessageSchema>;
 
 export type WsMessageType = WsMessage['type'];
 

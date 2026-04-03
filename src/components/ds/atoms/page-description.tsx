@@ -13,5 +13,3 @@ export function PageDescription({ children, ...props }: PageDescriptionProps) {
     </p>
   );
 }
-
-export type { PageDescriptionProps };

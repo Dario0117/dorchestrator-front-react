@@ -16,4 +16,3 @@ function DefinitionValue({ mono, ref, ...props }: DefinitionValueProps) {
 }
 
 export { DefinitionValue };
-export type { DefinitionValueProps };

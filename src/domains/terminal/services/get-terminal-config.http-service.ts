@@ -13,9 +13,3 @@ export const useGetTerminalConfigQueryOptions = (organizationId: string) =>
 export function useGetTerminalConfigSuspenseQuery(organizationId: string) {
   return useSuspenseQuery(useGetTerminalConfigQueryOptions(organizationId));
 }
-
-export type useGetTerminalConfigSuspenseQueryReturnType = ReturnType<
-  typeof useGetTerminalConfigSuspenseQuery
->;
-export type useGetTerminalConfigSuspenseQueryData =
-  useGetTerminalConfigSuspenseQueryReturnType['data'];

@@ -7,7 +7,7 @@ export type NavigationId =
   | 'nav-audit-logs'
   | 'nav-settings';
 
-export type ActionId = 'action-new-command' | 'action-new-session';
+type ActionId = 'action-new-command' | 'action-new-session';
 
 export type DeviceActionId = 'terminal' | 'command' | 'settings';
 

@@ -6,7 +6,3 @@ export function useCreateTerminalSessionMutation() {
     '/api/v1/{organizationId}/teams/{teamId}/terminal/sessions',
   );
 }
-
-export type useCreateTerminalSessionMutationType = ReturnType<
-  typeof useCreateTerminalSessionMutation
->;

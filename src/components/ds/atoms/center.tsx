@@ -100,4 +100,3 @@ function Center({
 }
 
 export { Center };
-export type { CenterProps };

@@ -87,4 +87,3 @@ function Flex({
 }
 
 export { Flex };
-export type { FlexProps, FlexDirection, FlexWrap };

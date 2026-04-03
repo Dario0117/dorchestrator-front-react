@@ -18,7 +18,3 @@ export function useRestoreRecordingMutation() {
     },
   );
 }
-
-export type useRestoreRecordingMutationType = ReturnType<
-  typeof useRestoreRecordingMutation
->;

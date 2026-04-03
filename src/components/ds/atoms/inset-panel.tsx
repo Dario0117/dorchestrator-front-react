@@ -33,4 +33,3 @@ function InsetPanel({
 }
 
 export { InsetPanel };
-export type { InsetPanelProps };

@@ -170,12 +170,3 @@ export {
   CardContent,
   CardFooter,
 };
-export type {
-  CardProps,
-  CardHeaderProps,
-  CardTitleProps,
-  CardDescriptionProps,
-  CardActionProps,
-  CardContentProps,
-  CardFooterProps,
-};

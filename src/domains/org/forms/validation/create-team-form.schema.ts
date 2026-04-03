@@ -25,6 +25,7 @@ export type CreateTeamFormData = z.infer<typeof createTeamFormSchema>;
 
 // Compile-time check: if the API contract changes, this will error with
 // "Type 'false' does not satisfy the constraint 'true'"
+/** @public */
 export type FormApiSync = Expect<
   IsExact<CreateTeamFormData, ApiRequestBody<'postApiV1ByOrganizationIdTeams'>>
 >;

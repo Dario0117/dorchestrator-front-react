@@ -17,4 +17,3 @@ function ProgressBar({ value, max = 100 }: ProgressBarProps) {
 }
 
 export { ProgressBar };
-export type { ProgressBarProps };

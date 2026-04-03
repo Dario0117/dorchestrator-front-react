@@ -1,6 +1,5 @@
 import { useAppForm } from '@domains/org/forms/hooks/app-form';
 import type { UseResetPasswordFormProps } from '@domains/org/forms/hooks/use-reset-password-form.types';
-import type { ResetPasswordFormData } from '@domains/org/forms/validation/reset-password-form.schema';
 import { resetPasswordFormSchema } from '@domains/org/forms/validation/reset-password-form.schema';
 import { logError } from '@lib/logger.utils';
 
@@ -63,6 +62,3 @@ export function useResetPasswordForm({
   });
   return form;
 }
-
-export type ResetPasswordFormType = ReturnType<typeof useResetPasswordForm>;
-export type ResetPasswordFormFieldName = keyof ResetPasswordFormData;

@@ -6,7 +6,3 @@ export function useLeaveOrganizationMutation() {
     '/api/v1/{organizationId}/organization/leave',
   );
 }
-
-export type useLeaveOrganizationMutationType = ReturnType<
-  typeof useLeaveOrganizationMutation
->;

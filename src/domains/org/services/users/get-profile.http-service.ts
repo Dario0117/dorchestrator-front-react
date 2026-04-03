@@ -19,7 +19,3 @@ export function useProfileSuspendedQuery() {
   }
   return { ...query, data: profile };
 }
-
-export type useProfileQueryReturnType = ReturnType<
-  typeof useProfileSuspendedQuery
->;

@@ -58,8 +58,3 @@ function CollapsibleContent({ animated, ...props }: CollapsibleContentProps) {
 }
 
 export { Collapsible, CollapsibleContent, CollapsibleTrigger };
-export type {
-  CollapsibleContentProps,
-  CollapsibleProps,
-  CollapsibleTriggerProps,
-};

@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-export const updatePasswordFormBaseSchema = z.object({
+const updatePasswordFormBaseSchema = z.object({
   password: z.string().trim().min(1, 'Password is required'),
   confirm: z.string().min(1, 'Please confirm your password'),
 });

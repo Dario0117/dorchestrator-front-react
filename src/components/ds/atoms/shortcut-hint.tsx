@@ -16,4 +16,3 @@ function ShortcutHint({ keys }: ShortcutHintProps) {
 }
 
 export { ShortcutHint };
-export type { ShortcutHintProps };

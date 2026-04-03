@@ -15,4 +15,3 @@ function DownloadLink({ ref, ...props }: DownloadLinkProps) {
 }
 
 export { DownloadLink };
-export type { DownloadLinkProps };

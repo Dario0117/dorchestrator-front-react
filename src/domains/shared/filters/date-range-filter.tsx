@@ -1,6 +1,6 @@
 import { SelectFilter } from '@domains/shared/filters/select-filter';
 
-export interface DatePreset {
+interface DatePreset {
   value: string;
   label: string;
   offsetMs: number;

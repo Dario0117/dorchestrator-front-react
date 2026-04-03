@@ -4,11 +4,11 @@ import { z } from 'zod';
 // Server → Browser messages
 // =============================================================================
 
-export const notificationChangedSchema = z.object({
+const notificationChangedSchema = z.object({
   type: z.literal('notification:changed'),
 });
 
-export const eventsHeartbeatPingSchema = z.object({
+const eventsHeartbeatPingSchema = z.object({
   type: z.literal('heartbeat:ping'),
 });
 
@@ -16,7 +16,7 @@ export const eventsHeartbeatPingSchema = z.object({
 // Browser → Server messages
 // =============================================================================
 
-export const eventsHeartbeatPongSchema = z.object({
+const eventsHeartbeatPongSchema = z.object({
   type: z.literal('heartbeat:pong'),
 });
 

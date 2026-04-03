@@ -49,5 +49,3 @@ export const terminalConfigFormSchema = z
       path: ['hardCapHours'],
     },
   );
-
-export type TerminalConfigFormData = z.infer<typeof terminalConfigFormSchema>;

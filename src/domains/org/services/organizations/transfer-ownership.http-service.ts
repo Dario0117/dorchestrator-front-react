@@ -21,7 +21,3 @@ export function useTransferOwnershipMutation() {
     },
   );
 }
-
-export type useTransferOwnershipMutationType = ReturnType<
-  typeof useTransferOwnershipMutation
->;

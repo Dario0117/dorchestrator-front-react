@@ -122,4 +122,3 @@ function Scrollable({
 }
 
 export { Scrollable };
-export type { ScrollableProps };

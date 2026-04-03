@@ -131,4 +131,3 @@ function Positioned({
 }
 
 export { Positioned };
-export type { PositionedProps };

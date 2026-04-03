@@ -1,6 +1,5 @@
 import { useAppForm } from '@domains/org/forms/hooks/app-form';
 import type { UseRegisterFormProps } from '@domains/org/forms/hooks/use-register-form.types';
-import type { RegisterFormData } from '@domains/org/forms/validation/register-form.schema';
 import { registerFormSchema } from '@domains/org/forms/validation/register-form.schema';
 import { logError } from '@lib/logger.utils';
 
@@ -73,6 +72,3 @@ export function useRegisterForm({
   });
   return form;
 }
-
-export type RegisterFormType = ReturnType<typeof useRegisterForm>;
-export type RegisterFormFieldName = keyof RegisterFormData;

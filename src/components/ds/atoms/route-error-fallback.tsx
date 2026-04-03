@@ -41,5 +41,3 @@ export function RouteErrorFallback({
     </PageSection>
   );
 }
-
-export type { RouteErrorFallbackProps };

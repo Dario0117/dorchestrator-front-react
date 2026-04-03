@@ -20,7 +20,7 @@ export type KeyCategory =
   | 'navigation'
   | 'function';
 
-export interface KeyDefinition {
+interface KeyDefinition {
   label: string;
   key: string;
   category: KeyCategory;

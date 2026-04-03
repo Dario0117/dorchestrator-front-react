@@ -22,5 +22,3 @@ export function PageSection({
     </section>
   );
 }
-
-export type { PageSectionProps };

@@ -5,9 +5,20 @@
   "entry": ["src/main.tsx", "scripts/**/*.ts", "testsSetup.ts"],
   "project": ["src/**/*.{ts,tsx}", "scripts/**/*.ts"],
 
+  // Files to exclude from analysis
+  "ignore": ["src/types/api.generated.types.ts", "src/components/ui/**"],
+
   "ignoreDependencies": [
     // Used via PostCSS/Vite config, not imported directly
     "tailwindcss",
-    "tw-animate-css"
-  ]
+    "tw-animate-css",
+    // Imported via CSS @import in main.css
+    "@fontsource-variable/jetbrains-mono",
+    "@fontsource-variable/plus-jakarta-sans",
+    // CLI tool used via mise exec -- bunx shadcn
+    "shadcn"
+  ],
+
+  // Don't report exported types/values that are used within the same file
+  "ignoreExportsUsedInFile": true
 }

@@ -14,4 +14,3 @@ function TableWrapper({ ref, ...props }: TableWrapperProps) {
 }
 
 export { TableWrapper };
-export type { TableWrapperProps };

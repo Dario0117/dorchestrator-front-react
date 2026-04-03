@@ -40,4 +40,3 @@ function ResponsiveRow({
 }
 
 export { ResponsiveRow };
-export type { ResponsiveRowProps };

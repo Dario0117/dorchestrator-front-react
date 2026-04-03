@@ -18,4 +18,3 @@ function ActivityBadge({ count }: ActivityBadgeProps) {
 }
 
 export { ActivityBadge };
-export type { ActivityBadgeProps };

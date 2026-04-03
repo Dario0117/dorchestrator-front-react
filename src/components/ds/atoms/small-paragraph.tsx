@@ -64,4 +64,3 @@ function SmallParagraph({
 }
 
 export { SmallParagraph };
-export type { SmallParagraphProps };

@@ -9,4 +9,3 @@ function Textarea(props: TextareaProps) {
 }
 
 export { Textarea };
-export type { TextareaProps };

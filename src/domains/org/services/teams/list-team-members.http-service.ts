@@ -2,9 +2,7 @@ import { queryClient } from '@domains/shared/context/query.provider';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { $api } from '@/http-service-setup';
 
-export const TEAM_MEMBERS_QUERY_KEY = 'team-members' as const;
-
-export const useListTeamMembersQueryOptions = (
+const useListTeamMembersQueryOptions = (
   organizationId: string,
   teamId: string,
 ) =>
@@ -23,10 +21,7 @@ export function useListTeamMembersSuspenseQuery(
   );
 }
 
-export function getListTeamMembersQueryKey(
-  organizationId: string,
-  teamId: string,
-) {
+function getListTeamMembersQueryKey(organizationId: string, teamId: string) {
   return useListTeamMembersQueryOptions(organizationId, teamId).queryKey;
 }
 

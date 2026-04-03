@@ -1,6 +1,5 @@
 import { useAppForm } from '@domains/org/forms/hooks/app-form';
 import type { UseLoginFormProps } from '@domains/org/forms/hooks/use-login-form.types';
-import type { LoginFormData } from '@domains/org/forms/validation/login-form.schema';
 import { loginFormSchema } from '@domains/org/forms/validation/login-form.schema';
 import { logError } from '@lib/logger.utils';
 
@@ -65,6 +64,3 @@ export function useLoginForm({
 
   return form;
 }
-
-export type LoginFormType = ReturnType<typeof useLoginForm>;
-export type LoginFormFieldName = keyof LoginFormData;

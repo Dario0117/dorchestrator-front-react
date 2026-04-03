@@ -32,7 +32,3 @@ export function useCheckSlugAvailabilityMutation() {
     },
   });
 }
-
-export type useCheckSlugAvailabilityMutationType = ReturnType<
-  typeof useCheckSlugAvailabilityMutation
->;

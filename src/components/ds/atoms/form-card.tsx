@@ -9,4 +9,3 @@ function FormCard(props: FormCardProps) {
 }
 
 export { FormCard };
-export type { FormCardProps };

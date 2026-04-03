@@ -68,6 +68,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/{organizationId}/agent/heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postApiV1ByOrganizationIdAgentHeartbeat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/{organizationId}/agent/offline": {
         parameters: {
             query?: never;
@@ -2721,7 +2737,7 @@ export interface operations {
                                     pluginConfig: {
                                         [key: string]: unknown;
                                     } | null;
-                                } | null;
+                                };
                             }[];
                             hasNext: boolean;
                             hasPrevious: boolean;
@@ -2729,6 +2745,103 @@ export interface operations {
                             totalPages: number;
                             page: number;
                             size: number;
+                        };
+                        responseErrors: null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 401 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: null;
+                        responseErrors: {
+                            nonFieldErrors: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    postApiV1ByOrganizationIdAgentHeartbeat: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        responseData: {
+                            results: string[];
                         };
                         responseErrors: null;
                     };

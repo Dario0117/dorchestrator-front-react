@@ -35,4 +35,3 @@ function ListItem({ ref, ...props }: ListItemProps) {
 }
 
 export { List, ListItem };
-export type { ListProps, ListItemProps };

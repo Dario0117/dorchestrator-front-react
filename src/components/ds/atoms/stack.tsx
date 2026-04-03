@@ -100,4 +100,3 @@ function Stack({
 }
 
 export { Stack };
-export type { StackProps };

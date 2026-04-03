@@ -1,6 +1,5 @@
 import { useAppForm } from '@domains/org/forms/hooks/app-form';
 import type { UseUpdatePasswordFormProps } from '@domains/org/forms/hooks/use-update-password-form.types';
-import type { UpdatePasswordFormData } from '@domains/org/forms/validation/update-password-form.schema';
 import { updatePasswordFormSchema } from '@domains/org/forms/validation/update-password-form.schema';
 import { logError } from '@lib/logger.utils';
 
@@ -69,6 +68,3 @@ export function useUpdatePasswordForm({
   });
   return form;
 }
-
-export type UpdatePasswordFormType = ReturnType<typeof useUpdatePasswordForm>;
-export type UpdatePasswordFormFieldName = keyof UpdatePasswordFormData;

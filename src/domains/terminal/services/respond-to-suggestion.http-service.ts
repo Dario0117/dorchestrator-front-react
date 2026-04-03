@@ -6,7 +6,3 @@ export function useRespondToSuggestionMutation() {
     '/api/v1/{organizationId}/terminal/sessions/{sessionId}/suggestions/{suggestionId}/respond',
   );
 }
-
-export type useRespondToSuggestionMutationType = ReturnType<
-  typeof useRespondToSuggestionMutation
->;

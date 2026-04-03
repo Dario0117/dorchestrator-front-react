@@ -18,4 +18,3 @@ function Separator({ stretch, ...props }: SeparatorProps) {
 }
 
 export { Separator };
-export type { SeparatorProps };

@@ -47,10 +47,10 @@ export function useGetCommandSuspenseQuery(
   );
 }
 
-export type useGetCommandSuspenseQueryReturnType = ReturnType<
+type useGetCommandSuspenseQueryReturnType = ReturnType<
   typeof useGetCommandSuspenseQuery
 >;
-export type useGetCommandSuspenseQueryData =
+type useGetCommandSuspenseQueryData =
   useGetCommandSuspenseQueryReturnType['data'];
 export type useGetCommandSuspenseQueryResponseData = NonNullable<
   NonNullable<useGetCommandSuspenseQueryData>['responseData']

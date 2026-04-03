@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-export const hostEntrySchema = z.object({
+const hostEntrySchema = z.object({
   id: z.string(),
   host: z.string().min(1, 'Host is required'),
   ports: z.string().optional(),
@@ -21,5 +21,3 @@ export const sandboxConfigFormSchema = z.object({
   denyExternal: z.array(hostEntrySchema).optional(),
   denyLocal: z.array(hostEntrySchema).optional(),
 });
-
-export type SandboxConfigFormData = z.infer<typeof sandboxConfigFormSchema>;

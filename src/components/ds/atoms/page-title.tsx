@@ -10,5 +10,3 @@ export function PageTitle({ children, ...props }: PageTitleProps) {
     </h1>
   );
 }
-
-export type { PageTitleProps };

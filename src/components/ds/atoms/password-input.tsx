@@ -11,4 +11,3 @@ function PasswordInput(props: PasswordInputProps) {
 }
 
 export { PasswordInput };
-export type { PasswordInputProps };

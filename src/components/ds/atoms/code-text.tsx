@@ -21,4 +21,3 @@ function CodeText({ truncate, block, ref, ...props }: CodeTextProps) {
 }
 
 export { CodeText };
-export type { CodeTextProps };

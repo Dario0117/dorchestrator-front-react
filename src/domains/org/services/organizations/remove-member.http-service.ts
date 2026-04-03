@@ -17,7 +17,3 @@ export function useRemoveMemberMutation() {
     },
   );
 }
-
-export type useRemoveMemberMutationType = ReturnType<
-  typeof useRemoveMemberMutation
->;

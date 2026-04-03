@@ -8,7 +8,7 @@ type SandboxTypesResponse =
 export type SandboxTypeItem =
   SandboxTypesResponse['responseData']['results'][number];
 
-export const useSandboxTypesQueryOptions = (organizationId: string) =>
+const useSandboxTypesQueryOptions = (organizationId: string) =>
   $api.queryOptions('get', '/api/v1/{organizationId}/sandbox/types', {
     params: {
       path: { organizationId },
@@ -18,7 +18,3 @@ export const useSandboxTypesQueryOptions = (organizationId: string) =>
 export function useSandboxTypesSuspenseQuery(organizationId: string) {
   return useSuspenseQuery(useSandboxTypesQueryOptions(organizationId));
 }
-
-export type useSandboxTypesSuspenseQueryReturnType = ReturnType<
-  typeof useSandboxTypesSuspenseQuery
->;

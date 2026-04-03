@@ -18,7 +18,3 @@ export const useListSandboxPresetsQueryOptions = (organizationId: string) =>
 export function useListSandboxPresetsSuspenseQuery(organizationId: string) {
   return useSuspenseQuery(useListSandboxPresetsQueryOptions(organizationId));
 }
-
-export type useListSandboxPresetsSuspenseQueryReturnType = ReturnType<
-  typeof useListSandboxPresetsSuspenseQuery
->;

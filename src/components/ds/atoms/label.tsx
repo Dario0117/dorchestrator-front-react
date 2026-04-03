@@ -9,4 +9,3 @@ function Label(props: LabelProps) {
 }
 
 export { Label };
-export type { LabelProps };

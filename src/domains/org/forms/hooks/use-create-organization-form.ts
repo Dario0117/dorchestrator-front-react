@@ -1,5 +1,4 @@
 import { useAppForm } from '@domains/org/forms/hooks/app-form';
-import type { CreateOrganizationFormData } from '@domains/org/forms/validation/create-organization-form.schema';
 import { createOrganizationFormSchema } from '@domains/org/forms/validation/create-organization-form.schema';
 import type { useCreateOrganizationMutationType } from '@domains/org/services/organizations/create-organization.http-service';
 import { setFormErrorsFromResponse } from '@lib/api-error.utils';
@@ -44,8 +43,3 @@ export function useCreateOrganizationForm({
 
   return form;
 }
-
-export type CreateOrganizationFormType = ReturnType<
-  typeof useCreateOrganizationForm
->;
-export type CreateOrganizationFormFieldName = keyof CreateOrganizationFormData;

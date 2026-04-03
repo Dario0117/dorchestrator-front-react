@@ -34,34 +34,4 @@ type RequestOverrideBody =
 
 type RequestTypeFromApi = RequestOverrideBody['requestType'];
 
-export const APPROVAL_REQUEST_TYPES = [
-  'command',
-  'terminal',
-] as const satisfies readonly RequestTypeFromApi[];
-
 export type ApprovalRequestType = RequestTypeFromApi;
-
-// --- Approval Decision ---
-
-type ReviewApprovalBody =
-  operations['patchApiV1ByOrganizationIdSandboxApproval-requestsByApprovalId']['requestBody']['content']['application/json'];
-
-type ApprovalDecisionFromApi = ReviewApprovalBody['decision'];
-
-export const APPROVAL_DECISIONS = [
-  'approved',
-  'rejected',
-] as const satisfies readonly ApprovalDecisionFromApi[];
-
-export type ApprovalDecision = ApprovalDecisionFromApi;
-
-// --- Sandbox Category ---
-
-type DeviceSandboxConfigResponse =
-  operations['getApiV1ByOrganizationIdDevicesByDeviceIdSandboxConfig']['responses']['200']['content']['application/json'];
-
-type DeviceSandboxConfigResults = NonNullable<
-  DeviceSandboxConfigResponse['responseData']['results']
->;
-
-export type SandboxCategory = DeviceSandboxConfigResults['category'];

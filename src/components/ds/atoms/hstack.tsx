@@ -108,4 +108,3 @@ function HStack({
 }
 
 export { HStack };
-export type { HStackProps };

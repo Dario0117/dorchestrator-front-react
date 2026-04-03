@@ -17,7 +17,3 @@ export function useExtendTerminalSessionMutation() {
     },
   );
 }
-
-export type useExtendTerminalSessionMutationType = ReturnType<
-  typeof useExtendTerminalSessionMutation
->;

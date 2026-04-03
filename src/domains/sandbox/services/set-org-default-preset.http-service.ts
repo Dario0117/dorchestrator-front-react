@@ -15,7 +15,3 @@ export function useSetOrgDefaultPresetMutation(organizationId: string) {
     },
   );
 }
-
-export type useSetOrgDefaultPresetMutationType = ReturnType<
-  typeof useSetOrgDefaultPresetMutation
->;

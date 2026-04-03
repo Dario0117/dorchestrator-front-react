@@ -123,15 +123,3 @@ export {
   DialogTitle,
   DialogTrigger,
 };
-export type {
-  DialogCloseProps,
-  DialogContentProps,
-  DialogDescriptionProps,
-  DialogFooterProps,
-  DialogHeaderProps,
-  DialogOverlayProps,
-  DialogPortalProps,
-  DialogProps,
-  DialogTitleProps,
-  DialogTriggerProps,
-};

@@ -66,10 +66,10 @@ export function useTerminalSessionsSuspenseQuery(
   );
 }
 
-export type useTerminalSessionsSuspenseQueryReturnType = ReturnType<
+type useTerminalSessionsSuspenseQueryReturnType = ReturnType<
   typeof useTerminalSessionsSuspenseQuery
 >;
-export type useTerminalSessionsSuspenseQueryData =
+type useTerminalSessionsSuspenseQueryData =
   useTerminalSessionsSuspenseQueryReturnType['data'];
 export type useTerminalSessionsSuspenseQueryResponseData = NonNullable<
   NonNullable<useTerminalSessionsSuspenseQueryData>['responseData']

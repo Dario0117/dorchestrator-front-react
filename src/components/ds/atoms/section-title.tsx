@@ -28,5 +28,3 @@ export function SectionTitle({
     </h1>
   );
 }
-
-export type { SectionTitleProps };

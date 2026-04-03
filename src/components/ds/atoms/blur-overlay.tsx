@@ -13,4 +13,3 @@ function BlurOverlay({ bg = 'muted/30' }: BlurOverlayProps) {
 }
 
 export { BlurOverlay };
-export type { BlurOverlayProps };
