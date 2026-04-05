@@ -24,7 +24,7 @@ function makeApproval(overrides: Record<string, unknown> = {}) {
       networkPolicy: null,
       resourceLimits: null,
       volumeMounts: null,
-      pluginConfig: null,
+      providerConfig: null,
     },
     effectiveConfigAtRequest: {
       presetId: 1,
@@ -34,7 +34,7 @@ function makeApproval(overrides: Record<string, unknown> = {}) {
       networkPolicy: { mode: 'allow-all' },
       resourceLimits: null,
       volumeMounts: null,
-      pluginConfig: null,
+      providerConfig: null,
     },
     requestedPresetId: 2,
     effectivePresetId: 1,
@@ -140,7 +140,7 @@ describe('MyPendingApprovalsSection', () => {
           networkPolicy: null,
           resourceLimits: null,
           volumeMounts: null,
-          pluginConfig: null,
+          providerConfig: null,
         },
       }),
     ]);

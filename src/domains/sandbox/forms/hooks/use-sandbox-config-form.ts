@@ -144,7 +144,7 @@ export function useSandboxConfigForm({
         sandboxTypeId: value.sandboxTypeId,
         requiresApproval: value.requiresApproval === 'true',
         ...(networkPolicy && { networkPolicy }),
-        ...(value.image && { pluginConfig: { image: value.image } }),
+        ...(value.image && { providerConfig: { image: value.image } }),
         ...((maxTimeoutMs || maxOutputSize || pidsLimit) && {
           resourceLimits: {
             ...(maxTimeoutMs && { maxTimeoutMs }),

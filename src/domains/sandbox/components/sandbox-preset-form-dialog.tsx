@@ -61,7 +61,7 @@ export function SandboxPresetFormDialog({
                   requiresApproval: preset.requiresApproval,
                   sandboxTypeId: preset.sandboxTypeId,
                   networkMode: preset.networkPolicy?.mode,
-                  image: (preset.pluginConfig?.image as string) ?? undefined,
+                  image: (preset.providerConfig?.image as string) ?? undefined,
                   maxTimeoutMs:
                     preset.resourceLimits?.maxTimeoutMs ?? undefined,
                   maxOutputSize:

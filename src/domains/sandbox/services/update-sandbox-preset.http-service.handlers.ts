@@ -33,7 +33,7 @@ export const updateSandboxPresetHandler = http.put<
             pidsLimit: 100,
           },
           volumeMounts: null,
-          pluginConfig: { image: 'dorchestrator/sandbox:latest' },
+          providerConfig: { image: 'dorchestrator/sandbox:latest' },
           isOrgDefault: false,
           requiresApproval: false,
           createdBy: 'user-123',

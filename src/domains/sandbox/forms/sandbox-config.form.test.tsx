@@ -11,21 +11,21 @@ const SANDBOX_TYPES: SandboxTypeItem[] = [
     id: 1,
     name: 'None',
     category: 'none',
-    pluginType: 'native',
+    providerType: 'native',
     available: true,
   },
   {
     id: 2,
     name: 'Docker',
     category: 'container',
-    pluginType: 'native',
+    providerType: 'native',
     available: true,
   },
   {
     id: 3,
     name: 'Firecracker',
     category: 'vm',
-    pluginType: 'third-party',
+    providerType: 'third-party',
     available: false,
   },
 ];
@@ -312,7 +312,7 @@ describe('SandboxConfigForm', () => {
           id: 5,
           name: 'Docker',
           category: 'container',
-          pluginType: 'native',
+          providerType: 'native',
           available: true,
         },
       ];

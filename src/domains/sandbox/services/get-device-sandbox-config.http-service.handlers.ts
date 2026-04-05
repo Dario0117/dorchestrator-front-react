@@ -38,7 +38,7 @@ export const getDeviceSandboxConfigHandler = http.get<
               readOnly: false,
             },
           ],
-          pluginConfig: {
+          providerConfig: {
             image: 'dorchestrator/sandbox:latest',
           },
         },

@@ -18,14 +18,14 @@ const sandboxTypes: SandboxTypeItem[] = [
     id: 1,
     name: 'No Sandbox',
     category: 'none',
-    pluginType: 'native',
+    providerType: 'native',
     available: true,
   },
   {
     id: 2,
     name: 'Docker',
     category: 'container',
-    pluginType: 'native',
+    providerType: 'native',
     available: true,
   },
 ];
@@ -53,7 +53,7 @@ const fullPreset: SandboxPresetItem = {
     pidsLimit: 100,
   },
   volumeMounts: null,
-  pluginConfig: { image: 'dorchestrator/sandbox:latest' },
+  providerConfig: { image: 'dorchestrator/sandbox:latest' },
   isOrgDefault: true,
   requiresApproval: false,
   createdBy: 'user-123',
@@ -70,7 +70,7 @@ const minimalPreset: SandboxPresetItem = {
   networkPolicy: null,
   resourceLimits: null,
   volumeMounts: null,
-  pluginConfig: null,
+  providerConfig: null,
   isOrgDefault: false,
   requiresApproval: true,
   createdBy: 'user-123',
@@ -158,9 +158,9 @@ describe('SandboxPresetFormDialog', () => {
       ).toBeInTheDocument();
     });
 
-    it('handles preset with null pluginConfig', () => {
+    it('handles preset with null providerConfig', () => {
       renderDialog({ preset: minimalPreset });
-      // pluginConfig?.image as string ?? undefined resolves to undefined
+      // providerConfig?.image as string ?? undefined resolves to undefined
       expect(
         screen.getByRole('heading', { name: 'Edit Preset' }),
       ).toBeInTheDocument();

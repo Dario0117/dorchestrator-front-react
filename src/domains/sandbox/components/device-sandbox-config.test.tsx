@@ -320,7 +320,7 @@ describe('DeviceSandboxConfig', () => {
                   networkPolicy: null,
                   resourceLimits: null,
                   volumeMounts: null,
-                  pluginConfig: null,
+                  providerConfig: null,
                   isOrgDefault: false,
                   requiresApproval: false,
                   createdBy: 'user-123',

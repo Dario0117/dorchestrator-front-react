@@ -9,7 +9,7 @@ const basePreset: SandboxPresetItem = {
   name: 'Default Preset',
   description: null,
   sandboxTypeId: 1,
-  pluginConfig: null,
+  providerConfig: null,
   isOrgDefault: false,
   requiresApproval: false,
   createdBy: 'user-1',

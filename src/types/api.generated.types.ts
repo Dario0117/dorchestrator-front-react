@@ -180,14 +180,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/{organizationId}/agent/sandbox/plugins": {
+    "/api/v1/{organizationId}/agent/sandbox/sandboxes": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["getApiV1ByOrganizationIdAgentSandboxPlugins"];
+        get: operations["getApiV1ByOrganizationIdAgentSandboxSandboxes"];
         put?: never;
         post?: never;
         delete?: never;
@@ -196,7 +196,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/{organizationId}/agent/sandbox/plugins/{sandboxTypeId}/status": {
+    "/api/v1/{organizationId}/agent/sandbox/sandboxes/{sandboxTypeId}/status": {
         parameters: {
             query?: never;
             header?: never;
@@ -205,14 +205,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["postApiV1ByOrganizationIdAgentSandboxPluginsBySandboxTypeIdStatus"];
+        post: operations["postApiV1ByOrganizationIdAgentSandboxSandboxesBySandboxTypeIdStatus"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/{organizationId}/agent/sandbox/plugins/register": {
+    "/api/v1/{organizationId}/agent/sandbox/sandboxes/register": {
         parameters: {
             query?: never;
             header?: never;
@@ -221,7 +221,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["postApiV1ByOrganizationIdAgentSandboxPluginsRegister"];
+        post: operations["postApiV1ByOrganizationIdAgentSandboxSandboxesRegister"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1092,23 +1092,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/plugins": {
+    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/sandboxes": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["getApiV1ByOrganizationIdDevicesByDeviceIdSandboxPlugins"];
+        get: operations["getApiV1ByOrganizationIdDevicesByDeviceIdSandboxSandboxes"];
         put?: never;
-        post: operations["postApiV1ByOrganizationIdDevicesByDeviceIdSandboxPlugins"];
+        post: operations["postApiV1ByOrganizationIdDevicesByDeviceIdSandboxSandboxes"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/plugins/{sandboxTypeId}": {
+    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/sandboxes/{sandboxTypeId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1118,7 +1118,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations["deleteApiV1ByOrganizationIdDevicesByDeviceIdSandboxPluginsBySandboxTypeId"];
+        delete: operations["deleteApiV1ByOrganizationIdDevicesByDeviceIdSandboxSandboxesBySandboxTypeId"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1140,7 +1140,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/plugins/refresh": {
+    "/api/v1/{organizationId}/devices/{deviceId}/sandbox/sandboxes/refresh": {
         parameters: {
             query?: never;
             header?: never;
@@ -1149,7 +1149,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["postApiV1ByOrganizationIdDevicesByDeviceIdSandboxPluginsRefresh"];
+        post: operations["postApiV1ByOrganizationIdDevicesByDeviceIdSandboxSandboxesRefresh"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2734,7 +2734,7 @@ export interface operations {
                                         containerPath: string;
                                         readOnly?: boolean;
                                     }[] | null;
-                                    pluginConfig: {
+                                    providerConfig: {
                                         [key: string]: unknown;
                                     } | null;
                                 };
@@ -3509,7 +3509,7 @@ export interface operations {
                                     containerPath: string;
                                     readOnly?: boolean;
                                 }[] | null;
-                                pluginConfig: {
+                                providerConfig: {
                                     [key: string]: unknown;
                                 } | null;
                             };
@@ -3590,7 +3590,7 @@ export interface operations {
             };
         };
     };
-    getApiV1ByOrganizationIdAgentSandboxPlugins: {
+    getApiV1ByOrganizationIdAgentSandboxSandboxes: {
         parameters: {
             query: {
                 page: number;
@@ -3617,7 +3617,7 @@ export interface operations {
                                 /** @enum {string} */
                                 category: "none" | "container" | "vm" | "remote";
                                 /** @enum {string} */
-                                pluginType: "native" | "third-party";
+                                providerType: "native" | "third-party";
                                 source: string | null;
                                 version: string | null;
                                 checksum: string | null;
@@ -3705,7 +3705,7 @@ export interface operations {
             };
         };
     };
-    postApiV1ByOrganizationIdAgentSandboxPluginsBySandboxTypeIdStatus: {
+    postApiV1ByOrganizationIdAgentSandboxSandboxesBySandboxTypeIdStatus: {
         parameters: {
             query?: never;
             header?: never;
@@ -3813,7 +3813,7 @@ export interface operations {
             };
         };
     };
-    postApiV1ByOrganizationIdAgentSandboxPluginsRegister: {
+    postApiV1ByOrganizationIdAgentSandboxSandboxesRegister: {
         parameters: {
             query?: never;
             header?: never;
@@ -3825,7 +3825,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    plugins: {
+                    sandboxes: {
                         /** @enum {string} */
                         category: "none" | "container" | "vm" | "remote";
                         /** @enum {string} */
@@ -3861,7 +3861,7 @@ export interface operations {
                         responseData: null;
                         responseErrors: {
                             nonFieldErrors?: string[];
-                            plugins?: string[];
+                            sandboxes?: string[];
                             requestedBy?: string[];
                         };
                     };
@@ -10995,7 +10995,7 @@ export interface operations {
                                 /** @enum {string} */
                                 category: "none" | "container" | "vm" | "remote";
                                 /** @enum {string} */
-                                pluginType: "native" | "third-party";
+                                providerType: "native" | "third-party";
                                 available: boolean;
                             }[];
                         };
@@ -11134,7 +11134,7 @@ export interface operations {
                                     containerPath: string;
                                     readOnly?: boolean;
                                 }[] | null;
-                                pluginConfig: {
+                                providerConfig: {
                                     [key: string]: unknown;
                                 } | null;
                                 isOrgDefault: boolean;
@@ -11273,7 +11273,7 @@ export interface operations {
                         containerPath: string;
                         readOnly?: boolean;
                     }[];
-                    pluginConfig?: {
+                    providerConfig?: {
                         [key: string]: unknown;
                     };
                     requiresApproval?: boolean;
@@ -11329,7 +11329,7 @@ export interface operations {
                                     containerPath: string;
                                     readOnly?: boolean;
                                 }[] | null;
-                                pluginConfig: {
+                                providerConfig: {
                                     [key: string]: unknown;
                                 } | null;
                                 isOrgDefault: boolean;
@@ -11359,7 +11359,7 @@ export interface operations {
                             networkPolicy?: string[];
                             resourceLimits?: string[];
                             volumeMounts?: string[];
-                            pluginConfig?: string[];
+                            providerConfig?: string[];
                             requiresApproval?: string[];
                         };
                     };
@@ -11477,7 +11477,7 @@ export interface operations {
                         containerPath: string;
                         readOnly?: boolean;
                     }[];
-                    pluginConfig?: {
+                    providerConfig?: {
                         [key: string]: unknown;
                     };
                     requiresApproval?: boolean;
@@ -11533,7 +11533,7 @@ export interface operations {
                                     containerPath: string;
                                     readOnly?: boolean;
                                 }[] | null;
-                                pluginConfig: {
+                                providerConfig: {
                                     [key: string]: unknown;
                                 } | null;
                                 isOrgDefault: boolean;
@@ -11563,7 +11563,7 @@ export interface operations {
                             networkPolicy?: string[];
                             resourceLimits?: string[];
                             volumeMounts?: string[];
-                            pluginConfig?: string[];
+                            providerConfig?: string[];
                             requiresApproval?: string[];
                         };
                     };
@@ -11883,7 +11883,7 @@ export interface operations {
                                     containerPath: string;
                                     readOnly?: boolean;
                                 }[] | null;
-                                pluginConfig: {
+                                providerConfig: {
                                     [key: string]: unknown;
                                 } | null;
                             } | null;
@@ -12167,7 +12167,7 @@ export interface operations {
             };
         };
     };
-    getApiV1ByOrganizationIdDevicesByDeviceIdSandboxPlugins: {
+    getApiV1ByOrganizationIdDevicesByDeviceIdSandboxSandboxes: {
         parameters: {
             query: {
                 page: number;
@@ -12196,7 +12196,7 @@ export interface operations {
                                 /** @enum {string} */
                                 category: "none" | "container" | "vm" | "remote";
                                 /** @enum {string} */
-                                pluginType: "native" | "third-party";
+                                providerType: "native" | "third-party";
                                 source: string | null;
                                 version: string | null;
                                 checksum: string | null;
@@ -12289,7 +12289,7 @@ export interface operations {
             };
         };
     };
-    postApiV1ByOrganizationIdDevicesByDeviceIdSandboxPlugins: {
+    postApiV1ByOrganizationIdDevicesByDeviceIdSandboxSandboxes: {
         parameters: {
             query?: never;
             header?: never;
@@ -12324,7 +12324,7 @@ export interface operations {
                                 /** @enum {string} */
                                 category: "none" | "container" | "vm" | "remote";
                                 /** @enum {string} */
-                                pluginType: "native" | "third-party";
+                                providerType: "native" | "third-party";
                                 source: string | null;
                                 version: string | null;
                                 checksum: string | null;
@@ -12415,7 +12415,7 @@ export interface operations {
             };
         };
     };
-    deleteApiV1ByOrganizationIdDevicesByDeviceIdSandboxPluginsBySandboxTypeId: {
+    deleteApiV1ByOrganizationIdDevicesByDeviceIdSandboxSandboxesBySandboxTypeId: {
         parameters: {
             query?: never;
             header?: never;
@@ -12612,7 +12612,7 @@ export interface operations {
             };
         };
     };
-    postApiV1ByOrganizationIdDevicesByDeviceIdSandboxPluginsRefresh: {
+    postApiV1ByOrganizationIdDevicesByDeviceIdSandboxSandboxesRefresh: {
         parameters: {
             query?: never;
             header?: never;
@@ -12782,7 +12782,7 @@ export interface operations {
                                         containerPath: string;
                                         readOnly?: boolean;
                                     }[] | null;
-                                    pluginConfig: {
+                                    providerConfig: {
                                         [key: string]: unknown;
                                     } | null;
                                 };
@@ -12945,7 +12945,7 @@ export interface operations {
                                         containerPath: string;
                                         readOnly?: boolean;
                                     }[] | null;
-                                    pluginConfig: {
+                                    providerConfig: {
                                         [key: string]: unknown;
                                     } | null;
                                 };
@@ -12989,7 +12989,7 @@ export interface operations {
                                         containerPath: string;
                                         readOnly?: boolean;
                                     }[] | null;
-                                    pluginConfig: {
+                                    providerConfig: {
                                         [key: string]: unknown;
                                     } | null;
                                 };
@@ -13154,7 +13154,7 @@ export interface operations {
                                         containerPath: string;
                                         readOnly?: boolean;
                                     }[] | null;
-                                    pluginConfig: {
+                                    providerConfig: {
                                         [key: string]: unknown;
                                     } | null;
                                 };
@@ -13198,7 +13198,7 @@ export interface operations {
                                         containerPath: string;
                                         readOnly?: boolean;
                                     }[] | null;
-                                    pluginConfig: {
+                                    providerConfig: {
                                         [key: string]: unknown;
                                     } | null;
                                 };

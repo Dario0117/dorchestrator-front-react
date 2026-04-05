@@ -29,7 +29,7 @@ export const createSandboxPresetHandler = http.post<
             networkPolicy: body.networkPolicy ?? null,
             resourceLimits: body.resourceLimits ?? null,
             volumeMounts: body.volumeMounts ?? null,
-            pluginConfig: body.pluginConfig ?? null,
+            providerConfig: body.providerConfig ?? null,
             isOrgDefault: false,
             requiresApproval: body.requiresApproval ?? false,
             createdBy: 'user-123',

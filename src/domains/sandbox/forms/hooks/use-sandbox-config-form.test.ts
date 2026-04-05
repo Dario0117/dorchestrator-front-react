@@ -255,7 +255,7 @@ describe('useSandboxConfigForm', () => {
       });
     });
 
-    it('should include pluginConfig when image is provided', async () => {
+    it('should include providerConfig when image is provided', async () => {
       const createMutate = vi.fn((_, options) => {
         options?.onSuccess?.(undefined as never, undefined as never, undefined);
       });
@@ -284,7 +284,7 @@ describe('useSandboxConfigForm', () => {
         expect(createMutate).toHaveBeenCalledWith(
           expect.objectContaining({
             body: expect.objectContaining({
-              pluginConfig: { image: 'node:20' },
+              providerConfig: { image: 'node:20' },
             }),
           }),
           expect.any(Object),

@@ -175,7 +175,7 @@ describe('ExecuteCommandModal', () => {
                   pidsLimit: 50,
                 },
                 volumeMounts: null,
-                pluginConfig: { image: 'dorchestrator/sandbox:latest' },
+                providerConfig: { image: 'dorchestrator/sandbox:latest' },
               },
             },
             responseErrors: null,
