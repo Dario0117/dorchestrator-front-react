@@ -9,9 +9,15 @@ export function useDevicesPresence(deviceIds: number[]) {
   );
   const [isLoading, setIsLoading] = useState(true);
   const subscribedIds = useRef<Set<number>>(new Set());
+  const serialized = deviceIds.join(',');
+  const stableDeviceIdsRef = useRef(deviceIds);
+  if (stableDeviceIdsRef.current.join(',') !== serialized) {
+    stableDeviceIdsRef.current = deviceIds;
+  }
+  const stableDeviceIds = stableDeviceIdsRef.current;
 
   useEffect(() => {
-    const currentIds = new Set(deviceIds);
+    const currentIds = new Set(stableDeviceIds);
     const subscriptions = new Map<number, Subscription>();
 
     // Unsubscribe from devices no longer visible
@@ -21,7 +27,7 @@ export function useDevicesPresence(deviceIds: number[]) {
       }
     }
 
-    let pendingCount = deviceIds.length;
+    let pendingCount = stableDeviceIds.length;
     const results = new Map<number, boolean>();
 
     const checkComplete = () => {
@@ -31,14 +37,14 @@ export function useDevicesPresence(deviceIds: number[]) {
       }
     };
 
-    if (deviceIds.length === 0) {
+    if (stableDeviceIds.length === 0) {
       setPresenceMap(new Map());
       setIsLoading(false);
       subscribedIds.current = new Set();
       return;
     }
 
-    for (const deviceId of deviceIds) {
+    for (const deviceId of stableDeviceIds) {
       const subscription = terminalWsClient.subscribeToDevice(deviceId);
       subscriptions.set(deviceId, subscription);
 
@@ -122,7 +128,7 @@ export function useDevicesPresence(deviceIds: number[]) {
         terminalWsClient.unsubscribeFromDevice(deviceId);
       }
     };
-  }, [deviceIds]);
+  }, [stableDeviceIds]);
 
   return { presenceMap, isLoading };
 }
